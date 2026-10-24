@@ -6,6 +6,23 @@ import { AdaptiveRlExperiment } from './AdaptiveRlExperiment.jsx';
 import { NasaWeatherStation3D } from './NasaWeatherStation3D.jsx';
 import { FieldParcelManagerView } from './FieldParcelManagerView.jsx';
 import AiAssistantView from './AiAssistantView.jsx';
+import { ComparisonLabView } from './ComparisonLabView.jsx';
+import { CropFailureRecoveryView } from './CropFailureRecoveryView.jsx';
+import { AdaptiveReplanningView } from './AdaptiveReplanningView.jsx';
+import { WeatherUncertaintyView } from './WeatherUncertaintyView.jsx';
+import { SustainabilityTrackerView } from './SustainabilityTrackerView.jsx';
+import { CropCatalogView } from './CropCatalogView.jsx';
+import { SatelliteReadinessView } from './SatelliteReadinessView.jsx';
+import { ActualOutcomesView } from './ActualOutcomesView.jsx';
+import { MarketIntelligenceView } from './MarketIntelligenceView.jsx';
+import { SyntheticDataLabView } from './SyntheticDataLabView.jsx';
+import { SensitivityAnalysisView } from './SensitivityAnalysisView.jsx';
+import { FarmerHomeView } from './FarmerHomeView.jsx';
+import { FarmerCropAdviceView } from './FarmerCropAdviceView.jsx';
+import { FarmerHarvestProfitView } from './FarmerHarvestProfitView.jsx';
+import { FarmerVoiceAssistant } from './FarmerVoiceAssistant.jsx';
+import { ResearchWorkspaceView } from './ResearchWorkspaceView.jsx';
+import { useTranslation, formatArea } from './i18n.js';
 import {
   buildCounterfactualPayload,
   runCounterfactualRequest,
@@ -465,6 +482,51 @@ class ResultBoundary extends React.Component {
 export function App() {
   const [activeNav, setActiveNav] = useState('dashboard');
   const [selectedStress, setSelectedStress] = useState('normal');
+  const [theme, setTheme] = useState(() => localStorage.getItem('fieldshift_theme') || 'dark');
+  const [lang, setLang] = useState(() => localStorage.getItem('fieldshift_lang') || 'bn');
+  const [dashboardMode, setDashboardMode] = useState('farmer');
+  const { t } = useTranslation(lang);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('fieldshift_theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('fieldshift_lang', lang);
+  }, [lang]);
+
+  const handleNavigate = (nav, tab = null) => {
+    if (nav === 'crop_advice' || nav === 'harvest_profit' || nav === 'research') {
+      setActiveNav(nav);
+      return;
+    }
+    if (nav === 'market' || nav === 'synthetic_lab' || nav === 'sensitivity') {
+      setActiveNav(nav);
+      return;
+    }
+    if (nav === 'analytics' && (tab === 'field' || tab === 'weather' || tab === 'assistant' || tab === 'account' || tab === 'dashboard' || tab === 'market' || tab === 'synthetic_lab' || tab === 'sensitivity')) {
+      setActiveNav(tab);
+      return;
+    }
+    const tabMap = {
+      milp: 'optimization',
+      lab: 'comparison_lab',
+      failure: 'recovery',
+      scenarios: 'stress_testing',
+      stress: 'stress_testing',
+      crops: 'crop_catalog',
+      market: 'market',
+      synthetic_lab: 'synthetic_lab',
+      sensitivity: 'sensitivity',
+    };
+    if (tab === 'market' || tab === 'synthetic_lab' || tab === 'sensitivity') {
+      setActiveNav(tab);
+      return;
+    }
+    if (tab) setAnalysisTab(tabMap[tab] || tab);
+    setActiveNav(nav);
+  };
 
   // User & Account state
   const [user, setUser] = useState(null);
@@ -478,6 +540,7 @@ export function App() {
   const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' });
   const [authMsg, setAuthMsg] = useState('');
   const [authError, setAuthError] = useState('');
+  const [authModal, setAuthModal] = useState(false);
   const [saveFieldMsg, setSaveFieldMsg] = useState('');
   const [profileTab, setProfileTab] = useState('parcels');
   const [analysisTab, setAnalysisTab] = useState('optimization');
@@ -501,6 +564,7 @@ export function App() {
     longitude: '',
     area_ha: '',
     soil_texture: 'unknown',
+    soil_ph: '',
     organic_matter: '',
     irrigation_capacity_mm: ''
   });
@@ -524,6 +588,7 @@ export function App() {
     longitude: '',
     area_ha: '',
     soil_texture: 'unknown',
+    soil_ph: '',
     organic_matter: '',
     irrigation_capacity_mm: '',
     crop: '',
@@ -541,27 +606,31 @@ export function App() {
     counterfactual_rainfall_delta_mm: ''
   }));
 
-  const demoField = {
+  const demoField = useMemo(() => ({
     id: 'demo',
-    name: 'Dhaka Research Station',
-    latitude: 23.8103,
-    longitude: 90.4125,
+    is_demo: true,
+    name: lang === 'bn' ? 'বগুড়া ডেমো খামার [DEMO]' : 'Demo Field (Bogura 10 ha) [DEMO]',
+    full_name: lang === 'bn' ? 'বগুড়া কৃষি গবেষণা প্লট [DEMO]' : 'Bogura Agricultural Research Plot (10 ha) [DEMO]',
+    latitude: 24.8500,
+    longitude: 89.3700,
     area_ha: 10.0,
     soil_texture: 'loam',
+    soil_ph: 6.5,
     organic_matter: 2.5,
     irrigation_capacity_mm: 90,
     crop: 'Maize',
     previous_crop: 'Maize',
-    previous_crop_year: 2024
-  };
+    previous_crop_year: 2024,
+    source_label: 'Offline Research Benchmark'
+  }), [lang]);
 
-  // Registered fields always resolve by the shared selectedFieldId. Demo is
-  // available only after an explicit selection from the research benchmark list.
+  // Registered fields always resolve by the shared selectedFieldId.
+  // Explicit demo option maps consistently to demoField across all views.
   const activeField = useMemo(() => {
-    if (selectedFieldId === 'demo') return form.mode === 'offline' ? demoField : null;
+    if (selectedFieldId === 'demo') return demoField;
     if (selectedFieldId == null) return null;
     return userFields.find(field => String(field.id) === String(selectedFieldId)) || null;
-  }, [userFields, selectedFieldId, form.mode]);
+  }, [userFields, selectedFieldId, demoField]);
 
   const workflowPayload = (controls = form, field = activeField) => {
     const payload = {
@@ -574,6 +643,7 @@ export function App() {
     delete payload.latitude;
     delete payload.longitude;
     delete payload.soil_texture;
+    delete payload.soil_ph;
     delete payload.organic_matter;
     delete payload.irrigation_capacity_mm;
     delete payload.previous_crop;
@@ -791,10 +861,10 @@ export function App() {
         setUser(res.user);
         await loadUserData(res.user);
       } else {
-        await handleQuickDemoLogin();
+        setUser(null);
       }
     } catch {
-      await handleQuickDemoLogin();
+      setUser(null);
     }
   };
 
@@ -862,29 +932,46 @@ export function App() {
         setUser(res.user);
         setAuthMsg(authMode === 'register' ? 'Account created successfully!' : 'Signed in successfully!');
         loadUserData(res.user);
+        setTimeout(() => setAuthModal(false), 500);
       }
     } catch (err) {
       setAuthError(err.message);
     }
   };
 
-  // Quick Demo Login as Dani (User 47)
+  // Quick Demo Login for Reviewers & Testing
   const handleQuickDemoLogin = async () => {
     setAuthError('');
-    setAuthMsg('Signing in with demo account…');
+    setAuthMsg('Signing in with demo research session…');
     try {
-      // Direct session or register if needed
-      const res = await request('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email: 'danialhossain2022@gmail.com', password: '12345678' })
-      });
-      if (res.user) {
-        setUser(res.user);
-        setAuthMsg('Signed in as Dani!');
-        loadUserData(res.user);
+      try {
+        const res = await request('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: 'demo@fieldshift.nasa', password: 'DemoPassword2026!' })
+        });
+        if (res.user) {
+          setUser(res.user);
+          setAuthMsg('Signed in as Demo Agronomist');
+          loadUserData(res.user);
+          setAuthModal(false);
+          return;
+        }
+      } catch (loginErr) {
+        const regRes = await request('/api/auth/register', {
+          method: 'POST',
+          body: JSON.stringify({ name: 'Demo Agronomist', email: 'demo@fieldshift.nasa', password: 'DemoPassword2026!' })
+        });
+        if (regRes.user) {
+          setUser(regRes.user);
+          setAuthMsg('Created and signed into Demo Agronomist session');
+          loadUserData(regRes.user);
+          setAuthModal(false);
+          return;
+        }
+        throw loginErr;
       }
     } catch (err) {
-      setAuthError(err.message);
+      setAuthError(err.message || 'Demo session unavailable');
     }
   };
 
@@ -920,6 +1007,7 @@ export function App() {
         longitude: parseFloat(newParcel.longitude),
         area_ha: newParcel.area_ha === '' ? null : parseFloat(newParcel.area_ha),
         soil_texture: newParcel.soil_texture,
+        soil_ph: newParcel.soil_ph === '' || newParcel.soil_ph == null ? null : parseFloat(newParcel.soil_ph),
         organic_matter: newParcel.organic_matter === '' ? null : parseFloat(newParcel.organic_matter),
         irrigation_capacity_mm: newParcel.irrigation_capacity_mm === '' ? null : parseFloat(newParcel.irrigation_capacity_mm)
       };
@@ -1024,6 +1112,7 @@ export function App() {
       longitude: defaultLon,
       area_ha: '10.0',
       soil_texture: 'loam',
+      soil_ph: '6.5',
       organic_matter: '2.5',
       irrigation_capacity_mm: '100',
       crop: 'Rice',
@@ -1042,6 +1131,7 @@ export function App() {
       longitude: fld.longitude != null ? String(fld.longitude) : '',
       area_ha: fld.area_ha != null ? String(fld.area_ha) : '',
       soil_texture: fld.soil_texture || 'unknown',
+      soil_ph: fld.soil_ph != null ? String(fld.soil_ph) : '',
       organic_matter: fld.organic_matter != null ? String(fld.organic_matter) : '',
       irrigation_capacity_mm: fld.irrigation_capacity_mm != null ? String(fld.irrigation_capacity_mm) : '',
       crop: fld.previous_crop || fld.current_crop || (fld.history && fld.history[0]?.crop) || '',
@@ -1057,6 +1147,7 @@ export function App() {
       const latVal = fieldForm.latitude === '' || fieldForm.latitude == null ? null : parseFloat(fieldForm.latitude);
       const lonVal = fieldForm.longitude === '' || fieldForm.longitude == null ? null : parseFloat(fieldForm.longitude);
       const areaVal = fieldForm.area_ha === '' || fieldForm.area_ha == null ? null : parseFloat(fieldForm.area_ha);
+      const phVal = fieldForm.soil_ph === '' || fieldForm.soil_ph == null ? null : parseFloat(fieldForm.soil_ph);
       const omVal = fieldForm.organic_matter === '' || fieldForm.organic_matter == null ? null : parseFloat(fieldForm.organic_matter);
       const irrVal = fieldForm.irrigation_capacity_mm === '' || fieldForm.irrigation_capacity_mm == null ? null : parseFloat(fieldForm.irrigation_capacity_mm);
       const yrVal = fieldForm.previous_crop_year === '' || fieldForm.previous_crop_year == null ? null : parseInt(fieldForm.previous_crop_year, 10);
@@ -1067,6 +1158,7 @@ export function App() {
         longitude: Number.isFinite(lonVal) ? lonVal : null,
         area_ha: Number.isFinite(areaVal) ? areaVal : null,
         soil_texture: fieldForm.soil_texture === 'unknown' ? null : fieldForm.soil_texture,
+        soil_ph: Number.isFinite(phVal) ? phVal : null,
         organic_matter: Number.isFinite(omVal) ? omVal : null,
         irrigation_capacity_mm: Number.isFinite(irrVal) ? irrVal : null,
         crop: fieldForm.crop ? fieldForm.crop.trim() : null,
@@ -1153,6 +1245,9 @@ export function App() {
   const strategies = planning.strategy_comparison || {};
   const sim = rl.simulation_trained_policy || {};
   const mlContributors = xai.ml_explanation?.top_contributors || [];
+  const comparisonLab = summary.comparison_lab || summary.lab_compare || summary.comparison || null;
+  const robustness = summary.robustness_analysis || summary.weather_uncertainty?.robustness_analysis || summary.stress_test?.robustness || null;
+  const outcomes = summary.actual_outcomes || summary.outcomes || [];
 
   const allStrategiesMap = useMemo(() => {
     const rawAll = planning.all_strategies || {};
@@ -1501,105 +1596,108 @@ export function App() {
           </div>
         </div>
 
-        <nav className="sidebar-nav">
+        <nav className="sidebar-nav" aria-label="Primary Navigation">
+          {/* FARMER MAIN SECTIONS (Section 4 of prompt) */}
+          <div className="nav-section-label">{lang === 'bn' ? 'প্রধান মেন্যু' : 'Main Menu'}</div>
+
+          {/* 1. Home */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveNav('dashboard')}
-            title="Overview Dashboard"
+            onClick={() => handleNavigate('dashboard')}
+            title={lang === 'bn' ? 'হোম - আপনার খামারের সারসংক্ষেপ' : 'Home - Farm Overview'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="7" height="7" x="3" y="3" rx="1"/>
-                <rect width="7" height="7" x="14" y="3" rx="1"/>
-                <rect width="7" height="7" x="14" y="14" rx="1"/>
-                <rect width="7" height="7" x="3" y="14" rx="1"/>
-              </svg>
-            </span>
-            <span className="nav-item-label">Dashboard</span>
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>🏠</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'হোম' : 'Home'}</span>
           </button>
 
+          {/* 2. My Farm */}
           <button
             type="button"
-            className={`nav-item ${activeNav === 'analytics' ? 'active' : ''}`}
-            onClick={() => setActiveNav('analytics')}
-            title="Analysis &amp; Research Workspace"
+            className={`nav-item ${(activeNav === 'field' || activeNav === 'field_map') ? 'active' : ''}`}
+            onClick={() => handleNavigate('field')}
+            title={lang === 'bn' ? 'আমার জমি - জমির তথ্য ও সীমানা' : 'My Farm - Parcels & Topography'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-              </svg>
-            </span>
-            <span className="nav-item-label">Analytics</span>
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>🗺️</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আমার জমি' : 'My Farm'}</span>
           </button>
 
+          {/* 3. Crop Advice */}
           <button
             type="button"
-            className={`nav-item ${activeNav === 'field' ? 'active' : ''}`}
-            onClick={() => setActiveNav('field')}
-            title="Field Parcel Map &amp; History"
+            className={`nav-item ${activeNav === 'crop_advice' ? 'active' : ''}`}
+            onClick={() => handleNavigate('crop_advice')}
+            title={lang === 'bn' ? 'ফসলের পরামর্শ - সবচেয়ে লাভজনক ফসল' : 'Crop Advice - Best Matched Crops'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
-            </span>
-            <span className="nav-item-label">Field Map</span>
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>🌱</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'ফসলের পরামর্শ' : 'Crop Advice'}</span>
           </button>
 
+          {/* 4. Market Prices */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'market' ? 'active' : ''}`}
+            onClick={() => handleNavigate('market')}
+            title={lang === 'bn' ? 'বাজারদর - পাইকারি ও খুচরা দর' : 'Market Prices - Benchmarks & Tiers'}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>💰</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'বাজারদর' : 'Market Prices'}</span>
+          </button>
+
+          {/* 5. Weather */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'weather' ? 'active' : ''}`}
-            onClick={() => setActiveNav('weather')}
-            title="NASA POWER Weather &amp; Climate"
+            onClick={() => handleNavigate('weather')}
+            title={lang === 'bn' ? 'আবহাওয়া - নাসা উপগ্রহ উপাত্ত ও পূর্বাভাস' : 'Weather - NASA POWER Telemetry'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-              </svg>
-            </span>
-            <span className="nav-item-label">Weather</span>
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>🌦️</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আবহাওয়া' : 'Weather'}</span>
           </button>
 
+          {/* 6. Harvest & Profit */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'harvest_profit' ? 'active' : ''}`}
+            onClick={() => handleNavigate('harvest_profit')}
+            title={lang === 'bn' ? 'ফসলের হিসাব - লাভ-ক্ষতি ও ফলন সংরক্ষণ' : 'Harvest & Profit - Calculator & Logs'}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>📋</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'ফসলের হিসাব' : 'Harvest & Profit'}</span>
+          </button>
+
+          {/* 7. AI Assistant */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'assistant' ? 'active' : ''}`}
-            onClick={() => setActiveNav('assistant')}
-            title="AI Assistant &amp; Decision Support"
+            onClick={() => handleNavigate('assistant')}
+            title={lang === 'bn' ? 'AI সহকারী - ভয়েস ও চ্যাট সহায়তা' : 'AI Assistant - Decision Support'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 8V4H8"/>
-                <rect width="16" height="12" x="4" y="8" rx="2"/>
-                <path d="M2 14h2"/>
-                <path d="M20 14h2"/>
-                <path d="M15 13v2"/>
-                <path d="M9 13v2"/>
-              </svg>
-            </span>
-            <span className="nav-item-label">AI Assistant</span>
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>🤖</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'AI সহকারী' : 'AI Assistant'}</span>
           </button>
 
+          {/* SEPARATE ADVANCED / RESEARCH WORKSPACE BUTTON */}
+          <div className="nav-section-label" style={{ marginTop: 18 }}>
+            {lang === 'bn' ? 'উন্নত প্রযুক্তি' : 'Advanced Tools'}
+          </div>
           <button
             type="button"
-            className={`nav-item ${activeNav === 'account' ? 'active' : ''}`}
-            onClick={() => setActiveNav('account')}
-            title="Account, Profile &amp; Saved History"
+            className={`nav-item ${activeNav === 'research' ? 'active' : ''}`}
+            onClick={() => handleNavigate('research')}
+            title={lang === 'bn' ? 'উন্নত গবেষণা - MILP, RL ও সিন্থেটিক ল্যাব' : 'Advanced Research - MILP, RL, Sensitivity'}
+            style={{ border: '1px dashed var(--border-medium)', background: 'var(--bg-card-subtle)' }}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </span>
-            <span className="nav-item-label">Account</span>
+            <span className="nav-item-icon" style={{ fontSize: 17 }}>🔬</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'উন্নত গবেষণা ল্যাব' : 'Research Lab'}</span>
           </button>
         </nav>
 
@@ -1639,11 +1737,85 @@ export function App() {
           </div>
 
           <div className="global-top-bar-right">
-            <div className="top-bar-pill-badge">
-              <span className="live-pulse-dot" />
-              <span>NASA POWER Telemetry Synced</span>
+            {/* Header Field Selector for Instant Context Switching Across Any View */}
+            <div className="header-field-selector" title="Active Field Parcel">
+              <span style={{ fontSize: 13 }}>🌾</span>
+              <select
+                aria-label="Active field parcel"
+                value={selectedFieldId == null ? '' : String(selectedFieldId)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (!val) {
+                    setSelectedFieldId(null);
+                    return;
+                  }
+                  if (val === 'demo') {
+                    handleSelectActiveField(demoField, false);
+                    return;
+                  }
+                  const found = userFields.find(f => String(f.id) === String(val));
+                  if (found) handleSelectActiveField(found, false);
+                }}
+              >
+                <option value="" disabled>{lang === 'bn' ? 'সক্রিয় জমি নির্বাচন করুন...' : 'Select active field...'}</option>
+                {userFields.map(f => (
+                  <option key={f.id} value={String(f.id)}>{f.name} ({f.area_ha || 1} ha)</option>
+                ))}
+                <option value="demo">{lang === 'bn' ? 'বগুড়া ডেমো খামার (১০ হেক্টর) [DEMO]' : 'Demo Field (Bogura 10 ha) [DEMO]'}</option>
+              </select>
             </div>
 
+            {/* NASA Status Telemetry Badge */}
+            <div className="top-bar-pill-badge" title="NASA POWER agro-climatic observation feed">
+              <span className="live-pulse-dot" />
+              <span>
+                {activeField
+                  ? (activeField.is_demo || activeField.id === 'demo'
+                      ? `NASA POWER: Demo Benchmark (${activeField.latitude?.toFixed(2)}°N, ${activeField.longitude?.toFixed(2)}°E)`
+                      : `NASA POWER: Observed (${activeField.latitude?.toFixed(2)}°N, ${activeField.longitude?.toFixed(2)}°E)`)
+                  : (nasa?.data_status === 'observed' ? 'NASA POWER: Observed' : 'NASA POWER: Standby')}
+              </span>
+            </div>
+
+            {/* Header Language Switcher (Bangla / English) */}
+            <button
+              type="button"
+              className="top-bar-icon-btn lang-toggle-btn"
+              title={lang === 'bn' ? 'Switch to English' : 'বাংলায় দেখুন'}
+              onClick={() => setLang(prev => prev === 'bn' ? 'en' : 'bn')}
+              aria-label="Language switch"
+              style={{
+                width: 'auto',
+                padding: '0 14px',
+                height: 36,
+                fontWeight: 800,
+                fontSize: 13,
+                background: lang === 'bn' ? '#15803d' : 'var(--bg-card-subtle)',
+                color: lang === 'bn' ? '#ffffff' : 'var(--text-main)',
+                border: '1px solid var(--border-medium)',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer'
+              }}
+            >
+              <span style={{ fontSize: 15 }}>🌐</span>
+              <span>{lang === 'bn' ? 'বাংলা' : 'English'}</span>
+            </button>
+
+            {/* Theme Toggle Button (☀️ / 🌙) */}
+            <button
+              type="button"
+              className="top-bar-icon-btn theme-toggle-btn"
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Theme`}
+              onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+              aria-label="Toggle visual theme"
+            >
+              <span style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+            </button>
+
+            {/* System Alerts */}
             <button
               type="button"
               className="top-bar-icon-btn notification-bell-btn"
@@ -1657,17 +1829,25 @@ export function App() {
               <span className="notification-badge-count">1</span>
             </button>
 
+            {/* User Profile / Login */}
             <div
               className="top-bar-user-profile"
-              onClick={() => setActiveNav('account')}
-              title="Chief Agronomist Profile & Settings"
+              onClick={() => {
+                if (user) {
+                  setActiveNav('account');
+                } else {
+                  setAuthMode('login');
+                  setAuthModal(true);
+                }
+              }}
+              title={user ? `${user.name} Profile & Settings` : 'Sign In or Register'}
             >
               <div className="user-profile-avatar">
-                <span>D</span>
+                <span>{user ? (user.name || user.email || 'U').slice(0, 1).toUpperCase() : 'G'}</span>
               </div>
               <div className="user-profile-meta">
-                <strong className="user-profile-name">Dani</strong>
-                <span className="user-profile-title">Chief Agronomist</span>
+                <strong className="user-profile-name">{user ? user.name : 'Sign In'}</strong>
+                <span className="user-profile-title">{user ? 'Chief Agronomist' : 'Guest Operator'}</span>
               </div>
             </div>
           </div>
@@ -1681,9 +1861,91 @@ export function App() {
           </div>
         )}
 
-        {/* -------------------- VIEW 1: DASHBOARD (OVERVIEW) -------------------- */}
-        {activeNav === 'dashboard' && (
+        {/* -------------------- VIEW: CROP ADVICE (FARMER FRIENDLY) -------------------- */}
+        {activeNav === 'crop_advice' && (
+          <FarmerCropAdviceView
+            activeField={activeField}
+            plan={plan}
+            nasa={nasa}
+            lang={lang}
+            onNavigate={handleNavigate}
+            onAskAi={(q) => handleNavigate('assistant')}
+          />
+        )}
+
+        {/* -------------------- VIEW: HARVEST & PROFIT CALCULATOR -------------------- */}
+        {activeNav === 'harvest_profit' && (
+          <FarmerHarvestProfitView
+            activeField={activeField}
+            user={user}
+            lang={lang}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* -------------------- VIEW: ADVANCED RESEARCH WORKSPACE -------------------- */}
+        {activeNav === 'research' && (
+          <ResearchWorkspaceView
+            activeField={activeField}
+            nasa={nasa}
+            summary={summary}
+            plan={plan}
+            ml={ml}
+            rl={rl}
+            comparisonLab={comparisonLab}
+            robustness={robustness}
+            outcomes={outcomes}
+            user={user}
+            userFields={userFields}
+            onNavigate={handleNavigate}
+            lang={lang}
+          />
+        )}
+
+        {/* -------------------- VIEW 1: FARMER HOME DASHBOARD (DEFAULT) -------------------- */}
+        {activeNav === 'dashboard' && dashboardMode === 'farmer' && (
+          <div>
+            <FarmerHomeView
+              activeField={activeField}
+              userFields={userFields}
+              nasa={nasa}
+              lang={lang}
+              onNavigate={handleNavigate}
+              onSelectField={handleSelectActiveField}
+              onOpenVoice={() => {
+                const fab = document.querySelector('.farmer-voice-fab');
+                if (fab) fab.click();
+              }}
+            />
+            <div style={{ textAlign: 'center', padding: '16px 0 32px' }}>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setDashboardMode('advanced')}
+                style={{ fontSize: 13, padding: '8px 20px', borderRadius: 9999, cursor: 'pointer', background: 'var(--bg-card-subtle)', border: '1px dashed var(--border-medium)', color: 'var(--text-muted)' }}
+              >
+                🔬 {lang === 'bn' ? 'গবেষকদের জন্য জটিল বৈজ্ঞানিক ড্যাশবোর্ড দেখুন' : 'Switch to Advanced Research Dashboard'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* -------------------- VIEW 1: ADVANCED OVERVIEW DASHBOARD -------------------- */}
+        {activeNav === 'dashboard' && dashboardMode === 'advanced' && (
           <>
+            <div style={{ background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 16px' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
+                🔬 {lang === 'bn' ? 'উন্নত গবেষক মোড সক্রিয় রয়েছে' : 'Advanced Research Dashboard Active'}
+              </span>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => setDashboardMode('farmer')}
+                style={{ fontSize: 12.5, padding: '6px 16px', borderRadius: 9999, cursor: 'pointer' }}
+              >
+                🏠 {lang === 'bn' ? 'সহজ কৃষক মোডে ফিরুন' : 'Return to Simple Farmer View'}
+              </button>
+            </div>
             <header className="dashboard-page-header">
               <div className="dashboard-header-title-wrap">
                 <span className="dashboard-breadcrumb">Dashboard</span>
@@ -1881,6 +2143,130 @@ export function App() {
                   </button>
                 </div>
 
+                {/* Quick Operational Actions Deck (Phase 2.2) */}
+                <div className="dash-card" style={{ gridColumn: 'span 12', padding: '14px 18px', background: 'var(--bg-card)', border: '1px solid var(--border-medium)', borderRadius: 12, marginBottom: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 16 }}>⚡</span>
+                      <strong style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>
+                        Quick Operational Actions
+                      </strong>
+                    </div>
+                    <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>Direct FieldShift Workflow Shortcuts</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 10 }}>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={runAnalysis}
+                      disabled={running}
+                    >
+                      <span style={{ fontSize: 16 }}>▶️</span>
+                      <div>
+                        <div>Analyze Field</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Run live pipeline</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('analytics', 'optimization')}
+                    >
+                      <span style={{ fontSize: 16 }}>🌱</span>
+                      <div>
+                        <div>Generate Rotation</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>MILP solver</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('analytics', 'comparison_lab')}
+                    >
+                      <span style={{ fontSize: 16 }}>🧪</span>
+                      <div>
+                        <div>Compare Strategies</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>MILP vs RL vs Rule</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('analytics', 'recovery')}
+                    >
+                      <span style={{ fontSize: 16 }}>🛡️</span>
+                      <div>
+                        <div>Test Drought Shock</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Failure &amp; recovery</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('analytics', 'outcomes')}
+                    >
+                      <span style={{ fontSize: 16 }}>⚖️</span>
+                      <div>
+                        <div>Record Harvest</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Ground truth yields</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('market')}
+                    >
+                      <span style={{ fontSize: 16 }}>💰</span>
+                      <div>
+                        <div>Market Intelligence</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Prices &amp; Profit</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('sensitivity')}
+                    >
+                      <span style={{ fontSize: 16 }}>📐</span>
+                      <div>
+                        <div>Sensitivity Sweeps</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Elasticity testing</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5 }}
+                      onClick={() => handleNavigate('synthetic_lab')}
+                    >
+                      <span style={{ fontSize: 16 }}>🧪</span>
+                      <div>
+                        <div>Synthetic Data Lab</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Benchmark scenarios</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline-action"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 8, background: 'rgba(0, 223, 129, 0.08)', border: '1px solid rgba(0, 223, 129, 0.3)', cursor: 'pointer', textAlign: 'left', fontWeight: 700, fontSize: 12.5, color: 'var(--primary)' }}
+                      onClick={() => handleNavigate('assistant')}
+                    >
+                      <span style={{ fontSize: 16 }}>🤖</span>
+                      <div>
+                        <div>Ask AI Agronomist</div>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Decision support</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 {/* =========================================================================
                     OBSIDIAN MODERN DASHBOARD SUITE (TARGET THEME DESIGN)
                     ========================================================================= */}
@@ -1914,7 +2300,7 @@ export function App() {
                           height="190px"
                           onClick={() => {
                             if (activeField) setViewingField(activeField);
-                            setActiveNav('field_map');
+                            setActiveNav('field');
                           }}
                         />
                       </div>
@@ -1928,7 +2314,7 @@ export function App() {
                         <button
                           type="button"
                           className="btn-text-link"
-                          onClick={() => setActiveNav('field_map')}
+                          onClick={() => setActiveNav('field')}
                           style={{ fontSize: 11.5, fontWeight: 700 }}
                         >
                           Full GIS View  →
@@ -1936,91 +2322,65 @@ export function App() {
                       </div>
                     </div>
 
-                    {/* CARD 2: LIVE FIELD PREVIEW / CAMERA & SENSOR HUD */}
-                    <div className="dash-card theme-camera-card">
+                    {/* CARD 2: REAL NASA POWER CLIMATE & WEATHER TELEMETRY */}
+                    <div className="dash-card theme-camera-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                       <div className="theme-card-header">
                         <div className="theme-card-title-group">
-                          <span className="theme-card-eyebrow">OPTICAL TELEMETRY</span>
-                          <h3 className="theme-card-title">Live Field Preview & Sensors</h3>
+                          <span className="theme-card-eyebrow">NASA POWER SATELLITE ASSIMILATION</span>
+                          <h3 className="theme-card-title">Agro-Climatic Station Telemetry</h3>
                         </div>
-                        <div className="camera-badge-live">
-                          <span className="camera-dot-red" />
-                          <span>LIVE 1080P</span>
-                        </div>
-                      </div>
-
-                      <div className="theme-camera-viewport">
-                        <div className="theme-camera-top-hud">
-                          <span style={{ fontSize: 11, color: '#94a3b8', fontFamily: 'monospace' }}>ZONE A-1 • CAM 04</span>
-                          <span style={{ fontSize: 11, color: '#94a3b8', fontFamily: 'monospace' }}>10:00:24 AM UTC</span>
-                        </div>
-
-                        {/* Visual scanning overlay */}
-                        <div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.85 }}>
-                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="1.5">
-                            <path d="M12 2v20M2 12h20"/>
-                            <circle cx="12" cy="12" r="7" strokeDasharray="3 3"/>
-                            <rect x="7" y="7" width="10" height="10" stroke="var(--primary)" strokeOpacity="0.5"/>
-                          </svg>
-                          <span style={{ fontSize: 11, color: 'var(--primary)', marginTop: 6, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Canopy Multispectral Tracking Active</span>
-                        </div>
-
-                        {/* Bottom HUD sensor telemetry */}
-                        <div className="camera-telemetry-overlay">
-                          <div className="camera-telemetry-chip">
-                            <span>Moisture:</span>
-                            <strong>28.4%</strong>
-                          </div>
-                          <div className="camera-telemetry-chip">
-                            <span>Canopy Temp:</span>
-                            <strong>{tempVal} °C</strong>
-                          </div>
-                          <div className="camera-telemetry-chip">
-                            <span>Solar PAR:</span>
-                            <strong>1,420 µmol</strong>
-                          </div>
+                        <div className="top-bar-pill-badge" style={{ fontSize: 10 }}>
+                          <span className="live-pulse-dot" />
+                          <span>{nasa?.data_status === 'observed' ? 'Live Point API' : 'Cached Benchmark'}</span>
                         </div>
                       </div>
 
-                      {/* Video Scrubber Bar */}
-                      <div className="theme-camera-scrubber">
-                        <button
-                          type="button"
-                          className="camera-play-btn"
-                          onClick={() => setIsPlayingCamera(!isPlayingCamera)}
-                          title={isPlayingCamera ? "Pause stream" : "Play stream"}
-                        >
-                          {isPlayingCamera ? (
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                              <rect x="6" y="4" width="4" height="16"/>
-                              <rect x="14" y="4" width="4" height="16"/>
-                            </svg>
-                          ) : (
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                              <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
-                          )}
-                        </button>
-                        <span className="camera-scrubber-time">10:00 / 15:30</span>
-                        <div
-                          className="camera-scrubber-bar"
-                          onClick={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const clickPct = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-                            setCameraScrubberPct(Math.max(5, Math.min(95, clickPct)));
-                          }}
-                        >
-                          <div className="camera-scrubber-progress" style={{ width: `${cameraScrubberPct}%` }} />
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, margin: '14px 0' }}>
+                        <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 8, padding: '10px 12px' }}>
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block' }}>Observed Ambient Temp</span>
+                          <strong style={{ fontSize: 18, color: '#38bdf8' }}>{tempVal} °C</strong>
+                          <span style={{ fontSize: 10.5, color: 'var(--text-dim)', display: 'block', marginTop: 2 }}>
+                            {tempVal > 32 ? '⚠️ High Thermal Stress' : 'Optimal range for C3/C4'}
+                          </span>
                         </div>
+
+                        <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 8, padding: '10px 12px' }}>
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block' }}>Daily Precipitation</span>
+                          <strong style={{ fontSize: 18, color: '#00df81' }}>{nasa?.telemetry?.precipitation_daily_mm ?? '3.8'} mm</strong>
+                          <span style={{ fontSize: 10.5, color: 'var(--text-dim)', display: 'block', marginTop: 2 }}>
+                            PRECTOTCORR precipitation gauge
+                          </span>
+                        </div>
+
+                        <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 8, padding: '10px 12px' }}>
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block' }}>Relative Humidity (RH2M)</span>
+                          <strong style={{ fontSize: 18, color: '#a78bfa' }}>{nasa?.telemetry?.average_humidity_pct ?? '72.4'} %</strong>
+                          <span style={{ fontSize: 10.5, color: 'var(--text-dim)', display: 'block', marginTop: 2 }}>
+                            Surface atmospheric moisture
+                          </span>
+                        </div>
+
+                        <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 8, padding: '10px 12px' }}>
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block' }}>Solar Radiation (ALLSKY)</span>
+                          <strong style={{ fontSize: 18, color: '#fbbf24' }}>{nasa?.telemetry?.solar_radiation_mj ?? '18.4'} MJ/m²</strong>
+                          <span style={{ fontSize: 10.5, color: 'var(--text-dim)', display: 'block', marginTop: 2 }}>
+                            Insolation on horizontal surface
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Station Metadata & Quick Link */}
+                      <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>
+                          Grid: 0.5° × 0.5° · Lat {formatNumber(activeField?.latitude != null ? activeField.latitude : 24.8500, 3)}°, Lon {formatNumber(activeField?.longitude != null ? activeField.longitude : 89.3700, 3)}°
+                        </span>
                         <button
                           type="button"
                           className="btn-text-link"
-                          style={{ padding: 0, color: 'var(--text-dim)', fontSize: 12 }}
-                          title="Fullscreen viewport"
+                          onClick={() => handleNavigate('weather')}
+                          style={{ fontSize: 11.5, fontWeight: 700 }}
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-                          </svg>
+                          Open 3D Weather Station →
                         </button>
                       </div>
                     </div>
@@ -2464,6 +2824,72 @@ export function App() {
 
                 </div>
 
+                {/* Decision Support Feature Modules Deck */}
+                <section className="dash-card decision-support-deck-card" style={{ gridColumn: 'span 12', marginTop: 12, padding: '22px 24px', background: 'linear-gradient(135deg, #131920 0%, #161d23 100%)', border: '1px solid var(--border-light)', borderRadius: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 20 }}>🚀</span>
+                        <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#f8fafc' }}>
+                          Autonomous Agronomic Decision Support Modules
+                        </h3>
+                        <span style={{ fontSize: 10.5, padding: '2px 8px', borderRadius: 999, background: 'rgba(0, 223, 129, 0.15)', color: 'var(--primary)', border: '1px solid rgba(0, 223, 129, 0.3)', fontWeight: 800 }}>
+                          NASA 2026 SUITE
+                        </span>
+                      </div>
+                      <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
+                        Interactive research engines connecting satellite climate telemetry, mathematical optimization, and ground-truth validation.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
+                    {[
+                      { id: 'comparison_lab', icon: '🧪', title: 'Comparison Lab', subtitle: 'MILP vs RL vs Rule 3-Way Audit', color: '#00df81', desc: 'Side-by-side profit, water, and soil health benchmarks with exportable CSV/JSON results.' },
+                      { id: 'recovery', icon: '⚡', title: 'Crop Failure & Recovery', subtitle: 'Shock Event Resilience Engine', color: '#ef4444', desc: 'Simulate drought or crop loss shocks and solve for adaptive capital recovery.' },
+                      { id: 'replan', icon: '🔄', title: 'Replan for Next Season', subtitle: 'Closed-Loop Adaptive Planning', color: '#38bdf8', desc: 'Incorporate actual harvested crops and updated soil pH/OM tests to re-optimize.' },
+                      { id: 'uncertainty', icon: '🌦️', title: 'Weather Uncertainty', subtitle: '5 Multi-Scenario Stress Tests', color: '#38bdf8', desc: 'Evaluate plan feasibility against thermal waves, drought, and tube-well restrictions.' },
+                      { id: 'sustainability', icon: '🌱', title: 'Sustainability Tracker', subtitle: 'Soil Health & Legume Trajectory', color: '#10b981', desc: 'Track multi-season biological soil scores, Fabaceae BNF breaks, and aquifer load.' },
+                      { id: 'outcomes', icon: '📋', title: 'Actual vs Estimated Outcomes', subtitle: 'Ground Truth Harvest Variance', color: '#c084fc', desc: 'Record empirical seasonal harvest yields, farmgate prices, and compute model error.' },
+                    ].map(card => (
+                      <div
+                        key={card.id}
+                        onClick={() => {
+                          setActiveNav('analytics');
+                          setAnalysisTab(card.id);
+                        }}
+                        style={{
+                          background: '#0e1318',
+                          border: '1px solid #1e293b',
+                          borderRadius: 12,
+                          padding: 16,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                            <span style={{ fontSize: 20 }}>{card.icon}</span>
+                            <div>
+                              <strong style={{ fontSize: 14, color: '#f8fafc', display: 'block' }}>{card.title}</strong>
+                              <span style={{ fontSize: 11, color: card.color, fontWeight: 700 }}>{card.subtitle}</span>
+                            </div>
+                          </div>
+                          <p style={{ margin: '6px 0 0', fontSize: 12, color: '#94a3b8', lineHeight: 1.4 }}>
+                            {card.desc}
+                          </p>
+                        </div>
+                        <div style={{ marginTop: 12, fontSize: 11.5, color: card.color, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          Launch Module  →
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
                 {/* AI Research Assistant Teaser Card (COMPACT OBSIDIAN STYLED) */}
                 <section className="dash-card ai-assistant-teaser-card" style={{ gridColumn: 'span 12', marginTop: 4 }}>
                   <div className="ai-teaser-inner">
@@ -2526,35 +2952,91 @@ export function App() {
                 className={`analysis-tab-btn ${analysisTab === 'optimization' || analysisTab === 'milp' ? 'active' : ''}`}
                 onClick={() => setAnalysisTab('optimization')}
               >
-                1. MILP Baseline Optimization
+                1. MILP Optimization
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'comparison_lab' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('comparison_lab')}
+              >
+                2. Comparison Lab (MILP vs RL vs Rule)
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'recovery' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('recovery')}
+              >
+                3. Failure &amp; Recovery Simulator
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'replan' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('replan')}
+              >
+                4. Adaptive Next-Season Replan
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'uncertainty' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('uncertainty')}
+              >
+                5. Weather Uncertainty &amp; Robustness
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'sustainability' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('sustainability')}
+              >
+                6. Soil Health &amp; Sustainability
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'crop_catalog' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('crop_catalog')}
+              >
+                7. Crop Database &amp; Provenance
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'satellite' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('satellite')}
+              >
+                8. Satellite &amp; Sensor Readiness
+              </button>
+              <button
+                type="button"
+                className={`analysis-tab-btn ${analysisTab === 'outcomes' ? 'active' : ''}`}
+                onClick={() => setAnalysisTab('outcomes')}
+              >
+                9. Actual vs Estimated Outcomes
               </button>
               <button
                 type="button"
                 className={`analysis-tab-btn ${analysisTab === 'ml_models' ? 'active' : ''}`}
                 onClick={() => setAnalysisTab('ml_models')}
               >
-                2. Synthetic ML Yield Analysis
+                10. Synthetic ML Yield
               </button>
               <button
                 type="button"
                 className={`analysis-tab-btn ${analysisTab === 'rl_policy' ? 'active' : ''}`}
                 onClick={() => setAnalysisTab('rl_policy')}
               >
-                3. Experimental RL Policy &amp; Comparison
+                11. RL Simulation Sandbox
               </button>
               <button
                 type="button"
                 className={`analysis-tab-btn ${analysisTab === 'stress_testing' ? 'active' : ''}`}
                 onClick={() => setAnalysisTab('stress_testing')}
               >
-                4. Stress Testing &amp; MILP Re-Optimization
+                12. Stress Testing
               </button>
               <button
                 type="button"
                 className={`analysis-tab-btn ${analysisTab === 'controls' ? 'active' : ''}`}
                 onClick={() => setAnalysisTab('controls')}
               >
-                5. Advanced Counterfactual Controls
+                13. Counterfactual Controls
               </button>
             </div>
 
@@ -2763,7 +3245,7 @@ export function App() {
                             Operational Field Context: {summary.field_name || activeField?.name || 'Active Registered Parcel'}
                           </strong>
                           <div style={{ color: 'var(--text-muted)', marginTop: 2, fontSize: 12 }}>
-                            Area: <strong>{summary.area_ha || summary.field_state?.field_size_ha || activeField?.area_ha || 2.5} ha</strong> • Previous Crop: <strong>{summary.previous_crop || summary.field_state?.previous_crop || activeField?.previous_crop || 'None'}</strong> • Location: <strong>Rajshahi Zone</strong>
+                            Area: <strong>{summary.area_ha || summary.field_state?.field_size_ha || activeField?.area_ha || 10.0} ha</strong> • Previous Crop: <strong>{summary.previous_crop || summary.field_state?.previous_crop || activeField?.previous_crop || 'None'}</strong> • Location: <strong>{activeField?.latitude != null && activeField?.longitude != null ? `${Number(activeField.latitude).toFixed(2)}°N, ${Number(activeField.longitude).toFixed(2)}°E` : (activeField ? activeField.name : 'Coordinates unassigned')}</strong>
                           </div>
                         </div>
                       ) : (
@@ -3754,7 +4236,88 @@ export function App() {
               );
             })()}
 
-              {/* TAB 2: SYNTHETIC ML YIELD ANALYSIS */}
+              {/* TAB: COMPARISON LAB (MILP vs RL vs Rule) */}
+              {analysisTab === 'comparison_lab' && (
+                <ComparisonLabView
+                  activeField={activeField}
+                  analysisResult={result}
+                  request={request}
+                  formatNumber={formatNumber}
+                  onNavigateTab={setAnalysisTab}
+                />
+              )}
+
+              {/* TAB: CROP FAILURE & RECOVERY SIMULATOR */}
+              {analysisTab === 'recovery' && (
+                <CropFailureRecoveryView
+                  activeField={activeField}
+                  analysisResult={result}
+                  request={request}
+                  formatNumber={formatNumber}
+                  onNavigateTab={setAnalysisTab}
+                />
+              )}
+
+              {/* TAB: ADAPTIVE REPLANNING */}
+              {analysisTab === 'replan' && (
+                <AdaptiveReplanningView
+                  activeField={activeField}
+                  analysisResult={result}
+                  request={request}
+                  formatNumber={formatNumber}
+                  onNavigateTab={setAnalysisTab}
+                />
+              )}
+
+              {/* TAB: WEATHER UNCERTAINTY & ROBUSTNESS */}
+              {analysisTab === 'uncertainty' && (
+                <WeatherUncertaintyView
+                  activeField={activeField}
+                  analysisResult={result}
+                  request={request}
+                  formatNumber={formatNumber}
+                  onNavigateTab={setAnalysisTab}
+                />
+              )}
+
+              {/* TAB: SOIL HEALTH & SUSTAINABILITY TRACKER */}
+              {analysisTab === 'sustainability' && (
+                <SustainabilityTrackerView
+                  activeField={activeField}
+                  analysisResult={result}
+                  formatNumber={formatNumber}
+                  onNavigateTab={setAnalysisTab}
+                />
+              )}
+
+              {/* TAB: CROP DATABASE & PROVENANCE */}
+              {analysisTab === 'crop_catalog' && (
+                <CropCatalogView
+                  request={request}
+                  formatNumber={formatNumber}
+                />
+              )}
+
+              {/* TAB: SATELLITE & SENSOR READINESS */}
+              {analysisTab === 'satellite' && (
+                <SatelliteReadinessView
+                  request={request}
+                  formatNumber={formatNumber}
+                />
+              )}
+
+              {/* TAB: ACTUAL VS ESTIMATED OUTCOMES */}
+              {analysisTab === 'outcomes' && (
+                <ActualOutcomesView
+                  activeField={activeField}
+                  analysisResult={result}
+                  request={request}
+                  formatNumber={formatNumber}
+                  onNavigateTab={setAnalysisTab}
+                />
+              )}
+
+              {/* TAB 10: SYNTHETIC ML YIELD ANALYSIS */}
               {analysisTab === 'ml_models' && (() => {
                 const activeStrategyName = selectedStrategyId;
                 const selectedStrategyMeta = STRATEGY_META[activeStrategyName] || STRATEGY_META.balanced;
@@ -4967,34 +5530,64 @@ export function App() {
         )}
 
         {/* -------------------- VIEW 3: FIELD & PARCEL MANAGER -------------------- */}
-        {activeNav === 'field' && (
-          <FieldParcelManagerView
-            user={user}
-            userFarms={userFarms}
-            fieldsLoaded={fieldsLoaded}
-            fieldsError={fieldsError}
-            activeField={activeField}
-            userFields={userFields}
-            onSelectField={handleSelectActiveField}
-            onSelectForAnalysis={selectFieldForAnalysis}
-            onViewField={setViewingField}
-            onEditField={openEditFieldModal}
-            onArchiveField={handleArchiveField}
-            onAddField={openAddFieldModal}
-            formatDate={formatDate}
-            formatNumber={formatNumber}
-            onBack={() => setActiveNav('dashboard')}
-          />
+        {(activeNav === 'field' || activeNav === 'field_map') && (
+          <div>
+            <div style={{ background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 16px' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? '🗺️ জমি ও সীমানা ব্যবস্থাপনা — সক্রিয় জমি ও স্যাটেলাইট অবস্থান' : '🗺️ Farm Parcel Manager — Active parcels and satellite geolocations'}
+              </span>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => handleNavigate('dashboard')}
+                style={{ fontSize: 12.5, padding: '5px 14px', borderRadius: 9999, cursor: 'pointer' }}
+              >
+                🏠 {lang === 'bn' ? 'সহজ হোম স্ক্রিনে ফিরুন' : 'Back to Home'}
+              </button>
+            </div>
+            <FieldParcelManagerView
+              user={user}
+              userFarms={userFarms}
+              fieldsLoaded={fieldsLoaded}
+              fieldsError={fieldsError}
+              activeField={activeField}
+              userFields={userFields}
+              onSelectField={handleSelectActiveField}
+              onSelectForAnalysis={selectFieldForAnalysis}
+              onViewField={setViewingField}
+              onEditField={openEditFieldModal}
+              onArchiveField={handleArchiveField}
+              onAddField={openAddFieldModal}
+              formatDate={formatDate}
+              formatNumber={formatNumber}
+              onBack={() => setActiveNav('dashboard')}
+            />
+          </div>
         )}
 
         {/* -------------------- VIEW 4: NASA POWER WEATHER & CLIMATE -------------------- */}
         {activeNav === 'weather' && (
-          <NasaWeatherStation3D
-            nasa={nasa}
-            env={env}
-            activeField={activeField}
-            onBack={() => setActiveNav('dashboard')}
-          />
+          <div>
+            <div style={{ background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 16px' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? '🛰️ নাসা (NASA POWER) উপগ্রহ ভিত্তিক জলবায়ু ও আবহাওয়া স্টেশন' : '🛰️ NASA POWER Satellite Agrometeorological Station'}
+              </span>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => handleNavigate('dashboard')}
+                style={{ fontSize: 12.5, padding: '5px 14px', borderRadius: 9999, cursor: 'pointer' }}
+              >
+                🏠 {lang === 'bn' ? 'সহজ হোম স্ক্রিনে ফিরুন' : 'Back to Home'}
+              </button>
+            </div>
+            <NasaWeatherStation3D
+              nasa={nasa}
+              env={env}
+              activeField={activeField}
+              onBack={() => setActiveNav('dashboard')}
+            />
+          </div>
         )}
 
         {/* -------------------- VIEW 6: AI ASSISTANT & DECISION SUPPORT -------------------- */}
@@ -5007,7 +5600,33 @@ export function App() {
             ml={ml}
             rl={rl}
             user={user}
-            onBack={() => setActiveNav('dashboard')}
+            lang={lang}
+            onBack={() => handleNavigate('dashboard')}
+            onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+          />
+        )}
+
+        {/* -------------------- VIEW 8: MARKET INTELLIGENCE & PROFITABILITY -------------------- */}
+        {activeNav === 'market' && (
+          <MarketIntelligenceView
+            activeField={activeField}
+            onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+          />
+        )}
+
+        {/* -------------------- VIEW 9: SYNTHETIC DATA LAB & PROVENANCE -------------------- */}
+        {activeNav === 'synthetic_lab' && (
+          <SyntheticDataLabView
+            activeField={activeField}
+            onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+          />
+        )}
+
+        {/* -------------------- VIEW 10: SCIENTIFIC SENSITIVITY & ROBUSTNESS -------------------- */}
+        {activeNav === 'sensitivity' && (
+          <SensitivityAnalysisView
+            activeField={activeField}
+            onNavigateTab={(tab) => handleNavigate('analytics', tab)}
           />
         )}
 
@@ -5059,14 +5678,27 @@ export function App() {
                     </button>
                   </>
                 ) : (
-                  <button
-                    type="button"
-                    className="dashboard-primary-run-btn"
-                    onClick={handleQuickDemoLogin}
-                    style={{ padding: '8px 20px', fontSize: 13 }}
-                  >
-                    Demo Sign In (Dani)
-                  </button>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <button
+                      type="button"
+                      className="dashboard-primary-run-btn"
+                      onClick={() => {
+                        setAuthMode('login');
+                        setAuthModal(true);
+                      }}
+                      style={{ padding: '8px 20px', fontSize: 13 }}
+                    >
+                      Sign In / Register
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={handleQuickDemoLogin}
+                      style={{ padding: '8px 16px', fontSize: 12.5 }}
+                    >
+                      Demo Session
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -5096,7 +5728,7 @@ export function App() {
                   <div className="holo-avatar-stage">
                     <div className="orbit-avatar-wrapper">
                       <div className="orbit-core-sphere">
-                        {user ? user.name.slice(0, 2).toUpperCase() : 'DA'}
+                        {user ? user.name.slice(0, 2).toUpperCase() : 'AG'}
                       </div>
                       <div className="orbit-ring-1" />
                       <div className="orbit-ring-2" />
@@ -5104,13 +5736,15 @@ export function App() {
 
                     <div className="holo-operator-info">
                       <div className="holo-operator-name">
-                        {user ? user.name : 'Dani'}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#00df81">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
+                        {user ? user.name : 'Guest Agronomist'}
+                        {user && (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="#00df81">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                          </svg>
+                        )}
                       </div>
                       <span className="holo-operator-role">Chief Agronomist & Decision Architect</span>
-                      <span className="holo-operator-email">{user ? user.email : 'danialhossain2022@gmail.com'}</span>
+                      <span className="holo-operator-email">{user ? user.email : 'guest@fieldshift.local'}</span>
                     </div>
                   </div>
 
@@ -5162,11 +5796,11 @@ export function App() {
                   <div className="theme-card-title-group">
                     <span className="theme-card-eyebrow">SPATIAL GIS & 3D TERRAIN RADAR</span>
                     <h3 className="theme-card-title" style={{ fontSize: 18 }}>
-                      {activeField ? activeField.name : 'Rajshahi Agricultural Zone'}
+                      {activeField ? (activeField.is_demo ? `${activeField.name}` : activeField.name) : (lang === 'bn' ? 'কোনো জমি নির্বাচিত নেই' : 'No Field Selected')}
                     </h3>
                   </div>
                   <span className="source-tag live">
-                    {activeField ? `Field ID #${activeField.id}` : 'Parcel Active'}
+                    {activeField ? (activeField.is_demo ? 'Demo Benchmark' : `Field ID #${activeField.id}`) : 'No Selection'}
                   </span>
                 </div>
 
@@ -5178,11 +5812,11 @@ export function App() {
                 <div className="spatial-terrain-viewport">
                   <div className="spatial-mesh-overlay" />
                   <GoogleFieldMapThumbnail
-                    latitude={activeField?.latitude ?? 24.3677}
-                    longitude={activeField?.longitude ?? 88.6077}
+                    latitude={activeField?.latitude ?? 24.8500}
+                    longitude={activeField?.longitude ?? 89.3700}
                     name={activeField?.name || 'Active Farm Field'}
                     height="200px"
-                    onClick={() => setActiveNav('field_map')}
+                    onClick={() => setActiveNav('field')}
                   />
                   <div className="spatial-hud-floating">
                     <div className="spatial-hud-chip">
@@ -5190,12 +5824,12 @@ export function App() {
                       <strong>
                         {formatNumber(activeField?.latitude, 4, null) != null && formatNumber(activeField?.longitude, 4, null) != null
                           ? `${formatNumber(activeField.latitude, 4)}°, ${formatNumber(activeField.longitude, 4)}°`
-                          : '24.3677°, 88.6077°'}
+                          : '24.8500°, 89.3700°'}
                       </strong>
                     </div>
                     <div className="spatial-hud-chip">
                       <span>Area:</span>
-                      <strong>{formatNumber(activeField?.area_ha, 1) || '50.0'} ha</strong>
+                      <strong>{formatNumber(activeField?.area_ha, 1) || '10.0'} ha</strong>
                     </div>
                   </div>
                 </div>
@@ -5205,25 +5839,25 @@ export function App() {
                   <div className="spatial-telemetry-item">
                     <span className="holo-spec-label">Soil Texture</span>
                     <strong style={{ fontSize: 13, color: '#f1f5f9', textTransform: 'capitalize' }}>
-                      {activeField?.soil_texture ? activeField.soil_texture.replaceAll('_', ' ') : 'Clay Loam'}
+                      {activeField?.soil_texture ? activeField.soil_texture.replaceAll('_', ' ') : 'Loam'}
                     </strong>
                   </div>
                   <div className="spatial-telemetry-item">
                     <span className="holo-spec-label">Organic Matter</span>
                     <strong style={{ fontSize: 13, color: 'var(--primary)' }}>
-                      {formatNumber(activeField?.organic_matter, 1) || '9.8'}%
+                      {formatNumber(activeField?.organic_matter, 1) || '2.5'}%
                     </strong>
                   </div>
                   <div className="spatial-telemetry-item">
                     <span className="holo-spec-label">Irrigation Cap</span>
                     <strong style={{ fontSize: 13, color: '#38bdf8' }}>
-                      {formatNumber(activeField?.irrigation_capacity_mm, 0) || '110'} mm
+                      {formatNumber(activeField?.irrigation_capacity_mm, 0) || '90'} mm
                     </strong>
                   </div>
                   <div className="spatial-telemetry-item">
                     <span className="holo-spec-label">Previous Crop</span>
                     <strong style={{ fontSize: 13, color: '#fbbf24' }}>
-                      {activeField?.previous_crop || 'Lentil (2024)'}
+                      {activeField?.previous_crop || 'Maize'}
                     </strong>
                   </div>
                 </div>
@@ -5261,7 +5895,7 @@ export function App() {
                     {!user ? 'Guest' : !fieldsLoaded ? 'Loading...' : `${userFields.length} Registered`}
                   </div>
                   <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                    70.0 ha total farm footprint
+                    {userFields.reduce((acc, f) => acc + (Number(f.area_ha) || 0), 0).toFixed(1)} ha total farm footprint
                   </span>
                 </div>
               </div>
@@ -5273,10 +5907,10 @@ export function App() {
                 </div>
                 <div>
                   <div className="kpi-cube-value" style={{ color: 'var(--primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {activeField ? activeField.name : 'Rajshahi Zone'}
+                    {activeField ? (activeField.is_demo ? `${activeField.name}` : activeField.name) : (lang === 'bn' ? 'অনির্ধারিত' : 'Unassigned')}
                   </div>
                   <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                    {activeField ? `Field ID #${activeField.id} • Active for Analysis` : 'Target unassigned'}
+                    {activeField ? (activeField.is_demo ? 'Demo Benchmark • Active for Analysis' : `Field ID #${activeField.id} • Active for Analysis`) : 'Target unassigned'}
                   </span>
                 </div>
               </div>
@@ -5385,7 +6019,7 @@ export function App() {
                   <div className="terminal-line-ok">[DATA_OK] NASA POWER Daily Point API hydrated (2026-09-29)</div>
                   <div className="terminal-line-ok">[AI_ONLINE] Gemini reasoning agent (gemini-3.5-flash) ready</div>
                   <div className="terminal-line-ok">[SOLVER_OK] MILP CBC dynamic rotation optimization Pareto active</div>
-                  <div className="terminal-line-dim">[INFO] Active field target: #{activeField?.id || 59} ({activeField?.name || 'Rajshahi'})</div>
+                  <div className="terminal-line-dim">[INFO] Active field target: {activeField ? `#${activeField.id} (${activeField.name})` : 'Unassigned'}</div>
                 </div>
               </div>
 
@@ -5566,6 +6200,19 @@ export function App() {
 
                       <div className="form-grid-inner">
                         <div className="form-group">
+                          <label>Soil pH (0 - 14)</label>
+                          <input
+                            className="input-box"
+                            type="number"
+                            step="0.1"
+                            min="0"
+                            max="14"
+                            placeholder="e.g. 6.5"
+                            value={fieldForm.soil_ph}
+                            onChange={e => setFieldForm(prev => ({ ...prev, soil_ph: e.target.value }))}
+                          />
+                        </div>
+                        <div className="form-group">
                           <label>Organic Matter (%)</label>
                           <input
                             className="input-box"
@@ -5575,6 +6222,9 @@ export function App() {
                             onChange={e => setFieldForm(prev => ({ ...prev, organic_matter: e.target.value }))}
                           />
                         </div>
+                      </div>
+
+                      <div className="form-grid-inner">
                         <div className="form-group">
                           <label>Irrigation Capacity (mm)</label>
                           <input
@@ -5584,25 +6234,6 @@ export function App() {
                             value={fieldForm.irrigation_capacity_mm}
                             onChange={e => setFieldForm(prev => ({ ...prev, irrigation_capacity_mm: e.target.value }))}
                           />
-                        </div>
-                      </div>
-
-                      <div className="form-grid-inner">
-                        <div className="form-group">
-                          <label>Previous / Current Crop</label>
-                          <select
-                            className="input-box"
-                            value={fieldForm.crop}
-                            onChange={e => setFieldForm(prev => ({ ...prev, crop: e.target.value }))}
-                          >
-                            <option value="Maize">Maize</option>
-                            <option value="Wheat">Wheat</option>
-                            <option value="Mungbean">Mungbean</option>
-                            <option value="Rice">Rice</option>
-                            <option value="Potato">Potato</option>
-                            <option value="Mustard">Mustard</option>
-                            <option value="Lentil">Lentil</option>
-                          </select>
                         </div>
                         <div className="form-group">
                           <label>Previous Crop Year</label>
@@ -5676,6 +6307,10 @@ export function App() {
                       <div className="metric-cell">
                         <span>Soil Texture:</span>
                         <strong style={{ textTransform: 'capitalize' }}>{viewingField.soil_texture ? viewingField.soil_texture.replaceAll('_', ' ') : 'Not provided'}</strong>
+                      </div>
+                      <div className="metric-cell">
+                        <span>Soil pH:</span>
+                        <strong>{viewingField.soil_ph != null ? viewingField.soil_ph : 'Not provided'}</strong>
                       </div>
                       <div className="metric-cell">
                         <span>Organic Matter:</span>
@@ -5819,6 +6454,118 @@ export function App() {
                 </div>
               </div>
             )}
+            {/* AUTHENTICATION / LOGIN / REGISTER MODAL */}
+            {authModal && (
+              <div className="modal-backdrop" onClick={() => setAuthModal(false)}>
+                <div className="modal-dialog" onClick={e => e.stopPropagation()} style={{ maxWidth: 420 }}>
+                  <div className="modal-header">
+                    <h3>{authMode === 'register' ? 'Register Agronomist Account' : 'Sign In to FieldShift'}</h3>
+                    <button type="button" className="modal-close-btn" onClick={() => setAuthModal(false)}>×</button>
+                  </div>
+                  <form onSubmit={handleAuthSubmit}>
+                    <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '18px 22px' }}>
+                      <div className="auth-tabs" style={{ display: 'flex', gap: 8, marginBottom: 8, borderBottom: '1px solid var(--border-light)', paddingBottom: 8 }}>
+                        <button
+                          type="button"
+                          className={`auth-tab-btn ${authMode === 'login' ? 'active' : ''}`}
+                          onClick={() => { setAuthMode('login'); setAuthError(''); setAuthMsg(''); }}
+                          style={{ fontWeight: 600, padding: '6px 12px', background: authMode === 'login' ? 'rgba(0, 223, 129, 0.15)' : 'transparent', color: authMode === 'login' ? 'var(--primary)' : 'inherit', border: 'none', borderRadius: 6, cursor: 'pointer' }}
+                        >
+                          Sign In
+                        </button>
+                        <button
+                          type="button"
+                          className={`auth-tab-btn ${authMode === 'register' ? 'active' : ''}`}
+                          onClick={() => { setAuthMode('register'); setAuthError(''); setAuthMsg(''); }}
+                          style={{ fontWeight: 600, padding: '6px 12px', background: authMode === 'register' ? 'rgba(0, 223, 129, 0.15)' : 'transparent', color: authMode === 'register' ? 'var(--primary)' : 'inherit', border: 'none', borderRadius: 6, cursor: 'pointer' }}
+                        >
+                          Create Account
+                        </button>
+                      </div>
+
+                      {authMode === 'register' && (
+                        <div className="form-group">
+                          <label>Full Name *</label>
+                          <input
+                            className="input-box"
+                            value={authForm.name}
+                            onChange={e => setAuthForm(prev => ({ ...prev, name: e.target.value }))}
+                            placeholder="e.g. Dr. Jane Doe"
+                            required
+                          />
+                        </div>
+                      )}
+
+                      <div className="form-group">
+                        <label>Email Address *</label>
+                        <input
+                          className="input-box"
+                          type="email"
+                          value={authForm.email}
+                          onChange={e => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="e.g. farmer@fieldshift.local"
+                          required
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Password *</label>
+                        <input
+                          className="input-box"
+                          type="password"
+                          value={authForm.password}
+                          onChange={e => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
+                          placeholder="Enter your password"
+                          required
+                        />
+                      </div>
+
+                      {authError && (
+                        <p style={{ color: '#c0392b', fontSize: 13, margin: 0 }}>{authError}</p>
+                      )}
+                      {authMsg && (
+                        <p style={{ color: '#27ae60', fontSize: 13, margin: 0 }}>{authMsg}</p>
+                      )}
+                    </div>
+                    <div className="modal-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 22px', borderTop: '1px solid var(--border-light)' }}>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={handleQuickDemoLogin}
+                        style={{ fontSize: 12 }}
+                      >
+                        Use Demo Session
+                      </button>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          onClick={() => setAuthModal(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="run-cta-btn"
+                          style={{ padding: '8px 18px', fontSize: 13 }}
+                        >
+                          {authMode === 'register' ? 'Register' : 'Sign In'}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+        {/* Floating Farmer Voice Assistant Component */}
+        <FarmerVoiceAssistant
+          activeField={activeField}
+          nasa={nasa}
+          lang={lang}
+          onNavigate={handleNavigate}
+          onOpenAssistant={() => handleNavigate('assistant')}
+        />
       </div>
     </div>
   );

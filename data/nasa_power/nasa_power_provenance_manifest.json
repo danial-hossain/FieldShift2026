@@ -6,8 +6,8 @@
     {
       "source_product_name": "NASA POWER Daily Point API",
       "official_api_documentation_url": "https://power.larc.nasa.gov/docs/services/api/temporal/daily/",
-      "local_csv_path": "C:\\FieldShift\\data\\nasa_power\\nasa_power_2025.csv",
-      "file_hash_sha256": "cdc8f1fefdf5d535c028d8a54e5564c1169ea664f4e8b5e1b1fc15ed86d8518c",
+      "local_csv_path": "H:\\FieldShift2026\\data\\nasa_power\\nasa_power_2025.csv",
+      "file_hash_sha256": "575584ad4f10cf056e46a39250deb403abf3373e582823790104c969eed1d587",
       "latitude": null,
       "longitude": null,
       "actual_coverage": {
@@ -78,7 +78,7 @@
     {
       "source_product_name": "NASA POWER Daily Point API",
       "official_api_documentation_url": "https://power.larc.nasa.gov/docs/services/api/temporal/daily/",
-      "local_csv_path": "C:\\FieldShift\\data\\nasa_power\\nasa_power_lat23.8103_lon90.4125_20260831_20260929.csv",
+      "local_csv_path": "H:\\FieldShift2026\\data\\nasa_power\\nasa_power_lat23.8103_lon90.4125_20260831_20260929.csv",
       "file_hash_sha256": "349178106c347583b8584364d76b4e7c38eda7f8c82c5143a04055e329f2fa88",
       "latitude": 23.8103,
       "longitude": 90.4125,

@@ -216,12 +216,18 @@ def init_db() -> None:
                 soil_texture TEXT,
                 organic_matter REAL,
                 irrigation_capacity_mm REAL,
+                soil_ph REAL,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY(farm_id) REFERENCES farms(id)
             )
             """
         )
+        field_columns = {
+            row[1] for row in conn.execute("PRAGMA table_info(fields)").fetchall()
+        }
+        if "soil_ph" not in field_columns:
+            conn.execute("ALTER TABLE fields ADD COLUMN soil_ph REAL")
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS field_history (
@@ -735,40 +741,7 @@ def _run_research_workflow(
     user_history = None
     requested_field_id = form.get("field_id")
     if requested_field_id is not None and str(requested_field_id).strip().lower() != "demo":
-        try:
-            from backend.app.database import engine
-            from sqlalchemy import text
-            with engine.connect() as pg_conn:
-                f_row = pg_conn.execute(
-                    text("SELECT f.* FROM fields f WHERE f.id = :fid"),
-                    {"fid": int(requested_field_id)}
-                ).fetchone()
-                if f_row:
-                    saved_field = dict(f_row._mapping)
-                    h_rows = pg_conn.execute(
-                        text("SELECT crop, season, year FROM field_history WHERE field_id = :fid ORDER BY year"),
-                        {"fid": int(requested_field_id)}
-                    ).fetchall()
-                    user_history = pd.DataFrame(
-                        [
-                            {
-                                "field_id": str(requested_field_id),
-                                "year": row["year"],
-                                "season": row["season"] or "unknown",
-                                "crop": row["crop"] or "unknown",
-                                "yield": None,
-                                "irrigation": "unknown",
-                                "source": "farmer_provided",
-                                "data_status": "observed",
-                            }
-                            for row in h_rows
-                        ],
-                        columns=FIELD_HISTORY_COLUMNS,
-                    )
-        except Exception:
-            pass
-
-        if saved_field is None and user is not None:
+        if user is not None:
             try:
                 with get_db_connection() as conn:
                     sf = conn.execute(
@@ -794,6 +767,40 @@ def _run_research_workflow(
                                     "data_status": "observed",
                                 }
                                 for row in history_rows
+                            ],
+                            columns=FIELD_HISTORY_COLUMNS,
+                        )
+            except Exception:
+                pass
+
+        if saved_field is None:
+            try:
+                from backend.app.database import engine
+                from sqlalchemy import text
+                with engine.connect() as pg_conn:
+                    f_row = pg_conn.execute(
+                        text("SELECT f.* FROM fields f WHERE f.id = :fid"),
+                        {"fid": int(requested_field_id)}
+                    ).fetchone()
+                    if f_row:
+                        saved_field = dict(f_row._mapping)
+                        h_rows = pg_conn.execute(
+                            text("SELECT crop, season, year FROM field_history WHERE field_id = :fid ORDER BY year"),
+                            {"fid": int(requested_field_id)}
+                        ).fetchall()
+                        user_history = pd.DataFrame(
+                            [
+                                {
+                                    "field_id": str(requested_field_id),
+                                    "year": row["year"],
+                                    "season": row["season"] or "unknown",
+                                    "crop": row["crop"] or "unknown",
+                                    "yield": None,
+                                    "irrigation": "unknown",
+                                    "source": "farmer_provided",
+                                    "data_status": "observed",
+                                }
+                                for row in h_rows
                             ],
                             columns=FIELD_HISTORY_COLUMNS,
                         )
@@ -943,6 +950,11 @@ def _run_research_workflow(
     custom_ph = finite_number("soil_ph")
     if custom_ph is None:
         custom_ph = finite_number("ph")
+    if custom_ph is None and saved_field is not None:
+        if saved_field.get("soil_ph") is not None:
+            custom_ph = float(saved_field["soil_ph"])
+        elif saved_field.get("ph") is not None:
+            custom_ph = float(saved_field["ph"])
     if custom_ph is not None:
         state.ph = float(custom_ph)
         state.soil_source = "farmer_provided"
@@ -1829,6 +1841,34 @@ def _run_research_workflow(
             "No live SMAP or soil-data service exists; unavailable soil/moisture measurements remain unknown.",
         ],
     }
+    try:
+        from src.integration.comparison_lab import run_three_way_comparison
+        from src.scenarios.robust_planning import run_weather_uncertainty_analysis
+        from src.data.bangladesh_crops import get_satellite_readiness_status, get_crop_catalog_with_provenance
+        from src.data.outcome_tracker import list_actual_outcomes
+
+        summary["comparison_lab"] = run_three_way_comparison(
+            state,
+            power,
+            crops=crops,
+            features=features,
+            milp_plan=selected_plan,
+            priority=priority,
+            field_history=history,
+        )
+        summary["weather_uncertainty"] = run_weather_uncertainty_analysis(
+            state,
+            power,
+            crops=crops,
+            features=features,
+            priority=priority,
+        )
+        summary["satellite_readiness"] = get_satellite_readiness_status(latitude, longitude)
+        summary["crop_catalog"] = get_crop_catalog_with_provenance()
+        summary["actual_outcomes"] = list_actual_outcomes(saved_field["id"] if saved_field else "1")
+    except Exception as enrich_err:
+        summary["enrichment_warning"] = str(enrich_err)
+
     return {
         "status": "ok",
         "mode": mode,
@@ -1917,6 +1957,12 @@ def _create_field(payload: dict[str, Any], user_id: int) -> dict[str, Any]:
         "irrigation_capacity_mm",
         minimum=0,
     )
+    soil_ph = _optional_db_number(
+        (payload or {}).get("soil_ph") or (payload or {}).get("ph"),
+        "soil_ph",
+        minimum=0,
+        maximum=14,
+    )
     with get_db_connection() as conn:
         if farm_id is None:
             default_farm = conn.execute(
@@ -1941,7 +1987,7 @@ def _create_field(payload: dict[str, Any], user_id: int) -> dict[str, Any]:
                 raise ValueError("Farm not found or not owned by this user.")
         now = utc_now_iso()
         cursor = conn.execute(
-            "INSERT INTO fields (farm_id, name, latitude, longitude, area_ha, soil_texture, organic_matter, irrigation_capacity_mm, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO fields (farm_id, name, latitude, longitude, area_ha, soil_texture, organic_matter, irrigation_capacity_mm, soil_ph, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 int(farm_id),
                 name,
@@ -1951,6 +1997,7 @@ def _create_field(payload: dict[str, Any], user_id: int) -> dict[str, Any]:
                 (payload or {}).get("soil_texture"),
                 organic_matter,
                 irrigation_capacity,
+                soil_ph,
                 now,
                 now,
             ),
@@ -2254,6 +2301,20 @@ class FieldShiftWebHandler(BaseHTTPRequestHandler):
                     )
                 )
                 return
+            if path == "/api/crops/catalog":
+                from src.data.bangladesh_crops import get_crop_catalog_with_provenance
+                self._send_json(*_json_response({"status": "ok", "crops": get_crop_catalog_with_provenance()}))
+                return
+            if path == "/api/satellite/readiness":
+                from src.data.bangladesh_crops import get_satellite_readiness_status
+                self._send_json(*_json_response(get_satellite_readiness_status()))
+                return
+            if path.startswith("/api/outcomes"):
+                from src.data.outcome_tracker import list_actual_outcomes
+                parts = path.strip("/").split("/")
+                field_id = parts[2] if len(parts) >= 3 else None
+                self._send_json(*_json_response({"status": "ok", "outcomes": list_actual_outcomes(field_id)}))
+                return
             if path == "/api/scenarios/benchmarks":
                 from src.scenarios.benchmark_scenarios import get_benchmark_scenario_list
                 self._send_json(
@@ -2376,6 +2437,115 @@ class FieldShiftWebHandler(BaseHTTPRequestHandler):
                 self._send_api_error(400, str(error))
             except RuntimeError as error:
                 self._send_api_error(502, str(error))
+            return
+        if parsed.path == "/api/lab/compare":
+            try:
+                from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+                from src.state.field_state import build_field_state
+                from src.data.crops import load_crop_knowledge
+                from src.preprocessing.features import build_features
+                from src.integration.comparison_lab import run_three_way_comparison
+                import pandas as pd
+                data = _read_body(self)
+                lat = float(data.get("latitude") or 23.8103)
+                lon = float(data.get("longitude") or 90.4125)
+                power = pd.read_csv(DEFAULT_NASA_PATH); power["date"] = pd.to_datetime(power["date"])
+                crops_df = load_crop_knowledge()
+                state = build_field_state("lab_field", lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+                if data.get("field_size_ha"): state.field_size_ha = float(data["field_size_ha"])
+                if data.get("area_ha"): state.area_ha = float(data["area_ha"])
+                if data.get("soil_ph"): state.ph = float(data["soil_ph"])
+                if data.get("organic_matter"): state.organic_matter = float(data["organic_matter"])
+                features = build_features(state, environmental_history=power)
+                result = run_three_way_comparison(state, power, crops=crops_df, features=features, priority=str(data.get("priority") or "balanced"))
+                self._send_json(*_json_response(result))
+            except Exception as e:
+                self._send_api_error(400, str(e))
+            return
+        if parsed.path == "/api/scenarios/crop-failure-recovery":
+            try:
+                from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+                from src.state.field_state import build_field_state
+                from src.data.crops import load_crop_knowledge
+                from src.preprocessing.features import build_features
+                from src.scenarios.recovery_simulator import simulate_crop_failure_and_recovery
+                import pandas as pd
+                data = _read_body(self)
+                lat = float(data.get("latitude") or 23.8103)
+                lon = float(data.get("longitude") or 90.4125)
+                power = pd.read_csv(DEFAULT_NASA_PATH); power["date"] = pd.to_datetime(power["date"])
+                crops_df = load_crop_knowledge()
+                state = build_field_state("sim_field", lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+                if data.get("field_size_ha"): state.field_size_ha = float(data["field_size_ha"])
+                if data.get("area_ha"): state.area_ha = float(data["area_ha"])
+                features = build_features(state, environmental_history=power)
+                result = simulate_crop_failure_and_recovery(
+                    state, power,
+                    failure_event=str(data.get("failure_event") or "crop_failure"),
+                    impacted_season_index=int(data.get("impacted_season_index") or 1),
+                    severity=str(data.get("severity") or "severe"),
+                    crops=crops_df, features=features, priority=str(data.get("priority") or "balanced")
+                )
+                self._send_json(*_json_response(result))
+            except Exception as e:
+                self._send_api_error(400, str(e))
+            return
+        if parsed.path == "/api/workflow/replan":
+            try:
+                from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+                from src.state.field_state import build_field_state
+                from src.data.crops import load_crop_knowledge
+                from src.preprocessing.features import build_features
+                from src.optimizer.adaptive_replan import run_adaptive_replan
+                import pandas as pd
+                data = _read_body(self)
+                lat = float(data.get("latitude") or 23.8103)
+                lon = float(data.get("longitude") or 90.4125)
+                power = pd.read_csv(DEFAULT_NASA_PATH); power["date"] = pd.to_datetime(power["date"])
+                crops_df = load_crop_knowledge()
+                state = build_field_state("replan_field", lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+                if data.get("field_size_ha"): state.field_size_ha = float(data["field_size_ha"])
+                if data.get("area_ha"): state.area_ha = float(data["area_ha"])
+                features = build_features(state, environmental_history=power)
+                result = run_adaptive_replan(
+                    state, power,
+                    completed_seasons=data.get("completed_seasons") or [],
+                    updated_field_conditions=data.get("updated_field_conditions") or {},
+                    crops=crops_df, priority=str(data.get("priority") or "balanced"), features=features
+                )
+                self._send_json(*_json_response(result))
+            except Exception as e:
+                self._send_api_error(400, str(e))
+            return
+        if parsed.path == "/api/scenarios/weather-uncertainty":
+            try:
+                from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+                from src.state.field_state import build_field_state
+                from src.data.crops import load_crop_knowledge
+                from src.preprocessing.features import build_features
+                from src.scenarios.robust_planning import run_weather_uncertainty_analysis
+                import pandas as pd
+                data = _read_body(self)
+                lat = float(data.get("latitude") or 23.8103)
+                lon = float(data.get("longitude") or 90.4125)
+                power = pd.read_csv(DEFAULT_NASA_PATH); power["date"] = pd.to_datetime(power["date"])
+                crops_df = load_crop_knowledge()
+                state = build_field_state("robust_field", lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+                features = build_features(state, environmental_history=power)
+                result = run_weather_uncertainty_analysis(state, power, crops=crops_df, features=features, priority=str(data.get("priority") or "balanced"))
+                self._send_json(*_json_response(result))
+            except Exception as e:
+                self._send_api_error(400, str(e))
+            return
+        if parsed.path == "/api/outcomes/record":
+            try:
+                from src.data.outcome_tracker import record_actual_outcome
+                user = _require_auth(self)
+                data = _read_body(self)
+                res = record_actual_outcome(data.get("field_id", 1), data, user_id=user["id"] if user else None)
+                self._send_json(*_json_response(res, 201))
+            except Exception as e:
+                self._send_api_error(400, str(e))
             return
         if parsed.path == "/api/counterfactual/reoptimize":
             payload = _read_body(self)

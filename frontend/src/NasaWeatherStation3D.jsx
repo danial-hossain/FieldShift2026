@@ -9,9 +9,10 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
   const [hoveredDataPoint, setHoveredDataPoint] = useState(null);
 
   // Fallbacks based on user inputs or active field
-  const latitude = activeField?.latitude != null ? Number(activeField.latitude) : 23.8103;
-  const longitude = activeField?.longitude != null ? Number(activeField.longitude) : 90.4125;
-  const locationName = activeField?.name || 'Dhaka Research Station';
+  const isDemo = Boolean(activeField?.id === 'demo' || activeField?.is_demo);
+  const latitude = activeField?.latitude != null ? Number(activeField.latitude) : 24.8500;
+  const longitude = activeField?.longitude != null ? Number(activeField.longitude) : 89.3700;
+  const locationName = activeField?.name || (isDemo ? 'Demo Field (Bogura 10 ha) [DEMO]' : 'Regional Weather Center (Bogura Reference)');
 
   const tempVal = env.temperature != null ? Number(env.temperature) : 27.8;
   const tempMax = env.temp_max != null ? Number(env.temp_max) : 32.2;
@@ -21,7 +22,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
   const rainVal = env.rainfall != null ? Number(env.rainfall) : 0.17;
   const observationDate = nasa.latest_valid_date || '2026-09-29';
   const observationDays = nasa.rows || 30;
-  const isObserved = nasa.data_status === 'observed' || nasa.data_status === 'live' || true;
+  const isObserved = Boolean(nasa && (nasa.data_status === 'observed' || nasa.data_status === 'live'));
 
   // Filter 30-day timeseries based on timeHorizon
   const chartData = useMemo(() => {
@@ -63,7 +64,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `NASA_POWER_${latitude}_${longitude}_30days.csv`);
+    link.setAttribute('download', isObserved ? `NASA_POWER_${latitude}_${longitude}_30days.csv` : `NASA_POWER_DEMO_BENCHMARK_${latitude}_${longitude}_30days.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -76,10 +77,12 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
         <div className="nasa-header-left">
           <div className="nasa-badge-row">
             <span className="nasa-satellite-pill">
-              <span className="nasa-pulse-dot" /> NASA POWER SATELLITE TELEMETRY
+              <span className="nasa-pulse-dot" /> NASA POWER AGROMETEOROLOGICAL REANALYSIS
             </span>
             <span className="nasa-res-tag">SPATIAL RESOLUTION: 0.5° × 0.5° (~50 KM)</span>
-            <span className="nasa-status-tag">{isObserved ? 'SYNCHRONIZED EMPIRICAL POINT API' : 'OFFLINE DEMO SERIES'}</span>
+            <span className={`nasa-status-tag ${isObserved ? '' : 'nasa-status-demo'}`}>
+              {isObserved ? 'SYNCHRONIZED EMPIRICAL POINT API' : (isDemo ? 'OFFLINE DEMO SERIES (BOGURA BENCHMARK)' : 'CACHED HISTORICAL BENCHMARK')}
+            </span>
           </div>
           <h1 className="nasa-title">Environmental Observations &amp; 3D Climate Station</h1>
           <p className="nasa-subtitle">
@@ -129,7 +132,9 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
         <div className="mission-divider" />
         <div className="mission-stat">
           <span className="mission-label">Data Assurance</span>
-          <strong className="mission-value highlight-cyan">Verified Empirical</strong>
+          <strong className={`mission-value ${isObserved ? 'highlight-cyan' : 'highlight-amber'}`}>
+            {isObserved ? 'Verified Empirical' : 'Synthetic / Cached Demo'}
+          </strong>
         </div>
       </div>
 

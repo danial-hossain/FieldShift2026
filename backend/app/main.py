@@ -105,6 +105,7 @@ def use_field_record(data: dict[str, Any], field: FarmField, db: DbSession) -> d
         "soil_texture": field.soil_texture or "unknown",
         "organic_matter": field.organic_matter,
         "irrigation_capacity_mm": field.irrigation_capacity_mm,
+        "soil_ph": getattr(field, "soil_ph", None),
     })
     histories = list(db.scalars(
         select(FieldHistory)
@@ -497,11 +498,252 @@ def crops():
     from src.data.crops import load_crop_knowledge
     return {"status":"ok","crops":load_crop_knowledge().to_dict(orient="records")}
 
+@app.get("/api/crops/catalog")
+def crops_catalog():
+    from src.data.bangladesh_crops import get_crop_catalog_with_provenance, BANGLADESH_AGRICULTURAL_SOURCES
+    catalog = get_crop_catalog_with_provenance()
+    sources = [
+        {
+            "source_code": s.get("code", k),
+            "title": s.get("title", ""),
+            "year": s.get("year", 2024),
+            "geographic_relevance": s.get("relevance", "Bangladesh AEZ 1-30"),
+            "role": s.get("role", "Authoritative Agronomic Reference"),
+        }
+        for k, s in BANGLADESH_AGRICULTURAL_SOURCES.items()
+    ]
+    return {
+        "status": "ok",
+        "total_crops": len(catalog),
+        "crops": catalog,
+        "sources": sources,
+        "disclaimer": (
+            "Crop parameters are calibrated from authoritative BARI, BRRI, BBS, and DAE publications. "
+            "Demo defaults are explicitly designated where plot-level sensor calibration is unavailable."
+        ),
+    }
+
+@app.get("/api/satellite/readiness")
+def satellite_readiness(latitude: float = 23.8103, longitude: float = 90.4125, lat: float | None = None, lon: float | None = None):
+    from src.data.bangladesh_crops import get_satellite_readiness_status
+    actual_lat = lat if lat is not None else latitude
+    actual_lon = lon if lon is not None else longitude
+    data = get_satellite_readiness_status(actual_lat, actual_lon)
+    data["sensors"] = [
+        {
+            "sensor_id": c["sensor_id"],
+            "sensor_name": c["name"],
+            "status": "CONNECTED" if c["status"] == "connected_live" else ("STANDBY" if "ready" in c["status"] else "NOT CONNECTED"),
+            "intended_measurement": c.get("data_assurance", c.get("agency", "")),
+            "spatial_resolution": c.get("spatial_resolution", ""),
+            "cadence": c.get("temporal_resolution", ""),
+            "parameters": ", ".join(p["code"] for p in c.get("parameters", [])),
+            "prerequisites": c.get("blocker_details", "None required; operational."),
+        }
+        for c in data.get("connectors", [])
+    ]
+    data["disclaimer"] = data.get("scientific_integrity_policy", "")
+    return finite_json_value(jsonable_encoder(data))
+
+@app.post("/api/lab/compare")
+def lab_compare(payload: Payload):
+    data = payload.model_dump()
+    from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+    from src.state.field_state import build_field_state
+    from src.data.crops import load_crop_knowledge
+    from src.preprocessing.features import build_features
+    from src.integration.comparison_lab import run_three_way_comparison
+    import pandas as pd
+
+    lat = float(data.get("latitude") or 23.8103)
+    lon = float(data.get("longitude") or 90.4125)
+    priority = str(data.get("priority") or "balanced")
+
+    if DEFAULT_NASA_PATH.is_file():
+        power = pd.read_csv(DEFAULT_NASA_PATH)
+        power["date"] = pd.to_datetime(power["date"])
+    else:
+        from src.data.nasa_power import fetch_recent_nasa_power
+        power = fetch_recent_nasa_power(lat, lon)
+
+    crops_df = load_crop_knowledge()
+    state = build_field_state(str(data.get("field_id") or "demo"), lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+    state.field_size_ha = float(data.get("field_size_ha") or data.get("area_ha") or 1.0)
+    state.area_ha = state.field_size_ha
+    if data.get("soil_ph"): state.ph = float(data["soil_ph"])
+    if data.get("organic_matter"): state.organic_matter = float(data["organic_matter"])
+    if data.get("temperature_c"): state.temperature = float(data["temperature_c"])
+    if data.get("irrigation_capacity_mm"): state.irrigation_capacity_mm = float(data["irrigation_capacity_mm"])
+    features = build_features(state, environmental_history=power)
+    if data.get("available_water_mm"): features["available_water_mm"] = float(data["available_water_mm"])
+
+    result = run_three_way_comparison(state, power, crops=crops_df, features=features, priority=priority)
+    return finite_json_value(jsonable_encoder(result))
+
+@app.post("/api/scenarios/crop-failure-recovery")
+def crop_failure_recovery(payload: Payload):
+    data = payload.model_dump()
+    from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+    from src.state.field_state import build_field_state
+    from src.data.crops import load_crop_knowledge
+    from src.preprocessing.features import build_features
+    from src.scenarios.recovery_simulator import simulate_crop_failure_and_recovery
+    import pandas as pd
+
+    fs = data.get("field_state") or {}
+    lat = float(data.get("latitude") or fs.get("latitude") or 23.8103)
+    lon = float(data.get("longitude") or fs.get("longitude") or 90.4125)
+    failure_event = str(data.get("failure_event") or data.get("failure_type") or "crop_failure")
+    impacted_season_index = int(data.get("impacted_season_index") if data.get("impacted_season_index") is not None else data.get("failure_season", 0))
+    severity = str(data.get("severity") or "severe")
+    priority = str(data.get("priority") or "balanced")
+
+    power = pd.read_csv(DEFAULT_NASA_PATH)
+    power["date"] = pd.to_datetime(power["date"])
+    crops_df = load_crop_knowledge()
+    state = build_field_state(str(data.get("field_id") or "demo"), lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+    state.field_size_ha = float(data.get("field_size_ha") or fs.get("field_size_ha") or data.get("area_ha") or fs.get("area_ha") or 1.0)
+    state.area_ha = state.field_size_ha
+    if data.get("soil_ph") or fs.get("soil_ph"): state.ph = float(data.get("soil_ph") or fs.get("soil_ph"))
+    if data.get("organic_matter") or fs.get("organic_matter"): state.organic_matter = float(data.get("organic_matter") or fs.get("organic_matter"))
+    if data.get("irrigation_capacity_mm") or fs.get("irrigation_capacity_mm"): state.irrigation_capacity_mm = float(data.get("irrigation_capacity_mm") or fs.get("irrigation_capacity_mm"))
+    features = build_features(state, environmental_history=power)
+
+    result = simulate_crop_failure_and_recovery(
+        state, power,
+        failure_event=failure_event,
+        impacted_season_index=impacted_season_index,
+        severity=severity,
+        crops=crops_df,
+        features=features,
+        priority=priority,
+    )
+    return finite_json_value(jsonable_encoder(result))
+
+@app.post("/api/workflow/replan")
+def workflow_replan(payload: Payload):
+    data = payload.model_dump()
+    from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+    from src.state.field_state import build_field_state
+    from src.data.crops import load_crop_knowledge
+    from src.preprocessing.features import build_features
+    from src.optimizer.adaptive_replan import run_adaptive_replan
+    import pandas as pd
+
+    lat = float(data.get("latitude") or 23.8103)
+    lon = float(data.get("longitude") or 90.4125)
+    completed_seasons = data.get("completed_seasons") or data.get("completed_seasons_history") or []
+    updated_field_conditions = data.get("updated_field_conditions") or data.get("updated_conditions") or {}
+    priority = str(data.get("priority") or "balanced")
+
+    power = pd.read_csv(DEFAULT_NASA_PATH)
+    power["date"] = pd.to_datetime(power["date"])
+    crops_df = load_crop_knowledge()
+    state = build_field_state(str(data.get("field_id") or "demo"), lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+    state.field_size_ha = float(data.get("field_size_ha") or data.get("area_ha") or 1.0)
+    state.area_ha = state.field_size_ha
+    features = build_features(state, environmental_history=power)
+
+    result = run_adaptive_replan(
+        state, power,
+        completed_seasons=completed_seasons,
+        updated_field_conditions=updated_field_conditions,
+        crops=crops_df,
+        priority=priority,
+        features=features,
+    )
+    return finite_json_value(jsonable_encoder(result))
+
+@app.post("/api/scenarios/weather-uncertainty")
+def weather_uncertainty(payload: Payload):
+    data = payload.model_dump()
+    from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+    from src.state.field_state import build_field_state
+    from src.data.crops import load_crop_knowledge
+    from src.preprocessing.features import build_features
+    from src.scenarios.robust_planning import run_weather_uncertainty_analysis
+    import pandas as pd
+
+    fs = data.get("field_state") or {}
+    lat = float(data.get("latitude") or fs.get("latitude") or 23.8103)
+    lon = float(data.get("longitude") or fs.get("longitude") or 90.4125)
+    priority = str(data.get("priority") or "balanced")
+
+    power = pd.read_csv(DEFAULT_NASA_PATH)
+    power["date"] = pd.to_datetime(power["date"])
+    crops_df = load_crop_knowledge()
+    state = build_field_state(str(data.get("field_id") or "demo"), lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
+    state.field_size_ha = float(data.get("field_size_ha") or fs.get("field_size_ha") or data.get("area_ha") or fs.get("area_ha") or 1.0)
+    state.area_ha = state.field_size_ha
+    if data.get("soil_ph") or fs.get("soil_ph"): state.ph = float(data.get("soil_ph") or fs.get("soil_ph"))
+    if data.get("organic_matter") or fs.get("organic_matter"): state.organic_matter = float(data.get("organic_matter") or fs.get("organic_matter"))
+    features = build_features(state, environmental_history=power)
+
+    result = run_weather_uncertainty_analysis(state, power, crops=crops_df, features=features, priority=priority)
+    return finite_json_value(jsonable_encoder(result))
+
+@app.post("/api/outcomes/record", status_code=200)
+def record_outcome(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
+    data = payload.model_dump()
+    from src.data.outcome_tracker import record_actual_outcome, list_actual_outcomes
+    field_id = data.get("field_id", 1)
+    user_id = None
+    if fieldshift_session:
+        try:
+            user = require_user(fieldshift_session, db)
+            user_id = user.id
+        except HTTPException:
+            pass
+    try:
+        rec = record_actual_outcome(field_id, data, user_id=user_id)
+        outcomes = list_actual_outcomes(field_id)
+        return finite_json_value(jsonable_encoder({
+            "status": "ok",
+            "outcome": rec.get("record", rec),
+            "record": rec.get("record", rec),
+            "summary": {
+                "total_recorded_seasons": len(outcomes),
+                "average_yield_variance_pct": round(sum(float(o.get("yield_variance_pct") or 0.0) for o in outcomes) / max(1, len(outcomes)), 1),
+                "average_revenue_variance_pct": round(sum(float(o.get("revenue_variance_pct") or 0.0) for o in outcomes) / max(1, len(outcomes)), 1),
+            }
+        }))
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+@app.get("/api/outcomes/{field_id}")
+def get_field_outcomes(field_id: str):
+    from src.data.outcome_tracker import list_actual_outcomes
+    outcomes = list_actual_outcomes(field_id)
+    return {
+        "status": "ok",
+        "field_id": field_id,
+        "outcomes": outcomes,
+        "summary": {
+            "total_recorded_seasons": len(outcomes),
+            "average_yield_variance_pct": round(sum(float(o.get("yield_variance_pct") or 0.0) for o in outcomes) / max(1, len(outcomes)), 1),
+            "average_revenue_variance_pct": round(sum(float(o.get("revenue_variance_pct") or 0.0) for o in outcomes) / max(1, len(outcomes)), 1),
+        }
+    }
+
+@app.get("/api/outcomes")
+def get_all_outcomes():
+    from src.data.outcome_tracker import list_actual_outcomes
+    outcomes = list_actual_outcomes()
+    return {
+        "status": "ok",
+        "outcomes": outcomes,
+        "summary": {
+            "total_recorded_seasons": len(outcomes),
+            "average_yield_variance_pct": round(sum(float(o.get("yield_variance_pct") or 0.0) for o in outcomes) / max(1, len(outcomes)), 1),
+            "average_revenue_variance_pct": round(sum(float(o.get("revenue_variance_pct") or 0.0) for o in outcomes) / max(1, len(outcomes)), 1),
+        }
+    }
+
+
 def get_gemini_api_key() -> str:
     import os
-    key = os.environ.get("GEMINI_API_KEY")
-    if key:
-        return key
+    if "GEMINI_API_KEY" in os.environ:
+        return os.environ["GEMINI_API_KEY"]
     env_file = ROOT_DIR / ".env"
     if env_file.exists():
         for line in env_file.read_text(encoding="utf-8").splitlines():
@@ -510,21 +752,32 @@ def get_gemini_api_key() -> str:
                 return line.split("=", 1)[1].strip().strip('"').strip("'")
     return ""
 
-def call_gemini_chat(message: str, history: list | None = None, context: dict | None = None) -> dict[str, Any]:
+def call_gemini_chat(message: str = "", history: list | None = None, context: dict | None = None, language: str | None = None, prompt: str | None = None) -> dict[str, Any]:
     import os, json, urllib.request, urllib.error
+    message = (message or prompt or "").strip()
     api_key = get_gemini_api_key()
     context = context or {}
+    if language and "language" not in context:
+        context["language"] = language
     field_info = context.get("field") or {}
     weather_info = context.get("weather") or {}
     plan_info = context.get("plan") or {}
+    comparison_info = context.get("comparison") or {}
+    scenarios_info = context.get("scenarios") or {}
+    outcomes_info = context.get("outcomes") or {}
+    market_info = context.get("market") or {}
+    provenance_info = context.get("provenance") or {}
+    lang = str(context.get("language") or "en").lower()
 
+    # Build rich field lines
     field_lines = []
     if field_info.get("name"): field_lines.append(f"Field Name: {field_info['name']}")
     if field_info.get("latitude") and field_info.get("longitude"): field_lines.append(f"Coordinates: {field_info['latitude']}°N, {field_info['longitude']}°E")
     if field_info.get("field_size_ha"): field_lines.append(f"Area: {field_info['field_size_ha']} ha")
     if field_info.get("soil_texture"): field_lines.append(f"Soil Texture: {field_info['soil_texture']}")
-    if field_info.get("organic_matter_pct"): field_lines.append(f"Soil Organic Matter: {field_info['organic_matter_pct']}%")
-    if field_info.get("irrigation_capacity_mm"): field_lines.append(f"Seasonal Irrigation Capacity: {field_info['irrigation_capacity_mm']} mm")
+    if field_info.get("soil_ph") is not None: field_lines.append(f"Soil pH: {field_info['soil_ph']} (Measured / User test)")
+    if field_info.get("organic_matter_pct") is not None: field_lines.append(f"Soil Organic Matter: {field_info['organic_matter_pct']}%")
+    if field_info.get("irrigation_capacity_mm") is not None: field_lines.append(f"Seasonal Irrigation Capacity: {field_info['irrigation_capacity_mm']} mm")
     if field_info.get("previous_crop"): field_lines.append(f"Previous Crop: {field_info['previous_crop']}")
 
     weather_lines = []
@@ -532,28 +785,72 @@ def call_gemini_chat(message: str, history: list | None = None, context: dict | 
     if weather_info.get("humidity_pct") is not None: weather_lines.append(f"Relative Humidity: {weather_info['humidity_pct']}%")
     if weather_info.get("precipitation_mm") is not None: weather_lines.append(f"Daily Precipitation: {weather_info['precipitation_mm']} mm/day")
     if weather_info.get("wind_speed_ms") is not None: weather_lines.append(f"Wind Speed: {weather_info['wind_speed_ms']} m/s")
+    if weather_info.get("source"): weather_lines.append(f"Weather Source: {weather_info['source']}")
 
-    rotation_str = plan_info.get("rotation_str") or ""
-    milp_yield = plan_info.get("yield_tons")
+    plan_lines = []
+    if plan_info.get("rotation_str"): plan_lines.append(f"Planned Multi-Season Rotation: {plan_info['rotation_str']}")
+    if plan_info.get("yield_tons"): plan_lines.append(f"Projected Yield: {plan_info['yield_tons']} tons")
+    if plan_info.get("gross_margin_bdt"): plan_lines.append(f"Projected Gross Margin: {plan_info['gross_margin_bdt']:,} BDT")
+    if plan_info.get("water_mm"): plan_lines.append(f"Estimated Water Demand: {plan_info['water_mm']} mm")
+    if plan_info.get("solver_status"): plan_lines.append(f"Mathematical Solver Status: {plan_info['solver_status']}")
+
+    extra_lines = []
+    if comparison_info.get("summary"): extra_lines.append(f"Method Benchmark: {comparison_info['summary']}")
+    if scenarios_info.get("robustness_score"): extra_lines.append(f"Climate Robustness Score: {scenarios_info['robustness_score']}%")
+    if outcomes_info.get("recorded_seasons"): extra_lines.append(f"Empirical Harvests Logged: {outcomes_info['recorded_seasons']} seasons")
+    if market_info.get("crop"): extra_lines.append(f"Market Crop: {market_info['crop']} | Farmgate: {market_info.get('farmgate_price_bdt_t', 'N/A')} BDT/t | Net Return: {market_info.get('estimated_net_return_bdt', 'N/A')} BDT")
+    if market_info.get("demand_note"): extra_lines.append(f"Demand Status: {market_info['demand_note']}")
+    if provenance_info.get("reliability_score"): extra_lines.append(f"System Reliability Score: {provenance_info['reliability_score']}% ({provenance_info.get('source_backed_pct', 'N/A')}% source-backed)")
 
     sys_text = (
-        "You are the FieldShift Agronomic AI Assistant, an expert decision-support advisor for sustainable agriculture and precision farming. "
-        "Your goal is to provide practical, scientifically sound agronomic guidance tailored to the user's specific field, soil conditions, and weather telemetry.\n\n"
-        "ACTIVE FIELD & ENVIRONMENTAL TELEMETRY:\n"
-        + ("\n".join(f"- {l}" for l in field_lines) + "\n" if field_lines else "- No specific field registered.\n")
+        "You are the FieldShift Agronomic AI Assistant (NASA Space Apps Challenge 2026 | Team AZOIC), an expert scientific decision-support advisor for adaptive crop rotation, precision irrigation, and soil sustainability in Bangladesh.\n\n"
+        "TELEMETRY & CONTEXT FOR ACTIVE FIELD:\n"
+        + ("\n".join(f"- {l}" for l in field_lines) + "\n" if field_lines else "- No specific field selected; providing general agronomic guidance.\n")
         + ("\n".join(f"- {l}" for l in weather_lines) + "\n" if weather_lines else "")
-        + (f"- Optimizer Planned Rotation: {rotation_str}\n" if rotation_str else "")
-        + (f"- Projected Multi-Objective Yield: {milp_yield} tons\n" if milp_yield else "")
-        + "\nINSTRUCTIONS:\n"
-        "- Provide well-structured answers using clear paragraphs, bold headings, and bullet points.\n"
-        "- When discussing crop rotation, explain soil moisture, nitrogen fixation (e.g. pulses like lentil, chickpea, mungbean), and pathogen break effects.\n"
-        "- Always align recommendations with the field's actual soil texture and organic matter.\n"
-        "- Maintain scientific rigor and note that recommendations are research decision-support simulations."
+        + ("\n".join(f"- {l}" for l in plan_lines) + "\n" if plan_lines else "")
+        + ("\n".join(f"- {l}" for l in extra_lines) + "\n" if extra_lines else "")
+        + "\nRESPONSE GUIDELINES:\n"
+        "1. STRUCTURE: Whenever advising on crop choices, trade-offs, or field decisions, use this clear 6-part structure:\n"
+        "   - **1. Short Answer**: Concise summary directly answering the user.\n"
+        "   - **2. Evidence from this Field**: Reference actual field numbers (soil pH, OM %, irrigation mm, NASA weather, market prices).\n"
+        "   - **3. Recommended Next Step**: Actionable agronomic plan.\n"
+        "   - **4. Trade-offs & Risks**: Diseases, moisture deficits, market price drops or temperature risks.\n"
+        "   - **5. Data Limitations**: Disclose whether values are measured lab tests, NASA reanalysis, DAM benchmarks, or simulation estimates. Clarify that open demand data is unavailable.\n"
+        "   - **6. Suggested Follow-up Action**: Next tool or verification to execute.\n"
+        "2. LANGUAGE: Support both English and Bengali (বাংলা). If the user writes in Bengali or Banglish or requested language is 'bn', respond in natural, polite Bengali (বাংলা), keeping scientific crop names (e.g. Boro, Aman, Aus, Lentil/Masur, Mustard/Tori) and units (pH, mm, kg/ha, BDT) intact.\n"
+        "3. INTEGRITY: Never invent sensor readings or claim to have field-level satellite cameras. Remind that simulations provide decision support, not certified crop insurance assessments. Never fabricate buyer demand curves.\n"
+        "4. CLARITY: Keep simple questions concise. Explain technical terms (MILP, RL, BNF, AEZ, Farmgate vs Retail) clearly."
     )
 
+    # Detect action intent from user message
+    action_intent = None
+    msg_low = message.lower()
+    if any(w in msg_low for w in ["market", "price", "profit", "profitability", "bazar", "দাম", "বাজারদর", "লাভ", "dam", "tcb", "sadai"]):
+        action_intent = {"action": "navigate_tab", "tab": "market", "label": "Open Market Intelligence", "description": "Inspect verified crop market benchmarks, DAM/TCB pricing, and calculate net returns"}
+    elif any(w in msg_low for w in ["synthetic", "synthetic data", "data lab", "scenario generator", "reproducible", "কৃত্রিম উপাত্ত"]):
+        action_intent = {"action": "navigate_tab", "tab": "synthetic_lab", "label": "Open Synthetic Data Lab", "description": "Generate reproducible counterfactual farm datasets under agronomic constraints"}
+    elif any(w in msg_low for w in ["sensitivity", "elasticity", "perturbation", "price change", "yield drop", "স্থিতিস্থাপকতা"]):
+        action_intent = {"action": "navigate_tab", "tab": "sensitivity", "label": "Open Scientific Sensitivity Analysis", "description": "Evaluate model elasticity and rotation changes under yield, price, and water sweeps"}
+    elif any(w in msg_low for w in ["harvest", "actual yield", "record outcome", "recorded harvest", "outcomes"]):
+        action_intent = {"action": "navigate_tab", "tab": "outcomes", "label": "Open Actual Outcomes Tracker", "description": "Record empirical harvest yield and evaluate variance vs optimizer estimates"}
+    elif any(w in msg_low for w in ["drought", "crop failure", "shock", "recover", "stress scenario"]):
+        action_intent = {"action": "navigate_tab", "tab": "failure", "label": "Open Failure & Recovery Simulator", "description": "Simulate drought, heat, or waterlogging shocks and inspect recovery efficiency"}
+    elif any(w in msg_low for w in ["compare", "comparison", "milp vs rl", "rule-based", "benchmark"]):
+        action_intent = {"action": "navigate_tab", "tab": "lab", "label": "Open 3-Way Comparison Lab", "description": "Benchmark MILP vs RL Simulation vs Deterministic Rule baseline"}
+    elif any(w in msg_low for w in ["replan", "next season", "updated soil", "soil ph drop"]):
+        action_intent = {"action": "navigate_tab", "tab": "replan", "label": "Open Next-Season Replanning", "description": "Adapt remaining seasons based on updated soil tests and harvest history"}
+    elif any(w in msg_low for w in ["uncertainty", "climate stress", "weather forecast", "hotter", "drier"]):
+        action_intent = {"action": "navigate_tab", "tab": "uncertainty", "label": "Open Weather Uncertainty", "description": "Evaluate crop plan feasibility across 5 parametric climate stress scenarios"}
+    elif any(w in msg_low for w in ["sustainability", "soil health", "organic matter trend", "bnf"]):
+        action_intent = {"action": "navigate_tab", "tab": "sustainability", "label": "Open Sustainability Tracker", "description": "View multi-season soil health proxy progression and legume frequency"}
+    elif any(w in msg_low for w in ["crop catalog", "crop database", "bari", "brri"]):
+        action_intent = {"action": "navigate_tab", "tab": "crops", "label": "Open Bangladesh Crop Database", "description": "Inspect 15 verified Bangladeshi crops with BARI/BRRI agronomic metadata"}
+    elif any(w in msg_low for w in ["parcel", "field map", "create field", "edit field"]):
+        action_intent = {"action": "navigate_tab", "tab": "field", "label": "Open Field Parcel Manager", "description": "View and manage registered farm parcels"}
+
     contents = []
-    contents.append({"role": "user", "parts": [{"text": f"System Context & Rules: {sys_text}\n\nAcknowledge your role in 1 short confirmation sentence."}]})
-    contents.append({"role": "model", "parts": [{"text": "Understood. I am FieldShift Agronomic AI Assistant, ready to advise on your crop rotation, soil management, and weather telemetry."}]})
+    contents.append({"role": "user", "parts": [{"text": f"System Context & Rules:\n{sys_text}\n\nAcknowledge your role in 1 concise sentence."}]})
+    contents.append({"role": "model", "parts": [{"text": "Understood. I am FieldShift Agronomic AI Assistant, ready to advise on your crop rotation, soil health, and weather telemetry with full scientific transparency."}]})
 
     if history:
         for item in history[-6:]:
@@ -564,52 +861,114 @@ def call_gemini_chat(message: str, history: list | None = None, context: dict | 
 
     contents.append({"role": "user", "parts": [{"text": message}]})
 
-    candidate_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-flash-latest"]
-    last_err = None
+    candidate_models = [
+        "models/gemini-flash-lite-latest",
+        "models/gemini-3.1-flash-lite",
+        "models/gemma-4-26b-a4b-it",
+        "models/gemini-3.5-flash",
+    ]
 
-    for model in candidate_models:
-        for ver in ["v1beta", "v1"]:
-            url = f"https://generativelanguage.googleapis.com/{ver}/models/{model}:generateContent?key={api_key}"
-            payload = {"contents": contents}
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=25) as resp:
-                    resp_json = json.loads(resp.read().decode("utf-8"))
-                    candidates = resp_json.get("candidates", [])
-                    if candidates and "content" in candidates[0] and "parts" in candidates[0]["content"]:
-                        reply = candidates[0]["content"]["parts"][0].get("text", "")
-                        if reply:
-                            return {"status": "ok", "reply": reply, "model": model}
-            except urllib.error.HTTPError as e:
-                err_text = e.read().decode("utf-8", errors="ignore")
-                last_err = f"HTTP {e.code}: {err_text[:200]}"
-                continue
-            except Exception as e:
-                last_err = str(e)
-                continue
+    if api_key:
+        for model in candidate_models:
+            for ver in ["v1beta", "v1"]:
+                url = f"https://generativelanguage.googleapis.com/{ver}/{model}:generateContent?key={api_key}"
+                payload = {"contents": contents}
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"}
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=18) as resp:
+                        resp_json = json.loads(resp.read().decode("utf-8"))
+                        candidates = resp_json.get("candidates", [])
+                        if candidates and "content" in candidates[0] and "parts" in candidates[0]["content"]:
+                            reply = candidates[0]["content"]["parts"][0].get("text", "")
+                            if reply:
+                                clean_model_name = model.replace("models/", "")
+                                res_dict = {
+                                    "status": "ok",
+                                    "reply": reply,
+                                    "response": reply,
+                                    "model": clean_model_name,
+                                    "model_used": clean_model_name,
+                                    "is_fallback": False,
+                                    "gemini_enabled": True,
+                                }
+                                if action_intent:
+                                    res_dict["action_intent"] = action_intent
+                                return res_dict
+                except urllib.error.HTTPError:
+                    continue
+                except Exception:
+                    continue
 
-    fallback_reply = (
-        f"**FieldShift Agronomic Advisory for {field_info.get('name', 'Selected Field')}:**\n\n"
-        f"Based on your soil profile (**{field_info.get('soil_texture', 'loam')}** with **{field_info.get('organic_matter_pct', 'moderate')}% organic matter**) "
-        f"and current climate observations ({weather_info.get('temperature_c', '25')}°C):\n\n"
-        f"- **Crop Rotation Strategy:** Prioritize alternating nitrogen-fixing legumes (e.g. Lentil, Chickpea) with cash oilseeds or grains (Sesame, Sorghum) to optimize root-zone moisture extraction.\n"
-        f"- **Moisture & Soil Management:** With seasonal irrigation capacity of {field_info.get('irrigation_capacity_mm', '100')} mm, monitor deep percolation and avoid waterlogging during early germination.\n"
-        f"- **Decision Support Notice:** Generated under active agronomic safety constraints."
-    )
-    return {"status": "ok", "reply": fallback_reply, "model": "fieldshift-agronomy-engine"}
+    # Deterministic rule-based offline fallback tailored to the 6-part structure
+    fname = field_info.get("name") or "Selected Field"
+    texture = field_info.get("soil_texture") or "loam"
+    ph = field_info.get("soil_ph", 6.5)
+    om = field_info.get("organic_matter") or field_info.get("organic_matter_pct", 2.0)
+    irrig = field_info.get("irrigation_capacity_mm", 400)
+    temp = weather_info.get("temperature") or weather_info.get("temperature_c", 26.0)
+
+    if lang == "bn" or any(w in msg_low for w in ["bangla", "banglae", "বাংলা"]):
+        fallback_reply = (
+            f"**[অফলাইন কৃষি পরামর্শ — নিয়ম-ভিত্তিক সিদ্ধান্ত সমর্থন]**\n\n"
+            f"### ১. সংক্ষিপ্ত উত্তর (SHORT ANSWER)\n"
+            f"আপনার **{fname}** জমির জন্য ({texture} মাটি, pH {ph}, জৈব পদার্থ {om}%), রবি মৌসুমে ডাল বা তৈলবীজ (যেমন মসুর/সরিষা) এবং খরিফ মৌসুমে ধানের পর্যায়ক্রমিক ফসল আবর্তন সবচেয়ে কার্যকর।\n\n"
+            f"### ২. এই জমির প্রমাণাদি (EVIDENCE FROM THIS FIELD)\n"
+            f"- মাটির গঠন: **{texture}**, পরিমাপকৃত pH: **{ph}** (অনুকূল পরিসীমা: ৬.০-৭.৫)।\n"
+            f"- সেচ সক্ষমতা: **{irrig} মিমি**, নাসা পাওয়ার পর্যবেক্ষিত তাপমাত্রা: **{temp}°C**।\n\n"
+            f"### ৩. প্রস্তাবিত পরবর্তী পদক্ষেপ (RECOMMENDED NEXT STEP)\n"
+            f"পরপর দুই মৌসুম একই গোত্রের ফসল চাষ পরিহার করুন। লিগিউম জাতীয় ফসল (যেমন মুগ বা মসুর) অন্তর্ভুক্ত করে প্রাকৃতিক নাইট্রোজেন সংবন্ধন বাড়ান।\n\n"
+            f"### ৪. আপস ও ঝুঁকি (TRADE-OFFS & RISKS)\n"
+            f"রবি মৌসুমে আগাম তাপপ্রবাহে দানাদার ফসলের পরাগায়ন ব্যাহত হতে পারে। সেচ ঘাটতি থাকলে খরা-সহনশীল ডাল নির্বাচন করুন।\n\n"
+            f"### ৫. উপাত্তের সীমাবদ্ধতা (DATA LIMITATIONS)\n"
+            f"এটি একটি স্থানীয় সিমুলেশন মডেল; কোনো পরীক্ষাগার রাসায়নিক সার পরীক্ষার সরাসরি বিকল্প নয়।\n\n"
+            f"### ৬. প্রস্তাবিত করণীয় (SUGGESTED FOLLOW-UP ACTION)\n"
+            f"পরবর্তী মৌসুমের জন্য 'Adaptive Replanning' মডিউলে মাটির সাম্প্রতিক পরীক্ষার মান আপডেট করুন।"
+        )
+    else:
+        fallback_reply = (
+            f"**[Offline Agronomic Guidance — Rule-Based Decision Support]**\n\n"
+            f"### 1. SHORT ANSWER\n"
+            f"For **{fname}** with **{texture}** soil, measured pH **{ph}**, and **{om}% organic matter**, an alternating Rabi pulse/oilseed (Lentil, Mustard) followed by Kharif cereal (Aus, Aman Rice) provides the strongest balance of revenue and soil preservation.\n\n"
+            f"### 2. EVIDENCE FROM THIS FIELD\n"
+            f"- Soil Profile: **{texture}** with **{om}% OM**; measured pH **{ph}** is suitable for legumes and cereals.\n"
+            f"- Hydrology: Seasonal irrigation capacity is **{irrig} mm**; NASA POWER ambient temp is **{temp}°C**.\n\n"
+            f"### 3. RECOMMENDED NEXT STEP\n"
+            f"Maintain strict botanical family alternation (Poaceae -> Fabaceae -> Brassicaceae) to break root-zone pathogen cycles and fix biological nitrogen.\n\n"
+            f"### 4. TRADE-OFFS & RISKS\n"
+            f"Under irrigation curtailment below {irrig} mm, substitute high-water Boro Rice with drought-hardy Wheat or Maize, or incorporate short-duration Mungbean.\n\n"
+            f"### 5. DATA LIMITATIONS\n"
+            f"This guidance is derived from the deterministic Bangladesh crop rules database (BARI/BRRI parameters). It serves as decision support, not an on-site laboratory soil test.\n\n"
+            f"### 6. SUGGESTED FOLLOW-UP ACTION\n"
+            f"Run the **3-Way Comparison Lab** or **Crop Failure Simulator** to stress-test your rotation under climate deficits."
+        )
+
+    res_dict = {
+        "status": "ok",
+        "reply": fallback_reply,
+        "response": fallback_reply,
+        "model": "offline-rule-based-guidance",
+        "model_used": "deterministic_offline_agronomist",
+        "is_fallback": True,
+        "gemini_enabled": False,
+    }
+    if action_intent:
+        res_dict["action_intent"] = action_intent
+    return res_dict
 
 @app.post("/api/assistant/chat")
 def assistant_chat(payload: Payload):
     data = payload.model_dump()
-    message = (data.get("message") or "").strip()
+    message = (data.get("message") or data.get("prompt") or "").strip()
     if not message:
         raise HTTPException(400, "Message cannot be empty.")
     history = data.get("history") or []
     context = data.get("context") or {}
+    if "language" in data and "language" not in context:
+        context["language"] = data["language"]
     return call_gemini_chat(message, history, context)
 
 @app.post("/api/rl/decision")
@@ -958,16 +1317,32 @@ def create_field(payload: Payload, user: User = Depends(require_user), db: DbSes
         raise HTTPException(400, "Latitude must be between -90 and 90 degrees.")
     if lon is not None and not (-180.0 <= lon <= 180.0):
         raise HTTPException(400, "Longitude must be between -180 and 180 degrees.")
+    area_ha = float(data["area_ha"]) if data.get("area_ha") not in (None, "") else None
+    if area_ha is not None and area_ha <= 0:
+        raise HTTPException(400, "Field area must be a positive number of hectares.")
+    om = float(data["organic_matter"]) if data.get("organic_matter") not in (None, "") else None
+    if om is not None and not (0.0 <= om <= 100.0):
+        raise HTTPException(400, "Organic matter must be between 0 and 100 percent.")
+    irrig = float(data["irrigation_capacity_mm"]) if data.get("irrigation_capacity_mm") not in (None, "") else None
+    if irrig is not None and irrig < 0:
+        raise HTTPException(400, "Irrigation capacity cannot be negative.")
+    soil_ph_val = None
+    raw_ph = data.get("soil_ph") if data.get("soil_ph") is not None else data.get("ph")
+    if raw_ph not in (None, ""):
+        soil_ph_val = float(raw_ph)
+        if not (0.0 <= soil_ph_val <= 14.0):
+            raise HTTPException(400, "Soil pH must be between 0 and 14.")
     stamp = now()
     field = FarmField(
         farm_id=int(farm_id),
         name=name,
         latitude=lat,
         longitude=lon,
-        area_ha=float(data["area_ha"]) if data.get("area_ha") not in (None, "") else None,
+        area_ha=area_ha,
         soil_texture=str(data["soil_texture"]) if data.get("soil_texture") else None,
-        organic_matter=float(data["organic_matter"]) if data.get("organic_matter") not in (None, "") else None,
-        irrigation_capacity_mm=float(data["irrigation_capacity_mm"]) if data.get("irrigation_capacity_mm") not in (None, "") else None,
+        organic_matter=om,
+        irrigation_capacity_mm=irrig,
+        soil_ph=soil_ph_val,
         created_at=stamp,
         updated_at=stamp
     )
@@ -1020,13 +1395,40 @@ def update_field(field_id: int, payload: Payload, user: User = Depends(require_u
         else:
             field.longitude = None
     if "area_ha" in data:
-        field.area_ha = float(data["area_ha"]) if data["area_ha"] not in (None, "") else None
+        if data["area_ha"] not in (None, ""):
+            area_ha = float(data["area_ha"])
+            if area_ha <= 0:
+                raise HTTPException(400, "Field area must be a positive number of hectares.")
+            field.area_ha = area_ha
+        else:
+            field.area_ha = None
     if "soil_texture" in data:
         field.soil_texture = str(data["soil_texture"]) if data["soil_texture"] else None
     if "organic_matter" in data:
-        field.organic_matter = float(data["organic_matter"]) if data["organic_matter"] not in (None, "") else None
+        if data["organic_matter"] not in (None, ""):
+            om = float(data["organic_matter"])
+            if not (0.0 <= om <= 100.0):
+                raise HTTPException(400, "Organic matter must be between 0 and 100 percent.")
+            field.organic_matter = om
+        else:
+            field.organic_matter = None
     if "irrigation_capacity_mm" in data:
-        field.irrigation_capacity_mm = float(data["irrigation_capacity_mm"]) if data["irrigation_capacity_mm"] not in (None, "") else None
+        if data["irrigation_capacity_mm"] not in (None, ""):
+            irrig = float(data["irrigation_capacity_mm"])
+            if irrig < 0:
+                raise HTTPException(400, "Irrigation capacity cannot be negative.")
+            field.irrigation_capacity_mm = irrig
+        else:
+            field.irrigation_capacity_mm = None
+    if "soil_ph" in data or "ph" in data:
+        raw_ph = data.get("soil_ph") if "soil_ph" in data else data.get("ph")
+        if raw_ph not in (None, ""):
+            ph_val = float(raw_ph)
+            if not (0.0 <= ph_val <= 14.0):
+                raise HTTPException(400, "Soil pH must be between 0 and 14.")
+            field.soil_ph = ph_val
+        else:
+            field.soil_ph = None
     stamp = now()
     field.updated_at = stamp
     crop = data.get("crop") or data.get("previous_crop") or data.get("current_crop")
@@ -1091,3 +1493,158 @@ def run_analysis(analysis_id:int,user:User=Depends(require_user),db:DbSession=De
 @app.get("/api/analyses")
 def analyses(user:User=Depends(require_user),db:DbSession=Depends(get_db)):
     return {"status":"ok","analyses":[row(x) for x in db.scalars(select(Analysis).where(Analysis.user_id==user.id).order_by(Analysis.id.desc()))]}
+
+# -----------------------------------------------------------------------------
+# PHASE 4: PROVENANCE & RELIABILITY ENDPOINTS
+# -----------------------------------------------------------------------------
+
+@app.get("/api/provenance/summary")
+def provenance_summary():
+    """Returns system-wide data reliability score, provenance breakdown, and scientific disclaimer."""
+    from src.data.provenance_schema import calculate_data_reliability_metrics
+    return calculate_data_reliability_metrics()
+
+@app.get("/api/provenance/registry")
+def provenance_registry():
+    """Returns comprehensive parameter provenance catalog across weather, crops, soil, and market."""
+    from src.data.provenance_schema import build_system_parameter_registry
+    records = build_system_parameter_registry()
+    return {
+        "count": len(records),
+        "parameters": [r.to_dict() for r in records],
+    }
+
+# -----------------------------------------------------------------------------
+# PHASE 4: SYNTHETIC DATA LAB ENDPOINTS
+# -----------------------------------------------------------------------------
+
+@app.post("/api/synthetic-data/generate")
+def synthetic_data_generate(payload: Payload):
+    """Deterministically generate synthetic farm scenarios based on seed and agronomic constraints."""
+    from src.experiments.synthetic_data_lab import SyntheticLabConfig, generate_synthetic_farm_scenarios
+    data = payload.model_dump()
+    cfg = SyntheticLabConfig(
+        seed=int(data.get("seed", 42)),
+        num_scenarios=int(data.get("num_scenarios", 8)),
+        area_min_ha=float(data.get("area_min_ha", 0.5)),
+        area_max_ha=float(data.get("area_max_ha", 12.0)),
+        ph_min=float(data.get("ph_min", 5.2)),
+        ph_max=float(data.get("ph_max", 7.6)),
+        om_min=float(data.get("om_min", 1.0)),
+        om_max=float(data.get("om_max", 3.0)),
+        irrigation_min_mm=float(data.get("irrigation_min_mm", 100.0)),
+        irrigation_max_mm=float(data.get("irrigation_max_mm", 800.0)),
+        assumption_profile=str(data.get("assumption_profile", "standard")),
+        include_stress_scenarios=bool(data.get("include_stress_scenarios", True)),
+    )
+    return generate_synthetic_farm_scenarios(cfg)
+
+@app.post("/api/synthetic-data/export")
+def synthetic_data_export(payload: Payload):
+    """Export generated synthetic scenarios as a downloadable CSV with full metadata headers."""
+    from src.experiments.synthetic_data_lab import SyntheticLabConfig, generate_synthetic_farm_scenarios, export_synthetic_scenarios_csv
+    data = payload.model_dump()
+    cfg = SyntheticLabConfig(
+        seed=int(data.get("seed", 42)),
+        num_scenarios=int(data.get("num_scenarios", 8)),
+        area_min_ha=float(data.get("area_min_ha", 0.5)),
+        area_max_ha=float(data.get("area_max_ha", 12.0)),
+        assumption_profile=str(data.get("assumption_profile", "standard")),
+    )
+    gen = generate_synthetic_farm_scenarios(cfg)
+    csv_content = export_synthetic_scenarios_csv(gen["scenarios"], cfg)
+    return Response(
+        content=csv_content,
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=fieldshift_synthetic_scenarios_seed{cfg.seed}.csv"}
+    )
+
+# -----------------------------------------------------------------------------
+# PHASE 6: MARKET INTELLIGENCE & PROFITABILITY ENDPOINTS
+# -----------------------------------------------------------------------------
+
+@app.get("/api/market/overview")
+def market_overview(q: str | None = None):
+    """Returns verified Bangladesh crop pricing catalog, official source links, and honest demand status."""
+    from src.data.market_intelligence import get_market_overview
+    return get_market_overview(crop_query=q)
+
+@app.post("/api/market/profitability")
+def market_profitability(payload: Payload):
+    """Calculates crop profitability, cost breakdown, net returns, break-even price, and 3-point scenarios."""
+    from src.data.market_intelligence import calculate_crop_profitability
+    data = payload.model_dump()
+    crop_name = data.get("crop") or data.get("crop_name") or "Rice"
+    area_ha = float(data.get("area_ha") or data.get("field_size_ha") or 1.0)
+    expected_yield = data.get("expected_yield_t_ha")
+    if expected_yield is not None:
+        expected_yield = float(expected_yield)
+    farmgate_price = data.get("farmgate_price_bdt_t")
+    if farmgate_price is not None:
+        farmgate_price = float(farmgate_price)
+    prod_cost = data.get("production_cost_bdt_ha")
+    if prod_cost is not None:
+        prod_cost = float(prod_cost)
+    irrig_cost = float(data.get("irrigation_cost_bdt_ha", 0.0) or 0.0)
+    mktg_cost = float(data.get("marketing_cost_bdt_ha", 0.0) or 0.0)
+    price_type = str(data.get("price_type", "farmgate"))
+
+    try:
+        return calculate_crop_profitability(
+            crop_name=crop_name,
+            area_ha=area_ha,
+            expected_yield_t_ha=expected_yield,
+            farmgate_price_bdt_t=farmgate_price,
+            production_cost_bdt_ha=prod_cost,
+            irrigation_cost_bdt_ha=irrig_cost,
+            marketing_cost_bdt_ha=mktg_cost,
+            price_type=price_type,
+        )
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+
+@app.get("/api/market/export")
+def market_export():
+    """Export Bangladesh benchmark prices to CSV with citations and disclaimers."""
+    from src.data.market_intelligence import export_market_catalog_csv
+    csv_content = export_market_catalog_csv()
+    return Response(
+        content=csv_content,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=fieldshift_market_benchmarks.csv"}
+    )
+
+# -----------------------------------------------------------------------------
+# PHASE 5: REPEATABLE SENSITIVITY ANALYSIS ENDPOINT
+# -----------------------------------------------------------------------------
+
+@app.post("/api/scenarios/sensitivity")
+def scenarios_sensitivity(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
+    """Run controlled multi-variable sensitivity sweeps on MILP optimization without mutating baseline field."""
+    from src.scenarios.sensitivity_analysis import run_system_sensitivity_analysis
+    data = payload.model_dump()
+    requested_field_id = data.get("field_id")
+    user = None
+    if fieldshift_session:
+        try:
+            user = require_user(fieldshift_session, db)
+        except HTTPException:
+            user = None
+
+    if requested_field_id not in (None, "", "demo"):
+        if user is None:
+            raise HTTPException(401, "Sign in to run sensitivity analysis on a registered field.")
+        fid = int(requested_field_id)
+        field_record = owned_field(db, fid, user)
+        data = use_field_record(data, field_record, db)
+
+    steps = data.get("perturbation_steps")
+    if steps and isinstance(steps, list):
+        steps = [float(s) for s in steps]
+    else:
+        steps = [-20.0, -10.0, 10.0, 20.0]
+
+    return run_system_sensitivity_analysis(data, perturbation_steps=steps)
+
+
+

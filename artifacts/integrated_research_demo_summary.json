@@ -1,6 +1,6 @@
 {
   "dashboard": {
-    "html_length": 112178,
+    "html_length": 112182,
     "network_requests": false,
     "read_only": true,
     "status": "available"
@@ -50,7 +50,7 @@
       "crop_is_tomato",
       "crop_is_jute"
     ],
-    "metadata_path": "C:\\FieldShift\\models\\ml_demo\\synthetic_yield_demo_model.json",
+    "metadata_path": "H:\\FieldShift2026\\models\\ml_demo\\synthetic_yield_demo_model.json",
     "metrics": {
       "test_mae_t_ha": 0.01761700697148263,
       "test_r2": 0.9999221489963563,
@@ -60,14 +60,14 @@
       "train_rmse_t_ha": 0.020911389744924392
     },
     "model_name": "synthetic_yield_demo_model",
-    "model_path": "C:\\FieldShift\\models\\ml_demo\\synthetic_yield_demo_model.pkl",
+    "model_path": "H:\\FieldShift2026\\models\\ml_demo\\synthetic_yield_demo_model.pkl",
     "prediction_label": "synthetic_model_estimate_only",
     "prediction_t_ha": 2.8194350443966867,
     "target_name": "synthetic_yield_t_ha"
   },
   "nasa_power": {
     "latest_valid_date": "2026-09-29",
-    "path": "C:\\FieldShift\\data\\nasa_power\\nasa_power_lat23.8103_lon90.4125_20260831_20260929.csv",
+    "path": "H:\\FieldShift2026\\data\\nasa_power\\nasa_power_lat23.8103_lon90.4125_20260831_20260929.csv",
     "rows": 30
   },
   "output_version": "offline_research_demo_v1",
@@ -290,7 +290,7 @@
       },
       "applied_action": "no_intervention",
       "applied_action_id": 0,
-      "artifact_path": "C:\\FieldShift\\models\\rl\\phase37_synthetic_q_policy.json",
+      "artifact_path": "H:\\FieldShift2026\\models\\rl\\phase37_synthetic_q_policy.json",
       "evidence_class": "synthetic",
       "fallback_reason": null,
       "milp_status": "optimal",

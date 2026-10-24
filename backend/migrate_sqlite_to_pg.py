@@ -112,12 +112,15 @@ def migrate():
         print(f"Migrated {len(farms)} farms.")
 
         # 4. Fields
-        fields = lite.execute("SELECT id, farm_id, name, latitude, longitude, area_ha, soil_texture, organic_matter, irrigation_capacity_mm, created_at, updated_at FROM fields ORDER BY id").fetchall()
+        lite_field_cols = [c[1] for c in lite.execute("PRAGMA table_info(fields)").fetchall()]
+        has_ph = "soil_ph" in lite_field_cols
+        query = "SELECT id, farm_id, name, latitude, longitude, area_ha, soil_texture, organic_matter, irrigation_capacity_mm, " + ("soil_ph, " if has_ph else "NULL as soil_ph, ") + "created_at, updated_at FROM fields ORDER BY id"
+        fields = lite.execute(query).fetchall()
         for fld in fields:
             conn.execute(
                 text("""
-                    INSERT INTO fields (id, farm_id, name, latitude, longitude, area_ha, soil_texture, organic_matter, irrigation_capacity_mm, created_at, updated_at)
-                    VALUES (:id, :farm_id, :name, :latitude, :longitude, :area_ha, :soil_texture, :organic_matter, :irrigation_capacity_mm, :created_at, :updated_at)
+                    INSERT INTO fields (id, farm_id, name, latitude, longitude, area_ha, soil_texture, organic_matter, irrigation_capacity_mm, soil_ph, created_at, updated_at)
+                    VALUES (:id, :farm_id, :name, :latitude, :longitude, :area_ha, :soil_texture, :organic_matter, :irrigation_capacity_mm, :soil_ph, :created_at, :updated_at)
                     ON CONFLICT (id) DO UPDATE SET
                         farm_id = EXCLUDED.farm_id,
                         name = EXCLUDED.name,
@@ -127,6 +130,7 @@ def migrate():
                         soil_texture = EXCLUDED.soil_texture,
                         organic_matter = EXCLUDED.organic_matter,
                         irrigation_capacity_mm = EXCLUDED.irrigation_capacity_mm,
+                        soil_ph = EXCLUDED.soil_ph,
                         created_at = EXCLUDED.created_at,
                         updated_at = EXCLUDED.updated_at
                 """),
@@ -140,8 +144,9 @@ def migrate():
                     "soil_texture": fld[6],
                     "organic_matter": fld[7],
                     "irrigation_capacity_mm": fld[8],
-                    "created_at": parse_dt(fld[9]) or datetime.utcnow(),
-                    "updated_at": parse_dt(fld[10]) or datetime.utcnow()
+                    "soil_ph": fld[9],
+                    "created_at": parse_dt(fld[10]) or datetime.utcnow(),
+                    "updated_at": parse_dt(fld[11]) or datetime.utcnow()
                 }
             )
         print(f"Migrated {len(fields)} fields.")

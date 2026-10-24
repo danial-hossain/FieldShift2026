@@ -128,8 +128,10 @@ export function FieldParcelManagerView({
   const [pinMode, setPinMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const lat = activeField?.latitude != null ? Number(activeField.latitude) : 24.3677;
-  const lon = activeField?.longitude != null ? Number(activeField.longitude) : 88.6077;
+  const isDemo = Boolean(activeField?.id === 'demo' || activeField?.is_demo);
+  const hasActiveField = Boolean(activeField);
+  const lat = activeField?.latitude != null ? Number(activeField.latitude) : 24.8500;
+  const lon = activeField?.longitude != null ? Number(activeField.longitude) : 89.3700;
   const [pinnedCoords, setPinnedCoords] = useState({ lat, lon });
 
   // Keep pinned coordinates synchronized if active field updates and pin mode is off
@@ -141,8 +143,8 @@ export function FieldParcelManagerView({
 
   const areaHa = activeField?.area_ha != null ? Number(activeField.area_ha) : 10.0;
   const areaAcres = (areaHa * 2.47105).toFixed(1);
-  const texture = activeField?.soil_texture || 'clay_loam';
-  const organicMatter = activeField?.organic_matter != null ? Number(activeField.organic_matter) : 9.8;
+  const texture = activeField?.soil_texture || 'loam';
+  const organicMatter = activeField?.organic_matter != null ? Number(activeField.organic_matter) : 2.5;
   const irrigationMm = activeField?.irrigation_capacity_mm != null ? Number(activeField.irrigation_capacity_mm) : 90;
   const crop = activeField?.crop || activeField?.previous_crop || 'Maize';
   const cropYear = activeField?.previous_crop_year || 2024;
@@ -210,42 +212,55 @@ export function FieldParcelManagerView({
       </div>
 
       {/* 2. Active Parcel Hero Summary Card */}
-      <div className="parcel-hero-banner">
+      <div className="parcel-hero-banner" style={{ borderLeft: hasActiveField ? (isDemo ? '4px solid #0284c7' : '4px solid #16a34a') : '4px solid #f59e0b' }}>
         <div className="hero-banner-main">
-          <div className="hero-status-tag">
-            <span className="pulse-dot" />
-            CURRENT ACTIVE PARCEL
+          <div className="hero-status-tag" style={{ background: hasActiveField ? (isDemo ? '#e0f2fe' : '#dcfce7') : '#fef3c7', color: hasActiveField ? (isDemo ? '#0369a1' : '#15803d') : '#b45309' }}>
+            <span className={hasActiveField ? "pulse-dot" : ""} style={hasActiveField ? undefined : { width: 8, height: 8, borderRadius: '50%', background: '#b45309', display: 'inline-block' }} />
+            {hasActiveField ? (isDemo ? 'DEMO BENCHMARK PARCEL' : 'CURRENT ACTIVE PARCEL') : 'NO ACTIVE PARCEL REGISTERED'}
           </div>
           <h1 className="hero-parcel-name">
-            {activeField ? activeField.name : 'Rajshahi Agricultural Zone'}
+            {hasActiveField ? activeField.name : 'কোনো সক্রিয় জমি নিবন্ধিত নেই (০ জমি)'}
           </h1>
           <div className="hero-meta-strip">
-            <span className="hero-meta-chip font-mono">
-              📍 {lat.toFixed(4)}° N, {lon.toFixed(4)}° E
-            </span>
-            <span className="hero-meta-chip">
-              📐 {areaHa} ha ({areaAcres} acres)
-            </span>
-            <span className="hero-meta-chip" style={{ background: soilInfo.bgBadge, color: soilInfo.textBadge, borderColor: soilInfo.colorHex }}>
-              🌱 {soilInfo.label}
-            </span>
-            <span className="hero-source-chip">
-              {activeField?.id === 'demo' ? 'Offline Demo Field' : 'Authoritative PostgreSQL'}
-            </span>
+            {hasActiveField ? (
+              <>
+                <span className="hero-meta-chip font-mono">
+                  📍 {lat.toFixed(4)}° N, {lon.toFixed(4)}° E
+                </span>
+                <span className="hero-meta-chip">
+                  📐 {areaHa} ha ({areaAcres} acres)
+                </span>
+                <span className="hero-meta-chip" style={{ background: soilInfo.bgBadge, color: soilInfo.textBadge, borderColor: soilInfo.colorHex }}>
+                  🌱 {soilInfo.label}
+                </span>
+                <span className="hero-source-chip">
+                  {isDemo ? 'Offline Demo Benchmark' : `Authoritative PostgreSQL (#${activeField.id})`}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="hero-meta-chip">
+                  📋 রেজিস্ট্রি খালি (০ নিবন্ধিত জমি)
+                </span>
+                <span className="hero-meta-chip">
+                  💡 নিচে "Add New Field" চাপুন বা ডেমো খামার পরীক্ষা করুন
+                </span>
+              </>
+            )}
           </div>
         </div>
 
         <div className="hero-banner-stats">
           <div className="hero-stat-block">
             <span className="stat-label">Organic Matter</span>
-            <span className="stat-val text-green">{organicMatter}%</span>
-            <small className="stat-sub">High CEC buffer</small>
+            <span className="stat-val text-green">{hasActiveField ? `${organicMatter}%` : '--'}</span>
+            <small className="stat-sub">{hasActiveField ? (isDemo ? 'Benchmark Estimate' : 'Measured / Registered') : 'No measurement'}</small>
           </div>
           <div className="hero-divider" />
           <div className="hero-stat-block">
             <span className="stat-label">Irrigation Cap.</span>
-            <span className="stat-val">{irrigationMm} <small>mm</small></span>
-            <small className="stat-sub">Full Seasonal Quota</small>
+            <span className="stat-val">{hasActiveField ? `${irrigationMm} mm` : '--'}</span>
+            <small className="stat-sub">{hasActiveField ? 'Seasonal Quota' : 'No measurement'}</small>
           </div>
         </div>
       </div>
@@ -759,6 +774,12 @@ export function FieldParcelManagerView({
 
                     {/* Level 5: Detailed Parameters & Metadata */}
                     <div className="field-props-list">
+                      <div className="prop-row">
+                        <span className="prop-row-key">Soil pH</span>
+                        <span className="prop-row-val">
+                          {fld.soil_ph != null ? formatNumber(fld.soil_ph, 1) : 'Not provided'}
+                        </span>
+                      </div>
                       <div className="prop-row">
                         <span className="prop-row-key">Organic Matter</span>
                         <span className="prop-row-val">

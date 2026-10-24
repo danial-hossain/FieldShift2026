@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from .database import Base
@@ -46,6 +46,7 @@ class Field(Timestamped, Base):
     soil_texture: Mapped[str | None] = mapped_column(String)
     organic_matter: Mapped[float | None] = mapped_column(Float)
     irrigation_capacity_mm: Mapped[float | None] = mapped_column(Float)
+    soil_ph: Mapped[float | None] = mapped_column(Float)
 
 class FieldHistory(Base):
     __tablename__ = "field_history"
@@ -70,7 +71,7 @@ class Analysis(Timestamped, Base):
     include_crop_history: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     mode: Mapped[str | None] = mapped_column(String, default="offline")
     status: Mapped[str] = mapped_column(String, default="pending", nullable=False)
-    summary_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    summary_json: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     error_message: Mapped[str | None] = mapped_column(Text)
