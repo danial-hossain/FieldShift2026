@@ -719,8 +719,8 @@ def _run_research_workflow(
     if isinstance(include_history, str):
         include_history = include_history.strip().lower() in {"true", "1", "yes", "on"}
     include_history = bool(include_history)
-    soil_texture = str(form.get("soil_texture", "")).strip()
-    allowed_textures = {"loam", "silty_loam", "clay_loam", "unknown"}
+    soil_texture = str(form.get("soil_texture", "")).strip().lower().replace(" ", "_")
+    allowed_textures = {"loam", "silty_loam", "silt_loam", "clay_loam", "sandy_loam", "clay", "sand", "unknown"}
     if soil_texture and soil_texture not in allowed_textures:
         raise ValueError("soil_texture is not one of the supported values.")
     priority = str(form.get("priority", "profit")).strip().lower()
@@ -2507,10 +2507,19 @@ class FieldShiftWebHandler(BaseHTTPRequestHandler):
                 if data.get("field_size_ha"): state.field_size_ha = float(data["field_size_ha"])
                 if data.get("area_ha"): state.area_ha = float(data["area_ha"])
                 features = build_features(state, environmental_history=power)
+                raw_completed = data.get("completed_seasons") or data.get("completed_seasons_history") or []
+                if isinstance(raw_completed, int):
+                    last_crop = str(data.get("last_season_crop") or "Potato").strip()
+                    completed_seasons = [{"period": f"Y{1+(i//2)}_S{1+(i%2)}", "crop": last_crop} for i in range(raw_completed)]
+                elif isinstance(raw_completed, list):
+                    completed_seasons = raw_completed
+                else:
+                    completed_seasons = []
+                updated_cond = data.get("updated_field_conditions") or data.get("updated_conditions") or {}
                 result = run_adaptive_replan(
                     state, power,
-                    completed_seasons=data.get("completed_seasons") or [],
-                    updated_field_conditions=data.get("updated_field_conditions") or {},
+                    completed_seasons=completed_seasons,
+                    updated_field_conditions=updated_cond,
                     crops=crops_df, priority=str(data.get("priority") or "balanced"), features=features
                 )
                 self._send_json(*_json_response(result))

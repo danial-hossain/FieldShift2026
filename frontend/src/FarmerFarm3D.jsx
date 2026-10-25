@@ -1,10 +1,11 @@
 // frontend/src/FarmerFarm3D.jsx
-// Professional, interactive 3D-style isometric farm parcel visualizer for Bangladeshi farmers
+// Immersive, tactile, interactive 3D-style isometric farm parcel visualizer for Bangladeshi farmers
 // Features: Dynamic multi-plot selection, camera orbit/zoom/tilt, agronomic overlays (crop, moisture, soil, health, yield),
-// realistic agricultural infrastructure (irrigation canals, pump station, field paths, crop rows), and graceful 2D fallback.
+// realistic agricultural infrastructure (irrigation canals, solar pump station, agro-met mast, crop rows), and sleek glassmorphic UI.
 
-import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useTranslation, toBengaliNumber, formatArea } from './i18n.js';
+import { GlassPanel, GlassCard, GlassButton, GlassBadge } from './GlassComponents.jsx';
 
 export function FarmerFarm3D({
   activeField,
@@ -55,11 +56,12 @@ export function FarmerFarm3D({
         soilBn: 'পলি দোআঁশ (pH ৬.৪)',
         soilEn: 'Silt Loam (pH 6.4)',
         healthNdvi: 0.82,
-        healthStatusBn: 'চমৎকার উদ্ভিজ্জ বৃদ্ধি',
+        healthStatusBn: 'চমৎকার বৃদ্ধি',
         healthStatusEn: 'Excellent Canopy Growth',
         yieldMaundPerBigha: 18.5,
         yieldTonPerHa: 4.8,
-        color: '#86efac',
+        color: '#22c55e',
+        accentColor: '#16a34a',
         icon: '🌾'
       },
       {
@@ -84,7 +86,8 @@ export function FarmerFarm3D({
         healthStatusEn: 'High Health Index',
         yieldMaundPerBigha: 14.0,
         yieldTonPerHa: 3.6,
-        color: '#fde68a',
+        color: '#eab308',
+        accentColor: '#ca8a04',
         icon: '🌾'
       },
       {
@@ -109,7 +112,8 @@ export function FarmerFarm3D({
         healthStatusEn: 'Normal Vigour',
         yieldMaundPerBigha: 8.5,
         yieldTonPerHa: 1.8,
-        color: '#bbf7d0',
+        color: '#10b981',
+        accentColor: '#059669',
         icon: '🌱'
       },
       {
@@ -121,146 +125,152 @@ export function FarmerFarm3D({
         crop: 'Potato',
         cropBn: 'গোল আলু (ডায়মন্ট)',
         cropEn: 'Potato (Diamant)',
-        stageBn: 'কন্দ বৃদ্ধি পর্যায় (Tuber Bulking)',
+        stageBn: 'কন্দ গঠন পর্যায় (Tuber Bulking)',
         stageEn: 'Tuber Bulking',
-        moisturePct: 68,
-        moistureStatusBn: 'আর্দ্র ও অনুকূল',
-        moistureStatusEn: 'Favourable Moist',
-        soilType: 'sandy loam',
+        moisturePct: 70,
+        moistureStatusBn: 'অনুকূল আর্দ্রতা',
+        moistureStatusEn: 'Favourable Moisture',
+        soilType: 'loam',
         soilBn: 'বেলে দোআঁশ (pH ৬.২)',
         soilEn: 'Sandy Loam (pH 6.2)',
         healthNdvi: 0.79,
-        healthStatusBn: 'স্বাস্থ্যবান ক্যানোপি',
+        healthStatusBn: 'স্বাস্থ্যকর ক্যানোপি',
         healthStatusEn: 'Healthy Canopy',
-        yieldMaundPerBigha: 85.0,
-        yieldTonPerHa: 22.0,
-        color: '#fed7aa',
+        yieldMaundPerBigha: 95.0,
+        yieldTonPerHa: 24.5,
+        color: '#8b5cf6',
+        accentColor: '#7c3aed',
         icon: '🥔'
       },
       {
         id: 'P-05',
         row: 0,
         col: 0,
-        nameBn: canonicalFieldName,
-        nameEn: canonicalFieldName,
+        nameBn: `${canonicalFieldName} (মূল জমি)`,
+        nameEn: `${canonicalFieldName} (Active Parcel)`,
         crop: recommendedCrop || 'Rice',
-        cropBn: `${recommendedCrop === 'Wheat' ? 'গম' : recommendedCrop === 'Maize' ? 'ভুট্টা' : recommendedCrop === 'Mustard' ? 'সরিষা' : 'উচ্চফলনশীল আমন ধান'} (প্রধান খেত)`,
+        cropBn: recommendedCrop === 'Rice' ? 'উন্নত আমন ধান (ব্রি-৭৫)' : `${recommendedCrop}`,
         cropEn: `${recommendedCrop} (Target Field)`,
-        isMain: true,
-        stageBn: 'সর্বোচ্চ কুশি অবস্থা (Tillering)',
-        stageEn: 'Active Tillering',
-        moisturePct: 76,
-        moistureStatusBn: 'সুনিয়ন্ত্রিত এডাব্লিউডি সেচ',
-        moistureStatusEn: 'Regulated AWD Irrigation',
+        stageBn: 'কুশি গজানোর পর্যায় (Tillering)',
+        stageEn: 'Vegetative Tillering',
+        moisturePct: 75,
+        moistureStatusBn: 'আদর্শ সেচ মাত্রা',
+        moistureStatusEn: 'Ideal Irrigation Level',
         soilType: canonicalSoil,
-        soilBn: `${canonicalSoil === 'loam' ? 'উর্বর দোআঁশ' : canonicalSoil} (pH ${canonicalPh})`,
+        soilBn: `${canonicalSoil === 'loam' ? 'দোআঁশ মাটি' : canonicalSoil === 'clay' ? 'এঁটেল মাটি' : 'বেলে দোআঁশ'} (pH ${canonicalPh})`,
         soilEn: `${canonicalSoil} (pH ${canonicalPh})`,
-        healthNdvi: 0.86,
-        healthStatusBn: 'সর্বোত্তম স্বাস্থ্য ও বায়োমাস',
-        healthStatusEn: 'Optimal Health & Biomass',
-        yieldMaundPerBigha: 20.0,
+        healthNdvi: 0.85,
+        healthStatusBn: 'সর্বোচ্চ উৎপাদনশীলতা সূচক',
+        healthStatusEn: 'Peak Productivity Index',
+        yieldMaundPerBigha: 19.5,
         yieldTonPerHa: 5.2,
-        color: '#22c55e',
-        icon: '🌾'
+        color: '#00df81',
+        accentColor: '#009959',
+        icon: '👑',
+        isMain: true
       },
       {
         id: 'P-06',
         row: 0,
         col: 1,
-        nameBn: 'পূর্ব ভুট্টার আইল ব্লক',
-        nameEn: 'East Hybrid Maize Block',
+        nameBn: 'পূর্ব হাইব্রিড ভুট্টা খেত',
+        nameEn: 'East Hybrid Maize Field',
         crop: 'Maize',
-        cropBn: 'হাইব্রিড ভুট্টা (পায়োনিয়ার)',
-        cropEn: 'Hybrid Maize',
-        stageBn: 'মোচা গঠন পর্যায় (Silking)',
-        stageEn: 'Silking Stage',
-        moisturePct: 70,
-        moistureStatusBn: 'পর্যাপ্ত পানি সঞ্চয়',
-        moistureStatusEn: 'Adequate Storage',
+        cropBn: 'ভুট্টা (পায়োনিয়ার ৩৩৫৫)',
+        cropEn: 'Hybrid Maize (P-3355)',
+        stageBn: 'মোচা আসার পর্যায় (Silking)',
+        stageEn: 'Silking / Tasseling',
+        moisturePct: 65,
+        moistureStatusBn: 'পর্যাপ্ত পানি',
+        moistureStatusEn: 'Sufficient Water',
         soilType: 'loam',
         soilBn: 'উর্বর দোআঁশ (pH ৬.৬)',
-        soilEn: 'Loam (pH 6.6)',
-        healthNdvi: 0.81,
-        healthStatusBn: 'ঘন পাতা ও সুষম বৃদ্ধি',
-        healthStatusEn: 'Dense Leaf Vigour',
-        yieldMaundPerBigha: 38.0,
-        yieldTonPerHa: 9.8,
-        color: '#fef08a',
+        soilEn: 'Rich Loam (pH 6.6)',
+        healthNdvi: 0.88,
+        healthStatusBn: 'সবল বায়োমাস বৃদ্ধি',
+        healthStatusEn: 'Vigorous Biomass',
+        yieldMaundPerBigha: 42.0,
+        yieldTonPerHa: 10.8,
+        color: '#f59e0b',
+        accentColor: '#d97706',
         icon: '🌽'
       },
       {
         id: 'P-07',
         row: 1,
         col: -1,
-        nameBn: 'দক্ষিণ সরিষা বেঞ্চমার্ক',
-        nameEn: 'South Mustard Benchmark',
+        nameBn: 'দক্ষিণ-পশ্চিম সরিষা খেত',
+        nameEn: 'South-West Mustard Field',
         crop: 'Mustard',
         cropBn: 'সরিষা (বারি সরিষা-১৪)',
-        cropEn: 'Mustard (BARI Sarisha-14)',
+        cropEn: 'Mustard (BARI-14)',
         stageBn: 'পূর্ণ প্রস্ফুটন (Full Bloom)',
         stageEn: 'Full Bloom',
         moisturePct: 58,
-        moistureStatusBn: 'স্বল্প সেচ প্রয়োজন',
-        moistureStatusEn: 'Low Water Requirement',
-        soilType: 'loam',
-        soilBn: 'দোআঁশ (pH ৬.৫)',
-        soilEn: 'Loam (pH 6.5)',
+        moistureStatusBn: 'পরিমিত আর্দ্রতা',
+        moistureStatusEn: 'Moderate Moisture',
+        soilType: 'sandy loam',
+        soilBn: 'পলি দোআঁশ (pH ৬.৫)',
+        soilEn: 'Silt Loam (pH 6.5)',
         healthNdvi: 0.72,
-        healthStatusBn: 'হলুদ ফুলে সমৃদ্ধ খেত',
-        healthStatusEn: 'Flowering Stage',
-        yieldMaundPerBigha: 6.2,
-        yieldTonPerHa: 1.5,
-        color: '#fde047',
+        healthStatusBn: 'হলুদ ফুলে ভরপুর',
+        healthStatusEn: 'Dense Flowering Canopy',
+        yieldMaundPerBigha: 6.8,
+        yieldTonPerHa: 1.75,
+        color: '#facc15',
+        accentColor: '#ca8a04',
         icon: '🌼'
       },
       {
         id: 'P-08',
         row: 1,
         col: 0,
-        nameBn: 'দক্ষিণ সেচ সংলগ্ন ধান',
-        nameEn: 'South Irrigation Canal Paddy',
+        nameBn: 'দক্ষিণ মধ্য বোনা ধান',
+        nameEn: 'South Central Broadcast Rice',
         crop: 'Rice',
-        cropBn: 'আমন ধান (ব্রি-৫১ জলমগ্নতা সহনশীল)',
-        cropEn: 'Submergence Tolerant Rice',
-        stageBn: 'কুশি বৃদ্ধি (Stem Elongation)',
-        stageEn: 'Stem Elongation',
-        moisturePct: 84,
-        moistureStatusBn: 'উচ্চ আর্দ্রতা (নালা সংলগ্ন)',
-        moistureStatusEn: 'High Moisture (Canal Side)',
+        cropBn: 'আউশ ধান (ব্রি-৪৮)',
+        cropEn: 'Aus Rice (BR-48)',
+        stageBn: 'দানা পরিপক্ক পর্যায় (Ripening)',
+        stageEn: 'Ripening Stage',
+        moisturePct: 68,
+        moistureStatusBn: 'স্বাভাবিক আর্দ্রতা',
+        moistureStatusEn: 'Normal Moisture',
         soilType: 'clay loam',
-        soilBn: 'এঁটেল দোআঁশ (pH ৬.৭)',
-        soilEn: 'Clay Loam (pH 6.7)',
-        healthNdvi: 0.84,
-        healthStatusBn: 'উজ্জ্বল সবুজ ফলন',
-        healthStatusEn: 'Vibrant Green',
-        yieldMaundPerBigha: 19.2,
-        yieldTonPerHa: 4.9,
-        color: '#86efac',
+        soilBn: 'ভারী পলি (pH ৭.০)',
+        soilEn: 'Heavy Silt (pH 7.0)',
+        healthNdvi: 0.76,
+        healthStatusBn: 'সোনালী পাকা ফসল',
+        healthStatusEn: 'Golden Mature Grain',
+        yieldMaundPerBigha: 16.0,
+        yieldTonPerHa: 4.2,
+        color: '#34d399',
+        accentColor: '#059669',
         icon: '🌾'
       },
       {
         id: 'P-09',
         row: 1,
         col: 1,
-        nameBn: 'দক্ষিণ-পূর্ব শাকসবজি অঞ্চল',
-        nameEn: 'South-East Vegetable Zone',
+        nameBn: 'দক্ষিণ-পূর্ব সবজি খেত',
+        nameEn: 'South-East Vegetable Strip',
         crop: 'Tomato',
-        cropBn: 'টমেটো ও শীতকালীন সবজি',
-        cropEn: 'Tomato & Winter Veg',
-        stageBn: 'ফল পরিপক্বতা (Ripening)',
-        stageEn: 'Fruit Ripening',
-        moisturePct: 65,
-        moistureStatusBn: 'নিয়ন্ত্রিত ড্রিপ সেচ',
-        moistureStatusEn: 'Drip Irrigated',
-        soilType: 'sandy loam',
-        soilBn: 'জৈবসমৃদ্ধ বেলে দোআঁশ (pH ৬.৩)',
-        soilEn: 'Organic Sandy Loam (pH 6.3)',
-        healthNdvi: 0.77,
-        healthStatusBn: 'ফলনশীল অবস্থা',
-        healthStatusEn: 'Fruiting Stage',
+        cropBn: 'উচ্চফলনশীল টমেটো',
+        cropEn: 'Hybrid Tomato (Ratan)',
+        stageBn: 'ফল পাকা পর্যায় (Fruiting)',
+        stageEn: 'Fruiting Stage',
+        moisturePct: 76,
+        moistureStatusBn: 'নিয়মিত সেচ আবশ্যক',
+        moistureStatusEn: 'Frequent Irrigation Need',
+        soilType: 'loam',
+        soilBn: 'দোআঁশ মাটি (pH ৬.৩)',
+        soilEn: 'Rich Loam (pH 6.3)',
+        healthNdvi: 0.81,
+        healthStatusBn: 'চমৎকার ফলন লক্ষণ',
+        healthStatusEn: 'Vigorous Fruiting',
         yieldMaundPerBigha: 110.0,
         yieldTonPerHa: 28.5,
-        color: '#fca5a5',
+        color: '#f87171',
+        accentColor: '#dc2626',
         icon: '🍅'
       }
     ];
@@ -268,7 +278,7 @@ export function FarmerFarm3D({
 
   const activePlot = plotsData[selectedPlotIndex] || plotsData[4];
 
-  // Canvas Isometric 3D Engine
+  // Canvas Isometric 3D Engine with High-Fidelity Agricultural Atmosphere
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || viewMode !== '3d') return;
@@ -279,86 +289,134 @@ export function FarmerFarm3D({
     let tick = 0;
 
     const render = () => {
-      tick += 0.025; // Gentle natural wind & water wave
+      tick += 0.02; // Natural slow wind and water ripple speed
       const width = canvas.width;
       const height = canvas.height;
 
-      // 1. Environmental Sky & Landscape Gradient
+      // 1. Atmosphere: Futuristic Agricultural Command Center Twilight Gradient
       const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
-      skyGrad.addColorStop(0, '#e0f2fe'); // Clear agricultural horizon sky
-      skyGrad.addColorStop(0.45, '#f0fdf4'); // Soft green morning light
-      skyGrad.addColorStop(0.75, '#ecfdf5');
-      skyGrad.addColorStop(1, '#d1fae5'); // Earth reflection
+      skyGrad.addColorStop(0, '#061019'); // Deep obsidian night sky
+      skyGrad.addColorStop(0.35, '#0b1d28'); // Soft emerald mist layer
+      skyGrad.addColorStop(0.70, '#0d272d'); // Warm horizon
+      skyGrad.addColorStop(1, '#08141b'); // Earth shadow
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Subtle atmospheric cloud layers
+      // Subtle atmospheric grid on the horizon
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx.beginPath();
-      ctx.arc(width * 0.25 + Math.sin(tick * 0.1) * 20, height * 0.12, 60, 0, Math.PI * 2);
-      ctx.arc(width * 0.32 + Math.sin(tick * 0.1) * 20, height * 0.10, 45, 0, Math.PI * 2);
-      ctx.arc(width * 0.78 - Math.sin(tick * 0.1) * 15, height * 0.14, 75, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 223, 129, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 36) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += 36) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
       ctx.restore();
 
-      // Sun illumination in upper corner
+      // Atmospheric ambient sunlight glow in upper corner
       ctx.save();
-      const sunGrad = ctx.createRadialGradient(width * 0.88, height * 0.12, 10, width * 0.88, height * 0.12, 80);
-      sunGrad.addColorStop(0, 'rgba(253, 224, 71, 0.85)');
-      sunGrad.addColorStop(0.4, 'rgba(250, 204, 21, 0.35)');
-      sunGrad.addColorStop(1, 'rgba(250, 204, 21, 0)');
+      const sunX = width * 0.86;
+      const sunY = height * 0.12;
+      const sunGrad = ctx.createRadialGradient(sunX, sunY, 12, sunX, sunY, 110);
+      sunGrad.addColorStop(0, 'rgba(0, 223, 129, 0.45)');
+      sunGrad.addColorStop(0.35, 'rgba(56, 189, 248, 0.22)');
+      sunGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = sunGrad;
       ctx.beginPath();
-      ctx.arc(width * 0.88, height * 0.12, 80, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, 110, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
       // Geometry Constants adjusted by camera controls
       const centerX = width * 0.48;
       const centerY = height * (cameraTilt === 'topdown' ? 0.52 : cameraTilt === 'angled' ? 0.44 : 0.48);
-      const baseTileW = Math.min(width * 0.25, 126) * zoomLevel;
+      const baseTileW = Math.min(width * 0.25, 128) * zoomLevel;
       const heightRatio = cameraTilt === 'topdown' ? 0.75 : cameraTilt === 'angled' ? 0.40 : 0.52;
       const baseTileH = baseTileW * heightRatio;
 
-      // Draw Main Irrigation Canal (সেচ নালা) running west-to-east
+      // 2. Concrete Irrigation Canal (সেচ নালা) running west-to-east
       ctx.save();
-      ctx.fillStyle = '#0284c7';
-      const canalY = centerY + baseTileH * 1.85;
-      ctx.beginPath();
-      ctx.moveTo(centerX - baseTileW * 2.4, canalY);
-      ctx.lineTo(centerX + baseTileW * 2.4, canalY);
-      ctx.lineTo(centerX + baseTileW * 2.4, canalY + 16);
-      ctx.lineTo(centerX - baseTileW * 2.4, canalY + 16);
-      ctx.closePath();
-      ctx.fill();
+      const canalY = centerY + baseTileH * 1.88;
+      const canalStartX = centerX - baseTileW * 2.4;
+      const canalEndX = centerX + baseTileW * 2.4;
+      // Canal bed
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(canalStartX, canalY - 2, canalEndX - canalStartX, 22);
+      // Flowing water
+      const waterGrad = ctx.createLinearGradient(0, canalY, 0, canalY + 16);
+      waterGrad.addColorStop(0, '#0284c7');
+      waterGrad.addColorStop(1, '#0369a1');
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(canalStartX, canalY, canalEndX - canalStartX, 16);
 
-      // Flowing water shimmer
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-      for (let w = -2; w <= 2; w++) {
-        const waveX = centerX + w * 70 + (Math.sin(tick * 2 + w) * 15);
-        ctx.fillRect(waveX, canalY + 4, 30, 4);
+      // Flowing water caustics & ripple particles
+      ctx.fillStyle = '#38bdf8';
+      for (let w = -3; w <= 3; w++) {
+        const waveX = centerX + w * 65 + (Math.sin(tick * 2.5 + w) * 18);
+        ctx.fillRect(waveX, canalY + 5, 24, 3);
       }
       ctx.restore();
 
-      // Access Road / Farm Path (খেতের রাস্তা)
+      // 3. Solar Powered Irrigation Pump Station (সৌরচালিত সেচ পাম্প)
       ctx.save();
-      ctx.fillStyle = '#e7e5e4'; // Packed earth/concrete path
-      ctx.strokeStyle = '#d6d3d1';
-      ctx.lineWidth = 1;
-      const pathStartX = centerX - baseTileW * 2.3;
-      const pathStartY = centerY - baseTileH * 1.6;
+      const pumpX = centerX + baseTileW * 1.7;
+      const pumpY = canalY - 12;
+      // Solar panel array (angled blue slate)
+      ctx.fillStyle = '#1e3a8a';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(pathStartX, pathStartY);
-      ctx.lineTo(pathStartX + 22, pathStartY - 10);
-      ctx.lineTo(centerX + baseTileW * 2.4, centerY - baseTileH * 0.2);
-      ctx.lineTo(centerX + baseTileW * 2.3, centerY - baseTileH * 0.2 + 20);
+      ctx.moveTo(pumpX - 16, pumpY - 22);
+      ctx.lineTo(pumpX + 16, pumpY - 22);
+      ctx.lineTo(pumpX + 22, pumpY - 6);
+      ctx.lineTo(pumpX - 10, pumpY - 6);
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
+      // Solar array mount pole
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pumpX + 3, pumpY - 6);
+      ctx.lineTo(pumpX + 3, pumpY + 8);
+      ctx.stroke();
+      // Pump motor unit
+      ctx.fillStyle = '#00df81';
+      ctx.fillRect(pumpX - 4, pumpY + 6, 14, 10);
       ctx.restore();
 
-      // Render 9 Isometric Agricultural Plots
+      // 4. Agro-Meteorological Sensor Mast (আবহাওয়া স্টেশন)
+      ctx.save();
+      const mastX = centerX - baseTileW * 1.85;
+      const mastY = centerY - baseTileH * 1.35;
+      // Tower
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(mastX, mastY);
+      ctx.lineTo(mastX, mastY - 48);
+      ctx.stroke();
+      // Anemometer cups
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(mastX + Math.cos(tick * 4) * 8, mastY - 48, 3.5, 0, Math.PI * 2);
+      ctx.arc(mastX - Math.cos(tick * 4) * 8, mastY - 48, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Blinking green sensor telemetry beacon
+      ctx.fillStyle = Math.sin(tick * 6) > 0 ? '#00df81' : '#14532d';
+      ctx.beginPath();
+      ctx.arc(mastX, mastY - 52, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // 5. Render 9 Isometric Agricultural Plots
       plotsData.forEach((p, idx) => {
         // Apply rotation angle (0, 90, 180, 270)
         let r = p.row;
@@ -382,68 +440,69 @@ export function FarmerFarm3D({
         const isSelected = selectedPlotIndex === idx;
         const isHovered = hoveredPlotIndex === idx;
 
-        // Dynamic 3D Elevation
-        const elevation = isSelected ? 18 : isHovered ? 12 : 6;
+        // Dynamic 3D Elevation with smooth tactile lift
+        const elevation = isSelected ? 20 : isHovered ? 13 : 6;
 
-        // Determine surface color based on active overlay
+        // Overlay colors
         let surfaceColor1 = p.color;
-        let surfaceColor2 = '#16a34a';
+        let surfaceColor2 = p.accentColor || '#166534';
 
         if (activeOverlay === 'moisture') {
           if (p.moisturePct >= 75) {
-            surfaceColor1 = '#38bdf8'; // High moisture blue
-            surfaceColor2 = '#0284c7';
+            surfaceColor1 = '#0284c7';
+            surfaceColor2 = '#0369a1';
           } else if (p.moisturePct >= 60) {
-            surfaceColor1 = '#4ade80'; // Optimal green
-            surfaceColor2 = '#16a34a';
+            surfaceColor1 = '#10b981';
+            surfaceColor2 = '#047857';
           } else {
-            surfaceColor1 = '#facc15'; // Dry amber
-            surfaceColor2 = '#ca8a04';
+            surfaceColor1 = '#f59e0b';
+            surfaceColor2 = '#b45309';
           }
         } else if (activeOverlay === 'health') {
           if (p.healthNdvi >= 0.80) {
-            surfaceColor1 = '#22c55e'; // Vibrant healthy green
-            surfaceColor2 = '#15803d';
+            surfaceColor1 = '#00df81';
+            surfaceColor2 = '#00a860';
           } else if (p.healthNdvi >= 0.70) {
-            surfaceColor1 = '#a3e635'; // Lime green
-            surfaceColor2 = '#65a30d';
+            surfaceColor1 = '#84cc16';
+            surfaceColor2 = '#4d7c0f';
           } else {
-            surfaceColor1 = '#fde047'; // Watchlist yellow
-            surfaceColor2 = '#eab308';
+            surfaceColor1 = '#eab308';
+            surfaceColor2 = '#ca8a04';
           }
         } else if (activeOverlay === 'soil') {
           if (p.soilType.includes('clay')) {
-            surfaceColor1 = '#b45309'; // Clay reddish-brown
+            surfaceColor1 = '#b45309';
             surfaceColor2 = '#78350f';
           } else if (p.soilType.includes('sandy')) {
-            surfaceColor1 = '#fde68a'; // Sandy yellow-tan
-            surfaceColor2 = '#d97706';
+            surfaceColor1 = '#d97706';
+            surfaceColor2 = '#92400e';
           } else {
-            surfaceColor1 = '#a16207'; // Fertile Loam
-            surfaceColor2 = '#713f12';
+            surfaceColor1 = '#713f12';
+            surfaceColor2 = '#451a03';
           }
         } else if (activeOverlay === 'yield') {
           if (p.yieldTonPerHa >= 15) {
-            surfaceColor1 = '#c084fc'; // High tonnage tuber/veg purple
-            surfaceColor2 = '#9333ea';
+            surfaceColor1 = '#a855f7';
+            surfaceColor2 = '#7e22ce';
           } else if (p.yieldTonPerHa >= 5) {
-            surfaceColor1 = '#4ade80'; // Excellent cereal green
-            surfaceColor2 = '#16a34a';
+            surfaceColor1 = '#00df81';
+            surfaceColor2 = '#059669';
           } else {
-            surfaceColor1 = '#fbbf24'; // Oilseed / pulse amber
-            surfaceColor2 = '#d97706';
-          }
-        } else {
-          // Default Crop view
-          if (isSelected) {
-            surfaceColor1 = '#15803d';
-            surfaceColor2 = '#166534';
+            surfaceColor1 = '#f59e0b';
+            surfaceColor2 = '#b45309';
           }
         }
 
-        // 1. Draw 3D Earth Subsurface (Soil Foundation Block Sides)
-        // Right flank side
-        ctx.fillStyle = isSelected ? '#3f2e1a' : '#271c10';
+        // Soft ground contact shadow
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.beginPath();
+        ctx.ellipse(isoX, isoY + baseTileH * 0.4, baseTileW * 0.45, baseTileH * 0.25, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // 3D Subsurface Block (Right flank)
+        ctx.fillStyle = isSelected ? '#1c2833' : '#111822';
         ctx.beginPath();
         ctx.moveTo(isoX, isoY - elevation + baseTileH / 2);
         ctx.lineTo(isoX + baseTileW / 2, isoY - elevation);
@@ -452,8 +511,8 @@ export function FarmerFarm3D({
         ctx.closePath();
         ctx.fill();
 
-        // Left flank side
-        ctx.fillStyle = isSelected ? '#523c23' : '#392816';
+        // 3D Subsurface Block (Left flank)
+        ctx.fillStyle = isSelected ? '#253545' : '#18222e';
         ctx.beginPath();
         ctx.moveTo(isoX, isoY - elevation + baseTileH / 2);
         ctx.lineTo(isoX - baseTileW / 2, isoY - elevation);
@@ -462,7 +521,7 @@ export function FarmerFarm3D({
         ctx.closePath();
         ctx.fill();
 
-        // 2. Draw Top Field Surface (Diamond Parcel)
+        // Top Parcel Diamond Surface
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(isoX, isoY - elevation - baseTileH / 2);
@@ -477,15 +536,15 @@ export function FarmerFarm3D({
         ctx.fillStyle = surfGrad;
         ctx.fill();
 
-        // Ail (খেতের আইল / Raised Field Ridge)
-        ctx.strokeStyle = isSelected ? '#ffffff' : isHovered ? '#facc15' : '#78350f';
-        ctx.lineWidth = isSelected ? 3.5 : isHovered ? 2.5 : 1.5;
+        // Field Boundary Ridge (খেতের আইল)
+        ctx.strokeStyle = isSelected ? '#00df81' : isHovered ? '#38bdf8' : 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = isSelected ? 3 : isHovered ? 2 : 1.2;
         ctx.stroke();
         ctx.restore();
 
-        // 3. Draw Agricultural Furrows / Crop Rows
+        // Crop Rows Furrows
         ctx.save();
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
         ctx.lineWidth = 1;
         for (let f = -2; f <= 2; f++) {
           const furrowOffsetY = f * (baseTileH * 0.14);
@@ -496,129 +555,82 @@ export function FarmerFarm3D({
         }
         ctx.restore();
 
-        // 4. Draw Swaying Crop Vegetation Stalks
-        const sway = Math.sin(tick + idx) * 3.5;
+        // Swaying Crop Stalks
+        const sway = Math.sin(tick * 1.5 + idx) * 3.5;
         ctx.save();
-        ctx.lineWidth = isSelected ? 2.2 : 1.6;
+        ctx.lineWidth = isSelected ? 2 : 1.5;
         ctx.lineCap = 'round';
 
-        // 5 crop stalks per tile with natural placement
         const stalkOffsets = [
-          { x: -baseTileW * 0.22, y: -baseTileH * 0.1 },
+          { x: -baseTileW * 0.20, y: -baseTileH * 0.08 },
           { x: -baseTileW * 0.08, y: baseTileH * 0.12 },
-          { x: 0, y: -baseTileH * 0.18 },
-          { x: baseTileW * 0.12, y: baseTileH * 0.08 },
-          { x: baseTileW * 0.22, y: -baseTileH * 0.06 }
+          { x: 0, y: -baseTileH * 0.16 },
+          { x: baseTileW * 0.10, y: baseTileH * 0.08 },
+          { x: baseTileW * 0.20, y: -baseTileH * 0.06 }
         ];
 
         stalkOffsets.forEach((st) => {
           const stalkX = isoX + st.x;
           const stalkY = isoY - elevation + st.y;
-          ctx.strokeStyle = isSelected ? '#ffffff' : p.crop === 'Potato' ? '#78350f' : '#14532d';
+          ctx.strokeStyle = isSelected ? '#f8fafc' : p.crop === 'Potato' ? '#78350f' : '#14532d';
 
           ctx.beginPath();
           ctx.moveTo(stalkX, stalkY);
-          ctx.quadraticCurveTo(stalkX + sway * 0.5, stalkY - 8, stalkX + sway, stalkY - 18);
+          ctx.quadraticCurveTo(stalkX + sway * 0.5, stalkY - 7, stalkX + sway, stalkY - 16);
           ctx.stroke();
 
-          // Golden/green grain head
-          ctx.fillStyle = p.crop === 'Mustard' ? '#fde047' : p.crop === 'Tomato' ? '#ef4444' : isSelected ? '#86efac' : '#eab308';
+          // Fruit / Grain Head
+          ctx.fillStyle = p.crop === 'Mustard' ? '#fde047' : p.crop === 'Tomato' ? '#ef4444' : isSelected ? '#00df81' : '#facc15';
           ctx.beginPath();
-          ctx.arc(stalkX + sway, stalkY - 18, p.crop === 'Tomato' ? 3.5 : 2.5, 0, Math.PI * 2);
+          ctx.arc(stalkX + sway, stalkY - 16, p.crop === 'Tomato' ? 3.5 : 2.5, 0, Math.PI * 2);
           ctx.fill();
         });
         ctx.restore();
 
-        // 5. Selected Plot Marker Flag / Banner
+        // Selected Plot Holographic Waypoint Beacon
         if (isSelected) {
           ctx.save();
-          // White pole
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 2.5;
+          // Luminous pole
+          ctx.strokeStyle = '#00df81';
+          ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(isoX, isoY - elevation);
-          ctx.lineTo(isoX, isoY - elevation - 42);
+          ctx.lineTo(isoX, isoY - elevation - 36);
           ctx.stroke();
 
-          // Green banner badge
-          ctx.fillStyle = '#14532d';
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
-          ctx.shadowBlur = 6;
-          ctx.fillRect(isoX, isoY - elevation - 42, 84, 22);
+          // Glass waypoint tag
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+          ctx.strokeStyle = '#00df81';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.roundRect(isoX - 28, isoY - elevation - 54, 56, 18, 5);
+          ctx.fill();
+          ctx.stroke();
 
-          ctx.shadowBlur = 0;
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 11px Inter, sans-serif';
-          ctx.fillText(lang === 'bn' ? '✓ সক্রিয় জমি' : '✓ Active Plot', isoX + 8, isoY - elevation - 27);
+          ctx.fillStyle = '#00df81';
+          ctx.font = 'bold 10px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.id, isoX, isoY - elevation - 41);
           ctx.restore();
         }
 
-        // Plot ID Badge
+        // Plot ID on tile
         ctx.save();
-        ctx.fillStyle = isSelected ? '#ffffff' : 'rgba(0, 0, 0, 0.65)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.font = isSelected ? 'bold 10px Inter, sans-serif' : '9px Inter, sans-serif';
-        ctx.fillText(p.id, isoX - 10, isoY - elevation + baseTileH * 0.32);
+        ctx.textAlign = 'center';
+        ctx.fillText(p.id, isoX, isoY - elevation + baseTileH * 0.32);
         ctx.restore();
       });
-
-      // Agricultural Well / Pump House Infrastructure (টিউবওয়েল / সেচ পাম্প)
-      ctx.save();
-      const pumpX = centerX + baseTileW * 1.6;
-      const pumpY = centerY + baseTileH * 1.2;
-      // Pump shed box
-      ctx.fillStyle = '#0f766e';
-      ctx.fillRect(pumpX - 12, pumpY - 16, 24, 16);
-      // Shed roof
-      ctx.fillStyle = '#0d9488';
-      ctx.beginPath();
-      ctx.moveTo(pumpX - 16, pumpY - 16);
-      ctx.lineTo(pumpX, pumpY - 26);
-      ctx.lineTo(pumpX + 16, pumpY - 16);
-      ctx.closePath();
-      ctx.fill();
-      // Pump label
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 9px Inter, sans-serif';
-      ctx.fillText(lang === 'bn' ? '⚡ সোলার পাম্প' : 'Solar Pump', pumpX - 22, pumpY + 12);
-      ctx.restore();
-
-      // North Arrow Compass Indicator
-      ctx.save();
-      const compassX = 42;
-      const compassY = height - 44;
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(compassX, compassY, 20, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // North pointer adjusted by rotationAngle
-      const rotRad = (rotationAngle * Math.PI) / 180;
-      const northTipX = compassX - Math.sin(rotRad) * 16;
-      const northTipY = compassY - Math.cos(rotRad) * 16;
-      ctx.fillStyle = '#dc2626';
-      ctx.beginPath();
-      ctx.moveTo(northTipX, northTipY);
-      ctx.lineTo(compassX + Math.cos(rotRad) * 5, compassY - Math.sin(rotRad) * 5);
-      ctx.lineTo(compassX - Math.cos(rotRad) * 5, compassY + Math.sin(rotRad) * 5);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 10px Inter, sans-serif';
-      ctx.fillText('N', compassX - 4, compassY - 24);
-      ctx.restore();
 
       animationFrameId = requestAnimationFrame(render);
     };
 
     render();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [canonicalFieldName, canonicalSoil, canonicalPh, recommendedCrop, viewMode, activeOverlay, rotationAngle, zoomLevel, cameraTilt, selectedPlotIndex, hoveredPlotIndex, plotsData]);
 
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [viewMode, activeOverlay, rotationAngle, zoomLevel, cameraTilt, selectedPlotIndex, hoveredPlotIndex, plotsData, lang]);
-
-  // Click & Hover hit-testing on canvas
+  // Click & Hover hit-testing
   const handleCanvasClick = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -630,11 +642,10 @@ export function FarmerFarm3D({
     const height = canvas.height;
     const centerX = width * 0.48;
     const centerY = height * (cameraTilt === 'topdown' ? 0.52 : cameraTilt === 'angled' ? 0.44 : 0.48);
-    const baseTileW = Math.min(width * 0.25, 126) * zoomLevel;
+    const baseTileW = Math.min(width * 0.25, 128) * zoomLevel;
     const heightRatio = cameraTilt === 'topdown' ? 0.75 : cameraTilt === 'angled' ? 0.40 : 0.52;
     const baseTileH = baseTileW * heightRatio;
 
-    // Check hit against each plot
     plotsData.forEach((p, idx) => {
       let r = p.row;
       let c = p.col;
@@ -654,15 +665,11 @@ export function FarmerFarm3D({
       const isoX = centerX + (c - r) * (baseTileW / 2);
       const isoY = centerY + (c + r) * (baseTileH / 2);
 
-      // Distance check to tile center
       const dx = Math.abs(clickX - isoX) / (baseTileW / 2);
       const dy = Math.abs(clickY - isoY) / (baseTileH / 2);
 
-      if (dx + dy <= 1.1) {
+      if (dx + dy <= 1.05) {
         setSelectedPlotIndex(idx);
-        if (p.isMain && onSelectField && activeField) {
-          onSelectField(activeField);
-        }
       }
     });
   };
@@ -678,7 +685,7 @@ export function FarmerFarm3D({
     const height = canvas.height;
     const centerX = width * 0.48;
     const centerY = height * (cameraTilt === 'topdown' ? 0.52 : cameraTilt === 'angled' ? 0.44 : 0.48);
-    const baseTileW = Math.min(width * 0.25, 126) * zoomLevel;
+    const baseTileW = Math.min(width * 0.25, 128) * zoomLevel;
     const heightRatio = cameraTilt === 'topdown' ? 0.75 : cameraTilt === 'angled' ? 0.40 : 0.52;
     const baseTileH = baseTileW * heightRatio;
 
@@ -709,74 +716,57 @@ export function FarmerFarm3D({
         found = idx;
       }
     });
-
     setHoveredPlotIndex(found);
   };
 
+  const handleCanvasMouseLeave = () => {
+    setHoveredPlotIndex(null);
+  };
+
   return (
-    <div className="farmer-3d-card" style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 18px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
-      {/* 3D Header & Mode Selection */}
-      <div className="farmer-3d-header" style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-        <div className="farmer-3d-title-wrap" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 42, height: 42, borderRadius: 12, background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
+    <GlassPanel className="farmer-3d-visualizer-container" elevation="primary" style={{ margin: '24px 0', overflow: 'hidden' }}>
+      {/* Header bar */}
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, rgba(0, 223, 129, 0.25) 0%, rgba(0, 168, 96, 0.15) 100%)', border: '1px solid var(--glass-border-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, boxShadow: '0 4px 12px rgba(0, 223, 129, 0.25)' }}>
             🌾
           </div>
           <div>
-            <h3 className="farmer-3d-title" style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#0f172a' }}>
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em' }}>
               {lang === 'bn' ? 'ত্রিমাত্রিক আবাদি জমি ও ফসল ভিজ্যুয়ালাইজার' : 'Interactive 3D Farm & Crop Visualizer'}
             </h3>
-            <p className="farmer-3d-subtitle" style={{ margin: 0, fontSize: 12.5, color: '#64748b' }}>
+            <p style={{ margin: '2px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
               {lang === 'bn'
-                ? 'আইল, সেচ নালা, মাটির আর্দ্রতা ও উদ্ভিজ্জ সূচক সমন্বিত ত্রিমাত্রিক কৃষি মডেল'
-                : '3D interactive field parcels with irrigation canal, crop stages, and agronomic overlays'}
+                ? 'আইল, সেচ নালা, সৌর পাম্প ও মাটির আর্দ্রতা সমন্বিত ইন্টারেক্টিভ ত্রিমাত্রিক কৃষি মডেল'
+                : 'Interactive 3D field parcel visualizer with canals, solar pump, and agronomic overlays'}
             </p>
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button
-            type="button"
-            className={`btn-mode-toggle ${viewMode === '3d' ? 'active' : ''}`}
+          <GlassButton
+            variant={viewMode === '3d' ? 'primary' : 'glass'}
+            size="sm"
             onClick={() => setViewMode('3d')}
-            style={{
-              padding: '7px 14px',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: 13,
-              cursor: 'pointer',
-              border: viewMode === '3d' ? '1px solid #16a34a' : '1px solid #cbd5e1',
-              background: viewMode === '3d' ? '#16a34a' : '#ffffff',
-              color: viewMode === '3d' ? '#ffffff' : '#334155'
-            }}
           >
-            {lang === 'bn' ? '🎮 ৩ডি ইন্টারেক্টিভ দৃশ্য' : '🎮 3D Interactive View'}
-          </button>
-          <button
-            type="button"
-            className={`btn-mode-toggle ${viewMode === '2d' ? 'active' : ''}`}
+            {lang === 'bn' ? '🎮 ৩ডি দৃশ্য' : '🎮 3D View'}
+          </GlassButton>
+          <GlassButton
+            variant={viewMode === '2d' ? 'primary' : 'glass'}
+            size="sm"
             onClick={() => setViewMode('2d')}
-            style={{
-              padding: '7px 14px',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: 13,
-              cursor: 'pointer',
-              border: viewMode === '2d' ? '1px solid #16a34a' : '1px solid #cbd5e1',
-              background: viewMode === '2d' ? '#16a34a' : '#ffffff',
-              color: viewMode === '2d' ? '#ffffff' : '#334155'
-            }}
           >
-            {lang === 'bn' ? '🗺️ ২ডি পরিকল্পনা মানচিত্র' : '🗺️ 2D Parcel Map'}
-          </button>
+            {lang === 'bn' ? '🗺️ ২ডি মানচিত্র' : '🗺️ 2D Map'}
+          </GlassButton>
         </div>
       </div>
 
       {/* 3D Action & Overlay Command Toolbar */}
       {viewMode === '3d' && (
-        <div style={{ background: '#f8fafc', padding: '10px 18px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+        <div style={{ background: 'var(--glass-bg-secondary)', padding: '10px 18px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           {/* Layer Selector */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#475569' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)' }}>
               {lang === 'bn' ? 'ফিল্টার স্তর:' : 'Overlay Layer:'}
             </span>
             {[
@@ -791,14 +781,16 @@ export function FarmerFarm3D({
                 type="button"
                 onClick={() => setActiveOverlay(layer.id)}
                 style={{
-                  padding: '5px 10px',
+                  padding: '5px 11px',
                   borderRadius: 6,
                   fontSize: 11.5,
                   fontWeight: activeOverlay === layer.id ? 800 : 600,
                   cursor: 'pointer',
-                  border: activeOverlay === layer.id ? '1px solid #15803d' : '1px solid #cbd5e1',
-                  background: activeOverlay === layer.id ? '#dcfce7' : '#ffffff',
-                  color: activeOverlay === layer.id ? '#15803d' : '#475569'
+                  border: activeOverlay === layer.id ? '1px solid #00df81' : '1px solid var(--glass-border)',
+                  background: activeOverlay === layer.id ? 'rgba(0, 223, 129, 0.18)' : 'rgba(255, 255, 255, 0.04)',
+                  color: activeOverlay === layer.id ? '#00df81' : 'var(--text-main)',
+                  boxShadow: activeOverlay === layer.id ? '0 2px 8px rgba(0, 223, 129, 0.2)' : 'none',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 {lang === 'bn' ? layer.labelBn : layer.labelEn}
@@ -808,48 +800,48 @@ export function FarmerFarm3D({
 
           {/* Camera & Orbit Controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button
-              type="button"
+            <GlassButton
+              size="sm"
+              variant="glass"
               onClick={() => setRotationAngle(prev => (prev + 90) % 360)}
               title={lang === 'bn' ? 'ক্যামেরা ঘোরান' : 'Rotate Field 90°'}
-              style={{ padding: '5px 9px', borderRadius: 6, border: '1px solid #cbd5e1', background: '#ffffff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}
             >
               🔄 {rotationAngle}°
-            </button>
-            <button
-              type="button"
-              onClick={() => setZoomLevel(prev => Math.min(1.4, prev + 0.1))}
-              title={lang === 'bn' ? 'কাছে আনুন (Zoom In)' : 'Zoom In'}
-              style={{ padding: '5px 9px', borderRadius: 6, border: '1px solid #cbd5e1', background: '#ffffff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}
+            </GlassButton>
+            <GlassButton
+              size="sm"
+              variant="glass"
+              onClick={() => setZoomLevel(prev => Math.min(1.4, Number((prev + 0.1).toFixed(1))))}
+              title={lang === 'bn' ? 'কাছে আনুন' : 'Zoom In'}
             >
               🔍+
-            </button>
-            <button
-              type="button"
-              onClick={() => setZoomLevel(prev => Math.max(0.8, prev - 0.1))}
-              title={lang === 'bn' ? 'দূরে নিন (Zoom Out)' : 'Zoom Out'}
-              style={{ padding: '5px 9px', borderRadius: 6, border: '1px solid #cbd5e1', background: '#ffffff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}
+            </GlassButton>
+            <GlassButton
+              size="sm"
+              variant="glass"
+              onClick={() => setZoomLevel(prev => Math.max(0.8, Number((prev - 0.1).toFixed(1))))}
+              title={lang === 'bn' ? 'দূরে নিন' : 'Zoom Out'}
             >
               🔍-
-            </button>
-            <button
-              type="button"
+            </GlassButton>
+            <GlassButton
+              size="sm"
+              variant="glass"
               onClick={() => {
                 setRotationAngle(0);
                 setZoomLevel(1.0);
                 setCameraTilt('isometric');
               }}
               title={lang === 'bn' ? 'ক্যামেরা রিসেট' : 'Reset Camera'}
-              style={{ padding: '5px 9px', borderRadius: 6, border: '1px solid #cbd5e1', background: '#ffffff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}
             >
-              ⟲ রিসেট
-            </button>
+              ⟲
+            </GlassButton>
           </div>
         </div>
       )}
 
       {/* Main View Area: 3D Canvas vs 2D Fallback */}
-      <div className="farmer-3d-canvas-wrapper" style={{ position: 'relative', width: '100%', minHeight: 380, background: '#f8fafc' }}>
+      <div style={{ position: 'relative', width: '100%', minHeight: 380, background: '#090e15' }}>
         {viewMode === '3d' ? (
           <div style={{ position: 'relative' }}>
             <canvas
@@ -858,47 +850,46 @@ export function FarmerFarm3D({
               height={420}
               onClick={handleCanvasClick}
               onMouseMove={handleCanvasMouseMove}
+              onMouseLeave={handleCanvasMouseLeave}
               style={{ display: 'block', width: '100%', height: 'auto', cursor: 'pointer' }}
               title={lang === 'bn' ? 'জমি নির্বাচন করতে ক্লিক করুন' : 'Click on any plot to inspect details'}
             />
             {/* Interactive hint overlay */}
-            <div style={{ position: 'absolute', top: 12, left: 14, background: 'rgba(255,255,255,0.92)', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, color: '#334155', boxShadow: '0 2px 6px rgba(0,0,0,0.06)' }}>
+            <div style={{ position: 'absolute', top: 12, left: 14, background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', padding: '5px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.25)', boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}>
               💡 {lang === 'bn' ? 'যেকোনো প্লটে ক্লিক করে তথ্য দেখুন' : 'Click any plot to inspect field telemetry'}
             </div>
           </div>
         ) : (
-          <div className="farmer-2d-plan-view" style={{ padding: 20 }}>
-            <div className="farmer-2d-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 }}>
+          <div style={{ padding: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 }}>
               {plotsData.map((plot, idx) => (
-                <div
+                <GlassCard
                   key={plot.id}
                   onClick={() => setSelectedPlotIndex(idx)}
                   style={{
-                    padding: 14,
-                    borderRadius: 12,
-                    background: selectedPlotIndex === idx ? '#f0fdf4' : '#ffffff',
-                    border: selectedPlotIndex === idx ? '2px solid #16a34a' : '1px solid #e2e8f0',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                    background: selectedPlotIndex === idx ? 'rgba(0, 223, 129, 0.12)' : 'var(--glass-bg-secondary)',
+                    borderColor: selectedPlotIndex === idx ? '#00df81' : 'var(--glass-border)',
+                    boxShadow: selectedPlotIndex === idx ? '0 4px 16px rgba(0, 223, 129, 0.25)' : 'var(--glass-shadow)',
+                    cursor: 'pointer'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: '#16a34a', background: '#dcfce7', padding: '2px 6px', borderRadius: 4 }}>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: '#00df81', background: 'rgba(0, 223, 129, 0.15)', padding: '2px 8px', borderRadius: 4, border: '1px solid rgba(0, 223, 129, 0.3)' }}>
                       {plot.id}
                     </span>
-                    <span style={{ fontSize: 18 }}>{plot.icon}</span>
+                    <span style={{ fontSize: 20 }}>{plot.icon}</span>
                   </div>
-                  <h4 style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 800, color: '#0f172a' }}>
+                  <h4 style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 800, color: '#f8fafc' }}>
                     {lang === 'bn' ? plot.nameBn : plot.nameEn}
                   </h4>
-                  <p style={{ margin: '0 0 6px', fontSize: 12, color: '#475569' }}>
+                  <p style={{ margin: '0 0 6px', fontSize: 12, color: 'var(--text-muted)' }}>
                     {lang === 'bn' ? plot.cropBn : plot.cropEn}
                   </p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#64748b' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-dim)' }}>
                     <span>{lang === 'bn' ? `ফলন: ${toBengaliNumber(plot.yieldMaundPerBigha)} মণ/বিঘা` : `Yield: ${plot.yieldMaundPerBigha} md/bigha`}</span>
-                    <span>{plot.moisturePct}% আর্দ্রতা</span>
+                    <span>{plot.moisturePct}% {lang === 'bn' ? 'আর্দ্রতা' : 'Moisture'}</span>
                   </div>
-                </div>
+                </GlassCard>
               ))}
             </div>
           </div>
@@ -906,46 +897,46 @@ export function FarmerFarm3D({
       </div>
 
       {/* Selected Plot Detailed Telemetry Inspector Bar */}
-      <div style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', padding: '16px 20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 10 }}>
+      <div style={{ background: 'var(--glass-bg-elevated)', borderTop: '1px solid var(--glass-border)', padding: '16px 20px', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ background: '#16a34a', color: '#ffffff', padding: '3px 8px', borderRadius: 6, fontWeight: 800, fontSize: 12 }}>
+            <span style={{ background: '#00df81', color: '#09131d', padding: '3px 9px', borderRadius: 6, fontWeight: 800, fontSize: 12, boxShadow: '0 2px 8px rgba(0, 223, 129, 0.4)' }}>
               {activePlot.id}
             </span>
-            <strong style={{ fontSize: 15, color: '#0f172a' }}>
+            <strong style={{ fontSize: 15, color: '#f8fafc' }}>
               {lang === 'bn' ? activePlot.nameBn : activePlot.nameEn}
             </strong>
             {activePlot.isMain && (
-              <span style={{ background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 800 }}>
+              <GlassBadge variant="emerald">
                 ★ {lang === 'bn' ? 'সক্রিয় খামার' : 'Active Field'}
-              </span>
+              </GlassBadge>
             )}
           </div>
 
-          <div style={{ fontSize: 12, color: '#64748b' }}>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
             <span>{lang === 'bn' ? 'মাটির আর্দ্রতা:' : 'Soil Moisture:'} </span>
-            <strong style={{ color: activePlot.moisturePct >= 65 ? '#16a34a' : '#d97706' }}>
+            <strong style={{ color: activePlot.moisturePct >= 65 ? '#00df81' : '#f59e0b' }}>
               {toBengaliNumber(activePlot.moisturePct)}% ({lang === 'bn' ? activePlot.moistureStatusBn : activePlot.moistureStatusEn})
             </strong>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, background: '#ffffff', padding: 12, borderRadius: 10, border: '1px solid #e2e8f0' }}>
-          <div>
-            <span style={{ display: 'block', fontSize: 11, color: '#64748b' }}>{lang === 'bn' ? 'ফসল ও জাত:' : 'Crop & Variety:'}</span>
-            <strong style={{ fontSize: 13, color: '#0f172a' }}>{lang === 'bn' ? activePlot.cropBn : activePlot.cropEn}</strong>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10 }}>
+          <div style={{ background: 'var(--glass-bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--glass-border)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-dim)', marginBottom: 2 }}>{lang === 'bn' ? 'ফসল ও জাত:' : 'Crop & Variety:'}</span>
+            <strong style={{ fontSize: 13, color: '#f8fafc' }}>{lang === 'bn' ? activePlot.cropBn : activePlot.cropEn}</strong>
           </div>
-          <div>
-            <span style={{ display: 'block', fontSize: 11, color: '#64748b' }}>{lang === 'bn' ? 'বৃদ্ধির পর্যায়:' : 'Growth Stage:'}</span>
-            <strong style={{ fontSize: 13, color: '#0f172a' }}>{lang === 'bn' ? activePlot.stageBn : activePlot.stageEn}</strong>
+          <div style={{ background: 'var(--glass-bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--glass-border)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-dim)', marginBottom: 2 }}>{lang === 'bn' ? 'বৃদ্ধির পর্যায়:' : 'Growth Stage:'}</span>
+            <strong style={{ fontSize: 13, color: '#f8fafc' }}>{lang === 'bn' ? activePlot.stageBn : activePlot.stageEn}</strong>
           </div>
-          <div>
-            <span style={{ display: 'block', fontSize: 11, color: '#64748b' }}>{lang === 'bn' ? 'মাটি ও অম্লমান:' : 'Soil & pH:'}</span>
-            <strong style={{ fontSize: 13, color: '#0f172a' }}>{lang === 'bn' ? activePlot.soilBn : activePlot.soilEn}</strong>
+          <div style={{ background: 'var(--glass-bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--glass-border)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-dim)', marginBottom: 2 }}>{lang === 'bn' ? 'মাটি ও অম্লমান:' : 'Soil & pH:'}</span>
+            <strong style={{ fontSize: 13, color: '#f8fafc' }}>{lang === 'bn' ? activePlot.soilBn : activePlot.soilEn}</strong>
           </div>
-          <div>
-            <span style={{ display: 'block', fontSize: 11, color: '#64748b' }}>{lang === 'bn' ? 'প্রত্যাশিত ফলন:' : 'Estimated Yield:'}</span>
-            <strong style={{ fontSize: 13, color: '#16a34a' }}>
+          <div style={{ background: 'var(--glass-bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--glass-border)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-dim)', marginBottom: 2 }}>{lang === 'bn' ? 'প্রত্যাশিত ফলন:' : 'Estimated Yield:'}</span>
+            <strong style={{ fontSize: 13, color: '#00df81' }}>
               {lang === 'bn'
                 ? `${toBengaliNumber(activePlot.yieldMaundPerBigha)} মণ/বিঘা (${toBengaliNumber(activePlot.yieldTonPerHa)} টন/হেক্টর)`
                 : `${activePlot.yieldMaundPerBigha} md/bigha (${activePlot.yieldTonPerHa} t/ha)`}
@@ -953,14 +944,14 @@ export function FarmerFarm3D({
           </div>
         </div>
 
-        <div style={{ marginTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-          <small style={{ color: '#94a3b8', fontSize: 11 }}>
+        <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+          <small style={{ color: 'var(--text-dim)', fontSize: 11 }}>
             ℹ️ {lang === 'bn'
-              ? 'কাল্পনিক ত্রিমাত্রিক কৃষি মডেল (Illustrative 3D Simulation) — আইল ও সেচ চ্যানেল প্রদর্শনীর জন্য। সরাসরি স্যাটেলাইট সেন্সর বা ড্রোন ফুটেজ নয়।'
+              ? 'কাল্পনিক ত্রিমাত্রিক কৃষি মডেল (Illustrative 3D Simulation) — আইল, পাম্প ও সেচ চ্যানেল প্রদর্শনীর জন্য। সরাসরি স্যাটেলাইট সেন্সর বা ড্রোন ফুটেজ নয়।'
               : 'Illustrative 3D parcel simulation for crop stages and canal irrigation — not real-time satellite GIS or drone camera feed.'}
           </small>
         </div>
       </div>
-    </div>
+    </GlassPanel>
   );
 }

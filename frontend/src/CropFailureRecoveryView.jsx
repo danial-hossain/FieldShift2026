@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { RecoverySimulation3D } from './research3d/RecoverySimulation3D.jsx';
 
 export function CropFailureRecoveryView({
   activeField,
@@ -222,6 +223,17 @@ export function CropFailureRecoveryView({
       {/* Results View */}
       {simData && (
         <div>
+          {/* 3D Crop Failure Shock & Restorative Landscape Visualizer */}
+          <div style={{ marginBottom: '22px' }}>
+            <RecoverySimulation3D
+              failureType={failureType}
+              severity={severity}
+              failureSeason={failureSeason}
+              simData={simData}
+              lang="en"
+            />
+          </div>
+
           {/* Key Metric Scorecard */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '20px' }}>
             <div className="dash-card" style={{ background: '#131920', border: '1px solid #1e293b', borderRadius: '12px', padding: '16px' }}>

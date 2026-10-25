@@ -632,7 +632,14 @@ def workflow_replan(payload: Payload):
 
     lat = float(data.get("latitude") or 23.8103)
     lon = float(data.get("longitude") or 90.4125)
-    completed_seasons = data.get("completed_seasons") or data.get("completed_seasons_history") or []
+    raw_completed = data.get("completed_seasons") or data.get("completed_seasons_history") or []
+    if isinstance(raw_completed, int):
+        last_crop = str(data.get("last_season_crop") or "Wheat")
+        completed_seasons = [{"period": f"Y{1+(i//2)}_S{1+(i%2)}", "crop": last_crop} for i in range(raw_completed)]
+    elif isinstance(raw_completed, list):
+        completed_seasons = raw_completed
+    else:
+        completed_seasons = []
     updated_field_conditions = data.get("updated_field_conditions") or data.get("updated_conditions") or {}
     priority = str(data.get("priority") or "balanced")
 

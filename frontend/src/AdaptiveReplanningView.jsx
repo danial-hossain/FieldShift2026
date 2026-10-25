@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { SixSeasonTrajectory3D } from './research3d/SixSeasonTrajectory3D.jsx';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
 
 export function AdaptiveReplanningView({
   activeField,
   analysisResult,
-  request,
-  formatNumber,
+  request: propRequest,
+  formatNumber: propFormatNumber,
   onNavigateTab,
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+
   const [completedSeasonsCount, setCompletedSeasonsCount] = useState(1);
+  const [selectedSeasonIdx, setSelectedSeasonIdx] = useState(0);
   const [historyItems, setHistoryItems] = useState([
     { season_idx: 0, season_name: 'Year 1 - Rabi / Dry', crop_planted: 'Potato', yield_kg_ha: 22000, water_applied_mm: 480, soil_impact: 'high_depletion' },
     { season_idx: 1, season_name: 'Year 1 - Kharif-1', crop_planted: 'Mungbean', yield_kg_ha: 1400, water_applied_mm: 320, soil_impact: 'restorative' },
@@ -73,6 +80,33 @@ export function AdaptiveReplanningView({
   useEffect(() => {
     executeReplan();
   }, [activeField, completedSeasonsCount]);
+
+  const replanTrajectoryRecs = useMemo(() => {
+    if (!replanData) return [];
+    const past = (replanData.historical_context || []).map(p => ({
+      period: p.season_name,
+      crop: p.crop_planted,
+      family: p.crop_planted === 'Mungbean' || p.crop_planted === 'Lentil' ? 'Fabaceae' : 'Solanaceae',
+      isLegume: p.crop_planted === 'Mungbean' || p.crop_planted === 'Lentil' || p.crop_planted === 'Chickpea',
+      profitBdt: 75000,
+      yieldTonHa: (p.yield_kg_ha || 1500) / 1000,
+      waterScore: 4.5,
+      soilScore: 5.0,
+      status: 'Harvested (Historical)',
+    }));
+    const future = (replanData.replanned_schedule || []).map(f => ({
+      period: f.season_name,
+      crop: f.crop_planted || f.recommended_crop,
+      family: f.family || 'Poaceae',
+      isLegume: Boolean(f.is_legume),
+      profitBdt: f.projected_profit_bdt || 92000,
+      yieldTonHa: f.projected_yield_ton_ha || 3.5,
+      waterScore: 5.2,
+      soilScore: 5.4,
+      status: 'Adaptive Recommendation',
+    }));
+    return [...past, ...future];
+  }, [replanData]);
 
   return (
     <div className="adaptive-replanning-view" style={{ gridColumn: 'span 12' }}>
@@ -265,6 +299,22 @@ export function AdaptiveReplanningView({
               <span style={{ fontSize: '11px', color: '#64748b' }}>Proxy recovery score delta</span>
             </div>
           </div>
+
+          {/* 3D Six-Season Replanned Trajectory */}
+          {replanTrajectoryRecs.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <h4 style={{ margin: '0 0 10px', fontSize: '15px', color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🌐</span> 3D Adaptive 6-Season Trajectory (Historical Harvested vs Re-optimized Seasons)
+              </h4>
+              <SixSeasonTrajectory3D
+                recommendations={replanTrajectoryRecs}
+                selectedSeasonIndex={selectedSeasonIdx}
+                onSelectSeason={idx => setSelectedSeasonIdx(idx)}
+                strategy={priority}
+                lang="bn"
+              />
+            </div>
+          )}
 
           {/* Schedule Table: Past vs Replanned with Why Recommendations Changed */}
           <div className="dash-card" style={{ background: '#131920', border: '1px solid #1e293b', borderRadius: '14px', padding: '20px', marginBottom: '20px' }}>

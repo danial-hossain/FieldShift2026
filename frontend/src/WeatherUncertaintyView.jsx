@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ClimateStress3D } from './research3d/ClimateStress3D.jsx';
 
 export function WeatherUncertaintyView({
   activeField,
@@ -228,6 +229,21 @@ export function WeatherUncertaintyView({
                 </div>
               );
             })}
+          </div>
+
+          {/* 3D Atmospheric Thermal Dome & Microclimate Visualization */}
+          <div style={{ marginBottom: '22px' }}>
+            <ClimateStress3D
+              weatherScenario={activeScenarioKey}
+              tempDeltaC={activeScen?.temp_delta_c ?? 0}
+              baseTempC={28.5}
+              et0Mm={Number((4.5 * (1 + (activeScen?.temp_delta_c || 0) * 0.05)).toFixed(1))}
+              stressDays={activeScen?.temp_delta_c > 2 ? 24 : activeScen?.precip_delta_pct < 0 ? 30 : 12}
+              rainfallMm={Math.max(0, Math.round(200 * (1 + (activeScen?.precip_delta_pct || 0) / 100)))}
+              crop={String(Object.values(activeScen?.crops || {})[0] || 'rice').toLowerCase()}
+              yieldTonHa={activeScen?.feasible ? 4.5 : 2.1}
+              lang="en"
+            />
           </div>
 
           {/* Active Scenario Detail Card */}

@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { formatNumber } from './main.jsx';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
+import { SyntheticLab3D } from './research3d/SyntheticLab3D.jsx';
 
-export function SyntheticDataLabView({ activeField, onNavigateTab }) {
-  const [activeTab, setActiveTab] = useState('generator'); // 'generator' | 'provenance'
+export function SyntheticDataLabView({
+  activeField,
+  onNavigateTab,
+  request: propRequest,
+  formatNumber: propFormatNumber,
+  initialTab = 'generator',
+  onBack,
+  lang = 'bn'
+}) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+
+  const [activeTab, setActiveTab] = useState(initialTab); // 'generator' | 'provenance'
+  const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
+
+  useEffect(() => {
+    if (initialTab) setActiveTab(initialTab);
+  }, [initialTab]);
   
   // Generator Config
   const [seed, setSeed] = useState(42);
@@ -183,6 +201,17 @@ export function SyntheticDataLabView({ activeField, onNavigateTab }) {
           <em> They DO NOT represent measured real-world farm outcomes and cannot be used to prove agronomic accuracy.</em>
         </div>
       </div>
+
+      {/* 3D SYNTHETIC FARM PARCEL & PROVENANCE WORKBENCH */}
+      <SyntheticLab3D
+        scenarios={generatedData?.scenarios || []}
+        activeScenarioIndex={selectedScenarioIndex}
+        onSelectScenario={idx => setSelectedScenarioIndex(idx)}
+        activeTab={activeTab}
+        provenanceSummary={provenanceSummary}
+        seed={seed}
+        height={410}
+      />
 
       {activeTab === 'generator' && (
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24, alignItems: 'start' }}>

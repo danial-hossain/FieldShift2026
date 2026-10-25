@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { SatelliteConstellation3D } from './research3d/SatelliteConstellation3D.jsx';
 
 export function SatelliteReadinessView({
   request,
@@ -7,6 +8,7 @@ export function SatelliteReadinessView({
   const [readiness, setReadiness] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedSensor, setSelectedSensor] = useState('nasa_power');
 
   useEffect(() => {
     const fetchReadiness = async () => {
@@ -67,6 +69,13 @@ export function SatelliteReadinessView({
           </div>
         </div>
       </div>
+
+      {/* 3D WebGL Orbital Sensor Constellation Visualizer */}
+      <SatelliteConstellation3D
+        selectedSensorId={selectedSensor}
+        onSelectSensor={id => setSelectedSensor(id)}
+        height={380}
+      />
 
       {loading && <div style={{ color: '#94a3b8', padding: '20px' }}>Inspecting satellite sensor APIs...</div>}
       {error && <div style={{ color: '#ef4444', padding: '20px' }}>{error}</div>}

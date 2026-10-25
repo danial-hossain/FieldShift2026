@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatNumber } from './main.jsx';
+import { SensitivityAnalysis3D } from './research3d/SensitivityAnalysis3D.jsx';
 
 export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
   const [loading, setLoading] = useState(false);
@@ -104,6 +105,11 @@ export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
         <div style={{ padding: 20, color: '#b91c1c', background: '#fee2e2', borderRadius: 8 }}>{error}</div>
       ) : (
         <div>
+          {/* 3D Parameter Sweep Response Workbench */}
+          <div style={{ marginBottom: 24 }}>
+            <SensitivityAnalysis3D activeField={activeField} lang="en" />
+          </div>
+
           {/* Elasticity Ranking Cards */}
           {sensitivityData?.parameter_elasticity_ranking && (
             <div className="card" style={{ padding: 20, borderRadius: 12, marginBottom: 24 }}>

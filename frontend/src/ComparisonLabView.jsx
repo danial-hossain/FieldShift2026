@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { Comparison3Way3D } from './research3d/Comparison3Way3D.jsx';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
 
 export function ComparisonLabView({
   activeField,
   analysisResult,
-  request,
-  formatNumber,
+  request: propRequest,
+  formatNumber: propFormatNumber,
   onNavigateTab,
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+
   const [priority, setPriority] = useState('balanced');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [labData, setLabData] = useState(null);
+  const [show3D, setShow3D] = useState(true);
 
   // Initialize from analysisResult if available, otherwise fetch
   useEffect(() => {
@@ -207,6 +214,32 @@ export function ComparisonLabView({
           <div style={{ marginTop: 14, padding: 10, background: 'rgba(248, 113, 113, 0.12)', border: '1px solid var(--accent-red)', borderRadius: 8, color: 'var(--accent-red)', fontSize: 13 }}>
             <strong>Evaluation Warning:</strong> {error}
           </div>
+        )}
+      </div>
+
+      {/* 3D SYNCHRONIZED COMPARISON WORKBENCH */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 18 }}>🌐</span>
+            <strong style={{ fontSize: 14, color: 'var(--text-main)' }}>3D Algorithmic Parcel Comparison (MILP vs RL vs Rule-Based)</strong>
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShow3D(!show3D)}
+            style={{ fontSize: 12, padding: '4px 10px' }}
+          >
+            {show3D ? 'Hide 3D View ▴' : 'Show 3D View ▾'}
+          </button>
+        </div>
+        {show3D && (
+          <Comparison3Way3D
+            labData={labData}
+            activeField={activeField}
+            priority={priority}
+            lang="en"
+          />
         )}
       </div>
 

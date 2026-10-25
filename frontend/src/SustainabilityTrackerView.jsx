@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { NutrientProfile3D } from './research3d/NutrientProfile3D.jsx';
 
 export function SustainabilityTrackerView({
   activeField,
@@ -209,6 +210,20 @@ export function SustainabilityTrackerView({
             </span>
           </div>
         </div>
+      </div>
+
+      {/* 3D Rhizosphere & Soil Nutrient Strata Visualizer */}
+      <div style={{ marginBottom: '22px' }}>
+        <NutrientProfile3D
+          nitrogenKgHa={legumeCount > 0 ? 140 : 90}
+          phosphorusKgHa={60}
+          potassiumKgHa={60}
+          organicMatterPct={hasMeasuredOm ? Number(activeField.organic_matter) : 1.80}
+          soilPh={hasMeasuredPh ? Number(activeField.soil_ph) : 6.5}
+          isLegume={legumeCount > 0}
+          crop={trajectory[0]?.crop ? String(trajectory[0].crop).toLowerCase() : 'rice'}
+          lang="en"
+        />
       </div>
 
       {/* Trajectory Timeline: 6 Seasons */}

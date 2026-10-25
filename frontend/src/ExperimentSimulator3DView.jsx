@@ -1,10 +1,11 @@
 // frontend/src/ExperimentSimulator3DView.jsx
 // Professional 3D Farm Experiment Simulator & Agricultural Scenario Workbench
-// Features: Dual scenario builder (Scenario A vs B), interactive 3D experimental farm canvas,
-// 9 experimental visualization overlays, time-step scrubber (Days 1-120), FAO-33 water balance engine,
-// camera orbit/zoom controls, side-by-side diff comparison, and JSON/CSV export.
+// Features: Real-time Three.js 3D agricultural scene with OrbitControls, instanced crop tillers,
+// concrete canal with animated flowing water, solar pump station, agro-meteorological mast,
+// root-zone soil cross-section, 7 scientific data overlays, 120-day timeseries scrubber,
+// dual scenario builder (Scenario A vs B), side-by-side diff matrix, and JSON/CSV exports.
 
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation, toBengaliNumber, formatArea, formatCurrency } from './i18n.js';
 import {
   CROP_AGRONOMIC_MODELS,
@@ -12,15 +13,37 @@ import {
   runAgronomicSimulation,
   compareScenarios
 } from './experimentSimulationEngine.js';
+import { RealFarmCanvas3D } from './RealFarmCanvas3D.jsx';
+import { SoilProfile3D } from './research3d/SoilProfile3D.jsx';
+import { WaterBalance3D } from './research3d/WaterBalance3D.jsx';
+import { CropGrowth3D } from './research3d/CropGrowth3D.jsx';
+import { ClimateStress3D } from './research3d/ClimateStress3D.jsx';
+import { NutrientProfile3D } from './research3d/NutrientProfile3D.jsx';
+import { ScenarioComparison3D } from './research3d/ScenarioComparison3D.jsx';
+import { StressTest3D } from './research3d/StressTest3D.jsx';
+import { GlassPanel, GlassCard, GlassButton, GlassBadge } from './GlassComponents.jsx';
 
 export function ExperimentSimulator3DView({
   activeField,
   onNavigateTab,
   onBack,
-  lang = 'bn'
+  lang = 'bn',
+  initialMainTab = '3d_experiment',
+  initial3DViewMode = 'farm_all'
 }) {
   const { t } = useTranslation(lang);
-  const canvasRef = useRef(null);
+
+  // Top-level View Tabs: '3d_experiment' | 'scenario_comparison' | 'stress_tests' | 'six_seasons_plan'
+  const [activeMainTab, setActiveMainTab] = useState(initialMainTab);
+  const [center3DViewMode, setCenter3DViewMode] = useState(initial3DViewMode); // 'farm_all'|'soil_profile'|'water_balance'|'crop_growth'|'climate_stress'|'nutrient_profile'
+
+  useEffect(() => {
+    if (initialMainTab) setActiveMainTab(initialMainTab);
+  }, [initialMainTab]);
+
+  useEffect(() => {
+    if (initial3DViewMode) setCenter3DViewMode(initial3DViewMode);
+  }, [initial3DViewMode]);
 
   // Scenario A Configuration State (Baseline)
   const [scenarioA, setScenarioA] = useState({
@@ -52,19 +75,20 @@ export function ExperimentSimulator3DView({
     randomSeed: 2026
   });
 
-  // Active View & Simulation States
-  const [activeScenarioTab, setActiveScenarioTab] = useState('A'); // 'A' | 'B' | 'compare'
-  const [isSimulating, setIsSimulating] = useState(false);
+  // Active Scenario Tab in Experiment Controls
+  const [activeScenarioTab, setActiveScenarioTab] = useState('A'); // 'A' | 'B'
+
+  // 120-Day Timeline & Simulation Playback
   const [currentDayStep, setCurrentDayStep] = useState(120); // 1 to 120
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // 3D Canvas Controls
-  const [activeOverlay, setActiveOverlay] = useState('crop'); // 'crop'|'growth'|'irrigation'|'water_stress'|'soil'|'climate'|'yield'|'economics'|'scenario_diff'
-  const [rotationAngle, setRotationAngle] = useState(0); // 0, 90, 180, 270
-  const [zoomLevel, setZoomLevel] = useState(1.0);
-  const [cameraTilt, setCameraTilt] = useState('isometric'); // 'isometric' | 'topdown' | 'angled'
-  const [selectedPlotIndex, setSelectedPlotIndex] = useState(4); // Center plot
-  const [hoveredPlotIndex, setHoveredPlotIndex] = useState(null);
+  // 3D Scene Controls & Camera Presets
+  const [activeOverlay, setActiveOverlay] = useState('crop'); // 'crop'|'growth'|'irrigation'|'water_stress'|'yield'|'economics'|'scenario_diff'
+  const [cameraMode, setCameraMode] = useState('aerial'); // 'aerial' | 'ground' | 'cross_section' | 'orbit'
+  const [showSoilCrossSection, setShowSoilCrossSection] = useState(false);
+  const [showWireframe, setShowWireframe] = useState(false);
+  const [isAutoRotate, setIsAutoRotate] = useState(false);
+  const [selectedPlotIndex, setSelectedPlotIndex] = useState(4); // Center plot EXP-5
 
   // Run Deterministic Simulations
   const simResultA = useMemo(() => runAgronomicSimulation(scenarioA), [scenarioA]);
@@ -91,388 +115,65 @@ export function ExperimentSimulator3DView({
     return () => clearInterval(timer);
   }, [isPlaying]);
 
-  // 12-Plot Experimental Farm Layout
+  // 9-Plot Experimental Farm Layout with real agronomic perturbations
   const experimentalPlots = useMemo(() => {
     const treatments = [
-      { id: 'EXP-1', row: -1, col: -1, titleBn: 'প্লট ১ (নিয়ন্ত্রণ ব্লক)', titleEn: 'Plot 1 (Control)', treatment: 'T1: 100% Water / N-120' },
+      { id: 'EXP-1', row: -1, col: -1, titleBn: 'প্লট ১ (নিয়ন্ত্রণ ব্লক)', titleEn: 'Plot 1 (Control Block)', treatment: 'T1: 100% Water / N-120' },
       { id: 'EXP-2', row: -1, col: 0,  titleBn: 'প্লট ২ (এডাব্লিউডি সেচ)', titleEn: 'Plot 2 (AWD Irrigation)', treatment: 'T2: AWD -25% Water' },
       { id: 'EXP-3', row: -1, col: 1,  titleBn: 'প্লট ৩ (উচ্চ নাইট্রোজেন)', titleEn: 'Plot 3 (High Nitrogen)', treatment: 'T3: N-150 / P-70' },
       { id: 'EXP-4', row: 0,  col: -1, titleBn: 'প্লট ৪ (জৈব সার সমন্বয়)', titleEn: 'Plot 4 (Integrated OM)', treatment: 'T4: Compost + 70% Urea' },
-      { id: 'EXP-5', row: 0,  col: 0,  titleBn: `${activeField?.name || 'প্রধান আবাদি জমি'} [কেন্দ্রীয় প্লট]`, titleEn: 'Main Field [Central Plot]', treatment: 'Target Field Benchmark', isTarget: true },
+      { id: 'EXP-5', row: 0,  col: 0,  titleBn: `${activeField?.name || (lang === 'bn' ? 'বগুড়া ডেমো খামার [DEMO]' : 'Bogura Demo Farm [DEMO]')} [কেন্দ্রীয় প্লট]`, titleEn: 'Main Field [Central Plot]', treatment: 'Target Field Benchmark', isTarget: true },
       { id: 'EXP-6', row: 0,  col: 1,  titleBn: 'প্লট ৬ (ঘাটতি সেচ ট্রায়াল)', titleEn: 'Plot 6 (Deficit Irrigation)', treatment: 'T5: 60% Deficit' },
       { id: 'EXP-7', row: 1,  col: -1, titleBn: 'প্লট ৭ (পটাশ পুষ্টি ট্রায়াল)', titleEn: 'Plot 7 (Potassium Trial)', treatment: 'T6: High K+ Stress Buffer' },
       { id: 'EXP-8', row: 1,  col: 0,  titleBn: 'প্লট ৮ (মালচিং প্রযুক্তি)', titleEn: 'Plot 8 (Straw Mulch)', treatment: 'T7: Moisture Retention' },
       { id: 'EXP-9', row: 1,  col: 1,  titleBn: 'প্লট ৯ (ড্রিপ ফার্টিগেশন)', titleEn: 'Plot 9 (Drip Fertigation)', treatment: 'T8: Precision Drip' }
     ];
 
-    // Compute dynamic day-interpolated metrics for each plot
+    // Compute dynamic day-interpolated metrics from actual simulation timeseries
     const dayRatio = currentDayStep / 120;
     const baseSim = currentSim;
+    const timeseriesList = baseSim.timeseries || [];
+    const dayRecord = timeseriesList.find(r => r.day >= currentDayStep) || timeseriesList[timeseriesList.length - 1];
+    const soilWaterMm = dayRecord?.soilWaterMm ?? ((baseSim.inputs.tawMm || 100) * 0.7);
+    const dayKs = dayRecord?.ks ?? 1.0;
+    const dayKc = dayRecord?.kc ?? 1.0;
+    const dayEtc = dayRecord?.etcMm ?? 3.5;
+    const dayEta = dayRecord?.etaMm ?? 3.5;
+    const stageBn = dayRecord?.growthStageBn || 'বাড়ন্ত পর্যায়';
+    const stageEn = dayRecord?.growthStageName || 'Vegetative';
 
     return treatments.map((t, idx) => {
-      // Perturbations around the simulated scenario to reflect real multi-plot trial variance
-      const varianceFactor = 0.92 + (idx * 0.02);
-      const plotYieldTonHa = baseSim.yieldOutcomes.simulatedYieldTonHa * varianceFactor;
-      const plotYieldMaundBigha = (plotYieldTonHa * 25) / 7.47;
-      const plotMoisture = Math.min(95, Math.max(30, (baseSim.waterBalance.cumulativeIrrigationMm > 250 ? 75 : 55) * (1 - (dayRatio * 0.2)) + (idx % 3) * 5));
-      const plotKs = Math.min(1.0, Math.max(0.2, (plotMoisture / 65)));
-      const plotHealthNdvi = Math.min(0.92, 0.40 + Math.sin(dayRatio * Math.PI) * 0.45 * plotKs);
+      // Perturbations around simulated scenario to reflect real multi-plot trial variance
+      const varianceFactor = 0.94 + (idx * 0.015);
+      const plotYieldTonHa = Number((baseSim.yieldOutcomes.simulatedYieldTonHa * varianceFactor).toFixed(2));
+      const plotYieldMaundBigha = Number(((plotYieldTonHa * 25) / 7.47).toFixed(1));
+      const taw = baseSim.inputs.tawMm || 140;
+      const plotMoisture = Math.min(100, Math.max(10, Math.round((soilWaterMm / taw) * 100 * (0.96 + idx * 0.01))));
+      const plotKs = Number((Math.min(1.0, Math.max(0.05, dayKs * (0.96 + idx * 0.01)))).toFixed(2));
+      const plotHealthNdvi = Number((Math.min(0.95, Math.max(0.20, (0.35 + Math.sin(dayRatio * Math.PI) * 0.45) * plotKs))).toFixed(2));
 
       return {
         ...t,
         crop: baseSim.inputs.cropNameBn,
         cropEn: baseSim.inputs.cropNameEn,
-        yieldTonHa: Number(plotYieldTonHa.toFixed(2)),
-        yieldMaundBigha: Number(plotYieldMaundBigha.toFixed(1)),
-        moisturePct: Math.round(plotMoisture),
-        ks: Number(plotKs.toFixed(2)),
-        ndvi: Number(plotHealthNdvi.toFixed(2)),
+        yieldTonHa: plotYieldTonHa,
+        yieldMaundBigha: plotYieldMaundBigha,
+        moisturePct: plotMoisture,
+        ks: plotKs,
+        ndvi: plotHealthNdvi,
+        soilWaterMm: Number((soilWaterMm * varianceFactor).toFixed(1)),
+        stageBn,
+        stageEn,
+        dayKc,
+        dayEtc,
+        dayEta,
         waterAppliedMm: Math.round(baseSim.waterBalance.totalWaterAppliedMm * varianceFactor),
         netReturnBdt: Math.round(baseSim.economics.netReturnPerHaBdt * varianceFactor)
       };
     });
-  }, [currentSim, currentDayStep, activeField]);
+  }, [currentSim, currentDayStep, activeField, lang]);
 
   const activePlot = experimentalPlots[selectedPlotIndex] || experimentalPlots[4];
-
-  // 3D Canvas Rendering Loop
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animId;
-    let tick = 0;
-
-    const render = () => {
-      tick += 0.02;
-      const width = canvas.width;
-      const height = canvas.height;
-
-      // 1. Atmosphere & Lab Lighting Background
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-      bgGrad.addColorStop(0, '#0f172a'); // Deep slate blue research canopy
-      bgGrad.addColorStop(0.5, '#1e293b');
-      bgGrad.addColorStop(1, '#090d16');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
-
-      // Laboratory Grid Horizon
-      ctx.save();
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < width; x += 40) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
-      }
-      for (let y = 0; y < height; y += 40) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // Geometry Constants
-      const centerX = width * 0.48;
-      const centerY = height * (cameraTilt === 'topdown' ? 0.52 : cameraTilt === 'angled' ? 0.44 : 0.48);
-      const baseTileW = Math.min(width * 0.25, 130) * zoomLevel;
-      const heightRatio = cameraTilt === 'topdown' ? 0.75 : cameraTilt === 'angled' ? 0.38 : 0.52;
-      const baseTileH = baseTileW * heightRatio;
-
-      // Research Concrete Irrigation Canal (সেচ চ্যানেল)
-      ctx.save();
-      ctx.fillStyle = '#0369a1';
-      const canalY = centerY + baseTileH * 1.85;
-      ctx.fillRect(centerX - baseTileW * 2.3, canalY, baseTileW * 4.6, 14);
-      // Flowing water particles
-      ctx.fillStyle = '#38bdf8';
-      for (let p = -2; p <= 2; p++) {
-        const px = centerX + p * 80 + Math.sin(tick * 2 + p) * 20;
-        ctx.fillRect(px, canalY + 4, 25, 3);
-      }
-      ctx.restore();
-
-      // Research Infrastructure: Agro-Meteorological Sensor Mast (আবহাওয়া স্টেশন)
-      ctx.save();
-      const mastX = centerX - baseTileW * 1.8;
-      const mastY = centerY - baseTileH * 1.4;
-      // Mast tower
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(mastX, mastY);
-      ctx.lineTo(mastX, mastY - 45);
-      ctx.stroke();
-      // Anemometer cups
-      ctx.fillStyle = '#38bdf8';
-      ctx.beginPath();
-      ctx.arc(mastX + Math.cos(tick * 4) * 8, mastY - 45, 3, 0, Math.PI * 2);
-      ctx.arc(mastX - Math.cos(tick * 4) * 8, mastY - 45, 3, 0, Math.PI * 2);
-      ctx.fill();
-      // Label
-      ctx.fillStyle = '#cbd5e1';
-      ctx.font = '9px Inter, sans-serif';
-      ctx.fillText('AGRO-MET MAST', mastX - 28, mastY - 52);
-      ctx.restore();
-
-      // 9 Experimental Diamond Plots
-      experimentalPlots.forEach((plot, idx) => {
-        let r = plot.row;
-        let c = plot.col;
-        if (rotationAngle === 90) {
-          const temp = r;
-          r = -c;
-          c = temp;
-        } else if (rotationAngle === 180) {
-          r = -r;
-          c = -c;
-        } else if (rotationAngle === 270) {
-          const temp = r;
-          r = c;
-          c = -temp;
-        }
-
-        const isoX = centerX + (c - r) * (baseTileW / 2);
-        const isoY = centerY + (c + r) * (baseTileH / 2);
-
-        const isSelected = selectedPlotIndex === idx;
-        const isHovered = hoveredPlotIndex === idx;
-
-        // Dynamic 3D elevation
-        const elevation = isSelected ? 20 : isHovered ? 12 : 6;
-
-        // Overlay Color Computation
-        let c1 = '#15803d';
-        let c2 = '#166534';
-
-        if (activeOverlay === 'crop') {
-          c1 = plot.isTarget ? '#22c55e' : '#15803d';
-          c2 = plot.isTarget ? '#16a34a' : '#14532d';
-        } else if (activeOverlay === 'growth') {
-          // Biomass / Growth stage from day scrubber
-          const dayFrac = currentDayStep / 120;
-          if (dayFrac < 0.25) {
-            c1 = '#a3e635'; // Seedling
-            c2 = '#65a30d';
-          } else if (dayFrac < 0.70) {
-            c1 = '#22c55e'; // Lush vegetative
-            c2 = '#15803d';
-          } else {
-            c1 = '#facc15'; // Golden ripening
-            c2 = '#ca8a04';
-          }
-        } else if (activeOverlay === 'irrigation') {
-          if (plot.waterAppliedMm >= 400) {
-            c1 = '#0284c7';
-            c2 = '#0369a1';
-          } else if (plot.waterAppliedMm >= 250) {
-            c1 = '#38bdf8';
-            c2 = '#0284c7';
-          } else {
-            c1 = '#f59e0b';
-            c2 = '#d97706';
-          }
-        } else if (activeOverlay === 'water_stress') {
-          if (plot.ks >= 0.85) {
-            c1 = '#22c55e'; // No stress
-            c2 = '#16a34a';
-          } else if (plot.ks >= 0.60) {
-            c1 = '#eab308'; // Moderate stress
-            c2 = '#ca8a04';
-          } else {
-            c1 = '#ef4444'; // Severe water stress
-            c2 = '#b91c1c';
-          }
-        } else if (activeOverlay === 'soil') {
-          c1 = '#92400e';
-          c2 = '#78350f';
-        } else if (activeOverlay === 'climate') {
-          c1 = currentSim.inputs.weatherScenario.includes('warming') ? '#f97316' : currentSim.inputs.weatherScenario.includes('drought') ? '#ef4444' : '#10b981';
-          c2 = '#b45309';
-        } else if (activeOverlay === 'yield') {
-          if (plot.yieldTonHa >= 5.0) {
-            c1 = '#10b981';
-            c2 = '#047857';
-          } else if (plot.yieldTonHa >= 3.5) {
-            c1 = '#84cc16';
-            c2 = '#4d7c0f';
-          } else {
-            c1 = '#f59e0b';
-            c2 = '#b45309';
-          }
-        } else if (activeOverlay === 'economics') {
-          if (plot.netReturnBdt >= 60000) {
-            c1 = '#059669';
-            c2 = '#047857';
-          } else if (plot.netReturnBdt >= 30000) {
-            c1 = '#10b981';
-            c2 = '#059669';
-          } else {
-            c1 = '#dc2626';
-            c2 = '#991b1b';
-          }
-        } else if (activeOverlay === 'scenario_diff') {
-          // Scenario B vs Scenario A difference
-          const yieldDiff = comparison ? comparison.yieldTonHa.absoluteDiff : 0;
-          if (yieldDiff >= 0.3) {
-            c1 = '#06b6d4'; // Cyan positive gain
-            c2 = '#0891b2';
-          } else if (yieldDiff >= -0.2) {
-            c1 = '#e2e8f0'; // Neutral
-            c2 = '#94a3b8';
-          } else {
-            c1 = '#f43f5e'; // Negative penalty
-            c2 = '#e11d48';
-          }
-        }
-
-        // Subsurface Earth Foundation
-        ctx.fillStyle = isSelected ? '#1e293b' : '#0f172a';
-        ctx.beginPath();
-        ctx.moveTo(isoX, isoY - elevation + baseTileH / 2);
-        ctx.lineTo(isoX + baseTileW / 2, isoY - elevation);
-        ctx.lineTo(isoX + baseTileW / 2, isoY);
-        ctx.lineTo(isoX, isoY + baseTileH / 2);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = isSelected ? '#334155' : '#1e293b';
-        ctx.beginPath();
-        ctx.moveTo(isoX, isoY - elevation + baseTileH / 2);
-        ctx.lineTo(isoX - baseTileW / 2, isoY - elevation);
-        ctx.lineTo(isoX - baseTileW / 2, isoY);
-        ctx.lineTo(isoX, isoY + baseTileH / 2);
-        ctx.closePath();
-        ctx.fill();
-
-        // Top Surface Diamond
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(isoX, isoY - elevation - baseTileH / 2);
-        ctx.lineTo(isoX + baseTileW / 2, isoY - elevation);
-        ctx.lineTo(isoX, isoY - elevation + baseTileH / 2);
-        ctx.lineTo(isoX - baseTileW / 2, isoY - elevation);
-        ctx.closePath();
-
-        const grad = ctx.createLinearGradient(isoX - baseTileW / 2, isoY - elevation, isoX + baseTileW / 2, isoY - elevation);
-        grad.addColorStop(0, c1);
-        grad.addColorStop(1, c2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        ctx.strokeStyle = isSelected ? '#38bdf8' : isHovered ? '#facc15' : 'rgba(255, 255, 255, 0.25)';
-        ctx.lineWidth = isSelected ? 3.5 : isHovered ? 2.5 : 1.2;
-        ctx.stroke();
-        ctx.restore();
-
-        // Simulated Crop Height & Stalks based on currentDayStep
-        const cropHeight = Math.min(22, 4 + (currentDayStep / 120) * 18);
-        const sway = Math.sin(tick + idx) * 3;
-
-        ctx.save();
-        ctx.strokeStyle = isSelected ? '#ffffff' : '#86efac';
-        ctx.lineWidth = 1.6;
-        ctx.lineCap = 'round';
-
-        // 5 crop stalks
-        [-14, -7, 0, 7, 14].forEach((ox, sIdx) => {
-          const sx = isoX + ox;
-          const sy = isoY - elevation;
-          ctx.beginPath();
-          ctx.moveTo(sx, sy);
-          ctx.quadraticCurveTo(sx + sway * 0.5, sy - cropHeight * 0.5, sx + sway, sy - cropHeight);
-          ctx.stroke();
-
-          // Golden seed head if mature
-          if (currentDayStep > 85) {
-            ctx.fillStyle = '#fde047';
-            ctx.beginPath();
-            ctx.arc(sx + sway, sy - cropHeight, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        });
-        ctx.restore();
-
-        // Selected Plot Marker
-        if (isSelected) {
-          ctx.save();
-          ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.moveTo(isoX, isoY - elevation);
-          ctx.lineTo(isoX, isoY - elevation - 38);
-          ctx.stroke();
-
-          ctx.fillStyle = '#0284c7';
-          ctx.fillRect(isoX, isoY - elevation - 38, 86, 20);
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 10px Inter, sans-serif';
-          ctx.fillText(plot.id, isoX + 6, isoY - elevation - 24);
-          ctx.restore();
-        }
-
-        // Plot ID label on tile
-        ctx.save();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.font = isSelected ? 'bold 10px Inter, sans-serif' : '9px Inter, sans-serif';
-        ctx.fillText(plot.id, isoX - 10, isoY - elevation + baseTileH * 0.32);
-        ctx.restore();
-      });
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, [currentSim, currentDayStep, activeOverlay, rotationAngle, zoomLevel, cameraTilt, selectedPlotIndex, hoveredPlotIndex, experimentalPlots, comparison]);
-
-  // Click & Hover hit-testing
-  const handleCanvasClick = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
-
-    const width = canvas.width;
-    const height = canvas.height;
-    const centerX = width * 0.48;
-    const centerY = height * (cameraTilt === 'topdown' ? 0.52 : cameraTilt === 'angled' ? 0.44 : 0.48);
-    const baseTileW = Math.min(width * 0.25, 130) * zoomLevel;
-    const heightRatio = cameraTilt === 'topdown' ? 0.75 : cameraTilt === 'angled' ? 0.38 : 0.52;
-    const baseTileH = baseTileW * heightRatio;
-
-    experimentalPlots.forEach((plot, idx) => {
-      let r = plot.row;
-      let c = plot.col;
-      if (rotationAngle === 90) {
-        const temp = r;
-        r = -c;
-        c = temp;
-      } else if (rotationAngle === 180) {
-        r = -r;
-        c = -c;
-      } else if (rotationAngle === 270) {
-        const temp = r;
-        r = c;
-        c = -temp;
-      }
-
-      const isoX = centerX + (c - r) * (baseTileW / 2);
-      const isoY = centerY + (c + r) * (baseTileH / 2);
-
-      const dx = Math.abs(clickX - isoX) / (baseTileW / 2);
-      const dy = Math.abs(clickY - isoY) / (baseTileH / 2);
-
-      if (dx + dy <= 1.1) {
-        setSelectedPlotIndex(idx);
-      }
-    });
-  };
 
   // Export Experiment Results as JSON
   const handleExportJson = () => {
@@ -490,10 +191,12 @@ export function ExperimentSimulator3DView({
       },
       comparisonResult: comparison,
       provenance: {
-        model: 'FieldShift AgroSim Deterministic v2.4 (FAO-33/56)',
+        engine: 'FieldShift 3D RealFarm Three.js Engine v186',
+        agronomicModel: 'FieldShift AgroSim Deterministic v2.4 (FAO-33/FAO-56)',
         soilBalanceFormula: 'S_t = min(TAW, max(0, S_{t-1} + Rain_t + Irrig_t - ETa_t))',
         yieldResponseFormula: '(1 - Ya/Ym) = Ky * (1 - sum(ETa)/sum(ETc))',
-        benchmarkSources: ['BARI Crop Benchmark 2024-2025', 'NASA POWER CERES/MERRA-2', 'DAE Agricultural Extension']
+        weatherProvenance: 'NASA POWER 0.5° × 0.5° Gridded Model Reanalysis (CERES/MERRA-2)',
+        benchmarkSources: ['BARI Crop Benchmark 2024-2025', 'BRRI Rice Research', 'DAE Agricultural Extension']
       }
     };
 
@@ -512,7 +215,7 @@ export function ExperimentSimulator3DView({
     const records = currentSim.timeseries || [];
     if (!records.length) return;
 
-    const headers = ['day', 'growth_stage', 'kc', 'et0_mm', 'etc_mm', 'eta_mm', 'soil_water_mm', 'stress_ks', 'rainfall_mm', 'irrigation_mm'];
+    const headers = ['day', 'growth_stage', 'kc', 'et0_mm', 'etc_mm', 'eta_mm', 'soil_water_mm', 'stress_ks', 'rainfall_mm', 'irrigation_mm', 'deep_percolation_mm'];
     const rows = records.map(r => [
       r.day,
       `"${r.growthStageName}"`,
@@ -523,7 +226,8 @@ export function ExperimentSimulator3DView({
       r.soilWaterMm,
       r.ks,
       r.rainfallMm,
-      r.irrigationMm
+      r.irrigationMm,
+      r.deepPercolationMm
     ]);
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
@@ -537,417 +241,672 @@ export function ExperimentSimulator3DView({
   };
 
   return (
-    <div className="experiment-simulator-container" style={{ padding: '20px 24px', background: '#090d16', minHeight: '100vh', color: '#f8fafc' }}>
-      {/* Top Scientific Command Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20, borderBottom: '1px solid #1e293b', paddingBottom: 16 }}>
+    <div className="experiment-simulator-container" style={{ padding: '18px 24px', background: 'radial-gradient(ellipse at 50% 0%, #0d1e2e 0%, #060b13 70%, #04070c 100%)', minHeight: '100vh', color: '#f8fafc' }}>
+      {/* Top Scientific Command Header with 3 Core Tabs */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 18, borderBottom: '1px solid var(--glass-border)', paddingBottom: 16 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
             <span style={{ background: '#0284c7', color: '#ffffff', padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 800 }}>
-              P0 RESEARCH WORKBENCH
+              🔬 3D RESEARCH LAB
             </span>
             <span style={{ fontSize: 12, color: '#94a3b8' }}>
-              Model: <strong>FieldShift AgroSim FAO-33 / Penman-Monteith</strong>
+              Engine: <strong style={{ color: '#38bdf8' }}>Three.js v186 WebGL PCFSoft</strong>
             </span>
-            <span style={{ fontSize: 12, color: '#38bdf8' }}>
-              Field: <strong>{activeField?.name || 'বগুড়া ডেমো খামার [DEMO]'}</strong> (10.0 ha)
+            <span style={{ fontSize: 12, color: '#00df81' }}>
+              Field: <strong>{activeField?.name || (lang === 'bn' ? 'বগুড়া ডেমো খামার [DEMO]' : 'Bogura Demo Farm [DEMO]')}</strong> (10.0 ha)
             </span>
           </div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.02em' }}>
+          <h1 style={{ margin: 0, fontSize: 23, fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.02em' }}>
             {lang === 'bn' ? 'ত্রিমাত্রিক কৃষি গবেষণা ল্যাব ও দৃশ্যকল্প সিমুলেটর' : '3D Farm Experiment Simulator & Scenario Workbench'}
           </h1>
-          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94a3b8', maxWidth: 840 }}>
+          <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#94a3b8', maxWidth: 840 }}>
             {lang === 'bn'
-              ? 'এফএও-৩৩ ওয়াটার ব্যালেন্স ও জলবায়ু দৃশ্যকল্প অনুযায়ী একাধিক কৃষি কৌশল (Scenario A বনাম B) তৈরি, তুলনা এবং ১২০ দিনের ত্রিমাত্রিক ফলন ও অর্থনৈতিক বিশ্লেষণ।'
-              : 'Multi-scenario experiment builder (Scenario A vs B), 120-day time progression scrubber, FAO-33 water-yield response, 3D farm overlay layers, and reproducible JSON/CSV telemetry exports.'}
+              ? 'বাস্তবসম্মত ৩ডি কৃষি পরিবেশ, সেচ চ্যানেল, সৌর পাম্প, আবহাওয়া মাস্তুল এবং ১২০-দিনের এফএও-৩৩ ওয়াটার-ব্যালেন্স ও ফলন সিমুলেশন।'
+              : 'Immersive real-time 3D farm environment with physical lighting, instanced crop tillers, irrigation canal, solar pump station, and FAO-33 water-yield response.'}
           </p>
         </div>
 
+        {/* Top Action Buttons & Exports */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button
-            type="button"
+          <GlassButton
+            variant="glass"
+            size="sm"
             onClick={handleExportJson}
-            style={{ padding: '8px 14px', borderRadius: 8, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
           >
             📥 Export JSON
-          </button>
-          <button
-            type="button"
+          </GlassButton>
+          <GlassButton
+            variant="glass"
+            size="sm"
             onClick={handleExportCsv}
-            style={{ padding: '8px 14px', borderRadius: 8, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
           >
             📊 Export CSV (120 Days)
-          </button>
+          </GlassButton>
           {onBack && (
-            <button
-              type="button"
+            <GlassButton
+              variant="cyan"
+              size="sm"
               onClick={onBack}
-              style={{ padding: '8px 14px', borderRadius: 8, background: '#0284c7', border: 'none', color: '#ffffff', fontSize: 12, fontWeight: 800, cursor: 'pointer' }}
             >
-              ← {lang === 'bn' ? 'ল্যাব ওভারভিউ' : 'Back to Lab Overview'}
-            </button>
+              ← {lang === 'bn' ? 'ল্যাব ওভারভিউ' : 'Lab Overview'}
+            </GlassButton>
           )}
         </div>
       </div>
 
-      {/* Scenario Mode Toggle: Scenario A vs Scenario B vs Side-by-Side Comparison */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+      {/* 3 Main Accessible Navigation Tabs */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 12 }}>
         <button
           type="button"
-          onClick={() => setActiveScenarioTab('A')}
+          onClick={() => {
+            if (onNavigateTab) {
+              onNavigateTab('six_seasons_milp');
+            }
+          }}
           style={{
             padding: '8px 18px',
             borderRadius: 8,
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: activeScenarioTab === 'A' ? '2px solid #22c55e' : '1px solid #334155',
-            background: activeScenarioTab === 'A' ? '#14532d' : '#1e293b',
-            color: activeScenarioTab === 'A' ? '#ffffff' : '#94a3b8'
+            border: '1px solid var(--glass-border)',
+            background: 'var(--glass-bg-primary)',
+            color: '#00df81',
+            transition: 'all 0.15s ease'
           }}
         >
-          🌾 {scenarioA.name}
+          🌾 {lang === 'bn' ? '৬-মৌসুমের পরিকল্পনা (6-Season Plan)' : '6-Season Crop Plan'}
         </button>
         <button
           type="button"
-          onClick={() => setActiveScenarioTab('B')}
+          onClick={() => setActiveMainTab('3d_experiment')}
           style={{
             padding: '8px 18px',
             borderRadius: 8,
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: activeScenarioTab === 'B' ? '2px solid #0284c7' : '1px solid #334155',
-            background: activeScenarioTab === 'B' ? '#0369a1' : '#1e293b',
-            color: activeScenarioTab === 'B' ? '#ffffff' : '#94a3b8'
+            border: activeMainTab === '3d_experiment' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+            background: activeMainTab === '3d_experiment' ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(2, 132, 199, 0.2) 100%)' : 'var(--glass-bg-primary)',
+            color: activeMainTab === '3d_experiment' ? '#38bdf8' : 'var(--text-muted)',
+            boxShadow: activeMainTab === '3d_experiment' ? '0 4px 16px rgba(56, 189, 248, 0.3)' : 'none',
+            transition: 'all 0.15s ease'
           }}
         >
-          🔬 {scenarioB.name}
+          🔬 {lang === 'bn' ? '৩ডি এক্সপেরিমেন্ট সিমুলেটর (3D Experiment)' : '3D Farm Experiment'}
         </button>
         <button
           type="button"
-          onClick={() => setActiveScenarioTab('compare')}
+          onClick={() => setActiveMainTab('scenario_comparison')}
           style={{
             padding: '8px 18px',
             borderRadius: 8,
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: activeScenarioTab === 'compare' ? '2px solid #a855f7' : '1px solid #334155',
-            background: activeScenarioTab === 'compare' ? '#6b21a8' : '#1e293b',
-            color: activeScenarioTab === 'compare' ? '#ffffff' : '#94a3b8'
+            border: activeMainTab === 'scenario_comparison' ? '1px solid #c084fc' : '1px solid var(--glass-border)',
+            background: activeMainTab === 'scenario_comparison' ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(126, 34, 206, 0.2) 100%)' : 'var(--glass-bg-primary)',
+            color: activeMainTab === 'scenario_comparison' ? '#c084fc' : 'var(--text-muted)',
+            boxShadow: activeMainTab === 'scenario_comparison' ? '0 4px 16px rgba(168, 85, 247, 0.3)' : 'none',
+            transition: 'all 0.15s ease'
           }}
         >
-          ⚖️ {lang === 'bn' ? 'দৃশ্যকল্প এ বনাম বি তুলনা' : 'Scenario A vs B Diff'}
+          ⚖️ {lang === 'bn' ? 'দৃশ্যকল্প তুলনা (Scenario Comparison)' : 'Scenario Comparison Matrix'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMainTab('stress_tests')}
+          style={{
+            padding: '8px 18px',
+            borderRadius: 8,
+            fontWeight: 800,
+            fontSize: 13,
+            cursor: 'pointer',
+            border: activeMainTab === 'stress_tests' ? '1px solid #ef4444' : '1px solid var(--glass-border)',
+            background: activeMainTab === 'stress_tests' ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.2) 100%)' : 'var(--glass-bg-primary)',
+            color: activeMainTab === 'stress_tests' ? '#f87171' : 'var(--text-muted)',
+            boxShadow: activeMainTab === 'stress_tests' ? '0 4px 16px rgba(239, 68, 68, 0.3)' : 'none',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          ⚡ {lang === 'bn' ? 'সায়েন্টিফিক স্ট্রেস টেস্ট (Stress Tests 3D)' : 'Stress Tests 3D Lab'}
         </button>
       </div>
 
-      {/* Main 2-Column Research Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', gap: 20 }}>
-        {/* Left Column: Experiment Workbench Parameter Controls */}
-        <div style={{ background: '#111827', borderRadius: 14, border: '1px solid #1f2937', padding: 18 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
-              ⚙️ {lang === 'bn' ? `প্যারামিটার কনফিগুরেশন (${activeScenarioTab})` : `Experiment Controls (${activeScenarioTab})`}
-            </h3>
-            <button
-              type="button"
-              onClick={() => {
-                if (activeScenarioTab === 'A') {
-                  setScenarioA({
-                    name: 'Scenario A (Baseline Aman)',
-                    crop: 'rice',
-                    areaHa: 10.0,
-                    soilTexture: 'loam',
-                    weatherScenario: 'baseline',
-                    irrigationMm: 350,
-                    nitrogenKgHa: 120,
-                    phosphorusKgHa: 60,
-                    potassiumKgHa: 60,
-                    sellingPriceMaund: 1250,
-                    randomSeed: 2026
-                  });
-                } else {
-                  setScenarioB({
-                    name: 'Scenario B (Resilient AWD)',
-                    crop: 'rice',
-                    areaHa: 10.0,
-                    soilTexture: 'loam',
-                    weatherScenario: 'warming_1_5c',
-                    irrigationMm: 240,
-                    nitrogenKgHa: 135,
-                    phosphorusKgHa: 65,
-                    potassiumKgHa: 70,
-                    sellingPriceMaund: 1300,
-                    randomSeed: 2026
-                  });
-                }
-              }}
-              style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}
-            >
-              রিসেট
-            </button>
-          </div>
+      {activeMainTab === '3d_experiment' && (
+        <>
+          {/* Main 3-Column Layout: Left (Inputs), Center (3D Scene), Right (Scenario & Inspector) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 340px', gap: 16, alignItems: 'stretch' }}>
+            
+            {/* LEFT PANEL: Active Field, Soil, Crop, Irrigation, Simulation Inputs */}
+            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: '#f8fafc' }}>
+                  ⚙️ {lang === 'bn' ? 'সিমুলেশন ইনপুট' : 'Simulation Inputs'}
+                </span>
+                <span style={{ fontSize: 11, color: activeScenarioTab === 'A' ? '#00df81' : '#38bdf8', fontWeight: 800 }}>
+                  {activeScenarioTab === 'A' ? 'Scenario A' : 'Scenario B'}
+                </span>
+              </div>
 
-          {/* Form Controls */}
-          {(() => {
-            const currentConfig = activeScenarioTab === 'B' ? scenarioB : scenarioA;
-            const updateConfig = (key, val) => {
-              if (activeScenarioTab === 'B') {
-                setScenarioB(prev => ({ ...prev, [key]: val }));
-              } else {
-                setScenarioA(prev => ({ ...prev, [key]: val }));
-              }
-            };
-
-            return (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: 11.5, fontWeight: 700, color: '#94a3b8', marginBottom: 4 }}>
-                    {lang === 'bn' ? 'ফসল ও জাত নির্বাচন:' : 'Crop Selection:'}
-                  </label>
-                  <select
-                    value={currentConfig.crop}
-                    onChange={(e) => updateConfig('crop', e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 13, fontWeight: 700 }}
-                  >
-                    <option value="rice">ধান (Aman / Boro Rice)</option>
-                    <option value="wheat">গম (BARI Gom-33)</option>
-                    <option value="maize">হাইব্রিড ভুট্টা (Hybrid Maize)</option>
-                    <option value="mustard">সরিষা (BARI Sarisha-14)</option>
-                    <option value="potato">গোল আলু (Diamant Potato)</option>
-                    <option value="lentil">মসুর ডাল (BARI Masur-8)</option>
-                  </select>
+              {/* Active Parcel Context Badge */}
+              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--glass-border)', fontSize: 11.5 }}>
+                <div style={{ color: 'var(--text-muted)', marginBottom: 2 }}>
+                  {lang === 'bn' ? 'নির্দিষ্ট খামার প্লট:' : 'Active Parcel:'}
                 </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: 11.5, fontWeight: 700, color: '#94a3b8', marginBottom: 4 }}>
-                    {lang === 'bn' ? 'আবহাওয়া দৃশ্যকল্প (NASA POWER Climate Perturbation):' : 'Weather Perturbation:'}
-                  </label>
-                  <select
-                    value={currentConfig.weatherScenario}
-                    onChange={(e) => updateConfig('weatherScenario', e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 13 }}
-                  >
-                    <option value="baseline">Historical Normal (30-yr Normal)</option>
-                    <option value="warming_1_5c">+1.5°C Global Warming</option>
-                    <option value="drought_20pct">Moderate Drought (-20% Rain, +1.0°C)</option>
-                    <option value="heavy_monsoon">Excess Monsoon (+25% Rain)</option>
-                    <option value="extreme_heatwave">Extreme Heatwave (+3.0°C, Severe ET0)</option>
-                  </select>
+                <div style={{ fontWeight: 800, color: '#f8fafc', marginBottom: 4 }}>
+                  {activeField?.name || (lang === 'bn' ? 'বগুড়া ডেমো খামার [DEMO]' : 'Bogura Demo Farm [DEMO]')}
                 </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11.5, fontWeight: 700, color: '#94a3b8', marginBottom: 4 }}>
-                      {lang === 'bn' ? 'সেচ বাজেট (মিমি):' : 'Irrigation (mm):'}
-                    </label>
-                    <input
-                      type="number"
-                      value={currentConfig.irrigationMm}
-                      onChange={(e) => updateConfig('irrigationMm', Number(e.target.value))}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 8, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 13 }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11.5, fontWeight: 700, color: '#94a3b8', marginBottom: 4 }}>
-                      {lang === 'bn' ? 'জমি আয়তন (হেক্টর):' : 'Area (ha):'}
-                    </label>
-                    <input
-                      type="number"
-                      step="0.5"
-                      value={currentConfig.areaHa}
-                      onChange={(e) => updateConfig('areaHa', Number(e.target.value))}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 8, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 13 }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>ইউরিয়া / N</label>
-                    <input
-                      type="number"
-                      value={currentConfig.nitrogenKgHa}
-                      onChange={(e) => updateConfig('nitrogenKgHa', Number(e.target.value))}
-                      style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 12 }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>টিএসপি / P</label>
-                    <input
-                      type="number"
-                      value={currentConfig.phosphorusKgHa}
-                      onChange={(e) => updateConfig('phosphorusKgHa', Number(e.target.value))}
-                      style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 12 }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>এমওপি / K</label>
-                    <input
-                      type="number"
-                      value={currentConfig.potassiumKgHa}
-                      onChange={(e) => updateConfig('potassiumKgHa', Number(e.target.value))}
-                      style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 12 }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: 11.5, fontWeight: 700, color: '#94a3b8', marginBottom: 4 }}>
-                    {lang === 'bn' ? 'বিক্রয় দর (টাকা/মণ):' : 'Selling Price (BDT/maund):'}
-                  </label>
-                  <input
-                    type="number"
-                    value={currentConfig.sellingPriceMaund}
-                    onChange={(e) => updateConfig('sellingPriceMaund', Number(e.target.value))}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, background: '#1f2937', border: '1px solid #374151', color: '#f8fafc', fontSize: 13 }}
-                  />
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
+                  <span>মাটি: <strong>{activeField?.soil_texture || 'Loam'}</strong></span>
+                  <span>TAW: <strong>140 mm</strong></span>
+                  <span>pH: <strong>6.8</strong></span>
                 </div>
               </div>
-            );
-          })()}
 
-          {/* Quick Computed Metrics Summary */}
-          <div style={{ marginTop: 16, background: '#1e293b', padding: 12, borderRadius: 10, border: '1px solid #334155' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: '#38bdf8', marginBottom: 6 }}>
-              📊 SIMULATED KPI SUMMARY
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-              <span style={{ color: '#94a3b8' }}>অনুমিত ফলন:</span>
-              <strong style={{ color: '#4ade80' }}>
-                {currentSim.yieldOutcomes.simulatedYieldTonHa} টন/হেক্টর ({currentSim.yieldOutcomes.yieldMaundPerBigha} মণ/বিঘা)
-              </strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-              <span style={{ color: '#94a3b8' }}>সর্বমোট খরচ:</span>
-              <strong style={{ color: '#f87171' }}>
-                {formatCurrency(currentSim.economics.costPerHaBdt, lang)} /হেক্টর
-              </strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-              <span style={{ color: '#94a3b8' }}>নিট লাভ:</span>
-              <strong style={{ color: '#38bdf8' }}>
-                {formatCurrency(currentSim.economics.netReturnPerHaBdt, lang)} /হেক্টর
-              </strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-              <span style={{ color: '#94a3b8' }}>ব্রেক-ইভেন দর:</span>
-              <strong style={{ color: '#facc15' }}>
-                {currentSim.economics.breakEvenPricePerKg} টাকা/কেজি ({currentSim.economics.breakEvenPricePerMaund} টাকা/মণ)
-              </strong>
-            </div>
-          </div>
-        </div>
+              {/* Target Scenario Config Form */}
+              {(() => {
+                const currentConfig = activeScenarioTab === 'A' ? scenarioA : scenarioB;
+                const updateConfig = (key, val) => {
+                  if (activeScenarioTab === 'A') {
+                    setScenarioA(prev => ({ ...prev, [key]: val }));
+                  } else {
+                    setScenarioB(prev => ({ ...prev, [key]: val }));
+                  }
+                };
 
-        {/* Right Column: Interactive 3D Farm Experiment Visualizer */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {/* 3D Visualizer Card */}
-          <div style={{ background: '#111827', borderRadius: 14, border: '1px solid #1f2937', overflow: 'hidden' }}>
-            {/* 3D Stage Top Toolbar */}
-            <div style={{ padding: '10px 16px', background: '#1e293b', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-              {/* Overlay Selector */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 11, fontWeight: 800, color: '#94a3b8' }}>LAYER:</span>
-                {[
-                  { id: 'crop', label: '🌱 Treatments' },
-                  { id: 'growth', label: '🌿 Growth / Biomass' },
-                  { id: 'irrigation', label: '💧 Water Budget' },
-                  { id: 'water_stress', label: '⚡ Water Stress (Ks)' },
-                  { id: 'yield', label: '📊 Yield Heatmap' },
-                  { id: 'economics', label: '💰 Net Return' },
-                  { id: 'scenario_diff', label: '⚖️ Diff A vs B' }
-                ].map(l => (
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 12 }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', marginBottom: 3 }}>
+                        {lang === 'bn' ? 'ফসল ও জাত নির্বাচন:' : 'Crop Selection:'}
+                      </label>
+                      <select
+                        value={currentConfig.crop}
+                        onChange={(e) => updateConfig('crop', e.target.value)}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12, fontWeight: 700 }}
+                      >
+                        <option value="rice">ধান (BRRI Dhan-49 / Aman Rice)</option>
+                        <option value="wheat">গম (BARI Gom-33)</option>
+                        <option value="maize">হাইব্রিড ভুট্টা (Hybrid Maize)</option>
+                        <option value="mustard">সরিষা (BARI Sarisha-14)</option>
+                        <option value="potato">গোল আলু (Diamant Potato)</option>
+                        <option value="lentil">মসুর ডাল (BARI Masur-8)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', marginBottom: 3 }}>
+                        {lang === 'bn' ? 'আবহাওয়া দৃশ্যকল্প (NASA POWER Climate):' : 'Weather Perturbation:'}
+                      </label>
+                      <select
+                        value={currentConfig.weatherScenario}
+                        onChange={(e) => updateConfig('weatherScenario', e.target.value)}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12 }}
+                      >
+                        <option value="baseline">Historical Normal (30-yr Normal)</option>
+                        <option value="warming_1_5c">+1.5°C Global Warming</option>
+                        <option value="drought_20pct">Moderate Drought (-20% Rain, +1.0°C)</option>
+                        <option value="heavy_monsoon">Excess Monsoon (+25% Rain)</option>
+                        <option value="extreme_heatwave">Extreme Heatwave (+3.0°C, High ET0)</option>
+                      </select>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', marginBottom: 3 }}>
+                          {lang === 'bn' ? 'সেচ বাজেট (মিমি):' : 'Irrigation (mm):'}
+                        </label>
+                        <input
+                          type="number"
+                          value={currentConfig.irrigationMm}
+                          onChange={(e) => updateConfig('irrigationMm', Number(e.target.value))}
+                          style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12 }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', marginBottom: 3 }}>
+                          {lang === 'bn' ? 'জমি আয়তন (হেক্টর):' : 'Area (ha):'}
+                        </label>
+                        <input
+                          type="number"
+                          step="0.5"
+                          value={currentConfig.areaHa}
+                          onChange={(e) => updateConfig('areaHa', Number(e.target.value))}
+                          style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12 }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 10.5, color: '#94a3b8', marginBottom: 2 }}>N (kg/ha)</label>
+                        <input
+                          type="number"
+                          value={currentConfig.nitrogenKgHa}
+                          onChange={(e) => updateConfig('nitrogenKgHa', Number(e.target.value))}
+                          style={{ width: '100%', padding: '5px 6px', borderRadius: 5, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 11.5 }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 10.5, color: '#94a3b8', marginBottom: 2 }}>P (kg/ha)</label>
+                        <input
+                          type="number"
+                          value={currentConfig.phosphorusKgHa}
+                          onChange={(e) => updateConfig('phosphorusKgHa', Number(e.target.value))}
+                          style={{ width: '100%', padding: '5px 6px', borderRadius: 5, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 11.5 }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 10.5, color: '#94a3b8', marginBottom: 2 }}>K (kg/ha)</label>
+                        <input
+                          type="number"
+                          value={currentConfig.potassiumKgHa}
+                          onChange={(e) => updateConfig('potassiumKgHa', Number(e.target.value))}
+                          style={{ width: '100%', padding: '5px 6px', borderRadius: 5, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 11.5 }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', marginBottom: 3 }}>
+                        {lang === 'bn' ? 'বিক্রয় দর (টাকা/মণ):' : 'Selling Price (BDT/maund):'}
+                      </label>
+                      <input
+                        type="number"
+                        value={currentConfig.sellingPriceMaund}
+                        onChange={(e) => updateConfig('sellingPriceMaund', Number(e.target.value))}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, background: '#1e293b', border: '1px solid #334155', color: '#f8fafc', fontSize: 12 }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Quick Calculated KPI summary */}
+              <div style={{ marginTop: 'auto', background: 'rgba(15, 23, 42, 0.7)', padding: 10, borderRadius: 8, border: '1px solid var(--glass-border)', fontSize: 11.5 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>অনুমিত ফলন:</span>
+                  <strong style={{ color: '#00df81' }}>{currentSim.yieldOutcomes.simulatedYieldTonHa} t/ha</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>সেচ পানি:</span>
+                  <strong style={{ color: '#38bdf8' }}>{currentSim.waterBalance.totalWaterAppliedMm} mm</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>নিট লাভ:</span>
+                  <strong style={{ color: '#facc15' }}>{formatCurrency(currentSim.economics.netReturnPerHaBdt, lang)}/ha</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* CENTER PANEL: Large Interactive 3D Farm Scene */}
+            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              
+              {/* 3D Stage Top Toolbar */}
+              <div style={{ padding: '8px 14px', background: 'rgba(15, 23, 42, 0.75)', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                
+                {/* Overlays selector */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>OVERLAY:</span>
+                  {[
+                    { id: 'crop', label: '🌱 Natural / Crop' },
+                    { id: 'growth', label: '🌿 Growth Stage' },
+                    { id: 'irrigation', label: '💧 Water Budget' },
+                    { id: 'water_stress', label: '⚡ Water Stress (Ks)' },
+                    { id: 'yield', label: '📊 Yield Heatmap' },
+                    { id: 'scenario_diff', label: '⚖️ Diff A vs B' }
+                  ].map(l => (
+                    <button
+                      key={l.id}
+                      type="button"
+                      onClick={() => setActiveOverlay(l.id)}
+                      style={{
+                        padding: '4px 8px',
+                        borderRadius: 6,
+                        fontSize: 10.5,
+                        fontWeight: activeOverlay === l.id ? 800 : 600,
+                        cursor: 'pointer',
+                        border: activeOverlay === l.id ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                        background: activeOverlay === l.id ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(2, 132, 199, 0.2) 100%)' : 'rgba(15, 23, 42, 0.4)',
+                        color: activeOverlay === l.id ? '#38bdf8' : 'var(--text-muted)',
+                        boxShadow: activeOverlay === l.id ? '0 2px 10px rgba(56, 189, 248, 0.3)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Camera Presets & Toggles */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <button
-                    key={l.id}
                     type="button"
-                    onClick={() => setActiveOverlay(l.id)}
+                    title="Aerial Overview"
+                    onClick={() => {
+                      setCameraMode('aerial');
+                      setShowSoilCrossSection(false);
+                    }}
                     style={{
                       padding: '4px 8px',
                       borderRadius: 6,
-                      fontSize: 11,
-                      fontWeight: activeOverlay === l.id ? 800 : 600,
+                      fontSize: 10.5,
+                      fontWeight: 700,
                       cursor: 'pointer',
-                      border: activeOverlay === l.id ? '1px solid #38bdf8' : '1px solid #475569',
-                      background: activeOverlay === l.id ? '#0284c7' : '#1e293b',
-                      color: '#ffffff'
+                      border: cameraMode === 'aerial' ? '1px solid #00df81' : '1px solid var(--glass-border)',
+                      background: cameraMode === 'aerial' ? 'rgba(0, 223, 129, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                      color: cameraMode === 'aerial' ? '#00df81' : '#f8fafc'
                     }}
                   >
-                    {l.label}
+                    🛰️ Aerial
+                  </button>
+                  <button
+                    type="button"
+                    title="Ground Furrow View"
+                    onClick={() => {
+                      setCameraMode('ground');
+                      setShowSoilCrossSection(false);
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: 6,
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      border: cameraMode === 'ground' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                      background: cameraMode === 'ground' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                      color: cameraMode === 'ground' ? '#38bdf8' : '#f8fafc'
+                    }}
+                  >
+                    🧑‍🌾 Ground
+                  </button>
+                  <button
+                    type="button"
+                    title="Soil Cross-Section Root Profile"
+                    onClick={() => {
+                      setCameraMode('cross_section');
+                      setShowSoilCrossSection(true);
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: 6,
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      border: showSoilCrossSection ? '1px solid #facc15' : '1px solid var(--glass-border)',
+                      background: showSoilCrossSection ? 'rgba(250, 204, 21, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                      color: showSoilCrossSection ? '#facc15' : '#f8fafc'
+                    }}
+                  >
+                    🪵 Root Profile
+                  </button>
+                  <button
+                    type="button"
+                    title="Toggle Continuous Rotation"
+                    onClick={() => setIsAutoRotate(!isAutoRotate)}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: 6,
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      border: isAutoRotate ? '1px solid #c084fc' : '1px solid var(--glass-border)',
+                      background: isAutoRotate ? 'rgba(192, 132, 252, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                      color: isAutoRotate ? '#c084fc' : '#f8fafc'
+                    }}
+                  >
+                    🔄 Auto-Orbit
+                  </button>
+                  <button
+                    type="button"
+                    title="Toggle Wireframe Mesh"
+                    onClick={() => setShowWireframe(!showWireframe)}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: 6,
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      border: showWireframe ? '1px solid #f43f5e' : '1px solid var(--glass-border)',
+                      background: showWireframe ? 'rgba(244, 63, 94, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                      color: showWireframe ? '#f43f5e' : '#f8fafc'
+                    }}
+                  >
+                    📐 Wireframe
+                  </button>
+                </div>
+              </div>
+
+              {/* Scientific 3D Toolset Selector Sub-bar */}
+              <div style={{ padding: '6px 14px', background: 'rgba(10, 16, 29, 0.9)', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {[
+                  { id: 'farm_all', label: '🌿 ৩ডি পুরো খামার (Full Farm 3D)' },
+                  { id: 'soil_profile', label: '🪵 মাটির স্তর ও শিকড় (Soil & Root 3D)' },
+                  { id: 'water_balance', label: '💧 পানি ভারসাম্য লাইসিমিটার (Water Balance 3D)' },
+                  { id: 'crop_growth', label: '🌾 ফসল বৃদ্ধি ও স্টুয়ার্ট ফলন (Crop Growth 3D)' },
+                  { id: 'climate_stress', label: '🌡️ জলবায়ু চাপ ও থার্মাল ডোম (Climate Stress 3D)' },
+                  { id: 'nutrient_profile', label: '🧪 পুষ্টি ও রাইজোবিয়াম BNF (Nutrient Profile 3D)' }
+                ].map(v => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => setCenter3DViewMode(v.id)}
+                    style={{
+                      padding: '3px 8px',
+                      borderRadius: 6,
+                      fontSize: 10.5,
+                      fontWeight: center3DViewMode === v.id ? 800 : 600,
+                      cursor: 'pointer',
+                      border: center3DViewMode === v.id ? '1px solid #00df81' : '1px solid rgba(255,255,255,0.08)',
+                      background: center3DViewMode === v.id ? 'rgba(0, 223, 129, 0.2)' : 'transparent',
+                      color: center3DViewMode === v.id ? '#00df81' : '#94a3b8'
+                    }}
+                  >
+                    {v.label}
                   </button>
                 ))}
               </div>
 
-              {/* Camera Controls */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <button
-                  type="button"
-                  onClick={() => setRotationAngle(p => (p + 90) % 360)}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#334155', border: 'none', color: '#f8fafc', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
-                >
-                  🔄 {rotationAngle}°
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setZoomLevel(p => Math.min(1.4, p + 0.1))}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#334155', border: 'none', color: '#f8fafc', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
-                >
-                  🔍+
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setZoomLevel(p => Math.max(0.8, p - 0.1))}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#334155', border: 'none', color: '#f8fafc', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
-                >
-                  🔍-
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRotationAngle(0);
-                    setZoomLevel(1.0);
-                  }}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#334155', border: 'none', color: '#f8fafc', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
-                >
-                  ⟲ Reset
-                </button>
+              {/* Dynamic 3D Scientific Canvas Element */}
+              <div style={{ flex: 1, minHeight: 460, position: 'relative' }}>
+                {center3DViewMode === 'farm_all' && (
+                  <RealFarmCanvas3D
+                    experimentalPlots={experimentalPlots}
+                    activeOverlay={activeOverlay}
+                    currentDayStep={currentDayStep}
+                    selectedPlotIndex={selectedPlotIndex}
+                    onSelectPlot={(idx) => setSelectedPlotIndex(idx)}
+                    cameraMode={cameraMode}
+                    showSoilCrossSection={showSoilCrossSection}
+                    showWireframe={showWireframe}
+                    isAutoRotate={isAutoRotate}
+                    cropType={activeScenarioTab === 'A' ? scenarioA.crop : scenarioB.crop}
+                    lang={lang}
+                  />
+                )}
+                {center3DViewMode === 'soil_profile' && (
+                  <SoilProfile3D
+                    soilTexture={currentSim.inputs.soilTexture}
+                    tawMm={currentSim.inputs.tawMm}
+                    currentMoistureMm={activePlot.soilWaterMm}
+                    currentDay={currentDayStep}
+                    maxRootDepthM={currentSim.inputs.rootDepthM || 0.6}
+                    lang={lang}
+                  />
+                )}
+                {center3DViewMode === 'water_balance' && (
+                  <WaterBalance3D
+                    rainfallMm={Math.round((currentSim.waterBalance.totalRainfallMm / 120) * currentDayStep)}
+                    irrigationMm={activePlot.waterAppliedMm}
+                    etaMm={activePlot.dayEta}
+                    deepPercolationMm={Math.round((currentSim.waterBalance.totalDeepPercolationMm / 120) * currentDayStep)}
+                    currentStorageMm={activePlot.soilWaterMm}
+                    tawMm={currentSim.inputs.tawMm}
+                    massResidualMm={currentSim.waterBalance.massBalanceResidualMm}
+                    lang={lang}
+                  />
+                )}
+                {center3DViewMode === 'crop_growth' && (
+                  <CropGrowth3D
+                    crop={currentSim.inputs.cropNameEn}
+                    cropNameBn={currentSim.inputs.cropNameBn}
+                    currentDay={currentDayStep}
+                    growthStageName={activePlot.stageEn}
+                    growthStageBn={activePlot.stageBn}
+                    simulatedYieldTonHa={activePlot.yieldTonHa}
+                    potentialYieldTonHa={currentSim.inputs.potentialYieldTonHa || 6.5}
+                    ks={activePlot.ks}
+                    ky={currentSim.inputs.ky || 1.15}
+                    yieldFloorApplied={currentSim.yieldOutcomes.yieldFloorApplied}
+                    lang={lang}
+                  />
+                )}
+                {center3DViewMode === 'climate_stress' && (
+                  <ClimateStress3D
+                    weatherScenario={currentSim.inputs.weatherScenario}
+                    tempDeltaC={currentSim.inputs.weatherScenario.includes('warming') ? 1.5 : currentSim.inputs.weatherScenario.includes('heatwave') ? 3.0 : 0.0}
+                    et0Mm={activePlot.dayEtc}
+                    stressDays={currentSim.stressIndicators.stressDaysCount}
+                    crop={currentSim.inputs.cropNameEn}
+                    yieldTonHa={activePlot.yieldTonHa}
+                    lang={lang}
+                  />
+                )}
+                {center3DViewMode === 'nutrient_profile' && (
+                  <NutrientProfile3D
+                    nitrogenKgHa={currentSim.inputs.nitrogenKgHa}
+                    phosphorusKgHa={currentSim.inputs.phosphorusKgHa}
+                    potassiumKgHa={currentSim.inputs.potassiumKgHa}
+                    isLegume={currentSim.inputs.cropNameEn === 'Lentil' || currentSim.inputs.cropNameEn === 'Mungbean'}
+                    organicMatterPct={activeField?.organic_matter || 1.85}
+                    soilPh={activeField?.soil_ph || 6.8}
+                    lang={lang}
+                  />
+                )}
               </div>
             </div>
 
-            {/* 3D Canvas */}
-            <div style={{ position: 'relative', width: '100%', height: 380, background: '#090d16' }}>
-              <canvas
-                ref={canvasRef}
-                width={760}
-                height={380}
-                onClick={handleCanvasClick}
-                style={{ display: 'block', width: '100%', height: '100%', cursor: 'pointer' }}
-              />
-              <div style={{ position: 'absolute', top: 10, left: 12, background: 'rgba(15, 23, 42, 0.85)', padding: '4px 10px', borderRadius: 6, fontSize: 11, color: '#38bdf8', border: '1px solid #334155' }}>
-                🌾 {activeScenarioTab === 'B' ? scenarioB.name : scenarioA.name} · Day {currentDayStep} / 120
+            {/* RIGHT PANEL: Scenario Controls, Playback & Selected Plot Details */}
+            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              
+              {/* Scenario Selector Switch */}
+              <div>
+                <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.05em', display: 'block', marginBottom: 6 }}>
+                  ACTIVE SCENARIO:
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveScenarioTab('A')}
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 8,
+                      fontWeight: 800,
+                      fontSize: 12,
+                      cursor: 'pointer',
+                      border: activeScenarioTab === 'A' ? '1px solid #00df81' : '1px solid var(--glass-border)',
+                      background: activeScenarioTab === 'A' ? 'rgba(0, 223, 129, 0.2)' : 'rgba(15, 23, 42, 0.5)',
+                      color: activeScenarioTab === 'A' ? '#00df81' : 'var(--text-muted)'
+                    }}
+                  >
+                    🌾 Scenario A
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveScenarioTab('B')}
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 8,
+                      fontWeight: 800,
+                      fontSize: 12,
+                      cursor: 'pointer',
+                      border: activeScenarioTab === 'B' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                      background: activeScenarioTab === 'B' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.5)',
+                      color: activeScenarioTab === 'B' ? '#38bdf8' : 'var(--text-muted)'
+                    }}
+                  >
+                    🔬 Scenario B
+                  </button>
+                </div>
+              </div>
+
+              {/* Selected Plot Telemetry Card */}
+              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 14, borderRadius: 12, border: '1px solid var(--glass-border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ background: '#0284c7', color: '#ffffff', padding: '2px 8px', borderRadius: 4, fontWeight: 800, fontSize: 11 }}>
+                    {activePlot.id}
+                  </span>
+                  <span style={{ fontSize: 11, color: '#38bdf8', fontWeight: 700 }}>
+                    {activePlot.treatment}
+                  </span>
+                </div>
+                <div style={{ fontWeight: 800, fontSize: 13.5, color: '#f8fafc', marginBottom: 8 }}>
+                  {activePlot.titleBn}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 11.5 }}>
+                  <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
+                    <div style={{ color: 'var(--text-muted)' }}>অনুমিত ফলন:</div>
+                    <strong style={{ color: '#00df81', fontSize: 13 }}>{activePlot.yieldTonHa} t/ha</strong>
+                    <div style={{ fontSize: 10, color: '#94a3b8' }}>({activePlot.yieldMaundBigha} মণ/বিঘা)</div>
+                  </div>
+                  <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
+                    <div style={{ color: 'var(--text-muted)' }}>মাটির আর্দ্রতা:</div>
+                    <strong style={{ color: '#38bdf8', fontSize: 13 }}>{activePlot.moisturePct}%</strong>
+                    <div style={{ fontSize: 10, color: '#94a3b8' }}>Ks: {activePlot.ks}</div>
+                  </div>
+                  <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
+                    <div style={{ color: 'var(--text-muted)' }}>প্রয়োগকৃত পানি:</div>
+                    <strong style={{ color: '#cbd5e1', fontSize: 13 }}>{activePlot.waterAppliedMm} mm</strong>
+                  </div>
+                  <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
+                    <div style={{ color: 'var(--text-muted)' }}>প্রত্যাশিত নিট লাভ:</div>
+                    <strong style={{ color: '#facc15', fontSize: 12.5 }}>{formatCurrency(activePlot.netReturnBdt, lang)}/ha</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Weather & Scientific Data Provenance */}
+              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)', fontSize: 11 }}>
+                <div style={{ fontWeight: 800, color: '#38bdf8', marginBottom: 4 }}>
+                  🛰️ DATA PROVENANCE (NASA POWER)
+                </div>
+                <p style={{ margin: '0 0 6px', color: '#94a3b8', lineHeight: 1.4 }}>
+                  আবহাওয়া ডেটা নাসা পাওয়ার (NASA POWER 0.5° × 0.5° Gridded Model Reanalysis) থেকে প্রাপ্ত। এটি সরাসরি ফিল্ড সেন্সর রিডিং নয়, বরং গ্রিডেড মডেল সিমুলেশন।
+                </p>
+                <div style={{ color: '#64748b', fontSize: 10 }}>
+                  FAO-56 Dual Kc · Penman-Monteith · Stewart Yield Loss
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* 120-Day Simulation Playback & Scrubber Bar */}
-            <div style={{ padding: '12px 18px', background: '#1e293b', borderTop: '1px solid #334155', display: 'flex', alignItems: 'center', gap: 14 }}>
+          {/* BOTTOM PANEL: 120-Day Simulation Scrubber & Real-time Comparison Meters */}
+          <div style={{ marginTop: 16, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 20px', boxShadow: 'var(--glass-shadow)' }}>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={() => setIsPlaying(!isPlaying)}
                 style={{
-                  padding: '6px 14px',
-                  borderRadius: 6,
+                  padding: '7px 16px',
+                  borderRadius: 8,
                   fontWeight: 800,
-                  fontSize: 12,
+                  fontSize: 12.5,
                   cursor: 'pointer',
-                  border: 'none',
-                  background: isPlaying ? '#ef4444' : '#22c55e',
-                  color: '#ffffff'
+                  border: isPlaying ? '1px solid #ef4444' : '1px solid #00df81',
+                  background: isPlaying ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 'linear-gradient(135deg, #00df81 0%, #00a860 100%)',
+                  color: isPlaying ? '#ffffff' : '#04130c',
+                  boxShadow: isPlaying ? '0 4px 14px rgba(239, 68, 68, 0.4)' : '0 4px 14px rgba(0, 223, 129, 0.4)',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 {isPlaying ? '⏸ Pause' : '▶ Play Simulation'}
               </button>
 
-              <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 11, color: '#94a3b8', minWidth: 50 }}>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, minWidth: 260 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: '#38bdf8', minWidth: 60 }}>
                   Day {currentDayStep}
                 </span>
                 <input
@@ -956,88 +915,110 @@ export function ExperimentSimulator3DView({
                   max="120"
                   value={currentDayStep}
                   onChange={(e) => setCurrentDayStep(Number(e.target.value))}
-                  style={{ flex: 1, cursor: 'pointer', accentColor: '#38bdf8' }}
+                  style={{ flex: 1, cursor: 'pointer', accentColor: '#00df81' }}
                 />
-                <span style={{ fontSize: 11, color: '#94a3b8', minWidth: 50 }}>
-                  Day 120
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', minWidth: 60 }}>
+                  Harvest 120
                 </span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setCurrentDayStep(1)}
-                style={{ padding: '4px 10px', borderRadius: 6, background: '#334155', border: 'none', color: '#f8fafc', fontSize: 11, cursor: 'pointer' }}
-              >
-                ⏪ Reset Day 1
-              </button>
-            </div>
-          </div>
-
-          {/* Selected Experimental Plot Inspector */}
-          <div style={{ background: '#111827', borderRadius: 12, border: '1px solid #1f2937', padding: '14px 18px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ background: '#0284c7', color: '#ffffff', padding: '2px 6px', borderRadius: 4, fontWeight: 800, fontSize: 11 }}>
-                  {activePlot.id}
-                </span>
-                <strong style={{ fontSize: 14, color: '#f8fafc' }}>{activePlot.titleBn}</strong>
-                <span style={{ fontSize: 12, color: '#94a3b8' }}>({activePlot.treatment})</span>
+                <button
+                  type="button"
+                  onClick={() => setCurrentDayStep(1)}
+                  style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid var(--glass-border)', color: '#f8fafc', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease' }}
+                >
+                  ⏪ Day 1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentDayStep(120)}
+                  style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid var(--glass-border)', color: '#f8fafc', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease' }}
+                >
+                  ⏩ Harvest (120)
+                </button>
               </div>
-              <span style={{ fontSize: 11, color: '#38bdf8', fontWeight: 700 }}>
-                দিন {currentDayStep}: {currentDayStep <= 25 ? 'প্রারম্ভিক পর্যায়' : currentDayStep <= 55 ? 'কুশি বৃদ্ধি' : currentDayStep <= 90 ? 'দানাধারণ' : 'ফসল পাকা'}
-              </span>
+
+              {/* Phenological Stage Badge */}
+              <div style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '5px 12px', borderRadius: 8, fontSize: 11.5, fontWeight: 800, color: '#38bdf8' }}>
+                🌾 {currentDayStep <= 20 ? 'চারা গজানো (Seedling Emergence)' : currentDayStep <= 50 ? 'কুশি বৃদ্ধি (Tillering)' : currentDayStep <= 75 ? 'থোড় পর্যায় (Panicle Booting)' : currentDayStep <= 95 ? 'ফুল ও পরাগায়ন (Flowering)' : currentDayStep <= 110 ? 'দানাধারণ (Grain Filling)' : 'সোনালী ধান পরিপক্ব (Ripening)'}
+              </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10, background: '#1e293b', padding: 10, borderRadius: 8 }}>
-              <div>
-                <span style={{ display: 'block', fontSize: 10.5, color: '#94a3b8' }}>অনুমিত ফলন:</span>
-                <strong style={{ fontSize: 12.5, color: '#4ade80' }}>{activePlot.yieldTonHa} t/ha ({activePlot.yieldMaundBigha} md/bigha)</strong>
+            {/* Real-time Scenario A vs B Differential Meters */}
+            {comparison && (
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.06)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, fontSize: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>ফলন পার্থক্য (Yield Δ):</span>
+                  <strong style={{ color: comparison.yieldTonHa.absoluteDiff >= 0 ? '#00df81' : '#f87171' }}>
+                    {comparison.yieldTonHa.absoluteDiff >= 0 ? '+' : ''}{comparison.yieldTonHa.absoluteDiff} t/ha ({comparison.yieldTonHa.percentageDiff}%)
+                  </strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>পানি সাশ্রয় (Water Δ):</span>
+                  <strong style={{ color: comparison.waterAppliedMm.absoluteDiff <= 0 ? '#00df81' : '#f87171' }}>
+                    {comparison.waterAppliedMm.absoluteDiff} mm ({comparison.waterAppliedMm.percentageDiff}%)
+                  </strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>নিট লাভ প্রভাব (Net Δ):</span>
+                  <strong style={{ color: comparison.netReturnBdt.absoluteDiff >= 0 ? '#00df81' : '#f87171' }}>
+                    {formatCurrency(comparison.netReturnBdt.absoluteDiff, lang)} ({comparison.netReturnBdt.percentageDiff}%)
+                  </strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>ব্রেক-ইভেন দর (BEP Δ):</span>
+                  <strong style={{ color: comparison.breakEvenPerKg.absoluteDiff <= 0 ? '#00df81' : '#f87171' }}>
+                    {comparison.breakEvenPerKg.absoluteDiff} BDT/kg
+                  </strong>
+                </div>
               </div>
-              <div>
-                <span style={{ display: 'block', fontSize: 10.5, color: '#94a3b8' }}>মাটির আর্দ্রতা:</span>
-                <strong style={{ fontSize: 12.5, color: '#38bdf8' }}>{activePlot.moisturePct}% (Ks {activePlot.ks})</strong>
-              </div>
-              <div>
-                <span style={{ display: 'block', fontSize: 10.5, color: '#94a3b8' }}>প্রয়োগকৃত পানি:</span>
-                <strong style={{ fontSize: 12.5, color: '#cbd5e1' }}>{activePlot.waterAppliedMm} mm</strong>
-              </div>
-              <div>
-                <span style={{ display: 'block', fontSize: 10.5, color: '#94a3b8' }}>প্রত্যাশিত নিট লাভ:</span>
-                <strong style={{ fontSize: 12.5, color: '#facc15' }}>{formatCurrency(activePlot.netReturnBdt, lang)}/ha</strong>
-              </div>
-            </div>
+            )}
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
-      {/* Multi-Scenario Side-by-Side Comparison Matrix */}
-      {comparison && (
-        <div style={{ marginTop: 20, background: '#111827', borderRadius: 14, border: '1px solid #1f2937', padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
+      {/* SCENARIO COMPARISON TAB CONTENT */}
+      {activeMainTab === 'scenario_comparison' && comparison && (
+        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: 17, fontWeight: 900, color: '#f8fafc' }}>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
                 ⚖️ {lang === 'bn' ? 'দৃশ্যকল্প এ বনাম দৃশ্যকল্প বি গাণিতিক তুলনা ম্যাট্রিক্স' : 'Multi-Scenario Quantitative Comparison (Scenario A vs B)'}
               </h3>
-              <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#94a3b8' }}>
+              <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
                 {lang === 'bn'
                   ? 'ফলন, সেচ সাশ্রয়, খরচ ও নিট লাভের গাণিতিক পার্থক্য (Difference & Percentage Impact)'
                   : 'Absolute and percentage differences across productivity, water conservation, costs, and net returns'}
               </p>
             </div>
-            <span style={{ background: '#1e293b', padding: '4px 10px', borderRadius: 6, fontSize: 11, color: '#38bdf8', border: '1px solid #334155' }}>
+            <span style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '5px 12px', borderRadius: 8, fontSize: 11.5, fontWeight: 800, color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
               Formula: B - A (Δ%)
             </span>
+          </div>
+
+          {/* Synchronized 3D Dual-Parcel Visualizer */}
+          <div style={{ marginBottom: 20 }}>
+            <ScenarioComparison3D
+              scenarioA={scenarioA}
+              scenarioB={scenarioB}
+              simResultA={simResultA}
+              simResultB={simResultB}
+              comparison={comparison}
+              currentDay={currentDayStep}
+              lang={lang}
+            />
           </div>
 
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12.5 }}>
               <thead>
-                <tr style={{ background: '#1e293b', borderBottom: '1px solid #334155', color: '#cbd5e1' }}>
-                  <th style={{ padding: '10px 14px' }}>অ্যাগ্রোনোমিক সূচক (Indicator)</th>
-                  <th style={{ padding: '10px 14px' }}>{scenarioA.name}</th>
-                  <th style={{ padding: '10px 14px' }}>{scenarioB.name}</th>
-                  <th style={{ padding: '10px 14px' }}>পার্থক্য (Difference)</th>
-                  <th style={{ padding: '10px 14px' }}>শতাংশ পরিবর্তন (% Impact)</th>
+                <tr style={{ background: 'rgba(15, 23, 42, 0.7)', borderBottom: '1px solid var(--glass-border)', color: '#cbd5e1' }}>
+                  <th style={{ padding: '12px 16px' }}>অ্যাগ্রোনোমিক সূচক (Indicator)</th>
+                  <th style={{ padding: '12px 16px' }}>{scenarioA.name}</th>
+                  <th style={{ padding: '12px 16px' }}>{scenarioB.name}</th>
+                  <th style={{ padding: '12px 16px' }}>পার্থক্য (Difference)</th>
+                  <th style={{ padding: '12px 16px' }}>শতাংশ পরিবর্তন (% Impact)</th>
                 </tr>
               </thead>
               <tbody>
@@ -1091,14 +1072,14 @@ export function ExperimentSimulator3DView({
                     isPositive: comparison.breakEvenPerKg.absoluteDiff <= 0
                   }
                 ].map((row, rIdx) => (
-                  <tr key={rIdx} style={{ borderBottom: '1px solid #1f2937' }}>
-                    <td style={{ padding: '10px 14px', fontWeight: 700, color: '#f8fafc' }}>{row.label}</td>
-                    <td style={{ padding: '10px 14px', color: '#94a3b8' }}>{row.valA}</td>
-                    <td style={{ padding: '10px 14px', color: '#38bdf8' }}>{row.valB}</td>
-                    <td style={{ padding: '10px 14px', fontWeight: 700, color: row.isPositive ? '#4ade80' : '#f87171' }}>
+                  <tr key={rIdx} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#f8fafc' }}>{row.label}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{row.valA}</td>
+                    <td style={{ padding: '12px 16px', color: '#38bdf8' }}>{row.valB}</td>
+                    <td style={{ padding: '12px 16px', fontWeight: 800, color: row.isPositive ? '#00df81' : '#f87171' }}>
                       {row.diff}
                     </td>
-                    <td style={{ padding: '10px 14px', fontWeight: 800, color: row.isPositive ? '#4ade80' : '#f87171' }}>
+                    <td style={{ padding: '12px 16px', fontWeight: 800, color: row.isPositive ? '#00df81' : '#f87171' }}>
                       {row.pct}
                     </td>
                   </tr>
@@ -1109,11 +1090,28 @@ export function ExperimentSimulator3DView({
         </div>
       )}
 
+      {/* INTERACTIVE STRESS TESTS TAB CONTENT */}
+      {activeMainTab === 'stress_tests' && (
+        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
+          <div style={{ marginBottom: 16 }}>
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
+              ⚡ {lang === 'bn' ? 'সায়েন্টিফিক স্ট্রেস টেস্ট ও বাউন্ডারি যাচাই ল্যাব' : 'Scientific Stress Tests & Edge-Case Verification Lab'}
+            </h3>
+            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
+              {lang === 'bn'
+                ? 'চরম জলবায়ু ও মাটি পরিস্থিতি (Zero Water, Deluge > TAW, Ks Threshold, N=0) যাচাই এবং ত্রিমাত্রিক লাইসিমিটার দৃশ্য।'
+                : 'Direct execution of 9 physical edge-case stress benchmarks, live invariant validation, and 3D lysimeter simulation.'}
+            </p>
+          </div>
+          <StressTest3D lang={lang} />
+        </div>
+      )}
+
       {/* Provenance & Methodology Footnote */}
-      <div style={{ marginTop: 18, padding: 14, background: '#111827', borderRadius: 10, border: '1px solid #1f2937', color: '#94a3b8', fontSize: 11.5 }}>
-        <strong>🔬 বৈজ্ঞানিক ভিত্তি ও সীমাবদ্ধতা (Scientific Methodology & Provenance):</strong>
-        <p style={{ margin: '4px 0 0' }}>
-          সিমুলেশন মডেলটি জাতিসংঘের খাদ্য ও কৃষি সংস্থা (FAO-33 Stewart Model) এবং পেনম্যান-মন্টেথ ইভাপোট্রান্সপিরেশন (FAO-56) নীতিমালার উপর ভিত্তি করে নির্ণীত।
+      <div style={{ marginTop: 20, padding: 14, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 12, border: '1px solid var(--glass-border)', color: 'var(--text-muted)', fontSize: 11.5 }}>
+        <strong style={{ color: '#38bdf8' }}>🔬 বৈজ্ঞানিক ভিত্তি ও সীমাবদ্ধতা (Scientific Methodology & Provenance):</strong>
+        <p style={{ margin: '4px 0 0', lineHeight: 1.5 }}>
+          সিমুলেশন মডেলটি জাতিসংঘের খাদ্য ও কৃষি সংস্থা (FAO-33 Stewart Model) এবং পেনম্যান-মন্টেথ ইভাপোট্রান্সপিরেশন (FAO-56) নীতিমালার উপর ভিত্তি করে বাস্তবায়নকৃত।
           এটি মাটির পানি ভারসাম্য ও আর্দ্রতা ঘাটতি ভিত্তিক আনুমানিক ফলন ও লাভ-ক্ষতির গবেষণা মডেল। স্থানীয় মাটি পরীক্ষা (Soil Lab Test) ও প্রত্যক্ষ ফিল্ড ট্রায়াল ছাড়া এটি কোনো গ্যারান্টিযুক্ত বাণিজ্যিক চুক্তি নয়।
         </p>
       </div>

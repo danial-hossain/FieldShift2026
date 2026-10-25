@@ -1898,7 +1898,11 @@ export function App() {
             user={user}
             userFields={userFields}
             onNavigate={handleNavigate}
+            onRunWorkflow={runAnalysis}
             lang={lang}
+            request={request}
+            formatNumber={formatNumber}
+            strategyProfiles={STRATEGY_PROFILES}
           />
         )}
 

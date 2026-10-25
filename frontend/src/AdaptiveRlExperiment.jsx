@@ -49,8 +49,17 @@ export function AdaptiveRlExperiment({
   const stateValue = (benchmarkValue, fieldValue) => syntheticBenchmark
     ? benchmarkValue ?? null
     : fieldValue ?? null;
-  const selectedStrategy = strategyProfiles[selectedStrategyId] || strategyProfiles.balanced;
+  const fallbackProfiles = {
+    profit_focused: { name: 'Profit Focused', icon: '💰', weights: { profit: 0.70, water: 0.20, soil: 0.10 } },
+    water_efficiency: { name: 'Water Efficiency', icon: '💧', weights: { profit: 0.20, water: 0.60, soil: 0.20 } },
+    soil_health: { name: 'Soil Health & Regeneration', icon: '🌱', weights: { profit: 0.20, water: 0.20, soil: 0.60 } },
+    balanced: { name: 'Balanced Multi-Objective', icon: '⚖️', weights: { profit: 0.34, water: 0.33, soil: 0.33 } }
+  };
+  const activeProfiles = strategyProfiles || fallbackProfiles;
+  const selectedStrategy = (selectedStrategyId && activeProfiles[selectedStrategyId]) || activeProfiles.balanced || fallbackProfiles.balanced;
   const activeSolverStatus = String(activeMilpResult?.solver_status || activeMilpResult?.status || '').toLowerCase();
+
+
   const hasFeasibleMilpReference = Boolean(
     activeMilpResult &&
     rotationValues(activeMilpResult).length === 6 &&
