@@ -5666,6 +5666,8 @@ export function App() {
           <SensitivityAnalysisView
             activeField={activeField}
             onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+            request={request}
+            formatNumber={formatNumber}
           />
         )}
 

@@ -12,12 +12,66 @@
 // - Workspace Overview Command Center launchpad
 // - Zero navigation conflicts: active tab strictly matches rendered view
 
-import React, { useState, useMemo, Suspense, lazy } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from './i18n.js';
 import { SixSeasonRecommendationView } from './SixSeasonRecommendationView.jsx';
-const ExperimentSimulator3DView = lazy(() =>
-  import('./ExperimentSimulator3DView.jsx').then(m => ({ default: m.ExperimentSimulator3DView }))
-);
+import { ExperimentSimulator3DView } from './ExperimentSimulator3DView.jsx';
+
+class WorkspaceErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Workspace tab runtime error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          padding: '40px 24px',
+          background: 'var(--glass-bg-card, rgba(15,23,42,0.85))',
+          borderRadius: 16,
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          textAlign: 'center',
+          backdropFilter: 'blur(16px)',
+          margin: '20px 0'
+        }}>
+          <div style={{ fontSize: 36, marginBottom: 12 }}>⚠️</div>
+          <h4 style={{ margin: '0 0 8px', color: '#f87171', fontSize: 17, fontWeight: 800 }}>
+            {this.props.fallbackTitle || 'Display Module Notice'}
+          </h4>
+          <p style={{ margin: '0 0 16px', color: '#94a3b8', fontSize: 13, maxWidth: 600, marginInline: 'auto' }}>
+            {this.props.fallbackMessage || 'An unexpected rendering or graphics context issue occurred in this research module.'}
+          </p>
+          <div style={{ fontSize: 12, color: '#fca5a5', background: 'rgba(239,68,68,0.1)', padding: '8px 12px', borderRadius: 8, maxWidth: 640, margin: '0 auto 16px', wordBreak: 'break-all' }}>
+            {String(this.state.error?.message || this.state.error)}
+          </div>
+          <button
+            type="button"
+            onClick={() => this.setState({ hasError: false, error: null })}
+            style={{
+              padding: '8px 18px',
+              borderRadius: 8,
+              background: '#0284c7',
+              color: '#ffffff',
+              border: 'none',
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: 'pointer'
+            }}
+          >
+            🔄 Reload Module
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { ComparisonLabView } from './ComparisonLabView.jsx';
 import { CropFailureRecoveryView } from './CropFailureRecoveryView.jsx';
 import { AdaptiveReplanningView } from './AdaptiveReplanningView.jsx';
@@ -543,26 +597,18 @@ export function ResearchWorkspaceView({
             subTab === 'nutrient_3d' ||
             subTab === 'scenario_ab_3d' ||
             subTab === 'stress_tests_3d') && (
-            <Suspense
-              fallback={
-                <div style={{ padding: '60px 20px', textAlign: 'center', background: 'var(--glass-bg-card)', borderRadius: 16, border: '1px solid var(--glass-border)' }}>
-                  <div style={{ fontSize: 32, marginBottom: 12, animation: 'spin 2s linear infinite' }}>🌀</div>
-                  <h4 style={{ margin: '0 0 6px', color: '#f8fafc', fontSize: 16, fontWeight: 800 }}>
-                    {lang === 'bn' ? 'ত্রিমাত্রিক কৃষি ল্যাব লোড হচ্ছে...' : 'Loading 3D Farm Experiment Lab...'}
-                  </h4>
-                  <p style={{ margin: 0, color: '#94a3b8', fontSize: 13 }}>
-                    {lang === 'bn'
-                      ? 'Three.js v186 ইঞ্জিন, কৃষি মেশ ও শেডার প্রস্তুত করা হচ্ছে'
-                      : 'Initializing Three.js v186 WebGL engine, meshes, and procedural shaders...'}
-                  </p>
-                </div>
-              }
+            <WorkspaceErrorBoundary
+              key={subTab}
+              fallbackTitle={lang === 'bn' ? 'ত্রিমাত্রিক কৃষি দৃশ্য লোডে সমস্যা' : '3D Farm Simulator Display Notice'}
+              fallbackMessage={lang === 'bn' ? 'Three.js ইঞ্জিন বা WebGL রেন্ডার করতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।' : 'An issue occurred initializing or rendering the Three.js 3D scene.'}
             >
               <ExperimentSimulator3DView
                 activeField={activeField}
                 onBack={() => setSubTab('overview')}
                 onNavigateTab={(tab) => setSubTab(tab)}
                 lang={lang}
+                request={request}
+                formatNumber={formatNumber}
                 initialMainTab={
                   subTab === 'scenario_ab_3d' ? 'scenario_comparison' :
                   subTab === 'stress_tests_3d' ? 'stress_tests' : '3d_experiment'
@@ -574,13 +620,15 @@ export function ResearchWorkspaceView({
                   subTab === 'nutrient_3d' ? 'nutrient_profile' : 'farm_all'
                 }
               />
-            </Suspense>
+            </WorkspaceErrorBoundary>
           )}
 
           {/* GROUP C: SENSITIVITY & ROBUSTNESS */}
           {subTab === 'multi_field_experiment' && (
             <MultiFieldExperimentView
               lang={lang}
+              request={request}
+              formatNumber={formatNumber}
             />
           )}
 
@@ -599,6 +647,7 @@ export function ResearchWorkspaceView({
             <WeatherUncertaintyView
               activeField={activeField}
               plan={plan}
+              analysisResult={plan}
               summary={summary}
               robustness={robustness}
               request={request}
@@ -613,7 +662,10 @@ export function ResearchWorkspaceView({
             <CropFailureRecoveryView
               activeField={activeField}
               plan={plan}
+              analysisResult={plan}
               summary={summary}
+              request={request}
+              formatNumber={formatNumber}
               onBack={() => setSubTab('overview')}
               onNavigateTab={(tab) => setSubTab(tab)}
               lang={lang}
@@ -624,6 +676,7 @@ export function ResearchWorkspaceView({
             <AdaptiveRlExperiment
               activeField={activeField}
               request={request}
+              formatNumber={formatNumber}
               strategyProfiles={strategyProfiles}
               onBack={() => setSubTab('overview')}
               lang={lang}
@@ -658,6 +711,8 @@ export function ResearchWorkspaceView({
 
           {subTab === 'crop_catalog' && (
             <CropCatalogView
+              request={request}
+              formatNumber={formatNumber}
               onBack={() => setSubTab('overview')}
               onNavigateTab={(tab) => setSubTab(tab)}
               lang={lang}
@@ -680,6 +735,7 @@ export function ResearchWorkspaceView({
             <SustainabilityTrackerView
               activeField={activeField}
               plan={plan}
+              analysisResult={plan}
               summary={summary}
               request={request}
               formatNumber={formatNumber}

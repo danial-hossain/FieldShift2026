@@ -1,13 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { RecoverySimulation3D } from './research3d/RecoverySimulation3D.jsx';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
 
 export function CropFailureRecoveryView({
   activeField,
   analysisResult,
-  request,
-  formatNumber,
+  plan,
+  summary,
+  request: propRequest,
+  formatNumber: propFormatNumber,
   onNavigateTab,
+  onBack,
+  lang = 'bn',
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+  const resolvedAnalysis = analysisResult || plan;
+
   const [failureType, setFailureType] = useState('drought_shock');
   const [failureSeason, setFailureSeason] = useState(0);
   const [severity, setSeverity] = useState('severe');
@@ -38,12 +48,14 @@ export function CropFailureRecoveryView({
     { idx: 5, label: 'Season 6 (Year 2 - Kharif-2 / Monsoon)' },
   ];
 
-  const runSimulation = async (type = failureType, season = failureSeason, sev = severity) => {
+  const runSimulation = useCallback(async (type = failureType, season = failureSeason, sev = severity) => {
     setLoading(true);
     setError('');
     try {
+      const rawId = activeField?.id;
+      const isNumericId = rawId != null && !isNaN(Number(rawId)) && String(rawId).trim() !== '';
       const payload = {
-        field_id: activeField?.id || 'demo',
+        field_id: isNumericId ? Number(rawId) : 'demo',
         failure_type: type,
         failure_season: Number(season),
         severity: sev,
@@ -56,7 +68,7 @@ export function CropFailureRecoveryView({
           organic_matter: activeField?.organic_matter,
           irrigation_capacity_mm: activeField?.irrigation_capacity_mm || 450,
         },
-        baseline_plan: analysisResult?.summary?.strategies?.balanced || null,
+        baseline_plan: resolvedAnalysis?.summary?.strategies?.balanced || null,
       };
 
       const res = await request('/api/scenarios/crop-failure-recovery', {
@@ -75,7 +87,7 @@ export function CropFailureRecoveryView({
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeField, failureType, failureSeason, severity, resolvedAnalysis, request]);
 
   useEffect(() => {
     runSimulation();
@@ -215,8 +227,31 @@ export function CropFailureRecoveryView({
       </div>
 
       {error && (
-        <div style={{ padding: '14px', background: '#451a1a', border: '1px solid #7f1d1d', borderRadius: '10px', color: '#fca5a5', marginBottom: '20px', fontSize: '13px' }}>
-          <strong>Simulation Error:</strong> {error}
+        <div style={{
+          padding: '16px 20px',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: '10px',
+          color: '#fca5a5',
+          marginBottom: '20px',
+          fontSize: '13px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div>
+            <strong>Simulation Error:</strong> {error}
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => runSimulation()}
+            style={{ padding: '6px 14px', fontSize: 12, cursor: 'pointer', background: '#334155', color: '#fff', border: 'none', borderRadius: 6 }}
+          >
+            🔄 Retry Simulation
+          </button>
         </div>
       )}
 

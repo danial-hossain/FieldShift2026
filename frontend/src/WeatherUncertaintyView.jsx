@@ -1,24 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ClimateStress3D } from './research3d/ClimateStress3D.jsx';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
 
 export function WeatherUncertaintyView({
   activeField,
   analysisResult,
-  request,
-  formatNumber,
+  plan,
+  summary,
+  robustness,
+  request: propRequest,
+  formatNumber: propFormatNumber,
   onNavigateTab,
+  onBack,
+  lang = 'bn',
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+  const resolvedAnalysis = analysisResult || plan;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [uncertaintyData, setUncertaintyData] = useState(null);
   const [activeScenarioKey, setActiveScenarioKey] = useState('baseline');
 
-  const fetchUncertaintyScenarios = async () => {
+  const fetchUncertaintyScenarios = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
+      const rawId = activeField?.id;
+      const isNumericId = rawId != null && !isNaN(Number(rawId)) && String(rawId).trim() !== '';
       const payload = {
-        field_id: activeField?.id || 'demo',
+        field_id: isNumericId ? Number(rawId) : 'demo',
         latitude: activeField?.latitude != null ? Number(activeField.latitude) : 24.8500,
         longitude: activeField?.longitude != null ? Number(activeField.longitude) : 89.3700,
         field_state: {
@@ -28,7 +41,7 @@ export function WeatherUncertaintyView({
           organic_matter: activeField?.organic_matter,
           irrigation_capacity_mm: activeField?.irrigation_capacity_mm || 450,
         },
-        baseline_plan: analysisResult?.summary?.strategies?.balanced || null,
+        baseline_plan: resolvedAnalysis?.summary?.strategies?.balanced || null,
       };
 
       const res = await request('/api/scenarios/weather-uncertainty', {
@@ -47,11 +60,11 @@ export function WeatherUncertaintyView({
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeField, resolvedAnalysis, request]);
 
   useEffect(() => {
     fetchUncertaintyScenarios();
-  }, [activeField]);
+  }, [fetchUncertaintyScenarios]);
 
   const scenarios = uncertaintyData?.scenarios || {};
   const activeScen = scenarios[activeScenarioKey] || scenarios.baseline;
@@ -181,8 +194,31 @@ export function WeatherUncertaintyView({
       </div>
 
       {error && (
-        <div style={{ padding: '14px', background: '#451a1a', border: '1px solid #7f1d1d', borderRadius: '10px', color: '#fca5a5', marginBottom: '20px', fontSize: '13px' }}>
-          <strong>Error:</strong> {error}
+        <div style={{
+          padding: '16px 20px',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: 10,
+          color: '#fca5a5',
+          marginBottom: 20,
+          fontSize: 13,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div>
+            <strong>Error:</strong> {error}
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={fetchUncertaintyScenarios}
+            style={{ padding: '6px 14px', fontSize: 12, cursor: 'pointer', background: '#334155', color: '#fff', border: 'none', borderRadius: 6 }}
+          >
+            🔄 Retry Stress Suite
+          </button>
         </div>
       )}
 

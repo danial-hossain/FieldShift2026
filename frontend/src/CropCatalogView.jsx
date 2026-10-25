@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
 
 export function CropCatalogView({
-  request,
-  formatNumber,
+  request: propRequest,
+  formatNumber: propFormatNumber,
+  onBack,
+  onNavigateTab,
+  lang = 'bn',
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+
   const [catalog, setCatalog] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -11,26 +19,27 @@ export function CropCatalogView({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCrop, setSelectedCrop] = useState(null);
 
-  useEffect(() => {
-    const fetchCatalog = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const res = await request('/api/crops/catalog');
-        if (res && res.status === 'ok') {
-          setCatalog(res);
-          if (res.crops?.length > 0) setSelectedCrop(res.crops[0]);
-        } else {
-          throw new Error('Failed to load crop catalog.');
-        }
-      } catch (err) {
-        setError(err.message || 'Error fetching crop database.');
-      } finally {
-        setLoading(false);
+  const fetchCatalog = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await request('/api/crops/catalog');
+      if (res && res.status === 'ok') {
+        setCatalog(res);
+        if (res.crops?.length > 0) setSelectedCrop(res.crops[0]);
+      } else {
+        throw new Error('Failed to load crop catalog.');
       }
-    };
+    } catch (err) {
+      setError(err.message || 'Error fetching crop database.');
+    } finally {
+      setLoading(false);
+    }
+  }, [request]);
+
+  useEffect(() => {
     fetchCatalog();
-  }, []);
+  }, [fetchCatalog]);
 
   const crops = catalog?.crops || [];
 
@@ -132,7 +141,33 @@ export function CropCatalogView({
       </div>
 
       {loading && <div style={{ color: '#94a3b8', padding: '20px' }}>Loading agronomic database...</div>}
-      {error && <div style={{ color: '#ef4444', padding: '20px' }}>{error}</div>}
+      {error && (
+        <div style={{
+          color: '#ef4444',
+          padding: '16px 20px',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: 10,
+          marginBottom: 20,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div>
+            <strong>Error:</strong> {error}
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={fetchCatalog}
+            style={{ padding: '6px 14px', fontSize: 12, cursor: 'pointer', background: '#334155', color: '#fff', border: 'none', borderRadius: 6 }}
+          >
+            🔄 Retry Catalog
+          </button>
+        </div>
+      )}
 
       {/* Grid of Crops */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '14px', marginBottom: '24px' }}>

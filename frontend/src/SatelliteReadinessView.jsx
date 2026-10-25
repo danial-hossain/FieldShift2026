@@ -1,34 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SatelliteConstellation3D } from './research3d/SatelliteConstellation3D.jsx';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
+import { request as defaultRequest } from './apiClient.js';
 
 export function SatelliteReadinessView({
-  request,
-  formatNumber,
+  activeField,
+  nasa,
+  request: propRequest,
+  formatNumber: propFormatNumber,
+  onNavigateTab,
+  onBack,
+  lang = 'bn',
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+
   const [readiness, setReadiness] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedSensor, setSelectedSensor] = useState('nasa_power');
 
-  useEffect(() => {
-    const fetchReadiness = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const res = await request('/api/satellite/readiness');
-        if (res && res.status === 'ok') {
-          setReadiness(res);
-        } else {
-          throw new Error('Failed to load satellite readiness data.');
-        }
-      } catch (err) {
-        setError(err.message || 'Error communicating with Satellite Readiness endpoint.');
-      } finally {
-        setLoading(false);
+  const fetchReadiness = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await request('/api/satellite/readiness');
+      if (res && res.status === 'ok') {
+        setReadiness(res);
+      } else {
+        throw new Error('Failed to load satellite readiness data.');
       }
-    };
+    } catch (err) {
+      setError(err.message || 'Error communicating with Satellite Readiness endpoint.');
+    } finally {
+      setLoading(false);
+    }
+  }, [request]);
+
+  useEffect(() => {
     fetchReadiness();
-  }, []);
+  }, [fetchReadiness]);
 
   const sensors = readiness?.sensors || [];
 
@@ -78,7 +89,33 @@ export function SatelliteReadinessView({
       />
 
       {loading && <div style={{ color: '#94a3b8', padding: '20px' }}>Inspecting satellite sensor APIs...</div>}
-      {error && <div style={{ color: '#ef4444', padding: '20px' }}>{error}</div>}
+      {error && (
+        <div style={{
+          color: '#ef4444',
+          padding: '16px 20px',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: 10,
+          marginBottom: 20,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div>
+            <strong>Error:</strong> {error}
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={fetchReadiness}
+            style={{ padding: '6px 14px', fontSize: 12, cursor: 'pointer', background: '#334155', color: '#fff', border: 'none', borderRadius: 6 }}
+          >
+            🔄 Retry Readiness Check
+          </button>
+        </div>
+      )}
 
       {/* Sensor Readiness Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '16px', marginBottom: '24px' }}>

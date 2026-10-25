@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { request as defaultRequest } from './apiClient.js';
 import {
   normalizeNumberInput,
   normalizeSimulationState,
@@ -36,8 +37,9 @@ export function AdaptiveRlExperiment({
   strategyYieldAnalysis,
   form,
   workflowPayload,
-  request
+  request: propRequest
 }) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
   const rawFieldId = activeField?.id ?? fieldState?.field_id ?? null;
   const fieldId = typeof rawFieldId === 'string' || (
     typeof rawFieldId === 'number' && Number.isFinite(rawFieldId)

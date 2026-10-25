@@ -48,3 +48,5 @@ export async function request(path, options = {}) {
 
   return body;
 }
+
+export default request;

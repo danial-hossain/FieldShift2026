@@ -1,29 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { formatNumber } from './main.jsx';
+import React, { useState, useEffect, useCallback } from 'react';
+import { formatNumber as defaultFormatNumber } from './marketUtils.js';
 import { SensitivityAnalysis3D } from './research3d/SensitivityAnalysis3D.jsx';
-import { request } from './apiClient.js';
+import { request as defaultRequest } from './apiClient.js';
 
-export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
+export function SensitivityAnalysisView({
+  activeField,
+  onNavigateTab,
+  request: propRequest,
+  formatNumber: propFormatNumber,
+  onBack,
+  lang = 'bn',
+}) {
+  const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
+  const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sensitivityData, setSensitivityData] = useState(null);
   const [selectedParam, setSelectedParam] = useState('all');
 
-  useEffect(() => {
-    handleRunSensitivity();
-  }, [activeField]);
-
-  const handleRunSensitivity = async () => {
+  const handleRunSensitivity = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
+      const rawId = activeField?.id;
+      const isNumericId = rawId != null && !isNaN(Number(rawId)) && String(rawId).trim() !== '';
       const payload = {
-        field_id: activeField?.id || 'demo',
-        field_size_ha: activeField?.area_ha || 2.0,
-        irrigation_capacity_mm: activeField?.irrigation_capacity_mm || 500.0,
+        field_id: isNumericId ? Number(rawId) : 'demo',
+        field_size_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : 2.0,
+        irrigation_capacity_mm: activeField?.irrigation_capacity_mm != null ? Number(activeField.irrigation_capacity_mm) : 500.0,
         soil_texture: activeField?.soil_texture || 'loam',
-        soil_ph: activeField?.soil_ph || 6.5,
-        organic_matter: activeField?.organic_matter || 2.0,
+        soil_ph: activeField?.soil_ph != null ? Number(activeField.soil_ph) : 6.5,
+        organic_matter: activeField?.organic_matter != null ? Number(activeField.organic_matter) : 2.0,
         perturbation_steps: [-20.0, -10.0, 10.0, 20.0],
       };
 
@@ -33,11 +41,15 @@ export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
       });
       setSensitivityData(json);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Error running sensitivity analysis sweeps.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeField, request]);
+
+  useEffect(() => {
+    handleRunSensitivity();
+  }, [handleRunSensitivity]);
 
   const filteredSweeps = (sensitivityData?.sweeps || []).filter(s => {
     if (selectedParam === 'all') return true;
@@ -99,7 +111,32 @@ export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
           Solving multi-period MILP rotations across perturbation sweeps...
         </div>
       ) : error ? (
-        <div style={{ padding: 20, color: '#b91c1c', background: '#fee2e2', borderRadius: 8 }}>{error}</div>
+        <div style={{
+          padding: '20px 24px',
+          color: '#f87171',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: 12,
+          marginBottom: 24,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div>
+            <strong style={{ display: 'block', marginBottom: 4 }}>Sensitivity Sweep Notice:</strong>
+            <span>{error}</span>
+          </div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleRunSensitivity}
+            style={{ padding: '8px 16px', fontSize: 13, cursor: 'pointer' }}
+          >
+            🔄 Retry Sweeps
+          </button>
+        </div>
       ) : (
         <div>
           {/* 3D Parameter Sweep Response Workbench */}

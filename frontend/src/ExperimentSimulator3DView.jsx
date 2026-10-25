@@ -29,7 +29,9 @@ export function ExperimentSimulator3DView({
   onBack,
   lang = 'bn',
   initialMainTab = '3d_experiment',
-  initial3DViewMode = 'farm_all'
+  initial3DViewMode = 'farm_all',
+  request,
+  formatNumber,
 }) {
   const { t } = useTranslation(lang);
 
@@ -1118,3 +1120,5 @@ export function ExperimentSimulator3DView({
     </div>
   );
 }
+
+export default ExperimentSimulator3DView;

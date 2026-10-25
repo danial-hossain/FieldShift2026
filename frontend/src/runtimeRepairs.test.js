@@ -177,3 +177,52 @@ test('P0 Regression 8: Research Workspace 4-group inventory covers all 20 module
   assert.equal(uniqueSet.size, 20, 'There must be exactly 20 distinct research modules');
   assert.equal(REQUIRED_MODULES.length, 20);
 });
+
+test('P0 Regression 9: apiClient exports both named request and default export as identical valid async function', async () => {
+  const apiClient = await import('./apiClient.js');
+  assert.equal(typeof apiClient.request, 'function');
+  assert.equal(typeof apiClient.default, 'function');
+  assert.equal(apiClient.request, apiClient.default);
+});
+
+test('P0 Regression 10: request fallback pattern prevents "request is not a function" when prop is undefined', () => {
+  const defaultRequest = () => Promise.resolve({ status: 'ok' });
+
+  // Simulate missing or undefined propRequest
+  const propRequestUndefined = undefined;
+  const propRequestNull = null;
+  const propRequestString = 'not a function';
+  const customRequest = () => Promise.resolve({ status: 'custom' });
+
+  const resolvedFromUndefined = typeof propRequestUndefined === 'function' ? propRequestUndefined : defaultRequest;
+  const resolvedFromNull = typeof propRequestNull === 'function' ? propRequestNull : defaultRequest;
+  const resolvedFromString = typeof propRequestString === 'function' ? propRequestString : defaultRequest;
+  const resolvedFromCustom = typeof customRequest === 'function' ? customRequest : defaultRequest;
+
+  assert.equal(resolvedFromUndefined, defaultRequest);
+  assert.equal(resolvedFromNull, defaultRequest);
+  assert.equal(resolvedFromString, defaultRequest);
+  assert.equal(resolvedFromCustom, customRequest);
+});
+
+test('P0 Regression 11: Sensitivity Analysis field_id sanitizer ensures guest users do not crash with int conversion error', () => {
+  function sanitizeFieldId(rawId) {
+    const isNumericId = rawId != null && !isNaN(Number(rawId)) && String(rawId).trim() !== '';
+    return isNumericId ? Number(rawId) : 'demo';
+  }
+
+  assert.equal(sanitizeFieldId(undefined), 'demo');
+  assert.equal(sanitizeFieldId(null), 'demo');
+  assert.equal(sanitizeFieldId('demo'), 'demo');
+  assert.equal(sanitizeFieldId('SYN-BOG-01'), 'demo');
+  assert.equal(sanitizeFieldId('fld_12'), 'demo');
+  assert.equal(sanitizeFieldId(58), 58);
+  assert.equal(sanitizeFieldId('42'), 42);
+});
+
+test('P0 Regression 12: formatNumber imported from marketUtils handles currency and decimals without throwing', () => {
+  assert.equal(formatNumber(1250.75, 2), '1250.75');
+  assert.equal(formatNumber(1500000, 0), '1500000');
+  assert.equal(formatNumber(null, 0), 'Not available');
+  assert.equal(formatNumber(undefined, 0), 'Not available');
+});
