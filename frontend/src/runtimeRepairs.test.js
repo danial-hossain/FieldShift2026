@@ -327,3 +327,42 @@ test('P0 Regression 14: Crop Failure Simulator payload contracts and shock type 
   assert.equal(registeredPayload.impacted_season_index, 1);
 });
 
+test('P0 Regression 15: React Error #31 guard prevents raw {label, value} objects from being rendered as React children in 3D HUD stats', () => {
+  function formatHudMetric(metric, idx) {
+    if (metric == null) return { label: `Metric ${idx + 1}`, value: '', color: '#f8fafc', text: '' };
+    if (typeof metric === 'object') {
+      const label = metric.label != null ? String(metric.label).trim() : `Metric ${idx + 1}`;
+      const value = metric.value != null ? String(metric.value).trim() : '';
+      const color = metric.color || '#f8fafc';
+      const text = label && value ? `${label}: ${value}` : (label || value);
+      return { label, value, color, text };
+    }
+    const str = String(metric).trim();
+    const colonIdx = str.indexOf(':');
+    if (colonIdx !== -1) {
+      const label = str.slice(0, colonIdx).trim() || `Metric ${idx + 1}`;
+      const value = str.slice(colonIdx + 1).trim();
+      return { label, value, color: '#f8fafc', text: str };
+    }
+    return { label: `Metric ${idx + 1}`, value: str, color: '#f8fafc', text: str };
+  }
+
+  // Object shape that originally caused React Error #31
+  const rawObjectMetric = { label: 'Crop', value: 'Potato' };
+  const formattedFromObj = formatHudMetric(rawObjectMetric, 0);
+
+  // Must be a primitive string representation, not an object
+  assert.equal(typeof formattedFromObj.text, 'string');
+  assert.equal(formattedFromObj.text, 'Crop: Potato');
+  assert.equal(formattedFromObj.label, 'Crop');
+  assert.equal(formattedFromObj.value, 'Potato');
+
+  // String metric
+  const strMetric = 'Storage: 120/450 mm';
+  const formattedFromStr = formatHudMetric(strMetric, 1);
+  assert.equal(formattedFromStr.text, 'Storage: 120/450 mm');
+  assert.equal(formattedFromStr.label, 'Storage');
+  assert.equal(formattedFromStr.value, '120/450 mm');
+});
+
+

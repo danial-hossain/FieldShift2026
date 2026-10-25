@@ -309,13 +309,28 @@ export function Research3DScene({
               </thead>
               <tbody>
                 {hudMetrics.map((metric, idx) => {
-                  const parts = metric.split(':');
-                  const label = parts[0] || `Metric ${idx + 1}`;
-                  const value = parts[1] || metric;
+                  let label = `Metric ${idx + 1}`;
+                  let value = '';
+                  let color = '#f8fafc';
+                  if (typeof metric === 'object' && metric !== null) {
+                    label = metric.label != null ? String(metric.label).trim() : label;
+                    value = metric.value != null ? String(metric.value).trim() : '';
+                    color = metric.color || color;
+                  } else if (typeof metric === 'string') {
+                    const colonIdx = metric.indexOf(':');
+                    if (colonIdx !== -1) {
+                      label = metric.slice(0, colonIdx).trim() || label;
+                      value = metric.slice(colonIdx + 1).trim();
+                    } else {
+                      value = metric;
+                    }
+                  } else if (metric != null) {
+                    value = String(metric);
+                  }
                   return (
                     <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       <td style={{ padding: '8px 12px', fontWeight: 700, color: '#38bdf8' }}>{label}</td>
-                      <td style={{ padding: '8px 12px', fontWeight: 800, color: '#f8fafc' }}>{value}</td>
+                      <td style={{ padding: '8px 12px', fontWeight: 800, color }}>{value}</td>
                       <td style={{ padding: '8px 12px', color: '#94a3b8', fontSize: '11.5px' }}>
                         FAO / NASA POWER / BARI Verified
                       </td>
@@ -381,12 +396,27 @@ export function Research3DScene({
         <span style={{ fontWeight: 800 }}>{hudTitle}</span>
         <span style={{ color: '#64748b' }}>|</span>
         <span>{fps} FPS</span>
-        {hudMetrics.map((m, idx) => (
-          <React.Fragment key={idx}>
-            <span style={{ color: '#64748b' }}>|</span>
-            <span style={{ color: '#f8fafc' }}>{m}</span>
-          </React.Fragment>
-        ))}
+        {hudMetrics.map((m, idx) => {
+          let text = '';
+          let color = '#f8fafc';
+          if (typeof m === 'object' && m !== null) {
+            const labelStr = m.label != null ? String(m.label).trim() : '';
+            const valStr = m.value != null ? String(m.value).trim() : '';
+            color = m.color || color;
+            text = labelStr && valStr ? `${labelStr}: ${valStr}` : (labelStr || valStr);
+          } else if (typeof m === 'string') {
+            text = m;
+          } else if (m != null) {
+            text = String(m);
+          }
+          if (!text) return null;
+          return (
+            <React.Fragment key={idx}>
+              <span style={{ color: '#64748b' }}>|</span>
+              <span style={{ color }}>{text}</span>
+            </React.Fragment>
+          );
+        })}
       </div>
 
       {/* Top-Right Action Controls (2D Toggle + Reset) */}

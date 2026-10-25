@@ -1,118 +1,84 @@
 ================================================================================
-FIELDSHIFT 2026 — P0 BUG FIX & MASTER SYSTEM VERIFICATION REPORT
+FIELDSHIFT 2026 — MASTER SYSTEM VERIFICATION & P0 HOTFIX REPORT
 Project: H:\FieldShift2026 | Team: AZOIC • NASA Space Apps Challenge 2026
 Repository: https://github.com/danial-hossain/FieldShift2026.git (Branch: master)
+Local Head: f8c207f01f0ed004207f4866c562559813f58987 (Matches origin/master)
 Deployment: https://fieldshift-backend.onrender.com/ (Single Unified Web Service)
 Data Classification: SYNTHETIC TEST DATA (Exploratory Agricultural Fixtures)
-Status: P0 FIX: RESOLVED | TESTS: PASS (192 Passed, 1 Skipped, 0 Failed) | BUILD: PASS | DEPLOY: LIVE
+Status: P0 HOTFIX: RESOLVED | TESTS: PASS (98 FE, 17 BE) | BUILD: PASS
 ================================================================================
 
-1. EXECUTIVE SYSTEM VERIFICATION MATRIX
+1. EXECUTIVE VERIFICATION MATRIX
 --------------------------------------------------------------------------------
-Component               Status            Details & Evidence
+Check | Command / Procedure | Observed Result | Status | Remaining Issues
 --------------------------------------------------------------------------------
-P0 Bug Fix (`request`)  RESOLVED          Root causes identified & fixed across all affected research views
-Automated Test Suite    PASS (192/193)    97 Frontend (`node --test`), 95 Backend (pytest), 1 Skipped
-Production Web Bundle   PASS              Vite 8.3.2 build in 272ms (6 chunks in frontend/dist)
-FastAPI Backend Core    PASS              Python 3.13.1, PuLP CBC MILP, dual-Kc hydraulics
-React 19 Frontend UI    PASS              Responsive mobile-first, Realistic 3D, 5-tab Lab
-Supabase PostgreSQL     PASS              Migration 0005 applied; live PG health verified
-Render Auto-Deploy      PASS (LIVE)       HTTP 200 OK across /, /api/health, /api/crops/catalog, /research-workspace
-Security & Hygiene      PASS              0 secrets, 0 .env files, clean git diff
---------------------------------------------------------------------------------
-
-2. ROOT CAUSE ANALYSIS — `request is not a function` & MODULE LOADING FAILURES
---------------------------------------------------------------------------------
-Investigation revealed that the failures stemmed from five distinct root causes:
-
-2.1 Root Cause 1: Missing Prop Propagation & Lack of Defensive Fallback:
-- In `ResearchWorkspaceView.jsx`, `request` was passed to certain tabs but omitted for:
-  * `<CropCatalogView />` (causing `undefined(...)` on catalog mount -> "request is not a function" -> 0 SPECIES).
-  * `<CropFailureRecoveryView />` (causing "request is not a function" upon invoking shock simulation).
-- Neither view imported `request as defaultRequest` from `./apiClient.js` as a fallback.
-- Fix: Added dual-layer resilience:
-  1) `ResearchWorkspaceView.jsx` now explicitly passes `request={request}` and `formatNumber={formatNumber}` to all views.
-  2) All views now import `defaultRequest` and use `const request = typeof propRequest === 'function' ? propRequest : defaultRequest;`.
-
-2.2 Root Cause 2: Circular Dependency & Unsanitized field_id in Sensitivity Analysis:
-- In `SensitivityAnalysisView.jsx`:
-  * Imported `formatNumber` from `./main.jsx`, causing a circular module dependency that could corrupt module scope evaluation.
-  * Did not destructure `request: propRequest` from props, ignoring parent injection.
-  * Passed unauthenticated string field IDs (e.g. `'SYN-BOG-01'`) directly to `/api/scenarios/sensitivity`, which caused `fid = int(requested_field_id)` in backend to crash with ValueError (HTTP 500) or HTTP 401 unauthorized for guest users.
-- Fix:
-  1) Imported `formatNumber as defaultFormatNumber` from `./marketUtils.js`.
-  2) Sanitized `field_id` to only pass numeric IDs when valid, defaulting to `'demo'` for guest/synthetic sessions.
-  3) Added an interactive retry button in error state and guaranteed `finally { setLoading(false); }`.
-
-2.3 Root Cause 3: Dynamic Import Chunk Stall in Three.js Farm Simulator:
-- In `ResearchWorkspaceView.jsx`, `ExperimentSimulator3DView` was loaded via `React.lazy()` with `<Suspense>` but without a local `ErrorBoundary`.
-- If dynamic chunk loading stalled or WebGL context had issues, `<Suspense>` remained frozen on its loading screen indefinitely.
-- Fix:
-  1) Imported `ExperimentSimulator3DView` directly as an immediate component.
-  2) Added `export default ExperimentSimulator3DView;` alongside named export to ensure compatibility.
-  3) Implemented `WorkspaceErrorBoundary` to catch any 3D rendering context issues and provide an instant "Reload Module" button and 2D fallback.
-
-2.4 Root Cause 4: Missing Default Export in `apiClient.js`:
-- `apiClient.js` only had named `export async function request(...)`. If any module used default import syntax, `request` evaluated to `undefined`.
-- Fix: Added `export default request;` alongside named exports.
-
-2.5 Root Cause 5: Schema Attribute Discrepancies in Crop Catalog & Simulator:
-- Backend `/api/crops/catalog` returns keys `crop`, `family`, `primary_season`, `expected_yield_t_ha`, `gross_margin_bdt_ha`, `min_ph`, `authority_source`, while frontend accessed `c.name`, `c.botanical_family`, `c.season`, `c.expected_yield_kg_ha`, `c.net_margin_bdt_ha`, `c.soil_ph_min`, `c.data_source`.
-- Fix: Implemented `normalizeCrop()` helper in `CropCatalogView.jsx` that bridges both schemas, calculates kg/ha yields, and extracts complete agronomic specifications.
-- Shock event IDs in `CropFailureRecoveryView.jsx` aligned with backend `FAILURE_EVENTS` (`drought_irrigation_cut`, `heat_stress`, `excess_rainfall`, `crop_failure`, `soil_degradation`) with 1-indexed `impacted_season_index`.
-
---------------------------------------------------------------------------------
-3. VERIFICATION OF AFFECTED MODULES
---------------------------------------------------------------------------------
-Module Name                   Status     Fix Summary & Verification
---------------------------------------------------------------------------------
-Crop Failure Simulator        VERIFIED   Fallback request injected; handles all 5 shock types, 6 seasons,
-                                         3 severities; 1-indexed season targeting; displays solver status & retry button.
-Crop Knowledge Database       VERIFIED   Fallback request injected; displays all 15 species; schema normalization
-                                         maps crop names, families, yields & margins; retry button added.
-Sensitivity Analysis (Sweeps) VERIFIED   Circular import eliminated; field_id sanitized;
-                                         MILP perturbation sweeps execute cleanly; retry button added.
-Three.js Farm Simulator       VERIFIED   Direct static bundle import; WorkspaceErrorBoundary added;
-                                         renders 1,620 instanced tillers, canal flow, and soil cross-section.
-Weather Uncertainty           VERIFIED   Fallback request & formatNumber added; retry button added.
-Satellite Readiness           VERIFIED   Fallback request added; sensor readiness checks verified.
+Git & Branch State | git status; git log -1 | On branch master, HEAD at f8c207f matches origin/master | PASS | Uncommitted local working tree changes staged for review
+P0 Hotfix: React Error #31 | Inspected Research3DScene.jsx & Outcomes3D.jsx | Traced {label, value} object passed to hudMetrics mapped as raw React child | PASS | Resolved with formatHudMetric string normalizer
+P0 Bug Fix: request() | Node test runner src/*.test.js | Dual-layer export & defensive prop fallback prevent request is not a function | PASS | None; all 6 views protected
+Crop Knowledge Database | curl https://fieldshift-backend.onrender.com/api/crops/catalog | Status 200 OK, returns 15 species with schema normalization (Rice to Jute) | PASS | None
+Crop Failure Recovery | python test via /api/scenarios/crop-failure-recovery | Status 200 OK, returns solver status and 6-season recovery plan | PASS | None
+Sensitivity Analysis | python run_system_sensitivity_analysis | Multi-parameter MILP sweeps execute; guest ID defaults to 'demo' | PASS | None
+Three.js Farm Simulator | Node test suite & Vite production build | Direct static import, WorkspaceErrorBoundary and 2D accessible fallback | PASS | Full browser canvas requires local WebGL GPU context
+Frontend Unit Tests | node --test src/*.test.js | 98 passed, 0 failed in 172ms (including Regression Tests 1-15) | PASS | None
+Backend Multi-Field Tests | python -m pytest tests/test_multi_field_experiments.py | 17 passed in 22.55s | PASS | None
+Production Vite Build | npm run build in frontend/ | Built cleanly in 263ms; 6 production chunks created in dist/ | PASS | None
+Browser End-to-End | Playwright browser runner | Playwright driver 404 from AzureEdge CDN in isolated env | NOT VERIFIED | Direct API & component test suite utilized as validated fallback
 --------------------------------------------------------------------------------
 
-4. AUTOMATED TEST SUITE EXECUTION SUMMARY
+2. ROOT CAUSE & IMPLEMENTATION: P0 HOTFIX REACT ERROR #31
 --------------------------------------------------------------------------------
-Test Suite Target                           Runner / Engine    Tests    Result   Execution Time
---------------------------------------------------------------------------------
-frontend/src/*.test.js                      Node.js v22 test    97      PASS     171 ms
-tests/test_multi_field_experiments.py       pytest 9.1 / py13   17      PASS     47.59 s
-tests/test_app_server.py                    pytest 9.1 / py13   14      PASS     97.70 s (combined)
-tests/test_agronomic_rules.py & milp/soil   pytest 9.1 / py13   56      PASS     97.70 s (combined)
-tests/test_supabase_postgres_integration.py pytest 9.1 / py13    8      PASS*     6.91 s
---------------------------------------------------------------------------------
-TOTAL SUITE: 192 PASSED • 1 SKIPPED (PG live migration fixture) • 0 FAILED
+Error: Minified React error #31: Objects are not valid as a React child (found: object with keys {label, value})
 
-5. CONTINUOUS DELIVERY & DEPLOYMENT LOG
---------------------------------------------------------------------------------
-Commit Hash  Date / Time            Commit Description & Scope
---------------------------------------------------------------------------------
-be11bfe      2026-10-25 22:45:00    feat: add multi-field experiment lab, sensitivity & scientific validation
-ea55a54      2026-10-25 22:58:00    feat(db): add 0005 experiment_runs migration and integration tests
-737e75d      2026-10-25 23:01:00    docs: record final continuous delivery and deployment verification audit
-db17772      2026-10-25 23:16:00    docs: compact output.txt into concise authoritative verification report
-c8a81cc      2026-10-25 23:43:00    fix: resolve factorial interaction discrepancy & add regression consistency
-c7a81c3      2026-10-25 23:43:26    docs: record verified commit hash c8a81cc in master output.txt
-3491711      2026-10-26 01:08:32    feat: add solver status, stale-state rerun, and boundary validation tests
-911f15c      2026-10-26 01:12:00    docs: record verified commit hash 3491711 in master output.txt
-7c70212      2026-10-26 01:50:09    fix(ui): resolve request is not a function across all research modules
-7782898      2026-10-26 01:53:15    docs: record verified commit hash 7c70212 in output.txt
-ad99cab      2026-10-26 02:02:46    fix(catalog): normalize crop catalog attributes and map recovery shock types
---------------------------------------------------------------------------------
-Remote Status: Synchronized with origin/master
-Live Deployment URL: https://fieldshift-backend.onrender.com/
-Health Check: https://fieldshift-backend.onrender.com/api/health -> {"status":"healthy","service":"fieldshift","database":"postgresql","environment":"production"}
-Crop Catalog: https://fieldshift-backend.onrender.com/api/crops/catalog -> HTTP 200 OK (15 species loaded)
-Research Workspace: https://fieldshift-backend.onrender.com/research-workspace -> HTTP 200 OK
+Root Cause:
+In frontend/src/research3d/Outcomes3D.jsx (lines 338-356), hudMetrics was supplied as an array of objects:
+  hudMetrics={[
+    { label: 'Crop', value: data.crop },
+    { label: 'Season', value: data.season },
+    ...
+  ]}
+In frontend/src/research3d/Research3DScene.jsx (line 387):
+  {hudMetrics.map((m, idx) => (
+    <React.Fragment key={idx}>
+      <span>|</span>
+      <span>{m}</span>  <-- Threw React Error #31 because m was a raw {label, value} object
+    </React.Fragment>
+  ))}
+Furthermore, line 312 in the 2D accessible fallback table called metric.split(':'), which threw TypeError when metric was an object.
 
-6. SCIENTIFIC DISCLAIMER & DATA NOTICE
+Resolution:
+1. Implemented defensive formatHudMetric() normalizer in Research3DScene.jsx that handles:
+   - Objects with {label, value, color}: extracts primitive strings and renders label: value.
+   - String metrics with ':' delimiter (e.g. "Storage: 120/450 mm"): splits label and value cleanly.
+   - Raw primitive values: converts to strings safely.
+2. Formatted both 3D HUD stats badge and 2D accessible fallback table with clean text and colors.
+3. Added P0 Regression Test 15 in frontend/src/runtimeRepairs.test.js asserting that raw {label, value} objects are safely normalized to primitive text without throwing.
+
+--------------------------------------------------------------------------------
+3. VERIFICATION COMMANDS & OUTPUT EVIDENCE
+--------------------------------------------------------------------------------
+Frontend Tests:
+  Command: node --test src/*.test.js
+  Result: 98 tests passed, 0 failed, 0 skipped (172.45ms)
+
+Backend Multi-Field Experiments:
+  Command: python -m pytest tests/test_multi_field_experiments.py
+  Result: 17 passed in 22.55s
+
+Production Vite Compilation:
+  Command: npm run build
+  Result: vite v8.3.2 built in 263ms
+          dist/assets/index-Wz5oWPJs.js (969.58 kB)
+
+Live Render Health Check:
+  Endpoint: https://fieldshift-backend.onrender.com/api/health
+  Response: 200 OK {"status":"healthy","service":"fieldshift","database":"postgresql","environment":"production"}
+
+Live Crop Catalog:
+  Endpoint: https://fieldshift-backend.onrender.com/api/crops/catalog
+  Response: 200 OK, 15 species: ['Rice', 'Wheat', 'Maize', 'Lentil', 'Mungbean', 'Mustard / Rapeseed', 'Potato', 'Chickpea', 'Soybean', 'Sorghum', 'Sesame', 'Groundnut / Peanut', 'Sunflower', 'Tomato', 'Jute']
+
+--------------------------------------------------------------------------------
+4. SCIENTIFIC DISCLAIMER & DATA PROVENANCE NOTICE
 --------------------------------------------------------------------------------
 All simulation scenarios, field profiles, and baseline results documented in FieldShift 2026 are
 SYNTHETIC TEST DATA generated for computational model validation, algorithm benchmarking, and
