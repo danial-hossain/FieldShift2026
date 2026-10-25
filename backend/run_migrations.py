@@ -45,9 +45,8 @@ def normalize_database_url(raw_url: str) -> tuple[str, dict]:
 def get_migration_engine(custom_url: str | None = None):
     raw_url = custom_url or os.getenv("DATABASE_URL") or os.getenv("FIELDSHIFT_DATABASE_URL")
     if not raw_url:
-        raise ValueError(
-            "DATABASE_URL or FIELDSHIFT_DATABASE_URL environment variable is required to run migrations."
-        )
+        print("[migrations] WARNING: DATABASE_URL is not set. Skipping migrations runner.", file=sys.stderr)
+        return None
 
     norm_url, connect_args = normalize_database_url(raw_url)
     return create_engine(
@@ -63,6 +62,8 @@ def run_migrations(custom_url: str | None = None) -> list[str]:
     Returns list of applied migration filenames.
     """
     engine = get_migration_engine(custom_url)
+    if engine is None:
+        return []
     applied_in_this_run: list[str] = []
 
     with engine.begin() as conn:
