@@ -72,7 +72,7 @@ def clear_auth_cookie(response: Response) -> None:
 def health_check():
     return {
         "status": "healthy",
-        "service": "fieldshift-backend",
+        "service": "fieldshift",
         "database": "postgresql" if is_postgres() else "sqlite",
         "environment": "production" if is_prod else "development",
     }

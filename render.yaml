@@ -1,13 +1,13 @@
 # FieldShift 2026 — Render Blueprint Specification
 # Single All-in-One Service: Python/FastAPI Web Service serving React 19 SPA + PuLP MILP + Supabase PostgreSQL
-# Visiting the single URL https://fieldshift-backend.onrender.com serves both the frontend and the backend API.
+# Visiting the single URL https://fieldshift.onrender.com serves both the frontend and the backend API.
 
 services:
   # ===========================================================================
   # ALL-IN-ONE WEB SERVICE: FastAPI + Pre-built React SPA + PuLP MILP + Supabase
   # ===========================================================================
   - type: web
-    name: fieldshift-backend
+    name: fieldshift
     runtime: python
     plan: free
     region: oregon
@@ -22,7 +22,7 @@ services:
       - key: DATABASE_URL
         sync: false # Set in Render Dashboard: Supabase Session Pooler URL
       - key: CORS_ORIGINS
-        value: https://fieldshift-backend.onrender.com,https://fieldshift-frontend.onrender.com,http://localhost:5173
+        value: https://fieldshift.onrender.com,https://fieldshift2026.onrender.com,https://fieldshift-backend.onrender.com,http://localhost:5173
       - key: CORS_ORIGIN_REGEX
         value: ^https:\/\/.*\.onrender\.com$
       - key: GEMINI_API_KEY

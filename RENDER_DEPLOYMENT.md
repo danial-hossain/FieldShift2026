@@ -12,7 +12,7 @@ FastAPI directly serves the pre-built **React 19 / Three.js 3D frontend SPA** al
                       |       Web Browser (User / Farmer)    |
                       +-------------------+-------------------+
                                           |
-                                          | https://fieldshift-backend.onrender.com/
+                                          | https://fieldshift.onrender.com/
                                           v
                       +---------------------------------------+
                       |       Render Web Service (FastAPI)     |
