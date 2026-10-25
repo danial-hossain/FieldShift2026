@@ -3,9 +3,16 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import socket
-from sqlalchemy import create_engine
-from sqlalchemy.engine import make_url
+from sqlalchemy import create_engine, event
+from sqlalchemy.engine import Engine, make_url
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    if type(dbapi_connection).__module__ == "sqlite3":
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SQLITE_PATH = PROJECT_ROOT / "data" / "fieldshift.db"

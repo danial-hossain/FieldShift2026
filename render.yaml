@@ -1,0 +1,52 @@
+# FieldShift 2026 — Render Blueprint Specification
+# Deploys Python/FastAPI Backend (Web Service) and React/Vite Frontend (Static Site)
+# Connected to Supabase PostgreSQL as persistent database.
+
+services:
+  # ===========================================================================
+  # 1. BACKEND SERVICE: FastAPI, PuLP MILP Optimizer, Supabase PostgreSQL
+  # ===========================================================================
+  - type: web
+    name: fieldshift-backend
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt -r backend/requirements.txt
+    startCommand: python backend/run_migrations.py && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.1
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false # Set in Render Dashboard: Supabase Session Pooler URL
+      - key: CORS_ORIGINS
+        value: https://fieldshift-frontend.onrender.com,http://localhost:5173
+      - key: CORS_ORIGIN_REGEX
+        value: ^https:\/\/.*\.onrender\.com$
+      - key: GEMINI_API_KEY
+        sync: false # Set in Render Dashboard if using AI Assistant
+      - key: DB_POOL_SIZE
+        value: "5"
+      - key: DB_MAX_OVERFLOW
+        value: "10"
+
+  # ===========================================================================
+  # 2. FRONTEND SERVICE: React 19, Three.js 3D Lab, Vite 8 Static Site
+  # ===========================================================================
+  - type: web
+    name: fieldshift-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://fieldshift-backend.onrender.com

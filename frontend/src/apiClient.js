@@ -1,10 +1,21 @@
 // frontend/src/apiClient.js
 // Centralized, resilient HTTP API client for FieldShift FastAPI backend
 
-export const API_BASE = import.meta.env?.VITE_API_URL || '';
+export function formatApiBase(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  let cleaned = raw.trim().replace(/\/+$/, '');
+  if (!cleaned) return '';
+  if (!/^https?:\/\//i.test(cleaned) && cleaned.includes('.')) {
+    cleaned = `https://${cleaned}`;
+  }
+  return cleaned;
+}
+
+export const API_BASE = formatApiBase(import.meta.env?.VITE_API_URL || '');
 
 export async function request(path, options = {}) {
-  const url = `${API_BASE}${path}`;
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const url = API_BASE ? `${API_BASE}${normalizedPath}` : normalizedPath;
   let response;
   try {
     response = await fetch(url, {

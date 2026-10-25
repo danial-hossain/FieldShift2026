@@ -877,3 +877,134 @@ Data Migration Results (SQLite -> Supabase PostgreSQL):
    - ???????????? ???? vercel.json ??? netlify.toml ???? ??? ????? (Vercel-? ???? ?????????? ????)?
    - ???????? ?????????? SUPABASE_DEPLOYMENT.md ????? ????? ??? ??????
 ================================================================================
+
+================================================================================
+FIELDSHIFT 2026 — RENDER DUAL SERVICE DEPLOYMENT CONFIGURATION & VERIFICATION
+Target Platform: Render (Web Service + Static Site) | Database: Supabase PostgreSQL
+Date: 2026-10-25 | Status: 100% VERIFIED & BLUEPRINT READY
+================================================================================
+
+1. INSPECTION & ARCHITECTURE AUDIT
+--------------------------------------------------------------------------------
+Frontend:
+- Type: Render Static Site (Vite Single Page Application)
+- Root Directory: frontend
+- Dependency File: frontend/package.json (React 19, Three.js v186, Vite 8)
+- Build Command: npm install && npm run build
+- Publish Path: dist (frontend/dist)
+- Routing: Rewrite /* -> /index.html
+- Environment Variable: VITE_API_URL (consumed via frontend/src/apiClient.js)
+- Resilient Base URL Normalization: formatApiBase() safely trims trailing slashes
+  and prepends https:// if omitted.
+
+Backend:
+- Type: Render Web Service (FastAPI + PuLP MILP Solver + SQLAlchemy 2.0 + psycopg 3)
+- Root Directory: . (Repository Root)
+- Dependency Files: requirements.txt (root PuLP/ML stack) + backend/requirements.txt (FastAPI/SQLAlchemy)
+- Build Command: pip install -r requirements.txt -r backend/requirements.txt
+- Start Command: python backend/run_migrations.py && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+- Entry Point: backend.app.main:app
+- Health Check Endpoints: /api/health and /healthz
+- Database Connection: Supabase PostgreSQL Session Pooler (port 5432) via DATABASE_URL
+- Connection Adaptation: psycopg3 driver mapping and prepare_threshold=None for poolers
+- CORS Configuration: CORS_ORIGINS with fallback regex ^https:\/\/.*\.onrender\.com$
+- Authentication Security: Dynamic SameSite=None and Secure=True cookies on Render production.
+
+Blueprint:
+- render.yaml: Authored matching inspected project structure with free tier plans.
+
+
+2. AUTOMATED VERIFICATION RESULTS
+--------------------------------------------------------------------------------
+1. Frontend Test Suite (node --test src/*.test.js):
+   - Command: npm test
+   - Exit Code: 0
+   - Passed: 83 / 83 tests
+   - Duration: 138.9 ms
+
+2. Frontend Production Build (vite build):
+   - Command: npm run build
+   - Exit Code: 0
+   - Output Bundles:
+     * dist/index.html: 1.00 kB (gzip: 0.49 kB)
+     * dist/assets/index-C1Kwtq6M.css: 199.48 kB (gzip: 31.62 kB)
+     * dist/assets/rolldown-runtime-CbXtAM7H.js: 0.58 kB (gzip: 0.36 kB)
+     * dist/assets/ExperimentSimulator3DView-DL9tM59t.js: 85.86 kB (gzip: 22.36 kB)
+     * dist/assets/react-vendor-Dy-GIXkn.js: 218.83 kB (gzip: 68.25 kB)
+     * dist/assets/three-vendor-BiMFJPbr.js: 568.66 kB (gzip: 140.90 kB)
+     * dist/assets/index-B8XumiWx.js: 798.10 kB (gzip: 184.68 kB)
+   - Status: Complete in 259 ms, 0 errors, 0 warnings.
+
+3. Backend Health Check Endpoint:
+   - Command: python -c "from fastapi.testclient import TestClient; from backend.app.main import app; ..."
+   - Exit Code: 0
+   - Endpoint: GET /api/health
+   - Response: HTTP 200 {"status": "healthy", "service": "fieldshift-backend", "database": "postgresql", "environment": "production"}
+
+4. Supabase PostgreSQL Integration Suite (tests/test_supabase_postgres_integration.py):
+   - Command: $env:DATABASE_URL = "postgresql://postgres.thopipmyqyvulxfrgiin:...@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres"; python -m unittest tests/test_supabase_postgres_integration.py
+   - Exit Code: 0
+   - Results: 8 / 8 tests passed against live Supabase PostgreSQL (14.31s):
+     * test_standard_postgresql_scheme_adapted_to_psycopg: PASSED
+     * test_legacy_postgres_scheme_adapted_to_psycopg: PASSED
+     * test_transaction_pooler_disables_prepared_statements: PASSED
+     * test_01_migrations_idempotence: PASSED (Supabase)
+     * test_02_field_crud_lifecycle: PASSED (Supabase)
+     * test_03_harvest_outcome_persistence_and_variance: PASSED (Supabase)
+     * test_04_adaptive_replanning_from_saved_records: PASSED (Supabase)
+     * test_05_transaction_rollback_on_failure: PASSED (Supabase)
+
+5. End-to-End Random Field Workflow Suite (tests/test_random_field_e2e.py):
+   - Command: python -m unittest tests/test_random_field_e2e.py
+   - Exit Code: 0
+   - Results: 5 / 5 tests passed against live FastAPI server running on Supabase PostgreSQL (42.13s):
+     * test_01_random_field_generation_and_validation: PASSED
+     * test_02_field_registration_persistence_roundtrip: PASSED (HTTP 201 Created on Supabase)
+     * test_03_full_workflow_execution_on_random_field: PASSED (PuLP MILP + Q-Learning)
+     * test_04_harvest_outcome_persistence_and_replanning: PASSED (POST /api/outcomes/record on Supabase)
+     * test_05_scientific_invariants_across_regions: PASSED (Mass balance conservation verified)
+
+
+3. DEPLOYMENT EXECUTION & MANUAL STEPS
+--------------------------------------------------------------------------------
+Deployment Tooling Status:
+- No authorized Render CLI / Render API token was detected in the host environment.
+- Therefore, deployment must be executed through the Render Dashboard using the Blueprint
+  or Manual Web Service + Static Site creation.
+- Exact Blueprint file render.yaml and step-by-step instructions in RENDER_DEPLOYMENT.md
+  are prepared, verified, and committed.
+
+Required User Action on Render Dashboard:
+1. Log in to dashboard.render.com and click "New +" -> "Blueprint".
+2. Select your repository danial-hossain/FieldShift2026.
+3. Provide the secret DATABASE_URL environment variable for fieldshift-backend:
+   postgresql://postgres.thopipmyqyvulxfrgiin:[PASSWORD]@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres
+4. Click "Apply". Render will provision and launch both services automatically.
+
+
+4. FREE TIER CONSTRAINTS & COLD START ADVISORY
+--------------------------------------------------------------------------------
+1. Backend Web Service Cold Start:
+   Render spins down free web service instances after 15 minutes of inactivity.
+   The first user request after dormancy will trigger a cold start of 45-55 seconds.
+   All subsequent requests respond in <100ms.
+2. Frontend Static Site CDN:
+   Hosted on Render's global CDN; stays online 24/7 with zero cold starts.
+3. Supabase Inactivity Limit:
+   Supabase free tier pauses after 7 consecutive days without database activity.
+
+
+5. সহজ বাংলায় সারসংক্ষেপ (Bangla Summary)
+--------------------------------------------------------------------------------
+১. রেন্ডার ডিপ্লয়মেন্ট প্রস্তুতি সম্পন্ন:
+   - ফ্রন্টএন্ডের জন্য Render Static Site (React/Vite) এবং ব্যাকএন্ডের জন্য Render Web Service (FastAPI) কনফিগার করা হয়েছে।
+   - রিপোজিটরিতে render.yaml ব্লুপ্রিন্ট ফাইল এবং বিস্তারিত RENDER_DEPLOYMENT.md গাইড তৈরি করা হয়েছে।
+২. সুপাবেস ডাটাবেজ সংযোগ ও যাচাইকরণ:
+   - Supabase PostgreSQL-এ ফিল্ড তৈরি, অপটিমাইজেশন, হার্ভেস্ট ডাটা সেভ এবং অ্যাডাপ্টিভ রিপ্ল্যানিং-এর সকল ৮টি ইন্টিগ্রেশন টেস্ট এবং ৫টি এন্ড-টু-এন্ড টেস্ট শতভাগ সফল হয়েছে।
+   - ফ্রন্টএন্ডের ৮৩টি টেস্ট এবং প্রোডাকশন বান্ডেল বিল্ড কোনো ত্রুটি ছাড়াই পাস করেছে।
+৩. পরবর্তী করণীয় (Next Steps):
+   - Render ড্যাশবোর্ডে গিয়ে "New +" -> "Blueprint" সিলেক্ট করে আপনার GitHub রিপোজিটরি danial-hossain/FieldShift2026 সিলেক্ট করুন।
+   - আপনার Supabase পাসওয়ার্ড দিয়ে DATABASE_URL সেট করে দিন এবং "Apply" চাপুন।
+৪. ফ্রি টিয়ার ও কোল্ড স্টার্ট:
+   - ব্যাকএন্ডে ১৫ মিনিট কোনো ভিজিটর না থাকলে সার্ভার সাময়িক স্লিপ মোডে যায়। প্রথমবার সাইট লোড হতে ৪৫-৫৫ সেকেন্ড সময় লাগতে পারে (Cold Start), কিন্তু একবার চালু হলে তা নিমেষেই চলবে।
+================================================================================

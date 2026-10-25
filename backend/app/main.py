@@ -32,14 +32,48 @@ if cors_origins_env:
         if trimmed and trimmed not in allowed_origins:
             allowed_origins.append(trimmed)
 
+cors_origin_regex = os.getenv("CORS_ORIGIN_REGEX", r"^https:\/\/.*\.onrender\.com$")
+is_render = bool(os.getenv("RENDER"))
+is_prod = os.getenv("ENVIRONMENT", "").lower() in ("production", "prod") or is_render
+cookie_samesite = os.getenv("COOKIE_SAMESITE", "none" if is_prod else "lax")
+cookie_secure = os.getenv("COOKIE_SECURE", "true" if is_prod else "false").lower() in ("true", "1", "yes")
+
 app = FastAPI(title="FieldShift API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins if "*" not in allowed_origins else ["*"],
+    allow_origin_regex=cors_origin_regex if "*" not in allowed_origins else None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def set_auth_cookie(response: Response, token: str) -> None:
+    response.set_cookie(
+        "fieldshift_session",
+        token,
+        httponly=True,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
+        max_age=604800,
+    )
+
+def clear_auth_cookie(response: Response) -> None:
+    response.delete_cookie(
+        "fieldshift_session",
+        samesite=cookie_samesite,
+        secure=cookie_secure,
+    )
+
+@app.get("/api/health")
+@app.get("/healthz")
+def health_check():
+    return {
+        "status": "healthy",
+        "service": "fieldshift-backend",
+        "database": "postgresql" if is_postgres() else "sqlite",
+        "environment": "production" if is_prod else "development",
+    }
 
 class Payload(BaseModel):
     model_config = ConfigDict(extra="allow")
@@ -1258,7 +1292,7 @@ def me(response: Response, fieldshift_session: str | None = Cookie(None), db: Db
             stamp = now()
             db.add(LoginSession(user_id=user.id, token=token, created_at=stamp, expires_at=stamp + timedelta(days=7)))
             db.commit()
-            response.set_cookie("fieldshift_session", token, httponly=True, samesite="lax", max_age=604800)
+            set_auth_cookie(response, token)
         return {"status": "ok", "user": public_user(user)}
     except HTTPException:
         return {"status": "unauthenticated"}
@@ -1271,7 +1305,7 @@ def register(credentials: Credentials, response: Response, db: DbSession = Depen
     try: db.commit()
     except IntegrityError: db.rollback(); raise HTTPException(400,f"email already registered: {user.email}")
     db.refresh(user); token=secrets.token_urlsafe(32); db.add(LoginSession(user_id=user.id,token=token,created_at=stamp,expires_at=stamp+timedelta(days=7))); db.commit()
-    response.set_cookie("fieldshift_session",token,httponly=True,samesite="lax",max_age=604800)
+    set_auth_cookie(response, token)
     return {"status":"created","user":public_user(user)}
 
 @app.post("/api/auth/login")
@@ -1279,14 +1313,14 @@ def login(credentials: Credentials, response: Response, db: DbSession = Depends(
     user=db.scalar(select(User).where(User.email==credentials.email.strip().lower()))
     if not user or not user.is_active or not verify_password(credentials.password,user.password_hash): raise HTTPException(401,"Email or password is incorrect.")
     stamp=now(); user.last_login=stamp; user.updated_at=stamp; token=secrets.token_urlsafe(32); db.add(LoginSession(user_id=user.id,token=token,created_at=stamp,expires_at=stamp+timedelta(days=7))); db.commit()
-    response.set_cookie("fieldshift_session",token,httponly=True,samesite="lax",max_age=604800)
+    set_auth_cookie(response, token)
     return {"status":"ok","user":{"id":user.id,"name":user.name,"email":user.email}}
 
 @app.post("/api/auth/logout")
 def logout(response: Response, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
     item=db.scalar(select(LoginSession).where(LoginSession.token==fieldshift_session)) if fieldshift_session else None
     if item: db.delete(item); db.commit()
-    response.delete_cookie("fieldshift_session"); return {"status":"ok"}
+    clear_auth_cookie(response); return {"status":"ok"}
 
 @app.put("/api/auth/profile")
 def update_profile(payload: Payload, user: User = Depends(require_user), db: DbSession = Depends(get_db)):
