@@ -107,7 +107,6 @@ If you prefer to configure the services individually in the Render Dashboard:
 2. Select repository `danial-hossain/FieldShift2026`.
 3. Configure the settings:
    - **Name**: `fieldshift-frontend`
-   - **Region**: `Oregon (US West)`
    - **Branch**: `master`
    - **Root Directory**: `frontend`
    - **Build Command**: `npm install && npm run build`
