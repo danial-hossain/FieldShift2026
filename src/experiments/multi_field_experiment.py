@@ -351,6 +351,11 @@ def validate_field_profile(profile: Dict[str, Any]) -> Tuple[bool, List[str]]:
     if om is not None and not (0.1 <= float(om) <= 20.0):
         errors.append(f"Organic matter {om}% outside agricultural boundary (0.1 to 20.0%).")
 
+    # Initial Soil Moisture Fraction
+    moist = profile.get("initial_moisture_fraction")
+    if moist is not None and not (0.0 <= float(moist) <= 1.0):
+        errors.append(f"Initial moisture fraction {moist} must be bounded between 0.0 and 1.0 (0% to 100% of TAW).")
+
     # Texture & Crop Support
     texture = str(profile.get("soil_texture", "")).strip().lower()
     if texture not in SUPPORTED_SOIL_TEXTURES:
@@ -612,12 +617,23 @@ def run_backend_optimizer_baseline(profile: Dict[str, Any]) -> Dict[str, Any]:
     # Independent constraint satisfaction check: Total water used must be <= available water allowance
     water_constraint_satisfied = total_water <= (available_water * 6.0 + 1e-3)
 
+    infeasible_explanation = None
+    if not is_optimal:
+        infeasible_explanation = (
+            f"Optimization returned '{status}'. Available seasonal water budget ({available_water:.1f} mm) is "
+            f"insufficient to satisfy minimum crop rotation requirements across the 6 planning periods. "
+            f"No valid feasible rotation exists without relaxing constraints or increasing water budget. "
+            f"This run does NOT recommend a crop sequence."
+        )
+
     return {
         "solver_status": status,
         "is_optimal": is_optimal,
-        "objective_value": round(obj_val, 4),
-        "selected_rotation": opt_res.get("selected_crop_by_period", {}),
-        "total_profit_component": round(float(components.get("total_profit", 0.0) or 0.0), 2),
+        "recommendation_status": "optimal_recommendation" if is_optimal else "infeasible_no_recommendation",
+        "infeasible_explanation": infeasible_explanation,
+        "objective_value": round(obj_val, 4) if is_optimal else 0.0,
+        "selected_rotation": opt_res.get("selected_crop_by_period", {}) if is_optimal else {},
+        "total_profit_component": round(float(components.get("total_profit", 0.0) or 0.0), 2) if is_optimal else 0.0,
         "total_water_component_mm": round(total_water, 1),
         "available_water_budget_mm": round(available_water, 1),
         "water_constraint_satisfied": water_constraint_satisfied,

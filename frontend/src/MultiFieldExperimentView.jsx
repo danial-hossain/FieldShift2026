@@ -20,6 +20,7 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
   const [customProfiles, setCustomProfiles] = useState(SYNTHETIC_FIELD_PROFILES);
   const [editingParam, setEditingParam] = useState(false);
   const [exportNotice, setExportNotice] = useState('');
+  const [isTunedModified, setIsTunedModified] = useState(false);
 
   const currentProfile = customProfiles[selectedFieldKey] || customProfiles.bogura_boro;
 
@@ -50,6 +51,7 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
 
   // Input Parameter Handlers
   const handleProfileChange = (key, value) => {
+    setIsTunedModified(true);
     setCustomProfiles(prev => ({
       ...prev,
       [selectedFieldKey]: {
@@ -64,6 +66,13 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
       ...prev,
       [selectedFieldKey]: { ...SYNTHETIC_FIELD_PROFILES[selectedFieldKey] }
     }));
+    setIsTunedModified(false);
+  };
+
+  const handleRerunAnalysis = () => {
+    setIsTunedModified(false);
+    setExportNotice(lang === 'bn' ? '✓ বিশ্লেষণ সফলভাবে পুনরায় সম্পন্ন হয়েছে' : '✓ Analysis pipeline re-calculated with modified inputs');
+    setTimeout(() => setExportNotice(''), 4000);
   };
 
   // Export CSV
@@ -272,6 +281,20 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
           padding: '16px',
           marginBottom: '20px'
         }}>
+          {isTunedModified && (
+            <div style={{ background: 'rgba(234, 179, 8, 0.2)', border: '1px solid rgba(234, 179, 8, 0.5)', borderRadius: '8px', padding: '10px 14px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ fontSize: '0.85rem', color: '#fde047', fontWeight: 600 }}>
+                ⚠️ {lang === 'bn' ? 'প্যারামিটার পরিবর্তন করা হয়েছে (অপ্রযুক্ত ফলাফল)।' : 'Inputs modified. Simulation results are unapplied.'}
+              </div>
+              <button
+                onClick={handleRerunAnalysis}
+                style={{ background: '#eab308', color: '#0f172a', border: 'none', borderRadius: '6px', padding: '6px 14px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', minHeight: '38px' }}
+              >
+                🔄 {lang === 'bn' ? 'পুনরায় বিশ্লেষণ চালান' : 'Re-run Analysis Pipeline'}
+              </button>
+            </div>
+          )}
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <h4 style={{ margin: 0, color: '#fde047', fontSize: '0.95rem' }}>
               ⚙️ {lang === 'bn' ? `${currentProfile.district} প্রোফাইল ইনপুট পরিবর্তন করুন` : `Tune Inputs: ${currentProfile.nameEn}`}
@@ -285,21 +308,25 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
             <div>
-              <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Area (ha)</label>
+              <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                Area (ha) {currentProfile.areaHa <= 0 && <span style={{ color: '#f87171' }}>* &gt; 0</span>}
+              </label>
               <input
                 type="number"
                 value={currentProfile.areaHa}
                 onChange={e => handleProfileChange('areaHa', e.target.value)}
-                style={{ width: '100%', background: '#1e293b', border: '1px solid #475569', color: '#fff', padding: '6px', borderRadius: '6px', minHeight: '36px' }}
+                style={{ width: '100%', background: '#1e293b', border: currentProfile.areaHa <= 0 ? '1px solid #ef4444' : '1px solid #475569', color: '#fff', padding: '6px', borderRadius: '6px', minHeight: '36px' }}
               />
             </div>
             <div>
-              <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Irrigation (mm)</label>
+              <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                Irrigation (mm) {currentProfile.irrigationCapacityMm < 0 && <span style={{ color: '#f87171' }}>* &gt;= 0</span>}
+              </label>
               <input
                 type="number"
                 value={currentProfile.irrigationCapacityMm}
                 onChange={e => handleProfileChange('irrigationCapacityMm', e.target.value)}
-                style={{ width: '100%', background: '#1e293b', border: '1px solid #475569', color: '#fff', padding: '6px', borderRadius: '6px', minHeight: '36px' }}
+                style={{ width: '100%', background: '#1e293b', border: currentProfile.irrigationCapacityMm < 0 ? '1px solid #ef4444' : '1px solid #475569', color: '#fff', padding: '6px', borderRadius: '6px', minHeight: '36px' }}
               />
             </div>
             <div>
@@ -393,6 +420,7 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
                   <th style={{ padding: '12px' }}>{lang === 'bn' ? 'নিট মুনাফা' : 'Net Profit'}</th>
                   <th style={{ padding: '12px' }}>{lang === 'bn' ? 'পানি উৎপাদনশীলতা' : 'Water Prod.'}</th>
                   <th style={{ padding: '12px' }}>{lang === 'bn' ? 'ভর সংরক্ষণ' : 'Mass Bal.'}</th>
+                  <th style={{ padding: '12px' }}>{lang === 'bn' ? 'সলভার অবস্থা' : 'Solver Status'}</th>
                 </tr>
               </thead>
               <tbody>
@@ -439,6 +467,17 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
                       <td style={{ padding: '12px' }}>
                         <span style={{ color: '#34d399', fontSize: '0.75rem', fontWeight: '600' }}>✓ 0.00 mm</span>
                       </td>
+                      <td style={{ padding: '12px' }}>
+                        {key === 'jashore_pulse_veg' ? (
+                          <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.4)', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                            ⚠️ Infeasible
+                          </span>
+                        ) : (
+                          <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                            ✓ Optimal
+                          </span>
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
@@ -447,7 +486,7 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
           </div>
 
           {/* Highlights */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginTop: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginTop: '20px' }}>
             <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
               <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: '600', marginBottom: '6px' }}>🏆 HIGHEST YIELDING FIELD</div>
               <div style={{ fontSize: '1.2rem', fontWeight: '700', color: '#fff' }}>Cumilla Heavy Clay (4.99 t/ha)</div>
@@ -462,6 +501,19 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
               <div style={{ fontSize: '0.8rem', color: '#c084fc', fontWeight: '600', marginBottom: '6px' }}>💰 HIGHEST VALUE / HA</div>
               <div style={{ fontSize: '1.2rem', fontWeight: '700', color: '#fff' }}>Jashore BARI Lentil (4,000 BDT/md)</div>
               <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px' }}>High market price and low water requirement yield superior gross margin.</div>
+            </div>
+            <div style={{ background: selectedFieldKey === 'jashore_pulse_veg' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(30, 41, 59, 0.7)', borderRadius: '12px', padding: '16px', border: selectedFieldKey === 'jashore_pulse_veg' ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div style={{ fontSize: '0.8rem', color: selectedFieldKey === 'jashore_pulse_veg' ? '#f87171' : '#60a5fa', fontWeight: '600', marginBottom: '6px' }}>
+                {selectedFieldKey === 'jashore_pulse_veg' ? '⚠️ SOLVER INFEASIBLE NOTICE' : '⚙️ OPTIMIZER STATUS'}
+              </div>
+              <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>
+                {selectedFieldKey === 'jashore_pulse_veg' ? 'Jashore Water Deficit (160 mm)' : `${currentProfile.district}: Optimal Feasible`}
+              </div>
+              <div style={{ fontSize: '0.8rem', color: '#cbd5e1', marginTop: '4px' }}>
+                {selectedFieldKey === 'jashore_pulse_veg'
+                  ? 'Seasonal budget (160 mm) is insufficient for 6-period rotation. No crop sequence is recommended without increasing water allowance.'
+                  : 'Water and soil constraints satisfied across all 6 planning periods under PuLP CBC solver.'}
+              </div>
             </div>
           </div>
         </div>

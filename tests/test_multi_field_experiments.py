@@ -410,3 +410,80 @@ def test_api_json_export(client):
     assert "total_fields" in data
     assert data["total_fields"] == 6
     assert data["provenance"]["classification"] == "SYNTHETIC_TEST_DATA"
+
+
+# -----------------------------------------------------------------------------
+# 7. PHASE 2 REGRESSION TESTS: VALIDATION, INFEASIBILITY & DETERMINISM
+# -----------------------------------------------------------------------------
+
+def test_input_validation_boundary_conditions():
+    """Verify strict rejection of unphysical, negative, or out-of-bounds agronomic inputs."""
+    base_prof = copy.deepcopy(SYNTHETIC_FIELD_PROFILES["bogura_boro"])
+
+    # 1. Negative field area
+    prof_neg_area = copy.deepcopy(base_prof)
+    prof_neg_area["area_ha"] = -2.5
+    valid, errs = validate_field_profile(prof_neg_area)
+    assert valid is False
+    assert any("area" in e.lower() for e in errs)
+    with pytest.raises(ValueError, match=r"(?i)area"):
+        run_deterministic_agronomic_simulation(prof_neg_area)
+
+    # 2. Negative water / irrigation budget
+    prof_neg_irrig = copy.deepcopy(base_prof)
+    prof_neg_irrig["irrigation_capacity_mm"] = -100.0
+    valid, errs = validate_field_profile(prof_neg_irrig)
+    assert valid is False
+    assert any("irrigation" in e.lower() for e in errs)
+    with pytest.raises(ValueError, match=r"(?i)irrigation"):
+        run_deterministic_agronomic_simulation(prof_neg_irrig)
+
+    # 3. Invalid initial moisture fraction (> 1.0 or < 0.0)
+    prof_invalid_moist = copy.deepcopy(base_prof)
+    prof_invalid_moist["initial_moisture_fraction"] = 1.6
+    valid, errs = validate_field_profile(prof_invalid_moist)
+    assert valid is False
+    assert any("moisture" in e.lower() for e in errs)
+
+    # 4. Out-of-bounds soil pH (< 3.0 or > 10.0)
+    prof_bad_ph = copy.deepcopy(base_prof)
+    prof_bad_ph["soil_ph"] = 12.5
+    valid, errs = validate_field_profile(prof_bad_ph)
+    assert valid is False
+    assert any("ph" in e.lower() for e in errs)
+
+    # 5. Negative nitrogen fertilizer
+    prof_neg_n = copy.deepcopy(base_prof)
+    prof_neg_n["nitrogen_kg_ha"] = -40.0
+    valid, errs = validate_field_profile(prof_neg_n)
+    assert valid is False
+    assert any("nitrogen" in e.lower() for e in errs)
+
+
+def test_infeasible_solver_reporting_and_explanation():
+    """Verify that solver infeasibility is reported truthfully and not misrepresented as optimal."""
+    jashore_prof = SYNTHETIC_FIELD_PROFILES["jashore_pulse_veg"]
+    baseline = run_full_field_baseline(jashore_prof)
+    opt = baseline["optimizer"]
+
+    # Must be explicitly infeasible
+    assert opt["is_optimal"] is False
+    assert opt["solver_status"].lower() == "infeasible"
+    assert opt["recommendation_status"] == "infeasible_no_recommendation"
+    assert opt["infeasible_explanation"] is not None
+    assert "water budget" in opt["infeasible_explanation"].lower()
+    # Infeasible run must not fabricate a non-empty rotation as an optimal recommendation
+    assert opt["selected_rotation"] == {}
+
+
+def test_simulation_reproducibility_and_determinism():
+    """Verify that deterministic agronomic simulation produces bit-exact identical results under same seed."""
+    prof = SYNTHETIC_FIELD_PROFILES["bogura_boro"]
+    res1 = run_deterministic_agronomic_simulation(prof, seed=42)
+    res2 = run_deterministic_agronomic_simulation(prof, seed=42)
+
+    assert res1["simulated_yield_t_ha"] == res2["simulated_yield_t_ha"]
+    assert res1["gross_revenue_bdt"] == res2["gross_revenue_bdt"]
+    assert res1["total_cost_bdt"] == res2["total_cost_bdt"]
+    assert res1["net_profit_bdt"] == res2["net_profit_bdt"]
+    assert res1["mass_balance_residual_mm"] == res2["mass_balance_residual_mm"]
