@@ -21,10 +21,14 @@ VERSIONS_DIR = PROJECT_ROOT / "backend" / "alembic" / "versions"
 def normalize_database_url(raw_url: str) -> tuple[str, dict]:
     """
     Ensure compatibility with psycopg v3 and Supabase PgBouncer poolers.
+    - Trims whitespace and newlines from raw URL and database name
     - Converts postgres:// and postgresql:// to postgresql+psycopg://
     - Configures prepare_threshold=None for PgBouncer transaction mode (port 6543)
     """
-    parsed = make_url(raw_url)
+    cleaned = raw_url.strip()
+    parsed = make_url(cleaned)
+    if parsed.database:
+        parsed = parsed.set(database=parsed.database.strip())
     drivername = parsed.drivername
     if drivername in ("postgresql", "postgres"):
         parsed = parsed.set(drivername="postgresql+psycopg")
@@ -32,7 +36,7 @@ def normalize_database_url(raw_url: str) -> tuple[str, dict]:
     connect_args: dict = {"connect_timeout": 10}
     is_tx_pooler = (
         parsed.port == 6543
-        or "pgbouncer=true" in str(raw_url).lower()
+        or "pgbouncer=true" in str(cleaned).lower()
         or (parsed.query and parsed.query.get("pgbouncer") == "true")
     )
     if is_tx_pooler:
