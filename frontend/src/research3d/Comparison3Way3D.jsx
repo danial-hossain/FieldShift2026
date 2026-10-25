@@ -90,7 +90,7 @@ export function Comparison3Way3D({
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+    <div className="research-scene-layout-grid">
       {/* 3D 3-Way Optimization Canvas */}
       <Research3DScene
         cameraPosition={[-12, 8, 14]}

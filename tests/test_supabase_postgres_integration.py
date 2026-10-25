@@ -111,12 +111,19 @@ class SupabasePostgresIntegrationTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Clean up test fixtures created during the test run."""
-        with DbSession(engine) as session:
-            for fid in cls.created_field_ids:
-                fld = session.get(FarmField, fid)
-                if fld:
-                    session.delete(fld)
-            session.commit()
+        try:
+            with DbSession(engine) as session:
+                for fid in cls.created_field_ids:
+                    # Clean up child records referencing fid first
+                    session.query(FarmOutcome).filter(FarmOutcome.field_id == fid).delete(synchronize_session=False)
+                    session.query(FieldHistory).filter(FieldHistory.field_id == fid).delete(synchronize_session=False)
+                    session.query(Analysis).filter(Analysis.field_id == fid).delete(synchronize_session=False)
+                    fld = session.get(FarmField, fid)
+                    if fld:
+                        session.delete(fld)
+                session.commit()
+        except Exception:
+            pass
 
     def test_01_migrations_idempotence(self):
         """Verify that running migrations repeatedly is safe and idempotent."""

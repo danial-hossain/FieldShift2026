@@ -100,7 +100,7 @@ export function SixSeasonTrajectory3D({
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+    <div className="research-scene-layout-grid">
       {/* 3D Seasonal Trajectory Canvas */}
       <Research3DScene
         cameraPosition={[0, 14, 14]}

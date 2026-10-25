@@ -136,8 +136,54 @@ export function WaterBalance3D({
     scene.add(bucketGroup);
   };
 
+  // Custom Accessible 2D Table View
+  const accessibleTableView = (
+    <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: 14, borderRadius: 8 }}>
+      <h5 style={{ margin: '0 0 10px', color: '#38bdf8', fontSize: 13, fontWeight: 800 }}>
+        {lang === 'bn' ? 'হাইড্রোলজিক্যাল পানি ভারসাম্য সারণী' : 'Hydrological Mass Balance Table'}
+      </h5>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
+        <tbody>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>বৃষ্টিপাত (Rainfall Inflow):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#38bdf8' }}>+{rainfallMm} mm</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>সেচ পানি (Irrigation Inflow):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#00df81' }}>+{irrigationMm} mm</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>বাষ্পীভবন (ETa Outflow):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#f59e0b' }}>-{etaMm} mm</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>গভীর নিষ্কাশন (Percolation):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#c084fc' }}>-{deepPercolationMm} mm</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>বর্তমান মজুদ (Storage):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#f8fafc' }}>{currentStorageMm} mm / {tawMm} mm</td>
+          </tr>
+          <tr>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>ভর সংরক্ষণ অবশিষ্টাংশ:</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: Math.abs(massResidualMm) < 0.05 ? '#00df81' : '#f87171' }}>
+              {massResidualMm.toFixed(2)} mm (Exact)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+    <div
+      className="research-scene-layout-grid"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+        gap: 16
+      }}
+    >
       {/* 3D Hydrological Mass Balance Canvas */}
       <Research3DScene
         cameraPosition={[-7, 1, 10]}
@@ -147,6 +193,7 @@ export function WaterBalance3D({
           `Storage: ${currentStorageMm}/${tawMm} mm`,
           `Residual: ${massResidualMm.toFixed(2)} mm`
         ]}
+        fallbackTableView={accessibleTableView}
         onSceneReady={handleSceneReady}
         minHeight="440px"
         lang={lang}

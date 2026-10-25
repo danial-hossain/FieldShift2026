@@ -96,7 +96,7 @@ export function ScenarioComparison3D({
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 16 }}>
+    <div className="research-scene-layout-grid">
       {/* Synchronized 3D Dual-Parcel Canvas */}
       <Research3DScene
         cameraPosition={[-14, 8, 16]}

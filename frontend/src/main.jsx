@@ -481,6 +481,7 @@ class ResultBoundary extends React.Component {
 
 export function App() {
   const [activeNav, setActiveNav] = useState('dashboard');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [selectedStress, setSelectedStress] = useState('normal');
   const [theme, setTheme] = useState(() => localStorage.getItem('fieldshift_theme') || 'dark');
   const [lang, setLang] = useState(() => localStorage.getItem('fieldshift_lang') || 'bn');
@@ -497,6 +498,7 @@ export function App() {
   }, [lang]);
 
   const handleNavigate = (nav, tab = null) => {
+    setMobileNavOpen(false);
     if (nav === 'crop_advice' || nav === 'harvest_profit' || nav === 'research') {
       setActiveNav(nav);
       return;
@@ -1581,9 +1583,18 @@ export function App() {
 
   return (
     <div className="app-shell">
-      {/* Left Vertical Navigation Rail */}
-      <aside className="sidebar">
-        <div className="sidebar-logo" title="FieldShift Decision Support" onClick={() => setActiveNav('dashboard')} style={{ cursor: 'pointer' }}>
+      {/* Mobile Drawer Backdrop */}
+      {mobileNavOpen && (
+        <div
+          className="mobile-nav-backdrop"
+          onClick={() => setMobileNavOpen(false)}
+          aria-label="Close navigation overlay"
+        />
+      )}
+
+      {/* Left Vertical Navigation Rail (Mobile Drawer on phone screens) */}
+      <aside className={`sidebar ${mobileNavOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-logo" title="FieldShift Decision Support" onClick={() => handleNavigate('dashboard')} style={{ cursor: 'pointer' }}>
           <div className="sidebar-logo-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
@@ -1594,6 +1605,14 @@ export function App() {
             <span className="sidebar-logo-name">FieldShift</span>
             <span className="sidebar-logo-tagline">AI Decision Support</span>
           </div>
+          <button
+            type="button"
+            className="sidebar-close-btn"
+            onClick={(e) => { e.stopPropagation(); setMobileNavOpen(false); }}
+            aria-label="Close menu"
+          >
+            ✕
+          </button>
         </div>
 
         <nav className="sidebar-nav" aria-label="Primary Navigation">
@@ -1719,6 +1738,19 @@ export function App() {
         {/* Global Persistent Top Bar */}
         <header className="global-top-bar">
           <div className="global-top-bar-left">
+            <button
+              type="button"
+              className="mobile-hamburger-btn"
+              onClick={() => setMobileNavOpen(prev => !prev)}
+              aria-label="Toggle navigation drawer"
+              title="Open Navigation Menu"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
             <div className="global-search-pill">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <circle cx="11" cy="11" r="8"/>
@@ -1765,15 +1797,18 @@ export function App() {
               </select>
             </div>
 
-            {/* NASA Status Telemetry Badge */}
+            {/* NASA Status Telemetry Badge (Collapses cleanly on mobile) */}
             <div className="top-bar-pill-badge" title="NASA POWER agro-climatic observation feed">
               <span className="live-pulse-dot" />
-              <span>
+              <span className="nasa-badge-full-text">
                 {activeField
                   ? (activeField.is_demo || activeField.id === 'demo'
                       ? `NASA POWER: Demo Benchmark (${activeField.latitude?.toFixed(2)}°N, ${activeField.longitude?.toFixed(2)}°E)`
                       : `NASA POWER: Observed (${activeField.latitude?.toFixed(2)}°N, ${activeField.longitude?.toFixed(2)}°E)`)
                   : (nasa?.data_status === 'observed' ? 'NASA POWER: Observed' : 'NASA POWER: Standby')}
+              </span>
+              <span className="nasa-badge-short-text">
+                NASA 🛰️
               </span>
             </div>
 
@@ -1818,7 +1853,7 @@ export function App() {
             {/* System Alerts */}
             <button
               type="button"
-              className="top-bar-icon-btn notification-bell-btn"
+              className="top-bar-icon-btn notification-bell-btn hide-on-mobile"
               title="System Alerts & Analysis Notifications"
               onClick={() => alert('All environmental telemetry feeds and crop rotation models are synchronized.')}
             >
@@ -1845,7 +1880,7 @@ export function App() {
               <div className="user-profile-avatar">
                 <span>{user ? (user.name || user.email || 'U').slice(0, 1).toUpperCase() : 'G'}</span>
               </div>
-              <div className="user-profile-meta">
+              <div className="user-profile-meta hide-on-mobile">
                 <strong className="user-profile-name">{user ? user.name : 'Sign In'}</strong>
                 <span className="user-profile-title">{user ? 'Chief Agronomist' : 'Guest Operator'}</span>
               </div>
@@ -6570,6 +6605,65 @@ export function App() {
           onNavigate={handleNavigate}
           onOpenAssistant={() => handleNavigate('assistant')}
         />
+
+        {/* Mobile Persistent Bottom Navigation Bar (Visible only on narrow screens <= 768px) */}
+        <nav className="mobile-bottom-nav" aria-label="Mobile Navigation">
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${activeNav === 'dashboard' ? 'active' : ''}`}
+            onClick={() => handleNavigate('dashboard')}
+            title="Home"
+          >
+            <span className="mobile-nav-icon">🏠</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'হোম' : 'Home'}</span>
+          </button>
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${activeNav === 'field' || activeNav === 'field_map' ? 'active' : ''}`}
+            onClick={() => handleNavigate('field')}
+            title="My Farm"
+          >
+            <span className="mobile-nav-icon">🗺️</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'আমার জমি' : 'Farm'}</span>
+          </button>
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${activeNav === 'crop_advice' ? 'active' : ''}`}
+            onClick={() => handleNavigate('crop_advice')}
+            title="Crop Advice"
+          >
+            <span className="mobile-nav-icon">🌱</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'পরামর্শ' : 'Crops'}</span>
+          </button>
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${activeNav === 'harvest_profit' ? 'active' : ''}`}
+            onClick={() => handleNavigate('harvest_profit')}
+            title="Harvest & Profit"
+          >
+            <span className="mobile-nav-icon">📋</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'হিসাব' : 'Harvest'}</span>
+          </button>
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${activeNav === 'research' ? 'active' : ''}`}
+            onClick={() => handleNavigate('research')}
+            title="Research Lab"
+          >
+            <span className="mobile-nav-icon">🔬</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'গবেষণা' : 'Lab'}</span>
+          </button>
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${mobileNavOpen ? 'active' : ''}`}
+            onClick={() => setMobileNavOpen(prev => !prev)}
+            aria-label="Open full menu drawer"
+            title="Menu"
+          >
+            <span className="mobile-nav-icon">☰</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'মেনু' : 'Menu'}</span>
+          </button>
+        </nav>
       </div>
     </div>
   );

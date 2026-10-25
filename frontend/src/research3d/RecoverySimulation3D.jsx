@@ -91,7 +91,7 @@ export function RecoverySimulation3D({
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+    <div className="research-scene-layout-grid">
       {/* 3D Shock & Recovery Scene */}
       <Research3DScene
         cameraPosition={[-8, 6, 12]}

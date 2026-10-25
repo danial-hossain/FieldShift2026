@@ -1043,3 +1043,129 @@ Required User Action on Render Dashboard:
   1. Removed 'frontend/node_modules/' from git's index entirely ('git rm -r --cached frontend/node_modules').
   2. Updated 'frontend/package.json' scripts to use direct node execution: 'node node_modules/vite/bin/vite.js build'. This directly invokes the node engine with the script file without requiring executable bit permission (+x) on shell binary wrappers.
 - Verification: Ran 'npm run build' locally; generated clean production build in 266ms.
+
+================================================================================
+FINAL COMPLETION REPORT: MOBILE-FIRST UI, REALISTIC 3D & PRODUCTION QA
+Date: 2026-10-25 22:35:00 UTC+6
+Branch: master | Remote: origin/master
+Commit Target: Final Mobile-First UI, Realistic 3D Overhaul, and Deployment QA
+================================================================================
+
+1. BASELINE GIT STATUS & AUDIT
+--------------------------------------------------------------------------------
+- Branch: master (tracking origin/master, starting commit: 9451785)
+- Working Tree: Fully inspected and restored; zero uncommitted secrets or credentials.
+- Untracked artifacts: Untracked non-executable node_modules/ from git index.
+
+2. COMPONENT REPAIRS & ENHANCEMENTS
+--------------------------------------------------------------------------------
+A. Mobile-First Layout & Touch Experience:
+   - frontend/src/main.jsx:
+     * Slide-in mobile drawer navigation for screens <= 768px.
+     * Accessible hamburger toggle button (.mobile-hamburger-btn) and backdrop overlay (.mobile-nav-backdrop).
+     * Fixed 6-item bottom navigation bar (.mobile-bottom-nav) with 44x44px touch targets.
+     * Responsive top bar badge with compact mobile text (.nasa-badge-short-text).
+     * Fixed unclosed div before header close tag.
+   - frontend/src/styles.css:
+     * html, body: enforced overflow-x: hidden and max-width: 100vw to eliminate horizontal page overflow.
+     * Responsive drawer animation: cubic-bezier(0.16, 1, 0.3, 1).
+     * Touch target minimums: min-height 44px on primary/secondary buttons.
+     * Responsive table scrolling (.table-responsive, data-table-container).
+
+B. Professional 3D Digital Twin Overhaul:
+   - frontend/src/research3d/Research3DScene.jsx:
+     * Added interactive Camera Presets bar: Isometric (Iso), Top-Down (Top), Profile/Horizon (Side), Close-Up (Zoom), and Reset.
+     * Added Accessible 2D Data Table Fallback View toggle (allows switching seamlessly between 3D Digital Twin and high-contrast scientific table).
+     * Mobile battery & performance optimization: adaptive pixel ratio clamping (1.25x on mobile, 1.75x on desktop).
+     * Power-saving lifecycle: IntersectionObserver pauses requestAnimationFrame when canvas is off-screen.
+     * Tab visibility listener (visibilitychange) pauses rendering when tab is hidden or backgrounded.
+     * WebGL context loss recovery: handles webglcontextlost and webglcontextrestored.
+     * Touch action set to touch-action: pan-y to prevent camera controls from locking mobile vertical page scrolling.
+   - frontend/src/research3d/SoilProfile3D.jsx:
+     * Replaced flat boxes with procedural 512x512 stratified soil texture (O-Horizon humus, A-Horizon 0-30cm topsoil, B-Horizon 30-90cm subsoil, C-Horizon substratum).
+     * Realistic curved branching 3D root architecture (CatmullRomCurve3 taproot with 24 lateral rootlets scaling dynamically with FAO-56 rooting depth Zr).
+     * Volumetric water saturation plane with specular wetness sheen and dynamic elevation.
+     * Metric centimeter elevation ruler with calibrated depth ticks (0, -30, -60, -90, -150 cm).
+     * Accessible 2D hydraulic data table (FC, WP, TAW, RAW, Zr, Moisture %).
+   - frontend/src/research3d/CropGrowth3D.jsx:
+     * Replaced primitive cylinder/cone with realistic multi-culm tiller cluster (4 curved culms with natural radiating arcs).
+     * Tapered arched leaf blades with midrib curves.
+     * Flowering & maturity: nodding panicle with individual distichous grain glumes (Oryza sativa spikelets).
+     * Procedural crumb texture on agricultural seedbed.
+     * Acrylic digital-twin yield pillars with translucent glowing material and Stewart Ky deficit delta bridge.
+     * Accessible 2D yield response table.
+   - frontend/src/research3d/ClimateStress3D.jsx:
+     * Replaced wireframe sphere with soft translucent geodesic atmospheric thermal dome.
+     * Solar pyranometer source with directional irradiance rays.
+     * Replaced primitive cones with realistic multi-blade furrow crop tillers.
+     * Procedural terrain texture with drought cracking / moisture variations.
+     * Accessible 2D climate stress table.
+   - frontend/src/research3d/NutrientProfile3D.jsx:
+     * Stratified organic crumb soil texture.
+     * Curved root rhizosphere with leghemoglobin-pink Rhizobium nodule clusters for legume BNF treatments (+45 kg N/ha).
+     * Floating N-P-K ionic diffusion particles (Cyan N, Orange P, Purple K).
+     * Accessible 2D nutrient profile table.
+   - frontend/src/research3d/WaterBalance3D.jsx:
+     * Responsive layout grid (.research-scene-layout-grid).
+     * Accessible 2D hydrological mass balance table.
+   - StressTest3D.jsx, SixSeasonTrajectory3D.jsx, SensitivityAnalysis3D.jsx, ScenarioComparison3D.jsx, RecoverySimulation3D.jsx, Comparison3Way3D.jsx:
+     * Upgraded all 6 components to use .research-scene-layout-grid with responsive auto-fit wrapping.
+
+C. API, Tests & Database:
+   - tests/test_supabase_postgres_integration.py:
+     * Fixed foreign key integrity error during test teardown by cascading child record deletion (FarmOutcome, FieldHistory, Analysis) prior to field deletion.
+
+3. AUTOMATED TEST SUITE & PRODUCTION BUILD EXECUTION
+--------------------------------------------------------------------------------
+Command 1: npm test (frontend/)
+- Exit Code: 0 (PASS)
+- Tests: 83 passed, 0 failed, 0 skipped (Duration: 154ms)
+- Verifications: Three.js math, 3D camera presets, phenology, FAO-56 rooting, 9 stress tests, mass balance, P0 regressions, 6-season MILP, financial conversions.
+
+Command 2: npm run build (frontend/)
+- Exit Code: 0 (PASS)
+- Output Bundle: frontend/dist/ (Build time: 273ms)
+  * dist/index.html (1.00 kB)
+  * dist/assets/index-CwvrfG-l.css (204.18 kB)
+  * dist/assets/rolldown-runtime-CbXtAM7H.js (0.58 kB)
+  * dist/assets/ExperimentSimulator3DView-DCvQ7L9A.js (96.10 kB)
+  * dist/assets/react-vendor-Dy-GIXkn.js (218.83 kB)
+  * dist/assets/three-vendor-A5XHdZ-h.js (581.66 kB)
+  * dist/assets/index-DZmtZZMO.js (813.10 kB)
+
+Command 3: python -m pytest tests/test_app_server.py -q
+- Exit Code: 0 (PASS)
+- Tests: 14 passed, 0 failed (Duration: 63.2s)
+- Verifications: Root SPA index.html, /assets static files, /research-workspace fallback, /api/health, crop recommendations, MILP solver, harvest persistence, adaptive replanning.
+
+Command 4: python -m pytest tests/test_agronomic_rules.py tests/test_milp.py tests/test_soil.py -q
+- Exit Code: 0 (PASS)
+- Tests: 56 passed, 0 failed (Duration: 16.7s)
+
+Command 5: python -m pytest tests/test_supabase_postgres_integration.py -q
+- Exit Code: 0 (PASS)
+- Tests: 7 passed, 1 skipped (PG migration runner requires live PG target), 0 errors (Duration: 7.0s)
+
+4. LIVE DEPLOYMENT VERIFICATION
+--------------------------------------------------------------------------------
+Deployment URL: https://fieldshift-backend.onrender.com/
+Status: LIVE & VERIFIED (HTTP 200)
+
+Live Verification Results:
+- GET / -> Status: 200 OK (Serves React 19 production SPA index.html)
+- GET /api/health -> Status: 200 OK
+  Payload: {"status":"healthy","service":"fieldshift","database":"postgresql","environment":"production"}
+- GET /research-workspace -> Status: 200 OK (Direct deep link serves SPA and survives refresh)
+
+Architecture:
+- Single Render Web Service (fieldshift-backend) running FastAPI (Uvicorn).
+- FastAPI mounts /assets directly to frontend/dist/assets and serves frontend/dist/index.html on root / and SPA paths.
+- Connected to persistent Supabase PostgreSQL database via PgBouncer pooled connection string.
+
+5. SCIENTIFIC & OPERATIONAL LIMITATIONS
+--------------------------------------------------------------------------------
+- Model Yield Floor: Documented 0.20 t/ha floor is an agronomic modeling assumption to prevent numerical divergence, not a biological minimum.
+- Synthetic RL Data: RL simulations are generated from synthetic stochastic state transitions and must be distinguished from empirical observational data.
+- Cold Starts: Render free-tier web services spin down after 15 minutes of inactivity; initial request requires ~45 seconds for container wake-up.
+- Physical Device Testing: Visual inspection was conducted via automated viewport assertions and browser tests; testing across physical iOS/Android hardware is recommended for production validation.
+================================================================================

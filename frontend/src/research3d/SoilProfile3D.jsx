@@ -1,11 +1,58 @@
 // frontend/src/research3d/SoilProfile3D.jsx
-// Interactive 3D Soil Profile, Root-Zone Architecture & TAW/RAW Water Storage Visualizer
-// Features: 3D stratified soil horizons, dynamic root system growth, TAW & RAW volumetric brackets,
-// soil moisture saturation gradient (St/TAW), texture-specific hydraulic parameters, and FAO-56 rooting depth.
+// Interactive Professional 3D Soil Profile, Root-Zone Architecture & TAW/RAW Water Storage Digital Twin
+// Features: Stratified procedural soil horizon textures (O, A, B, C horizons), branching 3D root architecture,
+// FAO-56 dual-Kc rooting depth progression, volumetric moisture saturation plane with specular wetness sheen,
+// calibrated metric elevation ruler, and responsive accessible data table fallback.
 
-import React, { useRef, useEffect, useState, useMemo } from 'react';
+import React, { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { Research3DScene } from './Research3DScene.jsx';
+
+// Procedural Canvas Texture for High-Realism Stratified Soil Monolith
+function createStratifiedSoilTexture(topColor, subColor) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  // Background gradient from dark topsoil to weathered substratum
+  const grad = ctx.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0.0, '#1c130d'); // O-Horizon (Humus)
+  grad.addColorStop(0.2, topColor);  // A-Horizon (Topsoil 0-30cm)
+  grad.addColorStop(0.65, subColor); // B-Horizon (Subsoil 30-90cm)
+  grad.addColorStop(1.0, '#262f38'); // C-Horizon (Parent sediment)
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Organic crumb aggregates & mineral noise
+  const imgData = ctx.getImageData(0, 0, 512, 512);
+  const data = imgData.data;
+  for (let i = 0; i < data.length; i += 4) {
+    const grain = (Math.random() - 0.5) * 28;
+    data[i] = Math.min(255, Math.max(0, data[i] + grain));
+    data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + grain * 0.8));
+    data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + grain * 0.6));
+  }
+  ctx.putImageData(imgData, 0, 0);
+
+  // Clay mottling & sediment boundary lines
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+  ctx.lineWidth = 3;
+  for (let y = 100; y < 512; y += 80) {
+    ctx.beginPath();
+    ctx.moveTo(0, y + (Math.random() - 0.5) * 12);
+    for (let x = 32; x <= 512; x += 32) {
+      ctx.lineTo(x, y + (Math.random() - 0.5) * 16);
+    }
+    ctx.stroke();
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  return texture;
+}
 
 export function SoilProfile3D({
   soilTexture = 'loam',
@@ -49,112 +96,192 @@ export function SoilProfile3D({
   const handleSceneReady = ({ scene, camera, controls }) => {
     sceneElementsRef.current = { scene, camera, controls };
 
-    // Group for soil profile model
     const profileGroup = new THREE.Group();
     profileGroup.position.set(0, 0, 0);
 
-    // 1. Horizon A: Topsoil / Plough Pan (0 - 0.30m)
-    const topGeo = new THREE.BoxGeometry(6.0, 1.5, 5.0);
-    const topMat = new THREE.MeshStandardMaterial({
-      color: soilProperties.colorTop,
-      roughness: 0.95,
-      metalness: 0.05
-    });
-    const topMesh = new THREE.Mesh(topGeo, topMat);
-    topMesh.position.set(0, -0.75, 0);
-    topMesh.receiveShadow = true;
-    profileGroup.add(topMesh);
+    // Procedural stratified soil texture map
+    const soilTextureMap = createStratifiedSoilTexture(soilProperties.colorTop, soilProperties.colorSub);
 
-    // 2. Horizon B: Subsoil Root Zone (0.30m - 1.00m)
-    const subGeo = new THREE.BoxGeometry(6.0, 3.5, 5.0);
-    const subMat = new THREE.MeshStandardMaterial({
-      color: soilProperties.colorSub,
-      roughness: 0.98,
-      metalness: 0.02
+    // 1. High-Detail Stratified Soil Monolith (Width: 6m, Height: 7.5m, Depth: 5m)
+    const soilGeo = new THREE.BoxGeometry(6.0, 7.5, 5.0, 8, 16, 8);
+    const soilMat = new THREE.MeshStandardMaterial({
+      map: soilTextureMap,
+      roughness: 0.92,
+      metalness: 0.04
     });
-    const subMesh = new THREE.Mesh(subGeo, subMat);
-    subMesh.position.set(0, -3.25, 0);
-    subMesh.receiveShadow = true;
-    profileGroup.add(subMesh);
+    const soilMesh = new THREE.Mesh(soilGeo, soilMat);
+    soilMesh.position.set(0, -3.75, 0);
+    soilMesh.receiveShadow = true;
+    profileGroup.add(soilMesh);
 
-    // 3. Horizon C: Deep Percolation & Groundwater Table (1.0m - 1.6m)
-    const deepGeo = new THREE.BoxGeometry(6.0, 2.5, 5.0);
-    const deepMat = new THREE.MeshStandardMaterial({
-      color: '#1e293b',
-      roughness: 0.7,
-      metalness: 0.2
-    });
-    const deepMesh = new THREE.Mesh(deepGeo, deepMat);
-    deepMesh.position.set(0, -6.25, 0);
-    profileGroup.add(deepMesh);
+    // 2. Horizon A Boundary Line (Topsoil plough layer at -1.5m / 30cm depth)
+    const horizonALineGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-3.02, -1.5, 2.52),
+      new THREE.Vector3(3.02, -1.5, 2.52)
+    ]);
+    const horizonLineMat = new THREE.LineBasicMaterial({ color: '#facc15', transparent: true, opacity: 0.7 });
+    const horizonALine = new THREE.Line(horizonALineGeo, horizonLineMat);
+    profileGroup.add(horizonALine);
 
-    // 4. Moisture Saturation Plane Indicator (Height moves with moisturePct)
-    const waterPlaneGeo = new THREE.PlaneGeometry(6.05, 5.05);
+    // 3. Horizon B Boundary Line (Subsoil boundary at -4.5m / 90cm depth)
+    const horizonBLineGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-3.02, -4.5, 2.52),
+      new THREE.Vector3(3.02, -4.5, 2.52)
+    ]);
+    const horizonBLine = new THREE.Line(horizonBLineGeo, horizonLineMat);
+    profileGroup.add(horizonBLine);
+
+    // 4. Volumetric Moisture Saturation Plane with Specular Wetness Sheen
+    const waterPlaneGeo = new THREE.PlaneGeometry(6.08, 5.08);
     const waterPlaneMat = new THREE.MeshStandardMaterial({
       color: '#0284c7',
       transparent: true,
-      opacity: 0.65,
-      roughness: 0.2
+      opacity: 0.72,
+      roughness: 0.12,
+      metalness: 0.5
     });
     const waterPlane = new THREE.Mesh(waterPlaneGeo, waterPlaneMat);
     waterPlane.rotation.x = -Math.PI / 2;
-    waterPlane.position.set(0, -5.0 + (moisturePct / 100) * 5.0, 0);
+    const waterY = -7.0 + (moisturePct / 100) * 7.0;
+    waterPlane.position.set(0, waterY, 0);
     profileGroup.add(waterPlane);
 
-    // 5. 3D Branching Root Architecture (Root depth dynamic based on currentRootDepthM)
+    // 5. Realistic Branching 3D Root Architecture (FAO-56 Zr scaling)
     const rootGroup = new THREE.Group();
-    const tapRootHeight = currentRootDepthM * 5.0; // Scaled to model space
-    const tapGeo = new THREE.CylinderGeometry(0.08, 0.02, tapRootHeight, 8);
-    const rootMat = new THREE.MeshStandardMaterial({ color: '#fef08a', roughness: 0.5 });
-    const tapRoot = new THREE.Mesh(tapGeo, rootMat);
-    tapRoot.position.set(0, -tapRootHeight / 2, 0);
-    rootGroup.add(tapRoot);
+    const scaledRootDepth = Math.max(0.4, currentRootDepthM * 5.0);
 
-    // Lateral secondary roots
-    for (let r = 0; r < 14; r++) {
-      const latHeight = 0.4 + Math.random() * 0.8;
-      const latGeo = new THREE.CylinderGeometry(0.03, 0.01, latHeight, 6);
-      const lat = new THREE.Mesh(latGeo, rootMat);
-      const yPos = -Math.random() * tapRootHeight * 0.85;
-      const angle = (r / 14) * Math.PI * 2;
-      lat.position.set(Math.cos(angle) * 0.15, yPos, Math.sin(angle) * 0.15);
-      lat.rotation.z = Math.cos(angle) * 0.85;
-      lat.rotation.x = Math.sin(angle) * 0.85;
-      rootGroup.add(lat);
+    // Primary taproot with curved spline segments
+    const rootPoints = [];
+    const segments = 12;
+    for (let s = 0; s <= segments; s++) {
+      const t = s / segments;
+      const y = -t * scaledRootDepth;
+      const x = Math.sin(t * Math.PI * 2) * 0.08 * (1 - t);
+      const z = Math.cos(t * Math.PI * 1.5) * 0.08 * (1 - t);
+      rootPoints.push(new THREE.Vector3(x, y, z));
+    }
+    const rootCurve = new THREE.CatmullRomCurve3(rootPoints);
+    const rootTubeGeo = new THREE.TubeGeometry(rootCurve, 20, 0.06, 8, false);
+    const rootMat = new THREE.MeshStandardMaterial({
+      color: '#fef08a',
+      roughness: 0.45,
+      metalness: 0.1
+    });
+    const primaryRootMesh = new THREE.Mesh(rootTubeGeo, rootMat);
+    rootGroup.add(primaryRootMesh);
+
+    // Secondary & Tertiary branching rootlets
+    for (let r = 0; r < 24; r++) {
+      const branchT = 0.15 + (r / 24) * 0.8;
+      const originY = -branchT * scaledRootDepth;
+      const angle = (r / 24) * Math.PI * 2 + Math.random() * 0.4;
+      const branchLen = (1 - branchT * 0.5) * (0.5 + Math.random() * 0.7);
+
+      const bPoints = [
+        new THREE.Vector3(0, originY, 0),
+        new THREE.Vector3(Math.cos(angle) * (branchLen * 0.5), originY - 0.15, Math.sin(angle) * (branchLen * 0.5)),
+        new THREE.Vector3(Math.cos(angle) * branchLen, originY - 0.35, Math.sin(angle) * branchLen)
+      ];
+      const bCurve = new THREE.CatmullRomCurve3(bPoints);
+      const bGeo = new THREE.TubeGeometry(bCurve, 8, 0.025 * (1 - branchT * 0.4), 6, false);
+      const bMesh = new THREE.Mesh(bGeo, rootMat);
+      rootGroup.add(bMesh);
     }
     profileGroup.add(rootGroup);
 
-    // 6. Surface Crop Stalk (Seedling to mature rice/crop)
-    const stalkGeo = new THREE.CylinderGeometry(0.04, 0.05, 1.4, 8);
-    const cropMat = new THREE.MeshStandardMaterial({ color: moisturePct > 40 ? '#15803d' : '#eab308' });
+    // 6. Surface Crop Stalk with Foliage Blades
+    const cropMat = new THREE.MeshStandardMaterial({
+      color: moisturePct > 40 ? '#15803d' : '#ca8a04',
+      roughness: 0.55
+    });
+    const stalkGeo = new THREE.CylinderGeometry(0.04, 0.06, 1.4, 8);
     const stalk = new THREE.Mesh(stalkGeo, cropMat);
     stalk.position.set(0, 0.7, 0);
     profileGroup.add(stalk);
 
-    // Foliage blades
-    for (let f = 0; f < 4; f++) {
-      const bladeGeo = new THREE.BoxGeometry(0.02, 1.0, 0.2);
+    for (let f = 0; f < 5; f++) {
+      const bladeGeo = new THREE.BoxGeometry(0.02, 1.1, 0.18);
       const blade = new THREE.Mesh(bladeGeo, cropMat);
-      blade.position.set(0, 0.9, 0);
-      blade.rotation.z = 0.45 * (f % 2 === 0 ? 1 : -1);
-      blade.rotation.y = (f * Math.PI) / 2;
+      blade.position.set(0, 0.95, 0);
+      blade.rotation.z = 0.42 * (f % 2 === 0 ? 1 : -1);
+      blade.rotation.y = (f * Math.PI) / 2.5;
       profileGroup.add(blade);
     }
 
-    // 7. Depth Dimension Bracket Line Markings
-    const depthLineGeo = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(3.2, 0, 2.5),
-      new THREE.Vector3(3.2, -7.5, 2.5)
+    // 7. Depth Dimension Ruler with Centimeter Markings
+    const rulerGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(3.2, 0, 2.52),
+      new THREE.Vector3(3.2, -7.5, 2.52)
     ]);
-    const depthLineMat = new THREE.LineBasicMaterial({ color: '#38bdf8' });
-    const depthLine = new THREE.Line(depthLineGeo, depthLineMat);
-    profileGroup.add(depthLine);
+    const rulerMat = new THREE.LineBasicMaterial({ color: '#38bdf8' });
+    const ruler = new THREE.Line(rulerGeo, rulerMat);
+    profileGroup.add(ruler);
+
+    // Add tick marks at 0cm, -30cm, -60cm, -90cm, -150cm
+    const ticks = [0, -1.5, -3.0, -4.5, -7.5];
+    ticks.forEach(y => {
+      const tickGeo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(3.1, y, 2.52),
+        new THREE.Vector3(3.3, y, 2.52)
+      ]);
+      profileGroup.add(new THREE.Line(tickGeo, rulerMat));
+    });
 
     scene.add(profileGroup);
   };
 
+  // Custom Accessible 2D Table View
+  const accessibleTableView = (
+    <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: 14, borderRadius: 8 }}>
+      <h5 style={{ margin: '0 0 10px', color: '#38bdf8', fontSize: 13, fontWeight: 800 }}>
+        {lang === 'bn' ? 'মাটি ও মূল-স্তরের হাইড্রলিক সূচক সারণী' : 'Soil Hydraulic & Root Parameters'}
+      </h5>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
+        <tbody>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>মাটির শ্রেণী (Texture):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#f8fafc' }}>{soilProperties.name}</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>ফিল্ড ক্যাপাসিটি (FC):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#38bdf8' }}>{soilProperties.fc}%</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>উইল্টিং পয়েন্ট (WP):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#f97316' }}>{soilProperties.wp}%</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>মোট সহজলভ্য পানি (TAW):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#00df81' }}>{tawMm} mm</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>সহজলভ্য অবক্ষয় সীমা (RAW):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#facc15' }}>{rawMm} mm (p={depletionP})</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>বর্তমান মূল গভীরতা (Zr):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: '#fef08a' }}>{currentRootDepthM} m</td>
+          </tr>
+          <tr>
+            <td style={{ padding: '6px 8px', color: '#94a3b8' }}>বর্তমান পানি মজুদ:</td>
+            <td style={{ padding: '6px 8px', fontWeight: 800, color: moisturePct > 55 ? '#00df81' : '#ef4444' }}>
+              {currentMoistureMm} mm ({moisturePct}%)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16 }}>
+    <div
+      className="research-scene-layout-grid"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+        gap: 16
+      }}
+    >
       {/* 3D Root Zone Canvas */}
       <Research3DScene
         cameraPosition={[-8, 2, 12]}
@@ -165,6 +292,7 @@ export function SoilProfile3D({
           `RAW: ${rawMm} mm`,
           `Zr: ${currentRootDepthM} m`
         ]}
+        fallbackTableView={accessibleTableView}
         onSceneReady={handleSceneReady}
         minHeight="440px"
         lang={lang}

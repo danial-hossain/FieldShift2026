@@ -83,7 +83,7 @@ export function SensitivityAnalysis3D({
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 16 }}>
+    <div className="research-scene-layout-grid">
       {/* 3D Sensitivity Response Canvas */}
       <Research3DScene
         cameraPosition={[-8, 6, 12]}
