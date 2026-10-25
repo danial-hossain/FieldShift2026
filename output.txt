@@ -97,7 +97,7 @@ c8a81cc      2026-10-25 23:43:00    fix: resolve factorial interaction discrepan
 c7a81c3      2026-10-25 23:43:26    docs: record verified commit hash c8a81cc in master output.txt
 3491711      2026-10-26 01:08:32    feat: add solver status, stale-state rerun, and boundary validation tests
 911f15c      2026-10-26 01:12:00    docs: record verified commit hash 3491711 in master output.txt
-[PENDING]    2026-10-26 01:50:00    fix(ui): resolve request is not a function across all research modules
+7c70212      2026-10-26 01:50:09    fix(ui): resolve request is not a function across all research modules
 --------------------------------------------------------------------------------
 Remote Status: Synchronized with origin/master
 Live Deployment URL: https://fieldshift-backend.onrender.com/
