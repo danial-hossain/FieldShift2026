@@ -28,7 +28,7 @@ from backend.app.database import (
     is_postgres,
     normalize_database_url,
 )
-from backend.app.models import Analysis, Farm, Field as FarmField, FieldHistory, FarmOutcome, User
+from backend.app.models import Analysis, Farm, Field as FarmField, FieldHistory, FarmOutcome, User, ExperimentRun
 from backend.run_migrations import run_migrations
 from src.data.outcome_tracker import list_actual_outcomes, record_actual_outcome
 from src.optimizer.adaptive_replan import run_adaptive_replan
@@ -256,6 +256,39 @@ class SupabasePostgresIntegrationTest(unittest.TestCase):
         with DbSession(engine) as session:
             orphan = session.scalar(select(Farm).where(Farm.name == "Invalid Orphan Farm"))
             self.assertIsNone(orphan)
+
+    def test_06_experiment_run_persistence(self):
+        """Verify ExperimentRun records persist with JSON payload and survive retrieval."""
+        now = datetime.now(timezone.utc)
+        exp_id = f"TEST-EXP-{int(now.timestamp())}"
+        with DbSession(engine) as session:
+            run = ExperimentRun(
+                experiment_id=exp_id,
+                field_id="SYN-BOG-01",
+                field_name="Bogura Test Field",
+                profile_json={"district": "Bogura", "area_ha": 10.0},
+                model_version="FieldShift-2026.1-SciSim",
+                baseline_json={"simulated_yield_t_ha": 4.90, "gross_revenue_bdt": 1531250},
+                ovat_sensitivity_json=[{"factor": "irrigation", "delta_pct": -3.2}],
+                interaction_json={"synergy_profit_bdt": 5000},
+                invariants_json=[{"name": "mass_balance", "status": "PASS"}],
+                data_status="SYNTHETIC_TEST_DATA",
+                created_at=now,
+                updated_at=now,
+            )
+            session.add(run)
+            session.commit()
+
+        # Retrieve and verify
+        with DbSession(engine) as session:
+            loaded = session.scalar(select(ExperimentRun).where(ExperimentRun.experiment_id == exp_id))
+            self.assertIsNotNone(loaded)
+            self.assertEqual(loaded.field_id, "SYN-BOG-01")
+            self.assertEqual(loaded.baseline_json["simulated_yield_t_ha"], 4.90)
+            self.assertEqual(loaded.data_status, "SYNTHETIC_TEST_DATA")
+            # Cleanup
+            session.delete(loaded)
+            session.commit()
 
 
 if __name__ == "__main__":

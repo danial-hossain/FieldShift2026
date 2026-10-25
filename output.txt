@@ -1479,3 +1479,20 @@ Total Automated Tests: 181 PASSED, 1 SKIPPED, 0 FAILED.
 - Infeasible Solver Feedback: Under strict groundwater allocation limits (e.g. Jashore 160 mm), MILP optimization
   truthfully reports mathematical infeasibility without inventing fake feasible rotations.
 ================================================================================
+
+
+================================================================================
+CONTINUOUS DELIVERY MILESTONE: POSTGRESQL MIGRATION 0005 & INTEGRATION QA
+Date: 2026-10-25T22:59:00+06:00 | Commit Target: master -> origin/master
+--------------------------------------------------------------------------------
+1. Changes Staged:
+   - backend/alembic/versions/0005_add_experiment_runs.sql: Versioned migration for Supabase PostgreSQL.
+   - tests/test_supabase_postgres_integration.py: Added test_06_experiment_run_persistence.
+2. Verification Results:
+   - TESTS: PASS (182 total passing: 91 frontend, 13 multi-field, 14 app server, 56 agronomic/milp, 8 supabase)
+   - BUILD: PASS (Vite 8.3.2 bundle verified in 280ms)
+   - SECRETS AUDIT: PASS (0 secrets or .env files tracked)
+   - RENDER AUTO-DEPLOY: Triggered on push to master
+3. Deployed Service URL:
+   - https://fieldshift-backend.onrender.com/ (Status: LIVE HTTP 200)
+================================================================================
