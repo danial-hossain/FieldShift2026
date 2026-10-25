@@ -113,6 +113,20 @@ test('computes 2x2 Factorial Interaction experiment and correctly calculates syn
     indiv.highIrrigAloneProfitDeltaBdt + indiv.highNAloneProfitDeltaBdt
   );
   assert.equal(interaction.synergy.synergyProfitBdt, expectedSynergy, 'Synergy formula matches exactly');
+
+  // Classic 2x2 Factorial Interaction identity: P(1,1) - P(1,0) - P(0,1) + P(0,0)
+  const p00 = interaction.grid.lowIrrigLowN.netReturnBdt;
+  const p10 = interaction.grid.highIrrigLowN.netReturnBdt;
+  const p01 = interaction.grid.lowIrrigHighN.netReturnBdt;
+  const p11 = interaction.grid.highIrrigHighN.netReturnBdt;
+  const expectedClassicSynergy = Math.round(p11 - p10 - p01 + p00);
+  assert.equal(interaction.synergy.classic2x2SynergyProfitBdt, expectedClassicSynergy, 'Classic 2x2 synergy identity strictly holds');
+
+  // Deltas relative to Low/Low control
+  assert.equal(interaction.grid.lowIrrigLowN.deltaFromControlProfitBdt, 0);
+  assert.equal(interaction.grid.highIrrigLowN.deltaFromControlProfitBdt, Math.round(p10 - p00));
+  assert.equal(interaction.grid.lowIrrigHighN.deltaFromControlProfitBdt, Math.round(p01 - p00));
+  assert.equal(interaction.grid.highIrrigHighN.deltaFromControlProfitBdt, Math.round(p11 - p00));
 });
 
 test('verifies scientific invariant suite and includes all required classifications', () => {

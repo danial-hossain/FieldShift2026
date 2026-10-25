@@ -259,6 +259,55 @@ def test_interaction_experiment_irrigation_x_nitrogen():
     assert interaction["interaction_synergy"]["synergy_profit_bdt"] == expected_synergy
 
 
+def test_factorial_interaction_mathematical_consistency():
+    """Regression test calculating interaction from scenario outputs rather than hardcoded numbers.
+
+    Verifies across all 6 synthetic Bangladesh field profiles that:
+    1. Classic 2x2 Factorial Interaction identity strictly holds:
+       Synergy_2x2 = P(1,1) - P(1,0) - P(0,1) + P(0,0)
+       Synergy_yield = Y(1,1) - Y(1,0) - Y(0,1) + Y(0,0)
+    2. Baseline-centered synergy strictly equals:
+       Delta(both_high) - (Delta(high_irrig_alone) + Delta(high_n_alone))
+    3. Grid delta_from_control matches the difference from low_irrig_low_n.
+    """
+    for key, prof in SYNTHETIC_FIELD_PROFILES.items():
+        interaction = run_interaction_experiment(prof)
+        grid = interaction["factorial_grid"]
+
+        p00 = grid["low_irrig_low_n"]["profit_bdt"]
+        p10 = grid["high_irrig_low_n"]["profit_bdt"]
+        p01 = grid["low_irrig_high_n"]["profit_bdt"]
+        p11 = grid["high_irrig_high_n"]["profit_bdt"]
+
+        y00 = grid["low_irrig_low_n"]["yield_t_ha"]
+        y10 = grid["high_irrig_low_n"]["yield_t_ha"]
+        y01 = grid["low_irrig_high_n"]["yield_t_ha"]
+        y11 = grid["high_irrig_high_n"]["yield_t_ha"]
+
+        # 1. Assert classic 2x2 identity calculated directly from scenario outputs
+        expected_classic_synergy_profit = round(p11 - p10 - p01 + p00, 0)
+        assert interaction["interaction_synergy"]["classic_2x2_synergy_profit_bdt"] == expected_classic_synergy_profit
+
+        expected_classic_synergy_yield = round(y11 - y10 - y01 + y00, 2)
+        assert interaction["interaction_synergy"]["classic_2x2_synergy_yield_t_ha"] == expected_classic_synergy_yield
+
+        # 2. Assert delta from control calculations
+        assert grid["low_irrig_low_n"]["delta_from_control_profit_bdt"] == 0.0
+        assert grid["high_irrig_low_n"]["delta_from_control_profit_bdt"] == round(p10 - p00, 0)
+        assert grid["low_irrig_high_n"]["delta_from_control_profit_bdt"] == round(p01 - p00, 0)
+        assert grid["high_irrig_high_n"]["delta_from_control_profit_bdt"] == round(p11 - p00, 0)
+
+        # 3. Assert baseline-centered perturbation formula
+        indiv = interaction["individual_effects"]
+        comb = interaction["combined_effect"]
+        expected_base_synergy = round(
+            comb["both_high_profit_delta_bdt"] - (
+                indiv["high_irrig_alone_profit_delta_bdt"] + indiv["high_n_alone_profit_delta_bdt"]
+            ), 0
+        )
+        assert interaction["interaction_synergy"]["synergy_profit_bdt"] == expected_base_synergy
+
+
 # -----------------------------------------------------------------------------
 # 5. DATABASE PERSISTENCE, FIELD ISOLATION & REPRODUCIBILITY TESTS
 # -----------------------------------------------------------------------------

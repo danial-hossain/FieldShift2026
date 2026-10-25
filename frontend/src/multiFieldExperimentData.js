@@ -398,6 +398,27 @@ export function generateInteractionExperiment(prof) {
   const cHighILowN = runCombo(highIrrig, lowN);
   const cHighIHighN = runCombo(highIrrig, highN);
 
+  // Deltas relative to Low/Low (0,0) Control treatment
+  cLowILowN.deltaFromControlProfitBdt = 0;
+  cLowILowN.deltaFromControlYieldTonHa = 0;
+
+  cHighILowN.deltaFromControlProfitBdt = Math.round(cHighILowN.netReturnBdt - cLowILowN.netReturnBdt);
+  cHighILowN.deltaFromControlYieldTonHa = Number((cHighILowN.yieldTonHa - cLowILowN.yieldTonHa).toFixed(2));
+
+  cLowIHighN.deltaFromControlProfitBdt = Math.round(cLowIHighN.netReturnBdt - cLowILowN.netReturnBdt);
+  cLowIHighN.deltaFromControlYieldTonHa = Number((cLowIHighN.yieldTonHa - cLowILowN.yieldTonHa).toFixed(2));
+
+  cHighIHighN.deltaFromControlProfitBdt = Math.round(cHighIHighN.netReturnBdt - cLowILowN.netReturnBdt);
+  cHighIHighN.deltaFromControlYieldTonHa = Number((cHighIHighN.yieldTonHa - cLowILowN.yieldTonHa).toFixed(2));
+
+  // Classic 2x2 Factorial Synergy Identity: P(1,1) - P(1,0) - P(0,1) + P(0,0)
+  const classic2x2SynergyProfitBdt = Math.round(
+    cHighIHighN.netReturnBdt - cHighILowN.netReturnBdt - cLowIHighN.netReturnBdt + cLowILowN.netReturnBdt
+  );
+  const classic2x2SynergyYieldTonHa = Number(
+    (cHighIHighN.yieldTonHa - cHighILowN.yieldTonHa - cLowIHighN.yieldTonHa + cLowILowN.yieldTonHa).toFixed(2)
+  );
+
   const deltaHighIrrigAlone = runCombo(highIrrig, baseN).deltaProfitBdt;
   const deltaHighNAlone = runCombo(baseIrrig, highN).deltaProfitBdt;
   const deltaBothHigh = cHighIHighN.deltaProfitBdt;
@@ -425,9 +446,14 @@ export function generateInteractionExperiment(prof) {
     },
     synergy: {
       synergyProfitBdt,
+      classic2x2SynergyProfitBdt,
+      classic2x2SynergyYieldTonHa,
+      baselineCenteredSynergyProfitBdt: synergyProfitBdt,
       isPositiveSynergy: synergyProfitBdt >= 0,
       agronomicInterpretationEn: 'Adequate irrigation moisture is required for full nitrogen utilization; under drought stress, high N is wasted or toxic.',
-      agronomicInterpretationBn: 'পর্যাপ্ত সেচের আর্দ্রতা নাইট্রোজেন সার শোষণের পূর্বশর্ত; খরার চাপে অতিরিক্ত নাইট্রোজেন ব্যবহার ফলন বাড়াতে পারে না।'
+      agronomicInterpretationBn: 'পর্যাপ্ত সেচের আর্দ্রতা নাইট্রোজেন সার শোষণের পূর্বশর্ত; খরার চাপে অতিরিক্ত নাইট্রোজেন ব্যবহার ফলন বাড়াতে পারে না।',
+      mathematicalReconciliationEn: 'Classic 2x2 grid synergy uses Low/Low (0,0) as control: P(1,1) - P(1,0) - P(0,1) + P(0,0). Baseline-centered synergy measures perturbation from the normal field baseline: Delta(Both) - (Delta(Irrig) + Delta(N)).',
+      mathematicalReconciliationBn: 'ক্লাসিক ২×২ গ্রিড সিনার্জি লো/লো (০,০) কে কন্ট্রোল ধরে: P(1,1) - P(1,0) - P(0,1) + P(0,0)। বেসলাইন-কেন্দ্রিক সিনার্জি স্বাভাবিক ফিল্ড বেসলাইন থেকে বিচ্যুতির ভিত্তিতে নির্ণীত: Delta(Both) - (Delta(Irrig) + Delta(N))।'
     }
   };
 }

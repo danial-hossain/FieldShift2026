@@ -422,7 +422,7 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
                         {base.cumulativeIrrigationMm} mm
                       </td>
                       <td style={{ padding: '12px', fontWeight: '700', color: '#34d399' }}>
-                        {base.simulatedYieldTonHa} <span style={{ fontSize: '0.75rem', color: '#64748b' }}>/ {base.potentialYieldTonHa}</span>
+                        {base.simulatedYieldTonHa} t/ha <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>({(base.simulatedYieldTonHa * prof.areaHa).toFixed(1)} t total)</span>
                       </td>
                       <td style={{ padding: '12px', color: base.yieldLossPct > 20 ? '#f87171' : '#facc15' }}>
                         {base.yieldLossPct}%
@@ -573,56 +573,92 @@ export function MultiFieldExperimentView({ lang = 'bn' }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
               <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-                <div style={{ fontSize: '0.8rem', color: '#f87171', fontWeight: '600' }}>[1] LOW IRRIG × LOW N</div>
+                <div style={{ fontSize: '0.8rem', color: '#f87171', fontWeight: '600' }}>[1] LOW IRRIG × LOW N (0,0 CONTROL)</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#fff', margin: '6px 0' }}>
-                  {currentInteraction.grid.lowIrrigLowN.yieldTonHa} t/ha ({currentInteraction.grid.lowIrrigLowN.deltaYieldTonHa} t/ha)
+                  {currentInteraction.grid.lowIrrigLowN.yieldTonHa} t/ha <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>({(currentInteraction.grid.lowIrrigLowN.yieldTonHa * currentProfile.areaHa).toFixed(1)} t total)</span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                  Profit: {currentInteraction.grid.lowIrrigLowN.netReturnBdt.toLocaleString()} BDT ({currentInteraction.grid.lowIrrigLowN.deltaProfitBdt.toLocaleString()} BDT)
+                <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: '600' }}>
+                  Profit: {currentInteraction.grid.lowIrrigLowN.netReturnBdt.toLocaleString()} BDT
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>
+                  vs Control (0,0): Baseline | vs Normal: {currentInteraction.grid.lowIrrigLowN.deltaProfitBdt.toLocaleString()} BDT
                 </div>
               </div>
 
               <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(234, 179, 8, 0.3)' }}>
-                <div style={{ fontSize: '0.8rem', color: '#facc15', fontWeight: '600' }}>[2] LOW IRRIG × HIGH N</div>
+                <div style={{ fontSize: '0.8rem', color: '#facc15', fontWeight: '600' }}>[2] LOW IRRIG × HIGH N (0,1)</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#fff', margin: '6px 0' }}>
-                  {currentInteraction.grid.lowIrrigHighN.yieldTonHa} t/ha ({currentInteraction.grid.lowIrrigHighN.deltaYieldTonHa} t/ha)
+                  {currentInteraction.grid.lowIrrigHighN.yieldTonHa} t/ha <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>({(currentInteraction.grid.lowIrrigHighN.yieldTonHa * currentProfile.areaHa).toFixed(1)} t total)</span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                  Profit: {currentInteraction.grid.lowIrrigHighN.netReturnBdt.toLocaleString()} BDT ({currentInteraction.grid.lowIrrigHighN.deltaProfitBdt.toLocaleString()} BDT)
+                <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: '600' }}>
+                  Profit: {currentInteraction.grid.lowIrrigHighN.netReturnBdt.toLocaleString()} BDT
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#34d399', marginTop: '4px' }}>
+                  vs Control (0,0): +{(currentInteraction.grid.lowIHighN ? currentInteraction.grid.lowIHighN.deltaFromControlProfitBdt : (currentInteraction.grid.lowIrrigHighN.deltaFromControlProfitBdt || (currentInteraction.grid.lowIrrigHighN.netReturnBdt - currentInteraction.grid.lowIrrigLowN.netReturnBdt))).toLocaleString()} BDT
                 </div>
               </div>
 
               <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                <div style={{ fontSize: '0.8rem', color: '#60a5fa', fontWeight: '600' }}>[3] HIGH IRRIG × LOW N</div>
+                <div style={{ fontSize: '0.8rem', color: '#60a5fa', fontWeight: '600' }}>[3] HIGH IRRIG × LOW N (1,0)</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#fff', margin: '6px 0' }}>
-                  {currentInteraction.grid.highIrrigLowN.yieldTonHa} t/ha ({currentInteraction.grid.highIrrigLowN.deltaYieldTonHa} t/ha)
+                  {currentInteraction.grid.highIrrigLowN.yieldTonHa} t/ha <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>({(currentInteraction.grid.highIrrigLowN.yieldTonHa * currentProfile.areaHa).toFixed(1)} t total)</span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                  Profit: {currentInteraction.grid.highIrrigLowN.netReturnBdt.toLocaleString()} BDT ({currentInteraction.grid.highIrrigLowN.deltaProfitBdt.toLocaleString()} BDT)
+                <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: '600' }}>
+                  Profit: {currentInteraction.grid.highIrrigLowN.netReturnBdt.toLocaleString()} BDT
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#34d399', marginTop: '4px' }}>
+                  vs Control (0,0): +{(currentInteraction.grid.highIrrigLowN.deltaFromControlProfitBdt || (currentInteraction.grid.highIrrigLowN.netReturnBdt - currentInteraction.grid.lowIrrigLowN.netReturnBdt)).toLocaleString()} BDT
                 </div>
               </div>
 
               <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: '600' }}>[4] HIGH IRRIG × HIGH N</div>
+                <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: '600' }}>[4] HIGH IRRIG × HIGH N (1,1)</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#fff', margin: '6px 0' }}>
-                  {currentInteraction.grid.highIrrigHighN.yieldTonHa} t/ha ({currentInteraction.grid.highIrrigHighN.deltaYieldTonHa} t/ha)
+                  {currentInteraction.grid.highIrrigHighN.yieldTonHa} t/ha <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>({(currentInteraction.grid.highIrrigHighN.yieldTonHa * currentProfile.areaHa).toFixed(1)} t total)</span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                  Profit: {currentInteraction.grid.highIrrigHighN.netReturnBdt.toLocaleString()} BDT ({currentInteraction.grid.highIrrigHighN.deltaProfitBdt.toLocaleString()} BDT)
+                <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: '600' }}>
+                  Profit: {currentInteraction.grid.highIrrigHighN.netReturnBdt.toLocaleString()} BDT
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#34d399', marginTop: '4px' }}>
+                  vs Control (0,0): +{(currentInteraction.grid.highIrrigHighN.deltaFromControlProfitBdt || (currentInteraction.grid.highIrrigHighN.netReturnBdt - currentInteraction.grid.lowIrrigLowN.netReturnBdt)).toLocaleString()} BDT
                 </div>
               </div>
             </div>
 
-            <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(59, 130, 246, 0.15)', borderRadius: '10px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-              <div style={{ fontSize: '0.9rem', fontWeight: '700', color: '#60a5fa', marginBottom: '4px' }}>
-                {lang === 'bn' ? 'সিনার্জি প্রভাব (Synergy Interaction Delta)' : 'Synergy Interaction Delta'}
+            {/* Synergy Cards: Both Classic 2x2 Identity and Baseline Perturbation */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginTop: '20px' }}>
+              <div style={{ padding: '16px', background: 'rgba(59, 130, 246, 0.15)', borderRadius: '10px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#60a5fa', marginBottom: '4px' }}>
+                  {lang === 'bn' ? '১. ক্লাসিক ২×২ ফ্যাক্টোরিয়াল মিথস্ক্রিয়া (Classic 2×2 ANOVA Synergy)' : '1. Classic 2×2 ANOVA Synergy'}
+                </div>
+                <div style={{ fontSize: '1.2rem', fontWeight: '700', color: '#34d399' }}>
+                  {(currentInteraction.synergy.classic2x2SynergyProfitBdt ?? (
+                    currentInteraction.grid.highIrrigHighN.netReturnBdt - currentInteraction.grid.highIrrigLowN.netReturnBdt - currentInteraction.grid.lowIrrigHighN.netReturnBdt + currentInteraction.grid.lowIrrigLowN.netReturnBdt
+                  )) >= 0 ? '+' : ''}
+                  {(currentInteraction.synergy.classic2x2SynergyProfitBdt ?? (
+                    currentInteraction.grid.highIrrigHighN.netReturnBdt - currentInteraction.grid.highIrrigLowN.netReturnBdt - currentInteraction.grid.lowIrrigHighN.netReturnBdt + currentInteraction.grid.lowIrrigLowN.netReturnBdt
+                  )).toLocaleString()} BDT
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#cbd5e1', marginTop: '6px' }}>
+                  Formula: P(1,1) - P(1,0) - P(0,1) + P(0,0). Uses Low/Low (0,0) as reference.
+                </div>
               </div>
-              <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#34d399' }}>
-                {currentInteraction.synergy.synergyProfitBdt >= 0 ? `+${currentInteraction.synergy.synergyProfitBdt.toLocaleString()}` : currentInteraction.synergy.synergyProfitBdt.toLocaleString()} BDT
+
+              <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.15)', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#34d399', marginBottom: '4px' }}>
+                  {lang === 'bn' ? '২. ফিল্ড বেসলাইন বিচ্যুতি সিনার্জি (Baseline Perturbation Synergy)' : '2. Baseline Perturbation Synergy'}
+                </div>
+                <div style={{ fontSize: '1.2rem', fontWeight: '700', color: '#34d399' }}>
+                  {currentInteraction.synergy.synergyProfitBdt >= 0 ? `+${currentInteraction.synergy.synergyProfitBdt.toLocaleString()}` : currentInteraction.synergy.synergyProfitBdt.toLocaleString()} BDT
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#cbd5e1', marginTop: '6px' }}>
+                  Formula: Δ(Both High) - [Δ(Irrig Alone) + Δ(N Alone)]. Measured against normal field baseline.
+                </div>
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#cbd5e1', marginTop: '6px' }}>
-                Delta(Both High) - [Delta(Irrig Alone) + Delta(N Alone)]. Confirms that nitrogen response is coupled to transpiration stream.
-              </div>
+            </div>
+
+            <div style={{ marginTop: '14px', fontSize: '0.8rem', color: '#94a3b8', fontStyle: 'italic' }}>
+              {lang === 'bn' ? currentInteraction.synergy.mathematicalReconciliationBn : currentInteraction.synergy.mathematicalReconciliationEn}
             </div>
           </div>
         </div>

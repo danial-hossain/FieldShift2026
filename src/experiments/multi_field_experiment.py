@@ -785,12 +785,33 @@ def run_interaction_experiment(profile: Dict[str, Any]) -> Dict[str, Any]:
     c_high_i_low_n = run_combo(high_irrig, low_n)
     c_high_i_high_n = run_combo(high_irrig, high_n)
 
-    # Individual effects relative to baseline:
+    # Classic 2x2 Factorial Deltas relative to Low/Low (0,0) Control Treatment
+    c_low_i_low_n["delta_from_control_profit_bdt"] = 0.0
+    c_low_i_low_n["delta_from_control_yield_t_ha"] = 0.0
+
+    c_high_i_low_n["delta_from_control_profit_bdt"] = round(c_high_i_low_n["profit_bdt"] - c_low_i_low_n["profit_bdt"], 0)
+    c_high_i_low_n["delta_from_control_yield_t_ha"] = round(c_high_i_low_n["yield_t_ha"] - c_low_i_low_n["yield_t_ha"], 2)
+
+    c_low_i_high_n["delta_from_control_profit_bdt"] = round(c_low_i_high_n["profit_bdt"] - c_low_i_low_n["profit_bdt"], 0)
+    c_low_i_high_n["delta_from_control_yield_t_ha"] = round(c_low_i_high_n["yield_t_ha"] - c_low_i_low_n["yield_t_ha"], 2)
+
+    c_high_i_high_n["delta_from_control_profit_bdt"] = round(c_high_i_high_n["profit_bdt"] - c_low_i_low_n["profit_bdt"], 0)
+    c_high_i_high_n["delta_from_control_yield_t_ha"] = round(c_high_i_high_n["yield_t_ha"] - c_low_i_low_n["yield_t_ha"], 2)
+
+    # Classic 2x2 Factorial Interaction (Synergy) Identity: P(1,1) - P(1,0) - P(0,1) + P(0,0)
+    classic_2x2_synergy_profit_bdt = round(
+        c_high_i_high_n["profit_bdt"] - c_high_i_low_n["profit_bdt"] - c_low_i_high_n["profit_bdt"] + c_low_i_low_n["profit_bdt"], 0
+    )
+    classic_2x2_synergy_yield_t_ha = round(
+        c_high_i_high_n["yield_t_ha"] - c_high_i_low_n["yield_t_ha"] - c_low_i_high_n["yield_t_ha"] + c_low_i_low_n["yield_t_ha"], 2
+    )
+
+    # Individual effects relative to normal field baseline:
     delta_high_irrig_alone = run_combo(high_irrig, base_n)["delta_profit_bdt"]
     delta_high_n_alone = run_combo(base_irrig, high_n)["delta_profit_bdt"]
     delta_both_high = c_high_i_high_n["delta_profit_bdt"]
 
-    # Synergy = Combined effect - Sum of individual effects
+    # Synergy relative to normal field baseline: Combined effect - Sum of individual effects
     synergy_profit_bdt = round(delta_both_high - (delta_high_irrig_alone + delta_high_n_alone), 0)
 
     delta_yield_irrig_alone = run_combo(high_irrig, base_n)["delta_yield_t_ha"]
@@ -826,10 +847,18 @@ def run_interaction_experiment(profile: Dict[str, Any]) -> Dict[str, Any]:
         "interaction_synergy": {
             "synergy_profit_bdt": synergy_profit_bdt,
             "synergy_yield_t_ha": synergy_yield_t_ha,
+            "classic_2x2_synergy_profit_bdt": classic_2x2_synergy_profit_bdt,
+            "classic_2x2_synergy_yield_t_ha": classic_2x2_synergy_yield_t_ha,
+            "baseline_centered_synergy_profit_bdt": synergy_profit_bdt,
+            "baseline_centered_synergy_yield_t_ha": synergy_yield_t_ha,
             "agronomic_interpretation": (
                 "Synergistic positive interaction: High nitrogen application requires adequate root zone soil water "
                 "to achieve full metabolic yield efficiency. Under drought stress, high N cannot be fully utilized, "
                 "whereas combined adequate irrigation and nitrogen produces super-additive yield gains."
+            ),
+            "mathematical_reconciliation": (
+                "Classic 2x2 grid synergy uses Low/Low (0,0) as control: Synergy = P(1,1) - P(1,0) - P(0,1) + P(0,0). "
+                "Baseline-centered synergy measures perturbation from the normal field profile: Synergy = Delta(Both) - (Delta(Irrig) + Delta(N))."
             ),
         },
     }
