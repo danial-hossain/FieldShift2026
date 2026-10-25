@@ -1008,3 +1008,8 @@ Required User Action on Render Dashboard:
 ৪. ফ্রি টিয়ার ও কোল্ড স্টার্ট:
    - ব্যাকএন্ডে ১৫ মিনিট কোনো ভিজিটর না থাকলে সার্ভার সাময়িক স্লিপ মোডে যায়। প্রথমবার সাইট লোড হতে ৪৫-৫৫ সেকেন্ড সময় লাগতে পারে (Cold Start), কিন্তু একবার চালু হলে তা নিমেষেই চলবে।
 ================================================================================
+
+[2026-10-25 19:45:00] RENDER BLUEPRINT VALIDATION UPDATE:
+- Resolution: Removed 'region: oregon' and 'plan: free' from fieldshift-frontend (runtime: static) in render.yaml.
+- Rationale: Render Static Sites are globally distributed across Render CDN edge nodes and do not accept a regional placement or compute plan parameter.
+- Git Commit: 6b4d8b3 pushed to origin/master.
