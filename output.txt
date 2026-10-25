@@ -104,6 +104,7 @@ c7a81c3      2026-10-25 23:43:26    docs: record verified commit hash c8a81cc in
 911f15c      2026-10-26 01:12:00    docs: record verified commit hash 3491711 in master output.txt
 7c70212      2026-10-26 01:50:09    fix(ui): resolve request is not a function across all research modules
 7782898      2026-10-26 01:53:15    docs: record verified commit hash 7c70212 in output.txt
+ad99cab      2026-10-26 02:02:46    fix(catalog): normalize crop catalog attributes and map recovery shock types
 --------------------------------------------------------------------------------
 Remote Status: Synchronized with origin/master
 Live Deployment URL: https://fieldshift-backend.onrender.com/
