@@ -11,7 +11,7 @@ from typing import Any
 from fastapi import Cookie, Depends, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
@@ -1731,6 +1731,124 @@ def scenarios_sensitivity(payload: Payload, fieldshift_session: str | None = Coo
         steps = [-20.0, -10.0, 10.0, 20.0]
 
     return run_system_sensitivity_analysis(data, perturbation_steps=steps)
+
+
+# -----------------------------------------------------------------------------
+# MULTI-FIELD EXPERIMENT & SENSITIVITY LAB ENDPOINTS
+# -----------------------------------------------------------------------------
+
+@app.get("/api/experiments/multi-field/profiles")
+def get_multi_field_profiles():
+    """Return the 6 authentic Bangladesh synthetic agricultural field profiles."""
+    from src.experiments.multi_field_experiment import SYNTHETIC_FIELD_PROFILES
+    return {
+        "status": "ok",
+        "total_profiles": len(SYNTHETIC_FIELD_PROFILES),
+        "profiles": SYNTHETIC_FIELD_PROFILES,
+        "data_status": "SYNTHETIC_TEST_DATA",
+        "disclaimer": "Synthetic test data for algorithm validation and scientific sensitivity verification. Not empirical observations.",
+    }
+
+
+@app.post("/api/experiments/multi-field/run")
+def run_multi_field_experiment_endpoint(
+    payload: Payload | None = None,
+    db: DbSession = Depends(get_db),
+):
+    """Execute complete multi-field experiment suite and persist results."""
+    from src.experiments.multi_field_experiment import (
+        SYNTHETIC_FIELD_PROFILES,
+        run_full_field_baseline,
+        run_ovat_sensitivity_analysis,
+        run_interaction_experiment,
+        validate_scientific_invariants,
+        persist_experiment_run,
+    )
+    req_data = payload.model_dump() if payload else {}
+    target_field = req_data.get("field_key")
+
+    fields_to_run = (
+        {target_field: SYNTHETIC_FIELD_PROFILES[target_field]}
+        if target_field and target_field in SYNTHETIC_FIELD_PROFILES
+        else SYNTHETIC_FIELD_PROFILES
+    )
+
+    results: dict[str, Any] = {}
+    for fkey, prof in fields_to_run.items():
+        # Override with custom inputs if user passed edited profile values
+        field_cfg = dict(prof)
+        if target_field and req_data.get("profile_overrides"):
+            field_cfg.update(req_data["profile_overrides"])
+
+        baseline = run_full_field_baseline(field_cfg)
+        ovat = run_ovat_sensitivity_analysis(field_cfg)
+        interaction = run_interaction_experiment(field_cfg)
+        invariants = validate_scientific_invariants(field_cfg)
+
+        f_data = {
+            "profile": field_cfg,
+            "baseline": baseline,
+            "ovat_sensitivity": ovat,
+            "interaction_experiment": interaction,
+            "scientific_invariants": invariants,
+        }
+        exp_id = persist_experiment_run(db, fkey, f_data)
+        f_data["persisted_experiment_id"] = exp_id
+        results[fkey] = f_data
+
+    return {
+        "status": "ok",
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "total_fields_executed": len(results),
+        "fields": results,
+        "data_status": "SYNTHETIC_TEST_DATA",
+    }
+
+
+@app.get("/api/experiments/multi-field/runs")
+def list_multi_field_runs(limit: int = 50, db: DbSession = Depends(get_db)):
+    """List recent persisted multi-field experiment runs."""
+    from src.experiments.multi_field_experiment import list_persisted_experiment_runs
+    runs = list_persisted_experiment_runs(db, limit=limit)
+    return {"status": "ok", "total_runs": len(runs), "runs": runs}
+
+
+@app.get("/api/experiments/multi-field/runs/{experiment_id}")
+def get_multi_field_run(experiment_id: str, db: DbSession = Depends(get_db)):
+    """Retrieve an exact experiment run from the database by ID and confirm reproduction."""
+    from src.experiments.multi_field_experiment import load_experiment_run
+    run = load_experiment_run(db, experiment_id)
+    if not run:
+        raise HTTPException(404, f"Experiment run '{experiment_id}' not found.")
+    return {"status": "ok", "experiment": run}
+
+
+@app.get("/api/experiments/multi-field/export.csv")
+def export_multi_field_csv_endpoint():
+    """Download RFC 4180 CSV report containing baseline and sensitivity rows."""
+    from src.experiments.multi_field_experiment import run_all_multi_field_experiments, export_multi_field_csv
+    suite = run_all_multi_field_experiments()
+    csv_text = export_multi_field_csv(suite)
+    return PlainTextResponse(
+        csv_text,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=fieldshift_multi_field_experiments.csv"},
+    )
+
+
+@app.get("/api/experiments/multi-field/export.json")
+def export_multi_field_json_endpoint():
+    """Download complete JSON experiment report with scientific metadata and disclaimers."""
+    import json
+    from src.experiments.multi_field_experiment import run_all_multi_field_experiments
+    suite = run_all_multi_field_experiments()
+    return Response(
+        content=json.dumps(suite, indent=2),
+        media_type="application/json",
+        headers={"Content-Disposition": "attachment; filename=fieldshift_multi_field_experiments.json"},
+    )
+
+
 
 
 # -----------------------------------------------------------------------------

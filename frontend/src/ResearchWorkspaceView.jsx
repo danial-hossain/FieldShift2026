@@ -28,6 +28,7 @@ import { SatelliteReadinessView } from './SatelliteReadinessView.jsx';
 import { ActualOutcomesView } from './ActualOutcomesView.jsx';
 import { SyntheticDataLabView } from './SyntheticDataLabView.jsx';
 import { SensitivityAnalysisView } from './SensitivityAnalysisView.jsx';
+import { MultiFieldExperimentView } from './MultiFieldExperimentView.jsx';
 import { AdaptiveRlExperiment } from './AdaptiveRlExperiment.jsx';
 import { formatNumber as defaultFormatNumber } from './marketUtils.js';
 import { request as defaultRequest } from './apiClient.js';
@@ -103,6 +104,7 @@ export function ResearchWorkspaceView({
       title: lang === 'bn' ? 'গ. সংবেদনশীলতা ও স্থিতিস্থাপকতা' : 'C. Sensitivity & Robustness',
       icon: '📐',
       items: [
+        { id: 'multi_field_experiment', label: lang === 'bn' ? 'মাল্টি-ফিল্ড এক্সপেরিমেন্ট ও সংবেদনশীলতা ল্যাব' : 'Multi-Field Experiment & Sensitivity Lab', icon: '🧪', badge: '6-FIELDS' },
         { id: 'sensitivity', label: lang === 'bn' ? 'সংবেদনশীলতা বিশ্লেষণ (Sweeps)' : 'Sensitivity Analysis', icon: '📐', badge: 'SWEEPS' },
         { id: 'uncertainty', label: lang === 'bn' ? 'আবহাওয়ার অনিশ্চয়তা বিশ্লেষণ' : 'Weather Uncertainty', icon: '🌦️', badge: 'STRESS' },
         { id: 'recovery', label: lang === 'bn' ? 'ফসল বিপর্যয় ও পুনরুদ্ধার পরিকল্পনা' : 'Crop Failure & Recovery', icon: '🛡️', badge: 'MILP' },
@@ -576,6 +578,12 @@ export function ResearchWorkspaceView({
           )}
 
           {/* GROUP C: SENSITIVITY & ROBUSTNESS */}
+          {subTab === 'multi_field_experiment' && (
+            <MultiFieldExperimentView
+              lang={lang}
+            />
+          )}
+
           {subTab === 'sensitivity' && (
             <SensitivityAnalysisView
               activeField={activeField}

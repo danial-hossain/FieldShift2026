@@ -167,3 +167,17 @@ class ProvenanceRecord(Base):
     mode: Mapped[str | None] = mapped_column(String)
     metadata_json: Mapped[dict[str, Any] | None] = mapped_column("metadata", JSON().with_variant(JSONB, "postgresql"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class ExperimentRun(Timestamped, Base):
+    __tablename__ = "experiment_runs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    experiment_id: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    field_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    field_name: Mapped[str] = mapped_column(String, nullable=False)
+    profile_json: Mapped[dict[str, Any]] = mapped_column(JSON().with_variant(JSONB, "postgresql"), nullable=False)
+    model_version: Mapped[str] = mapped_column(String, nullable=False)
+    baseline_json: Mapped[dict[str, Any]] = mapped_column(JSON().with_variant(JSONB, "postgresql"), nullable=False)
+    ovat_sensitivity_json: Mapped[list[Any]] = mapped_column(JSON().with_variant(JSONB, "postgresql"), nullable=False)
+    interaction_json: Mapped[dict[str, Any]] = mapped_column(JSON().with_variant(JSONB, "postgresql"), nullable=False)
+    invariants_json: Mapped[list[Any]] = mapped_column(JSON().with_variant(JSONB, "postgresql"), nullable=False)
+    data_status: Mapped[str] = mapped_column(String, default="SYNTHETIC_TEST_DATA", nullable=False)
