@@ -1035,3 +1035,11 @@ Required User Action on Render Dashboard:
   2. FastAPI Static Mount & SPA Fallback: Mounted /assets directly in backend/app/main.py via Starlette StaticFiles and defined explicit root route GET / and catch-all GET /{full_path:path} serving index.html while strictly protecting /api/*, /docs, /redoc, and openapi.json.
   3. Single Link render.yaml: Consolidated render.yaml into a single web service (fieldshift-backend). Visiting https://fieldshift-backend.onrender.com now serves both the full frontend UI and backend API under a single unified domain with zero CORS complications.
 - Verification: Tested with FastAPI TestClient (GET /, GET /assets/*, GET /api/health, GET /research-workspace, GET /api/unknown 404). All passed with 200 OK and 404 for missing APIs.
+- Git Commit: bb3b706 pushed to origin/master.
+
+[2026-10-25 21:42:00] RESOLUTION OF VITE PERMISSION DENIED & NODE_MODULES UNTRACKING:
+- Root Cause: 'frontend/node_modules/' had 2,076 files accidentally tracked in git with Windows 644 non-executable file permissions. When Render's Ubuntu runner cloned the repository and ran 'vite build', Linux failed with 'sh: 1: vite: Permission denied (status 127)'.
+- Resolution:
+  1. Removed 'frontend/node_modules/' from git's index entirely ('git rm -r --cached frontend/node_modules').
+  2. Updated 'frontend/package.json' scripts to use direct node execution: 'node node_modules/vite/bin/vite.js build'. This directly invokes the node engine with the script file without requiring executable bit permission (+x) on shell binary wrappers.
+- Verification: Ran 'npm run build' locally; generated clean production build in 266ms.
