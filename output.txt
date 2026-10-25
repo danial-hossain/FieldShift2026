@@ -128,7 +128,7 @@ be11bfe      2026-10-25 22:45:00    feat: add multi-field experiment lab, sensit
 ea55a54      2026-10-25 22:58:00    feat(db): add 0005 experiment_runs migration and integration tests
 737e75d      2026-10-25 23:01:00    docs: record final continuous delivery and deployment verification audit
 db17772      2026-10-25 23:16:00    docs: compact output.txt into concise authoritative verification report
-[PENDING]    2026-10-25 23:42:00    fix: resolve factorial interaction discrepancy & add regression consistency
+c8a81cc      2026-10-25 23:43:00    fix: resolve factorial interaction discrepancy & add regression consistency
 --------------------------------------------------------------------------------
 Remote Status: origin/master synchronized
 Live Deployment URL: https://fieldshift-backend.onrender.com/
