@@ -1027,3 +1027,11 @@ Required User Action on Render Dashboard:
 - Resolution: Enhanced normalize_database_url() in backend/app/database.py and backend/run_migrations.py to automatically call .strip() on raw_url and parsed.database.
 - Verification: Tested with trailing newline URL; migration runner and psycopg connected seamlessly to Supabase PostgreSQL.
 - Git Commit: fdcfba2 pushed to origin/master.
+
+[2026-10-25 20:05:00] SINGLE ALL-IN-ONE URL DEPLOYMENT CONSOLIDATION:
+- Root Cause: Having separate Render services (fieldshift-frontend static site + fieldshift-backend web service) resulted in 404 on the static site and {"detail":"Not Found"} when accessing root / of the backend. User explicitly required ONE single link hosting the entire application.
+- Resolution:
+  1. Frontend Bundling: Generated production build (npm run build) into frontend/dist/ containing optimized chunks (React 19, Three.js v186, CSS, and runtime). Tracked in git via !frontend/dist/.
+  2. FastAPI Static Mount & SPA Fallback: Mounted /assets directly in backend/app/main.py via Starlette StaticFiles and defined explicit root route GET / and catch-all GET /{full_path:path} serving index.html while strictly protecting /api/*, /docs, /redoc, and openapi.json.
+  3. Single Link render.yaml: Consolidated render.yaml into a single web service (fieldshift-backend). Visiting https://fieldshift-backend.onrender.com now serves both the full frontend UI and backend API under a single unified domain with zero CORS complications.
+- Verification: Tested with FastAPI TestClient (GET /, GET /assets/*, GET /api/health, GET /research-workspace, GET /api/unknown 404). All passed with 200 OK and 404 for missing APIs.

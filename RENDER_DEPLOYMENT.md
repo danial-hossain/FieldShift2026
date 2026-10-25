@@ -1,40 +1,39 @@
-# FieldShift 2026 — Render Cloud Deployment Guide
+# FieldShift 2026 — Render Cloud Deployment Guide (Single All-in-One URL)
 
-This guide details the complete deployment process for **FieldShift 2026** on **Render** (Free Tier), running the React/Vite frontend as a Static Site and the Python/FastAPI backend as a Web Service, backed by **Supabase PostgreSQL** as the persistent database.
+This guide details the deployment of **FieldShift 2026** on **Render** (Free Tier) as a **single unified web service**.
+FastAPI directly serves the pre-built **React 19 / Three.js 3D frontend SPA** alongside all REST API endpoints and MILP optimization routines under **one single URL**, connected to **Supabase PostgreSQL**.
 
 ---
 
-## 1. Architecture Overview
+## 1. Architecture Overview (Single All-in-One URL)
 
 ```
                       +---------------------------------------+
                       |       Web Browser (User / Farmer)    |
                       +-------------------+-------------------+
                                           |
+                                          | https://fieldshift-backend.onrender.com/
+                                          v
+                      +---------------------------------------+
+                      |       Render Web Service (FastAPI)     |
+                      |   - GET / -> Serves React SPA (dist)  |
+                      |   - GET /assets/* -> JS / CSS bundles |
+                      |   - GET /api/* -> REST API Endpoints  |
+                      |   - PuLP MILP Optimization CBC Engine |
                       +-------------------+-------------------+
-                      |                                       |
-                      v                                       v
-        +----------------------------+         +----------------------------+
-        |   fieldshift-frontend      |         |    fieldshift-backend      |
-        |   Render Static Site       |  HTTP   |    Render Web Service      |
-        |   React 19 + Three.js v186 | ------> |    FastAPI + PuLP MILP     |
-        |   Global CDN (No Cold Start) | (CORS)  |    Port $PORT (Auto Spin)  |
-        +----------------------------+         +--------------+-------------+
-                                                              |
-                                                              | Session Pooler
-                                                              | (Port 5432)
-                                                              v
-                                               +----------------------------+
-                                               |   Supabase PostgreSQL      |
-                                               |   Project: thopipmyqyvulx  |
-                                               |   14 Relational Tables     |
-                                               +----------------------------+
+                                          |
+                                          | Session Pooler (Port 5432)
+                                          v
+                      +---------------------------------------+
+                      |        Supabase PostgreSQL            |
+                      |        Project: thopipmyqyvulx        |
+                      |        14 Relational Tables           |
+                      +---------------------------------------+
 ```
 
-| Component | Render Service Type | Root Directory | Build Command | Start / Publish Path |
+| Component | Render Service Type | Root Directory | Build Command | Start Command |
 | :--- | :--- | :--- | :--- | :--- |
-| **Backend** | Web Service (Python 3.13) | `.` (Repo Root) | `pip install -r requirements.txt -r backend/requirements.txt` | `python backend/run_migrations.py && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT` |
-| **Frontend** | Static Site (`runtime: static`) | `frontend` | `npm install && npm run build` | `dist` (Rewrite `/*` &rarr; `/index.html`) |
+| **All-in-One Web App** | Web Service (Python 3.13) | `.` (Repo Root) | `pip install -r requirements.txt -r backend/requirements.txt` | `python backend/run_migrations.py && python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT` |
 
 ---
 

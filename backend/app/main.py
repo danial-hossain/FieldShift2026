@@ -11,6 +11,8 @@ from typing import Any
 from fastapi import Cookie, Depends, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -1729,6 +1731,38 @@ def scenarios_sensitivity(payload: Payload, fieldshift_session: str | None = Coo
         steps = [-20.0, -10.0, 10.0, 20.0]
 
     return run_system_sensitivity_analysis(data, perturbation_steps=steps)
+
+
+# -----------------------------------------------------------------------------
+# FRONTEND SPA STATIC MOUNT & CATCH-ALL ROUTE (ALL-IN-ONE SINGLE URL)
+# -----------------------------------------------------------------------------
+
+FRONTEND_DIST = ROOT_DIR / "frontend" / "dist"
+if FRONTEND_DIST.exists():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend-assets")
+
+    @app.get("/", include_in_schema=False)
+    def serve_frontend_root():
+        return FileResponse(FRONTEND_DIST / "index.html")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def serve_frontend_spa(full_path: str):
+        # Allow API endpoints, Swagger, and OpenAPI docs through
+        if (
+            full_path == "api"
+            or full_path.startswith("api/")
+            or full_path in ("docs", "redoc", "openapi.json")
+            or full_path.startswith("docs/")
+            or full_path.startswith("redoc/")
+        ):
+            raise HTTPException(404, "Endpoint not found")
+        file_path = FRONTEND_DIST / full_path
+        if full_path and file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(FRONTEND_DIST / "index.html")
+
 
 
 
