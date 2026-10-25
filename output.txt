@@ -1013,3 +1013,9 @@ Required User Action on Render Dashboard:
 - Resolution: Removed 'region: oregon' and 'plan: free' from fieldshift-frontend (runtime: static) in render.yaml.
 - Rationale: Render Static Sites are globally distributed across Render CDN edge nodes and do not accept a regional placement or compute plan parameter.
 - Git Commit: 6b4d8b3 pushed to origin/master.
+
+[2026-10-25 19:52:30] RENDER BUILD HARDENING & PLATFORM BINDINGS UPDATE:
+- Frontend Fix: Vite 8 relies on Rolldown / LightningCSS native binaries. Added '@rolldown/binding-linux-x64-gnu' and 'lightningcss-linux-x64-gnu' optionalDependencies to frontend/package.json for Render Linux x86_64 host.
+- Node Engine: Set NODE_VERSION=22.12.0 in render.yaml matching Vite 8 engine prerequisite (^20.19.0 || >=22.12.0).
+- Backend Fix: Start command updated to 'python -m uvicorn' and backend/run_migrations.py gracefully skips if DATABASE_URL is not immediately set.
+- Git Commit: 0fb3779 pushed to origin/master.
