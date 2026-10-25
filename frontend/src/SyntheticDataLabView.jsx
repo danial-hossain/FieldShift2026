@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatNumber as defaultFormatNumber } from './marketUtils.js';
-import { request as defaultRequest } from './apiClient.js';
+import { request as defaultRequest, API_BASE } from './apiClient.js';
 import { SyntheticLab3D } from './research3d/SyntheticLab3D.jsx';
 
 export function SyntheticDataLabView({
@@ -55,9 +55,8 @@ export function SyntheticDataLabView({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/synthetic-data/generate', {
+      const data = await request('/api/synthetic-data/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           seed,
           num_scenarios: numScenarios,
@@ -73,8 +72,6 @@ export function SyntheticDataLabView({
           include_stress_scenarios: includeStress,
         }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to generate scenarios`);
-      const data = await res.json();
       setGeneratedData(data);
     } catch (err) {
       setError(err.message);
@@ -86,15 +83,12 @@ export function SyntheticDataLabView({
   const loadProvenance = async () => {
     setProvLoading(true);
     try {
-      const [sumRes, regRes] = await Promise.all([
-        fetch('/api/provenance/summary'),
-        fetch('/api/provenance/registry'),
+      const [sumJson, regJson] = await Promise.all([
+        request('/api/provenance/summary'),
+        request('/api/provenance/registry'),
       ]);
-      if (sumRes.ok) setProvenanceSummary(await sumRes.json());
-      if (regRes.ok) {
-        const regJson = await regRes.json();
-        setRegistryRecords(regJson.parameters || []);
-      }
+      setProvenanceSummary(sumJson);
+      setRegistryRecords(regJson?.parameters || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -104,7 +98,7 @@ export function SyntheticDataLabView({
 
   const handleExportCSV = async () => {
     try {
-      const res = await fetch('/api/synthetic-data/export', {
+      const res = await fetch(`${API_BASE}/api/synthetic-data/export`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

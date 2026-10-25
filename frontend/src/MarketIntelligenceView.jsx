@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { formatNumber } from './main.jsx';
+import { request, API_BASE } from './apiClient.js';
 
 export function MarketIntelligenceView({ activeField, onNavigateTab }) {
   const [marketData, setMarketData] = useState(null);
@@ -33,9 +34,7 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/market/overview');
-        if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to load market overview`);
-        const json = await res.json();
+        const json = await request('/api/market/overview');
         if (!ignore) {
           setMarketData(json);
           // Set initial crop if present
@@ -72,9 +71,8 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
       if (!selectedCropName) return;
       setCalcLoading(true);
       try {
-        const res = await fetch('/api/market/profitability', {
+        const json = await request('/api/market/profitability', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             crop: selectedCropName,
             area_ha: calcAreaHa,
@@ -85,8 +83,6 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
             marketing_cost_bdt_ha: calcMktgCost,
           }),
         });
-        if (!res.ok) throw new Error('Profitability calculation failed');
-        const json = await res.json();
         if (!ignore) setProfitResult(json);
       } catch (err) {
         console.error(err);
@@ -138,7 +134,7 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <a
-            href="/api/market/export"
+            href={`${API_BASE}/api/market/export`}
             download
             className="btn btn-outline"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', fontSize: 13, textDecoration: 'none' }}

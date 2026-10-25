@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatNumber } from './main.jsx';
 import { SensitivityAnalysis3D } from './research3d/SensitivityAnalysis3D.jsx';
+import { request } from './apiClient.js';
 
 export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
   const [loading, setLoading] = useState(false);
@@ -26,14 +27,10 @@ export function SensitivityAnalysisView({ activeField, onNavigateTab }) {
         perturbation_steps: [-20.0, -10.0, 10.0, 20.0],
       };
 
-      const res = await fetch('/api/scenarios/sensitivity', {
+      const json = await request('/api/scenarios/sensitivity', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to execute sensitivity analysis`);
-      const json = await res.json();
       setSensitivityData(json);
     } catch (err) {
       setError(err.message);

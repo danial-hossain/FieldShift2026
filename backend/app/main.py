@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import hashlib, importlib.util, math, secrets, sys
+import hashlib, importlib.util, math, os, secrets, sys
 from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
@@ -15,11 +15,31 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
-from .database import Base, engine, get_db
+from .database import Base, engine, get_db, is_postgres
 from .models import Analysis, Farm, Field as FarmField, FieldHistory, Session as LoginSession, User
 
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
+    "http://localhost:3000",
+]
+if cors_origins_env:
+    for origin in cors_origins_env.split(","):
+        trimmed = origin.strip()
+        if trimmed and trimmed not in allowed_origins:
+            allowed_origins.append(trimmed)
+
 app = FastAPI(title="FieldShift API", version="1.0.0")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins if "*" not in allowed_origins else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Payload(BaseModel):
     model_config = ConfigDict(extra="allow")
@@ -412,8 +432,31 @@ def startup() -> None:
     Base.metadata.create_all(engine)  # deployment should use Alembic migration below
 
 @app.get("/api/health")
-def health():
-    return {"status":"ok","project":"FieldShift","mode":"offline_demo","synthetic_boundary":True,"uses_repository_modules":True,"dashboard":"available","notes":["Live NASA POWER retrieval is available only when explicitly selected.","Offline mode uses bundled data and the existing FieldShift pipeline."]}
+def health(db: DbSession = Depends(get_db)):
+    db_status = "ok"
+    dialect = engine.dialect.name
+    try:
+        db.execute(select(1)).scalar()
+    except Exception as exc:
+        db_status = f"unhealthy: {type(exc).__name__}"
+
+    return {
+        "status": "ok" if db_status == "ok" else "degraded",
+        "database": {
+            "status": db_status,
+            "dialect": dialect,
+            "is_postgres": is_postgres(),
+        },
+        "project": "FieldShift",
+        "mode": "offline_demo",
+        "synthetic_boundary": True,
+        "uses_repository_modules": True,
+        "dashboard": "available",
+        "notes": [
+            "Live NASA POWER retrieval is available only when explicitly selected.",
+            "Offline mode uses bundled data and the existing FieldShift pipeline."
+        ]
+    }
 
 @app.post("/api/workflow")
 def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):

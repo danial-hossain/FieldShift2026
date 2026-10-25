@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation, toBengaliNumber } from './i18n.js';
+import { request } from './apiClient.js';
 
 export function FarmerVoiceAssistant({
   activeField,
@@ -229,9 +230,8 @@ export function FarmerVoiceAssistant({
 
     // 6. General Agricultural Question -> Backend Assistant API
     try {
-      const res = await fetch('/api/assistant/chat', {
+      const data = await request('/api/assistant/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text,
           history: [],
@@ -252,17 +252,12 @@ export function FarmerVoiceAssistant({
         })
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const fullReply = data.reply || (lang === 'bn' ? 'তথ্য পাওয়া যায়নি।' : 'No answer available.');
-        setResponseText(fullReply);
-        // Speak short concise answer
-        const spokenExcerpt = fullReply.split('\n')[0].replace(/[#*`_]/g, '');
-        speakText(spokenExcerpt);
-        setState('answered');
-      } else {
-        throw new Error('API offline');
-      }
+      const fullReply = data.reply || (lang === 'bn' ? 'তথ্য পাওয়া যায়নি।' : 'No answer available.');
+      setResponseText(fullReply);
+      // Speak short concise answer
+      const spokenExcerpt = fullReply.split('\n')[0].replace(/[#*`_]/g, '');
+      speakText(spokenExcerpt);
+      setState('answered');
     } catch {
       const fallbackReply = lang === 'bn'
         ? `আপনার জমির মাটি ও আবহাওয়ার সাথে আমন ধান, সরিষা বা মসুর ডাল সবচেয়ে মানানসই। বিস্তারিত জানতে 'ফসলের পরামর্শ' দেখুন।`

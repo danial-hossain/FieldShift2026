@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation, toBengaliNumber, formatCurrency } from './i18n.js';
+import { request } from './apiClient.js';
 
 export function FarmerHarvestProfitView({
   activeField,
@@ -149,21 +150,16 @@ export function FarmerHarvestProfitView({
         notes: actualNotes || 'Farmer logged through mobile assistance interface'
       };
 
-      const res = await fetch('/api/outcomes/record', {
+      await request('/api/outcomes/record', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
-      if (res.ok) {
-        setSaveStatus('success');
-        setActualYieldMaund('');
-        setActualPriceBdt('');
-        setActualNotes('');
-        setTimeout(() => setSaveStatus(null), 4000);
-      } else {
-        throw new Error('Save error');
-      }
+      setSaveStatus('success');
+      setActualYieldMaund('');
+      setActualPriceBdt('');
+      setActualNotes('');
+      setTimeout(() => setSaveStatus(null), 4000);
     } catch {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus(null), 4000);

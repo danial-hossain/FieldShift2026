@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { request } from './apiClient.js';
 
 const SUGGESTED_PROMPTS = [
   {
@@ -156,9 +157,8 @@ export default function AiAssistantView({
     const historyPayload = messages.map(m => ({ role: m.role, text: m.text }));
 
     try {
-      const response = await fetch('/api/assistant/chat', {
+      const resJson = await request('/api/assistant/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: messageContent,
           history: historyPayload,
@@ -166,21 +166,16 @@ export default function AiAssistantView({
         })
       });
 
-      if (response.ok) {
-        const resJson = await response.json();
-        const aiMessage = {
-          id: `ai-${Date.now()}`,
-          role: 'assistant',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          model: resJson.model || 'gemini-flash-lite-latest',
-          isFallback: Boolean(resJson.is_fallback),
-          text: resJson.reply,
-          actionIntent: resJson.action_intent || null
-        };
-        setMessages(prev => [...prev, aiMessage]);
-      } else {
-        throw new Error(`HTTP ${response.status}`);
-      }
+      const aiMessage = {
+        id: `ai-${Date.now()}`,
+        role: 'assistant',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        model: resJson.model || 'gemini-flash-lite-latest',
+        isFallback: Boolean(resJson.is_fallback),
+        text: resJson.reply,
+        actionIntent: resJson.action_intent || null
+      };
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       const errorMessage = {
         id: `error-${Date.now()}`,

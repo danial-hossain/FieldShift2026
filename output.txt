@@ -721,3 +721,159 @@ Visual Browser QA Status:
 4. Visual Browser Tooling:
    Full visual browser QA requires provisioning offline Playwright Chromium binaries to unblock automated browser canvas capture.
 ================================================================================
+
+================================================================================
+FIELDSHIFT 2026 ? SUPABASE POSTGRESQL INTEGRATION & DEPLOYMENT PREPARATION
+Date: 2026-10-25T19:25:00+06:00
+Environment: Windows 11 | Python 3.13 | PostgreSQL 17.11 (Supabase) | Vite v8.3.2 | React 19
+================================================================================
+
+1. INSPECTION & DATABASE ARCHITECTURE
+--------------------------------------------------------------------------------
+Architecture Before Migration:
+- Backend: FastAPI service (backend/app/main.py) defaulting to SQLite (data/fieldshift.db) or local container PostgreSQL on port 5433.
+- Database Models (backend/app/models.py): Defined User, Session, Farm, Field, FieldHistory, Analysis.
+- Missing Schema: Empirical harvest outcome logging (farm_outcomes) was hardcoded directly to SQLite in src/data/outcome_tracker.py using sqlite3.connect(DB_PATH).
+- Frontend: Vite/React SPA. In several subviews (AiAssistantView.jsx, FarmerHarvestProfitView.jsx, FarmerVoiceAssistant.jsx, MarketIntelligenceView.jsx, SensitivityAnalysisView.jsx, SyntheticDataLabView.jsx), API calls used relative fetch('/api/...') without API_BASE, which prevented cross-origin production deployment.
+- SQLite Tables (data/fieldshift.db): 14 tables: users (313 rows), sessions (234 rows), farms (188 rows), fields (192 rows), field_history (213 rows), analyses (132 rows), farm_outcomes (50 rows), weather_snapshots (0), ml_results (0), rotation_plans (0), adaptive_actions (0), validation_results (0), provenance_records (0).
+
+Architecture After Migration:
+- Database Layer (backend/app/database.py):
+  * Unified DATABASE_URL reading with support for FIELDSHIFT_DATABASE_URL and SQLite fallback.
+  * Automatic URL normalization for psycopg v3 (postgresql+psycopg://).
+  * Dedicated support for Supabase PgBouncer poolers (port 6543) disabling named prepared statements (prepare_threshold=None).
+  * Production connection pool settings: pool_recycle=300, pool_size=5, max_overflow=10, pool_pre_ping=True.
+- Models & Schema (backend/app/models.py):
+  * Added first-class SQLAlchemy model FarmOutcome mapping to farm_outcomes.
+  * Added models for WeatherSnapshot, MLResult, RotationPlan, AdaptiveAction, ValidationResult, ProvenanceRecord.
+- Migration System (backend/alembic/versions/):
+  * 0001_initial.sql: users, farms, sessions, fields, field_history, analyses.
+  * 0002_add_soil_ph.sql: adds soil_ph to fields.
+  * 0003_add_farm_outcomes.sql: creates farm_outcomes and indexes (field_id, user_id, year, season).
+  * 0004_add_auxiliary_tables.sql: creates auxiliary research snapshot tables.
+  * backend/run_migrations.py: Idempotent migration runner tracking applied versions in schema_migrations.
+- Unified Outcomes Persistence (src/data/outcome_tracker.py):
+  * Checks active engine dialect via is_postgres().
+  * When running with PostgreSQL / Supabase, executes parameterized SQL queries and transactions via SQLAlchemy.
+  * Retains complete SQLite fallback when operating offline without PostgreSQL.
+- Data Migration Script (backend/migrate_sqlite_to_pg.py):
+  * Safely migrates real SQLite records in read-only mode without dropping tables or deleting SQLite data.
+  * Enforces referential integrity by provisioning archived parcel stubs for orphaned test rows.
+  * Synchronizes PostgreSQL sequence generators (setval).
+- Frontend Cross-Origin Resiliency:
+  * Unified API routing to use request from ./apiClient.js with VITE_API_URL prefix.
+  * Added frontend/vercel.json and frontend/netlify.toml for seamless client-side SPA routing.
+- Backend CORS & Configuration:
+  * Configurable CORS_ORIGINS environment variable in backend/app/main.py.
+  * Dynamic database connectivity status in /api/health.
+  * Production Dockerfile and Procfile.
+
+
+2. REAL SUPABASE POSTGRESQL CONNECTIVITY & MIGRATION EXECUTION
+--------------------------------------------------------------------------------
+Supabase Project: thopipmyqyvulxfrgiin (AWS Tokyo ap-northeast-1)
+PostgreSQL Version: PostgreSQL 17.11 on x86_64-pc-linux
+
+Connectivity Tests:
+- Socket to aws-0-ap-northeast-1.pooler.supabase.com:5432 -> SUCCESS
+- Socket to aws-0-ap-northeast-1.pooler.supabase.com:6543 -> SUCCESS
+- Socket to db.thopipmyqyvulxfrgiin.supabase.co:5432 -> SUCCESS
+
+Schema Migrations Applied:
+- 0001_initial.sql: Applied successfully.
+- 0002_add_soil_ph.sql: Applied successfully.
+- 0003_add_farm_outcomes.sql: Applied successfully.
+- 0004_add_auxiliary_tables.sql: Applied successfully.
+- Idempotence verification: Re-running migration runner confirmed 0 duplicate runs.
+
+Data Migration Results (SQLite -> Supabase PostgreSQL):
+- Table users: SQLite 313 rows -> PostgreSQL 313 rows (100% matched)
+- Table sessions: SQLite 234 rows -> PostgreSQL 234 rows (100% matched)
+- Table farms: SQLite 188 rows -> PostgreSQL 188 rows (100% matched)
+- Table fields: SQLite 192 rows (+ 31 archived referential stubs) -> PostgreSQL 223 rows (100% matched)
+- Table field_history: SQLite 213 rows -> PostgreSQL 213 rows (100% matched)
+- Table analyses: SQLite 132 rows -> PostgreSQL 132 rows (100% matched)
+- Table farm_outcomes: SQLite 50 rows -> PostgreSQL 50 rows (100% matched)
+- Sequence Generators: All 7 primary key serial sequences updated to MAX(id).
+
+
+3. VERIFICATION AND TEST EXECUTION
+--------------------------------------------------------------------------------
+1. Frontend Test Suite (node --test src/*.test.js):
+   - Command: npm test
+   - Exit code: 0
+   - Passed: 83 / 83 tests
+   - Failed: 0
+   - Duration: 162.6 ms
+
+2. Frontend Production Bundle Build (vite build):
+   - Command: npm run build
+   - Exit code: 0
+   - Output:
+     * dist/index.html: 1.00 kB
+     * dist/assets/index-C1Kwtq6M.css: 199.48 kB
+     * dist/assets/rolldown-runtime-CbXtAM7H.js: 0.58 kB
+     * dist/assets/ExperimentSimulator3DView-BMg7uup6.js: 85.86 kB
+     * dist/assets/react-vendor-Dy-GIXkn.js: 218.83 kB
+     * dist/assets/three-vendor-BiMFJPbr.js: 568.66 kB
+     * dist/assets/index-BlbZqEIC.js: 797.86 kB
+   - Status: Complete in 327ms, 0 errors.
+
+3. Backend Supabase PostgreSQL Integration Suite (tests/test_supabase_postgres_integration.py):
+   - Command: python -m unittest tests/test_supabase_postgres_integration.py
+   - Exit code: 0
+   - Results: 8 / 8 tests passed against real Supabase PostgreSQL:
+     * test_standard_postgresql_scheme_adapted_to_psycopg: PASSED
+     * test_legacy_postgres_scheme_adapted_to_psycopg: PASSED
+     * test_transaction_pooler_disables_prepared_statements: PASSED
+     * test_01_migrations_idempotence: PASSED (against Supabase)
+     * test_02_field_crud_lifecycle: PASSED (Create, Read, Update, List against Supabase)
+     * test_03_harvest_outcome_persistence_and_variance: PASSED (against Supabase)
+     * test_04_adaptive_replanning_from_saved_records: PASSED
+     * test_05_transaction_rollback_on_failure: PASSED (constraint violation rolled back cleanly)
+
+4. End-to-End Random Field Workflow Suite (tests/test_random_field_e2e.py):
+   - Command: python -m unittest tests/test_random_field_e2e.py
+   - Exit code: 0
+   - Server: Live FastAPI backend running against Supabase PostgreSQL
+   - Results: 5 / 5 tests passed:
+     * test_01_random_field_generation_and_validation: PASSED
+     * test_02_field_registration_persistence_roundtrip: PASSED (via HTTP against Supabase)
+     * test_03_full_workflow_execution_on_random_field: PASSED (MILP + RL)
+     * test_04_harvest_outcome_persistence_and_replanning: PASSED
+     * test_05_scientific_invariants_across_regions: PASSED
+
+5. Full Python Regression Suite (python -m pytest -q):
+   - 572 passed, 45,819 warnings, 77 subtests passed in 310.93s.
+   - The only 5 errors in the offline batch run occurred because the HTTP test server was offline during static batch execution; these 5 tests subsequently passed 100% when run against the live backend in the E2E suite above.
+
+
+4. SECURITY & CREDENTIAL HANDLING
+--------------------------------------------------------------------------------
+- Real credentials and database passwords are NOT committed to GitHub.
+- Updated .gitignore with comprehensive exclusions for .env, node_modules, .venv, .pytest_cache, dist, and log artifacts.
+- Created safe .env.example templates in root, backend/, and frontend/ containing placeholders only.
+- Supabase service-role keys and database passwords are kept backend-only; frontend accesses database strictly through authenticated FastAPI endpoints.
+
+
+5. REMAINING STEPS BEFORE CLOUD PRODUCTION HOSTING
+--------------------------------------------------------------------------------
+1. Git Commit & Push:
+   Stage and commit modified source files, migration files, deployment configs, and test suite to the public GitHub repository.
+2. Backend Deployment on Render (or Railway / Koyeb):
+   Deploy FastAPI backend web service; set DATABASE_URL (Supabase session pooler), GEMINI_API_KEY, and CORS_ORIGINS.
+3. Frontend Deployment on Vercel:
+   Deploy React frontend; configure VITE_API_URL pointing to the Render backend URL.
+
+
+6. ????? ?????????? ? ??????? ????????? (Bangla Summary)
+--------------------------------------------------------------------------------
+?. Supabase PostgreSQL ????????? ??? ?????:
+   ????? Supabase ????????? (thopipmyqyvulxfrgiin) ??? ?????????? ????????? ??????? ??????? ??? ??????? ????? SQLite ??????? ???? ????? ??? ?? ???????????, ????? ?????, ????? ?????, ????? ???????? ??????, ????? ???????????? ??? ???? ????????? ?????? ???? ???? ?????? ????? ????? ????? Supabase-? ???????? ??? ??????
+?. ?????? Supabase ????????? ???????? ?? ????? ????????:
+   FastAPI ????????? ?????? Supabase PostgreSQL-?? ???? ??????? ??? ????? ????, ?????, ???????????, ????????? ????? ??????? ??? ??????????? ??????????? ??????? ??????? ????? (??? ??????????? ????? ??? ??? ????-??-???? ????? ???????? ??? ?????)?
+?. ???? ?????? ?????????????? ????????? ???????:
+   - ??????????? ???? Dockerfile ??? Procfile ???? ??? ????? (Render / Railway-?? ???? ?????????? ????)?
+   - ???????????? ???? vercel.json ??? netlify.toml ???? ??? ????? (Vercel-? ???? ?????????? ????)?
+   - ???????? ?????????? SUPABASE_DEPLOYMENT.md ????? ????? ??? ??????
+================================================================================

@@ -75,3 +75,95 @@ class Analysis(Timestamped, Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     error_message: Mapped[str | None] = mapped_column(Text)
+
+class FarmOutcome(Base):
+    __tablename__ = "farm_outcomes"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    field_id: Mapped[int] = mapped_column(ForeignKey("fields.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True)
+    period: Mapped[str | None] = mapped_column(String)
+    season: Mapped[str | None] = mapped_column(String)
+    year: Mapped[int | None] = mapped_column(Integer)
+    crop: Mapped[str] = mapped_column(String, nullable=False)
+    planting_date: Mapped[str | None] = mapped_column(String)
+    harvest_date: Mapped[str | None] = mapped_column(String)
+    actual_yield_t_ha: Mapped[float | None] = mapped_column(Float)
+    actual_revenue_bdt: Mapped[float | None] = mapped_column(Float)
+    actual_cost_bdt: Mapped[float | None] = mapped_column(Float)
+    actual_water_mm: Mapped[float | None] = mapped_column(Float)
+    estimated_yield_t_ha: Mapped[float | None] = mapped_column(Float)
+    estimated_revenue_bdt: Mapped[float | None] = mapped_column(Float)
+    estimated_water_mm: Mapped[float | None] = mapped_column(Float)
+    yield_variance_pct: Mapped[float | None] = mapped_column(Float)
+    revenue_variance_pct: Mapped[float | None] = mapped_column(Float)
+    water_variance_pct: Mapped[float | None] = mapped_column(Float)
+    management_notes: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class WeatherSnapshot(Base):
+    __tablename__ = "weather_snapshots"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    analysis_run_id: Mapped[str | None] = mapped_column(String, index=True)
+    source: Mapped[str | None] = mapped_column(String)
+    latitude: Mapped[float | None] = mapped_column(Float)
+    longitude: Mapped[float | None] = mapped_column(Float)
+    date: Mapped[str | None] = mapped_column(String)
+    temperature: Mapped[float | None] = mapped_column(Float)
+    rainfall: Mapped[float | None] = mapped_column(Float)
+    soil_moisture: Mapped[float | None] = mapped_column(Float)
+    other_variables: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class MLResult(Base):
+    __tablename__ = "ml_results"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    analysis_run_id: Mapped[str | None] = mapped_column(String, index=True)
+    prediction: Mapped[float | None] = mapped_column(Float)
+    model_name: Mapped[str | None] = mapped_column(String)
+    model_version: Mapped[str | None] = mapped_column(String)
+    metrics: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    features_used: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    research_boundary: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class RotationPlan(Base):
+    __tablename__ = "rotation_plans"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    analysis_run_id: Mapped[str | None] = mapped_column(String, index=True)
+    optimization_status: Mapped[str | None] = mapped_column(String)
+    crop_sequence: Mapped[Any | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    objective_value: Mapped[float | None] = mapped_column(Float)
+    constraints_summary: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class AdaptiveAction(Base):
+    __tablename__ = "adaptive_actions"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    analysis_run_id: Mapped[str | None] = mapped_column(String, index=True)
+    action: Mapped[str | None] = mapped_column(String)
+    action_type: Mapped[str | None] = mapped_column(String)
+    reward: Mapped[float | None] = mapped_column(Float)
+    safety_status: Mapped[str | None] = mapped_column(String)
+    state_before: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    state_after: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class ValidationResult(Base):
+    __tablename__ = "validation_results"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    analysis_run_id: Mapped[str | None] = mapped_column(String, index=True)
+    validation_type: Mapped[str | None] = mapped_column(String)
+    status: Mapped[str | None] = mapped_column(String)
+    message: Mapped[str | None] = mapped_column(Text)
+    details: Mapped[dict[str, Any] | None] = mapped_column(JSON().with_variant(JSONB, "postgresql"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+class ProvenanceRecord(Base):
+    __tablename__ = "provenance_records"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    analysis_run_id: Mapped[str | None] = mapped_column(String, index=True)
+    source: Mapped[str | None] = mapped_column(String)
+    source_type: Mapped[str | None] = mapped_column(String)
+    mode: Mapped[str | None] = mapped_column(String)
+    metadata_json: Mapped[dict[str, Any] | None] = mapped_column("metadata", JSON().with_variant(JSONB, "postgresql"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

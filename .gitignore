@@ -1,11 +1,60 @@
+# Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+.venv/
+backend/.venv/
+env/
+venv/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary / Scratch
+scratch/
+test_artifacts/
+*.log
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+.npm
+
+# Environment & Credentials (NEVER COMMIT)
 .env
 .env.*
 !.env.example
 backend/.env
 backend/.env.*
-!.backend/.env.example
+!backend/.env.example
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
+
+# OS
+.DS_Store
+Thumbs.db
