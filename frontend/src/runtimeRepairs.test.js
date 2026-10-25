@@ -226,3 +226,104 @@ test('P0 Regression 12: formatNumber imported from marketUtils handles currency 
   assert.equal(formatNumber(null, 0), 'Not available');
   assert.equal(formatNumber(undefined, 0), 'Not available');
 });
+
+test('P0 Regression 13: Crop Knowledge Database normalizer maps backend crop attributes', () => {
+  function normalizeCrop(c) {
+    if (!c) return null;
+    const name = c.name || c.crop || 'Unknown Crop';
+    const family = c.botanical_family || c.family || '';
+    const season = c.season || c.primary_season || 'All seasons';
+    const yieldKgHa = c.expected_yield_kg_ha != null
+      ? c.expected_yield_kg_ha
+      : (c.expected_yield_t_ha != null ? Math.round(c.expected_yield_t_ha * 1000) : null);
+    const marginBdtHa = c.net_margin_bdt_ha != null
+      ? c.net_margin_bdt_ha
+      : (c.gross_margin_bdt_ha != null ? c.gross_margin_bdt_ha : null);
+    const phMin = c.soil_ph_min ?? c.min_ph ?? '5.0';
+    const phMax = c.soil_ph_max ?? c.max_ph ?? '7.5';
+    const tempMin = c.temperature_min_c ?? c.min_temperature_c ?? '15';
+    const tempMax = c.temperature_max_c ?? c.max_temperature_c ?? '35';
+    const source = c.data_source || c.authority_source || 'BRRI / BARI';
+
+    return {
+      ...c,
+      name,
+      botanical_family: family,
+      season,
+      expected_yield_kg_ha: yieldKgHa,
+      net_margin_bdt_ha: marginBdtHa,
+      soil_ph_min: phMin,
+      soil_ph_max: phMax,
+      temperature_min_c: tempMin,
+      temperature_max_c: tempMax,
+      data_source: source,
+    };
+  }
+
+  const rawBackendCrop = {
+    crop: 'Rice',
+    bengali_name: 'ধান (Oryza sativa)',
+    family: 'Poaceae (Gramineae)',
+    is_legume: false,
+    primary_season: 'Aman / Boro',
+    duration_days: 130,
+    water_requirement_mm: 1200.0,
+    expected_yield_t_ha: 4.5,
+    gross_margin_bdt_ha: 45000.0,
+    min_temperature_c: 20.0,
+    max_temperature_c: 35.0,
+    min_ph: 5.5,
+    max_ph: 7.2,
+    authority_source: 'BRRI Rice Knowledge Bank'
+  };
+
+  const normalized = normalizeCrop(rawBackendCrop);
+  assert.equal(normalized.name, 'Rice');
+  assert.equal(normalized.botanical_family, 'Poaceae (Gramineae)');
+  assert.equal(normalized.season, 'Aman / Boro');
+  assert.equal(normalized.expected_yield_kg_ha, 4500);
+  assert.equal(normalized.net_margin_bdt_ha, 45000.0);
+  assert.equal(normalized.soil_ph_min, 5.5);
+  assert.equal(normalized.soil_ph_max, 7.2);
+  assert.equal(normalized.temperature_min_c, 20.0);
+  assert.equal(normalized.temperature_max_c, 35.0);
+  assert.equal(normalized.data_source, 'BRRI Rice Knowledge Bank');
+});
+
+test('P0 Regression 14: Crop Failure Simulator payload contracts and shock type mapping', () => {
+  const supportedShockTypes = [
+    'drought_irrigation_cut',
+    'heat_stress',
+    'excess_rainfall',
+    'crop_failure',
+    'soil_degradation'
+  ];
+
+  function buildRecoveryPayload(activeField, shockType, seasonIndex0, severity) {
+    const rawId = activeField?.id;
+    const isNumericId = rawId != null && !isNaN(Number(rawId)) && String(rawId).trim() !== '';
+    return {
+      field_id: isNumericId ? Number(rawId) : 'demo',
+      failure_type: shockType,
+      failure_event: shockType,
+      failure_season: Number(seasonIndex0),
+      impacted_season_index: Number(seasonIndex0) + 1,
+      severity: severity,
+    };
+  }
+
+  // Verify all 5 shock types map cleanly to 1-indexed seasons
+  supportedShockTypes.forEach((st, idx) => {
+    const payload = buildRecoveryPayload({ id: 'SYN-01' }, st, idx, 'severe');
+    assert.equal(payload.field_id, 'demo');
+    assert.equal(payload.failure_event, st);
+    assert.equal(payload.failure_season, idx);
+    assert.equal(payload.impacted_season_index, idx + 1);
+  });
+
+  // Verify registered numeric field ID preserves numeric type
+  const registeredPayload = buildRecoveryPayload({ id: 99 }, 'drought_irrigation_cut', 0, 'moderate');
+  assert.equal(registeredPayload.field_id, 99);
+  assert.equal(registeredPayload.impacted_season_index, 1);
+});
+

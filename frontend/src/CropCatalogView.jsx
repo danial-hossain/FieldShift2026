@@ -2,6 +2,38 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { formatNumber as defaultFormatNumber } from './marketUtils.js';
 import { request as defaultRequest } from './apiClient.js';
 
+function normalizeCrop(c) {
+  if (!c) return null;
+  const name = c.name || c.crop || 'Unknown Crop';
+  const family = c.botanical_family || c.family || '';
+  const season = c.season || c.primary_season || 'All seasons';
+  const yieldKgHa = c.expected_yield_kg_ha != null
+    ? c.expected_yield_kg_ha
+    : (c.expected_yield_t_ha != null ? Math.round(c.expected_yield_t_ha * 1000) : null);
+  const marginBdtHa = c.net_margin_bdt_ha != null
+    ? c.net_margin_bdt_ha
+    : (c.gross_margin_bdt_ha != null ? c.gross_margin_bdt_ha : null);
+  const phMin = c.soil_ph_min ?? c.min_ph ?? '5.0';
+  const phMax = c.soil_ph_max ?? c.max_ph ?? '7.5';
+  const tempMin = c.temperature_min_c ?? c.min_temperature_c ?? '15';
+  const tempMax = c.temperature_max_c ?? c.max_temperature_c ?? '35';
+  const source = c.data_source || c.authority_source || 'BRRI / BARI';
+
+  return {
+    ...c,
+    name,
+    botanical_family: family,
+    season,
+    expected_yield_kg_ha: yieldKgHa,
+    net_margin_bdt_ha: marginBdtHa,
+    soil_ph_min: phMin,
+    soil_ph_max: phMax,
+    temperature_min_c: tempMin,
+    temperature_max_c: tempMax,
+    data_source: source,
+  };
+}
+
 export function CropCatalogView({
   request: propRequest,
   formatNumber: propFormatNumber,
@@ -25,8 +57,9 @@ export function CropCatalogView({
     try {
       const res = await request('/api/crops/catalog');
       if (res && res.status === 'ok') {
-        setCatalog(res);
-        if (res.crops?.length > 0) setSelectedCrop(res.crops[0]);
+        const normalizedCrops = (res.crops || []).map(normalizeCrop);
+        setCatalog({ ...res, crops: normalizedCrops });
+        if (normalizedCrops.length > 0) setSelectedCrop(normalizedCrops[0]);
       } else {
         throw new Error('Failed to load crop catalog.');
       }
@@ -44,15 +77,17 @@ export function CropCatalogView({
   const crops = catalog?.crops || [];
 
   const filteredCrops = crops.filter(c => {
+    const cropName = c.name || c.crop || '';
+    const family = c.botanical_family || c.family || '';
     const matchesCat = filterCat === 'All'
       || (filterCat === 'Legumes' && c.is_legume)
-      || (filterCat === 'Cereals' && c.botanical_family?.includes('Poaceae'))
-      || (filterCat === 'Oilseeds' && ['Brassicaceae', 'Asteraceae', 'Pedaliaceae'].some(f => c.botanical_family?.includes(f)))
-      || (filterCat === 'Vegetables' && c.botanical_family?.includes('Solanaceae'))
-      || (filterCat === 'Fibers' && c.botanical_family?.includes('Malvaceae'));
+      || (filterCat === 'Cereals' && family.includes('Poaceae'))
+      || (filterCat === 'Oilseeds' && ['Brassicaceae', 'Asteraceae', 'Pedaliaceae'].some(f => family.includes(f)))
+      || (filterCat === 'Vegetables' && family.includes('Solanaceae'))
+      || (filterCat === 'Fibers' && family.includes('Malvaceae'));
     const matchesSearch = !searchQuery
-      || c.name?.toLowerCase().includes(searchQuery.toLowerCase())
-      || c.bengali_name?.includes(searchQuery);
+      || cropName.toLowerCase().includes(searchQuery.toLowerCase())
+      || (c.bengali_name && c.bengali_name.includes(searchQuery));
     return matchesCat && matchesSearch;
   });
 

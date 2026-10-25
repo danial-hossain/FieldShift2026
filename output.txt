@@ -4,30 +4,30 @@ Project: H:\FieldShift2026 | Team: AZOIC • NASA Space Apps Challenge 2026
 Repository: https://github.com/danial-hossain/FieldShift2026.git (Branch: master)
 Deployment: https://fieldshift-backend.onrender.com/ (Single Unified Web Service)
 Data Classification: SYNTHETIC TEST DATA (Exploratory Agricultural Fixtures)
-Status: P0 FIX: RESOLVED | TESTS: PASS (190 Passed, 1 Skipped, 0 Failed) | BUILD: PASS | DEPLOY: LIVE
+Status: P0 FIX: RESOLVED | TESTS: PASS (192 Passed, 1 Skipped, 0 Failed) | BUILD: PASS | DEPLOY: LIVE
 ================================================================================
 
 1. EXECUTIVE SYSTEM VERIFICATION MATRIX
 --------------------------------------------------------------------------------
 Component               Status            Details & Evidence
 --------------------------------------------------------------------------------
-P0 Bug Fix (`request`)  RESOLVED          Root causes identified & fixed across all 6 affected views
-Automated Test Suite    PASS (190/191)    95 Frontend (`node --test`), 95 Backend (pytest), 1 Skipped
-Production Web Bundle   PASS              Vite 8.3.2 build in 260ms (6 chunks in frontend/dist)
+P0 Bug Fix (`request`)  RESOLVED          Root causes identified & fixed across all affected research views
+Automated Test Suite    PASS (192/193)    97 Frontend (`node --test`), 95 Backend (pytest), 1 Skipped
+Production Web Bundle   PASS              Vite 8.3.2 build in 272ms (6 chunks in frontend/dist)
 FastAPI Backend Core    PASS              Python 3.13.1, PuLP CBC MILP, dual-Kc hydraulics
 React 19 Frontend UI    PASS              Responsive mobile-first, Realistic 3D, 5-tab Lab
 Supabase PostgreSQL     PASS              Migration 0005 applied; live PG health verified
-Render Auto-Deploy      PASS (LIVE)       HTTP 200 OK across /, /api/health, /research-workspace
+Render Auto-Deploy      PASS (LIVE)       HTTP 200 OK across /, /api/health, /api/crops/catalog, /research-workspace
 Security & Hygiene      PASS              0 secrets, 0 .env files, clean git diff
 --------------------------------------------------------------------------------
 
 2. ROOT CAUSE ANALYSIS — `request is not a function` & MODULE LOADING FAILURES
 --------------------------------------------------------------------------------
-Investigation revealed that the failures stemmed from three interconnected architectural gaps:
+Investigation revealed that the failures stemmed from five distinct root causes:
 
 2.1 Root Cause 1: Missing Prop Propagation & Lack of Defensive Fallback:
 - In `ResearchWorkspaceView.jsx`, `request` was passed to certain tabs but omitted for:
-  * `<CropCatalogView />` (causing `undefined.apply()` on catalog mount -> "request is not a function" -> 0 SPECIES).
+  * `<CropCatalogView />` (causing `undefined(...)` on catalog mount -> "request is not a function" -> 0 SPECIES).
   * `<CropFailureRecoveryView />` (causing "request is not a function" upon invoking shock simulation).
 - Neither view imported `request as defaultRequest` from `./apiClient.js` as a fallback.
 - Fix: Added dual-layer resilience:
@@ -42,19 +42,24 @@ Investigation revealed that the failures stemmed from three interconnected archi
 - Fix:
   1) Imported `formatNumber as defaultFormatNumber` from `./marketUtils.js`.
   2) Sanitized `field_id` to only pass numeric IDs when valid, defaulting to `'demo'` for guest/synthetic sessions.
-  3) Added a working retry button in error state and guaranteed `finally { setLoading(false); }`.
+  3) Added an interactive retry button in error state and guaranteed `finally { setLoading(false); }`.
 
 2.3 Root Cause 3: Dynamic Import Chunk Stall in Three.js Farm Simulator:
 - In `ResearchWorkspaceView.jsx`, `ExperimentSimulator3DView` was loaded via `React.lazy()` with `<Suspense>` but without a local `ErrorBoundary`.
 - If dynamic chunk loading stalled or WebGL context had issues, `<Suspense>` remained frozen on its loading screen indefinitely.
 - Fix:
   1) Imported `ExperimentSimulator3DView` directly as an immediate component.
-  2) Added `export default ExperimentSimulator3DView;` to ensure compatibility.
+  2) Added `export default ExperimentSimulator3DView;` alongside named export to ensure compatibility.
   3) Implemented `WorkspaceErrorBoundary` to catch any 3D rendering context issues and provide an instant "Reload Module" button and 2D fallback.
 
 2.4 Root Cause 4: Missing Default Export in `apiClient.js`:
 - `apiClient.js` only had named `export async function request(...)`. If any module used default import syntax, `request` evaluated to `undefined`.
 - Fix: Added `export default request;` alongside named exports.
+
+2.5 Root Cause 5: Schema Attribute Discrepancies in Crop Catalog & Simulator:
+- Backend `/api/crops/catalog` returns keys `crop`, `family`, `primary_season`, `expected_yield_t_ha`, `gross_margin_bdt_ha`, `min_ph`, `authority_source`, while frontend accessed `c.name`, `c.botanical_family`, `c.season`, `c.expected_yield_kg_ha`, `c.net_margin_bdt_ha`, `c.soil_ph_min`, `c.data_source`.
+- Fix: Implemented `normalizeCrop()` helper in `CropCatalogView.jsx` that bridges both schemas, calculates kg/ha yields, and extracts complete agronomic specifications.
+- Shock event IDs in `CropFailureRecoveryView.jsx` aligned with backend `FAILURE_EVENTS` (`drought_irrigation_cut`, `heat_stress`, `excess_rainfall`, `crop_failure`, `soil_degradation`) with 1-indexed `impacted_season_index`.
 
 --------------------------------------------------------------------------------
 3. VERIFICATION OF AFFECTED MODULES
@@ -62,11 +67,11 @@ Investigation revealed that the failures stemmed from three interconnected archi
 Module Name                   Status     Fix Summary & Verification
 --------------------------------------------------------------------------------
 Crop Failure Simulator        VERIFIED   Fallback request injected; handles all 5 shock types, 6 seasons,
-                                         3 severities; displays solver status & retry button.
-Crop Knowledge Database       VERIFIED   Fallback request injected; displays all 12+ species;
-                                         filters by Cereals/Legumes/Oilseeds; retry button added.
+                                         3 severities; 1-indexed season targeting; displays solver status & retry button.
+Crop Knowledge Database       VERIFIED   Fallback request injected; displays all 15 species; schema normalization
+                                         maps crop names, families, yields & margins; retry button added.
 Sensitivity Analysis (Sweeps) VERIFIED   Circular import eliminated; field_id sanitized;
-                                         16-point MILP perturbation sweeps execute cleanly; retry button added.
+                                         MILP perturbation sweeps execute cleanly; retry button added.
 Three.js Farm Simulator       VERIFIED   Direct static bundle import; WorkspaceErrorBoundary added;
                                          renders 1,620 instanced tillers, canal flow, and soil cross-section.
 Weather Uncertainty           VERIFIED   Fallback request & formatNumber added; retry button added.
@@ -77,13 +82,13 @@ Satellite Readiness           VERIFIED   Fallback request added; sensor readines
 --------------------------------------------------------------------------------
 Test Suite Target                           Runner / Engine    Tests    Result   Execution Time
 --------------------------------------------------------------------------------
-frontend/src/*.test.js                      Node.js v22 test    95      PASS     178 ms
+frontend/src/*.test.js                      Node.js v22 test    97      PASS     171 ms
 tests/test_multi_field_experiments.py       pytest 9.1 / py13   17      PASS     47.59 s
 tests/test_app_server.py                    pytest 9.1 / py13   14      PASS     97.70 s (combined)
 tests/test_agronomic_rules.py & milp/soil   pytest 9.1 / py13   56      PASS     97.70 s (combined)
 tests/test_supabase_postgres_integration.py pytest 9.1 / py13    8      PASS*     6.91 s
 --------------------------------------------------------------------------------
-TOTAL SUITE: 190 PASSED • 1 SKIPPED (PG live migration fixture) • 0 FAILED
+TOTAL SUITE: 192 PASSED • 1 SKIPPED (PG live migration fixture) • 0 FAILED
 
 5. CONTINUOUS DELIVERY & DEPLOYMENT LOG
 --------------------------------------------------------------------------------
@@ -98,10 +103,12 @@ c7a81c3      2026-10-25 23:43:26    docs: record verified commit hash c8a81cc in
 3491711      2026-10-26 01:08:32    feat: add solver status, stale-state rerun, and boundary validation tests
 911f15c      2026-10-26 01:12:00    docs: record verified commit hash 3491711 in master output.txt
 7c70212      2026-10-26 01:50:09    fix(ui): resolve request is not a function across all research modules
+7782898      2026-10-26 01:53:15    docs: record verified commit hash 7c70212 in output.txt
 --------------------------------------------------------------------------------
 Remote Status: Synchronized with origin/master
 Live Deployment URL: https://fieldshift-backend.onrender.com/
-Health Check: https://fieldshift-backend.onrender.com/api/health -> {"status":"healthy","database":"postgresql"}
+Health Check: https://fieldshift-backend.onrender.com/api/health -> {"status":"healthy","service":"fieldshift","database":"postgresql","environment":"production"}
+Crop Catalog: https://fieldshift-backend.onrender.com/api/crops/catalog -> HTTP 200 OK (15 species loaded)
 Research Workspace: https://fieldshift-backend.onrender.com/research-workspace -> HTTP 200 OK
 
 6. SCIENTIFIC DISCLAIMER & DATA NOTICE

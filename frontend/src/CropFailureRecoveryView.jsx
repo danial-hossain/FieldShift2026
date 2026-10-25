@@ -18,7 +18,7 @@ export function CropFailureRecoveryView({
   const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
   const resolvedAnalysis = analysisResult || plan;
 
-  const [failureType, setFailureType] = useState('drought_shock');
+  const [failureType, setFailureType] = useState('drought_irrigation_cut');
   const [failureSeason, setFailureSeason] = useState(0);
   const [severity, setSeverity] = useState('severe');
   const [loading, setLoading] = useState(false);
@@ -26,11 +26,11 @@ export function CropFailureRecoveryView({
   const [simData, setSimData] = useState(null);
 
   const failureTypes = [
-    { id: 'drought_shock', label: 'Drought Shock', icon: '🌵', desc: 'Severe precip deficit & low groundwater aquifer reserve' },
+    { id: 'drought_irrigation_cut', label: 'Drought Shock', icon: '🌵', desc: 'Severe precip deficit & low groundwater aquifer reserve' },
     { id: 'heat_stress', label: 'Heat Stress Wave', icon: '🌡️', desc: 'Sustained temperature spike during critical flowering phase' },
-    { id: 'excess_rain', label: 'Waterlogging & Flood', icon: '🌊', desc: 'Early monsoon deluge causing root zone hypoxia' },
-    { id: 'crop_loss', label: 'Crop Pest / Blight Loss', icon: '🥀', desc: 'Severe agronomic damage causing near total harvest failure' },
-    { id: 'soil_shock', label: 'Soil Salinity / Degradation', icon: '🧂', desc: 'Sudden saline intrusion or heavy compaction shock' },
+    { id: 'excess_rainfall', label: 'Waterlogging & Flood', icon: '🌊', desc: 'Early monsoon deluge causing root zone hypoxia' },
+    { id: 'crop_failure', label: 'Crop Pest / Blight Loss', icon: '🥀', desc: 'Severe agronomic damage causing near total harvest failure' },
+    { id: 'soil_degradation', label: 'Soil Salinity / Degradation', icon: '🧂', desc: 'Sudden saline intrusion or heavy compaction shock' },
   ];
 
   const severities = [
@@ -57,7 +57,9 @@ export function CropFailureRecoveryView({
       const payload = {
         field_id: isNumericId ? Number(rawId) : 'demo',
         failure_type: type,
+        failure_event: type,
         failure_season: Number(season),
+        impacted_season_index: Number(season) + 1,
         severity: sev,
         field_state: {
           latitude: activeField?.latitude != null ? Number(activeField.latitude) : 24.8500,
