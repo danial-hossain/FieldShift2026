@@ -97,3 +97,16 @@ test('FIX 6: Tabs handles both items and tabs props; all Tabs callers pass items
     );
   }
 });
+
+test('FIX 7: styles.css overhaul section does not set opaque background on .app-shell', () => {
+  const css = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+  const overhaulIdx = css.indexOf('/* === UI 2: App Shell');
+  assert.ok(overhaulIdx !== -1, 'Overhaul UI 2 section must exist in styles.css');
+  const overhaulCss = css.slice(overhaulIdx);
+  const appShellMatch = overhaulCss.match(/\.app-shell\s*\{([^}]+)\}/);
+  assert.ok(appShellMatch, '.app-shell rule must exist in overhaul section');
+  const ruleBody = appShellMatch[1];
+  assert.ok(!ruleBody.includes('background-color: var(--bg-deep)'), '.app-shell must not set opaque background-color: var(--bg-deep)');
+  assert.ok(ruleBody.includes('background: transparent;'), '.app-shell must have background: transparent');
+  assert.ok(ruleBody.includes('isolation: isolate;'), '.app-shell must have isolation: isolate');
+});

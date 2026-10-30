@@ -14057,7 +14057,7 @@ h1, h2, h3, h4, h5, h6 {
   background-image: url('/bg/bangladesh_viirs_2024-01-20.jpg');
   background-size: cover;
   background-position: center;
-  filter: blur(18px) brightness(0.35) saturate(1.1);
+  filter: blur(6px) brightness(0.5) saturate(1.15);
   transform: translateZ(0);
 }
 
@@ -14521,7 +14521,8 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100vh;
   min-height: 100dvh;
   position: relative;
-  background-color: var(--bg-deep);
+  background: transparent;
+  isolation: isolate;
 }
 
 @media (min-width: 900px) {
