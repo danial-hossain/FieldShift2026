@@ -1,14 +1,93 @@
-# FieldShift
+# FieldShift 2026: Climate-Adaptive Crop Rotation & Planting Intelligence
 
-**FieldShift: A Hybrid NASA-Driven Intelligent Crop Rotation and Adaptive Farm
-Management System** is a research-oriented prototype for exploring crop
-rotations under changing climate, soil, and water conditions.
+**NASA International Space Apps Challenge 2026**  
+**Team:** Team Azoic  
+**License:** Apache License 2.0 (see [LICENSE](LICENSE))  
+**AI Disclosure:** Transparently documented in [docs/AI_USE.md](docs/AI_USE.md) and [docs/prompts/README.md](docs/prompts/README.md)  
 
-Phase 1 established the project structure and Python dependencies. Phase 2
-implements the NASA POWER daily environmental data pipeline. The project does
-not claim validated agronomic recommendations, trained real-world behavior, or
-climate forecasts. Measured NASA observations, local measurements, and
-illustrative/demo assumptions are identified separately.
+---
+
+## Executive Summary
+
+Across Bangladesh, erratic monsoon onsets and escalating climate volatility severely threaten smallholder rice farmers. Traditional planting calendars often trigger either false-onset seedling mortality or late planting that exposes crops to terminal drought. 
+
+**FieldShift 2026** is a hybrid Earth-observation intelligence platform that bridges 25 continuous years of NASA satellite climatology directly into actionable, mobile-first farm management. By combining **NASA POWER daily point observations (2001–2025)** with deterministic agro-meteorology, exact mathematical optimization (PuLP MILP), and adaptive reinforcement learning, FieldShift empowers farmers to schedule planting windows safely and transition toward sustainable, water-efficient multi-season crop rotations.
+
+---
+
+## Key NASA Earth Observation Datasets
+
+1. **NASA POWER (Prediction Of Worldwide Energy Resources) Daily Point Climatology:**
+   - **Coverage:** 2001-01-01 to 2025-12-31 (25 continuous years) at 0.5° × 0.5° spatial resolution.
+   - **Parameters Ingested:** `PRECTOTCORR` (Precipitation Corrected), `T2M` (Mean Temp at 2m), `T2M_MAX`, `T2M_MIN`, `RH2M` (Relative Humidity), `WS2M` (Wind Speed), `ALLSKY_SFC_SW_DWN` (Solar Radiation).
+   - **Role:** Drives empirical usable monsoon onset detection, Growing Degree Day (GDD) tracking, and 25-year climatological baseline evaluation across 6 key Bangladesh agricultural divisions.
+2. **NASA Global Imagery Browse Services (GIBS) / VIIRS:**
+   - **Layer:** `VIIRS_NOAA20_CorrectedReflectance_TrueColor`.
+   - **Role:** High-resolution authentic true-color satellite reflectance imagery providing spatial geographic context for agricultural parcels in the Barind Tract (Rajshahi).
+
+---
+
+## Core Scientific Methodology
+
+- **Deterministic Rainfall Onset Detection:** Sourced from Bangladesh Agricultural Research Council (BARC) & BRRI standards. An onset is triggered when cumulative precipitation over 3 consecutive days reaches >= 25.0 mm (with >= 1 rainy day >= 1.0 mm), verified by a **21-day forward lookahead** that rejects false onsets with consecutive dry spells >= 7 days.
+- **Two-Sided Mann-Whitney U Test:** Non-parametric evaluation comparing Baseline (Period 1: 2001–2012, n=12) vs Recent Era (Period 2: 2013–2025, n=13) annual onset DOYs without assuming normality.
+- **Thermal Phenology (GDD):** Calibrated to BRRI rice varieties with base temperature T_base = 10.0°C and upper cap T_cap = 35.0°C.
+- **6-Season MILP Rotation Engine:** Exact mathematical programming using PuLP / CBC Branch-and-Bound to optimize 3-year (6-season) rotations under strict seasonal suitability constraints (`rabi`, `kharif`), non-repetition rules, water limits, and soil health objectives.
+- **Three-Way Comparison Lab:** Transparent, side-by-side benchmarking of exact MILP, sequential Reinforcement Learning (Gymnasium), and heuristic domain rules.
+
+---
+
+## Quick Start & Offline Demo
+
+FieldShift is engineered for complete offline autonomy (`OFFLINE=1`), ensuring that all core features function seamlessly without active internet connectivity.
+
+### 1. Fast System Integrity Check
+Execute an end-to-end dry run testing all primary API endpoints (Health, Crops, Advisory, Planning, Location Weather):
+```bash
+python scripts/demo_check.py
+```
+*(Outputs full verification status and latency report; exits 0 on success).*
+
+### 2. Empirical Onset Window Sensitivity Analysis
+Run the 6-district sensitivity sweep across search boundaries (01 May vs 15 May vs 01 June):
+```bash
+python scripts/onset_window_sensitivity.py
+```
+*(Report generated at `docs/onset_window_sensitivity.md`).*
+
+### 3. Launching the Local Services
+**Backend (FastAPI):**
+```bash
+$env:OFFLINE="1"
+python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000
+```
+
+**Frontend (React + Vite + Three.js):**
+```bash
+cd frontend
+npm run dev
+```
+Open [http://localhost:5173/](http://localhost:5173/) to interact with the dashboard, 3D clay diorama farm, Planting Advisory, and Research Lab.
+
+### 4. Running Test Suites
+```bash
+# Python backend test suite (unit, MILP, advisory, comparison lab)
+python -m pytest -q
+
+# Frontend regression & SSR smoke test suite
+cd frontend
+npm test
+npm run smoke
+```
+
+---
+
+## Scientific Limitations & Honesty Contract
+
+- **Spatial Resolution:** NASA POWER data is provided at 0.5° × 0.5° resolution (~50 km grid cells). While exceptional for long-term climatological trends and regional onset shifts, microclimate variations, localized bund water storage, and tubewell availability must mediate on-farm decisions.
+- **Data Honesty:** FieldShift strictly rejects data fabrication. Telemetry metrics that cannot be verified from satellite or user inputs (such as single-bed NDVI or real-time sensor moisture) are never synthesized; they are honestly displayed as "তথ্য নেই" / "No data".
+
+---
 
 ## Architecture and module responsibilities
 
