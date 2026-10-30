@@ -96,12 +96,10 @@ class AdvisoryApiTests(unittest.TestCase):
         self.assertEqual(data["district"]["district_id"], "bogura")
         self.assertEqual(data["district"]["name_en"], "Bogura")
 
-    def test_invalid_district_falls_back_gracefully(self):
-        """Invalid district identifier falls back safely to default Rajshahi."""
+    def test_invalid_district_raises_400(self):
+        """Invalid district identifier raises HTTP 400 Bad Request."""
         res = self.client.get("/api/advisory?district=nonexistent_xyz&crop=aman&offline=true")
-        self.assertEqual(res.status_code, 200)
-        data = res.json()
-        self.assertEqual(data["district"]["district_id"], "rajshahi")
+        self.assertEqual(res.status_code, 400)
 
     def test_sensitivity_parameter_tuning(self):
         """Query parameter threshold_mm changes the central evaluation threshold."""
@@ -125,12 +123,10 @@ class AdvisoryApiTests(unittest.TestCase):
         for key in required_keys:
             self.assertIn(key, data, f"Missing key: {key}")
 
-    def test_unsupported_crop_fallback(self):
-        """Unsupported crop falls back safely to 'aman' without raising 500 error."""
+    def test_unsupported_crop_raises_400(self):
+        """Unsupported crop raises HTTP 400 Bad Request."""
         res = self.client.get("/api/advisory?district=rajshahi&crop=unknown_crop&offline=true")
-        self.assertEqual(res.status_code, 200)
-        data = res.json()
-        self.assertEqual(data["crop"], "aman")
+        self.assertEqual(res.status_code, 400)
 
 
 if __name__ == "__main__":

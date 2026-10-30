@@ -226,11 +226,56 @@ def build_planting_advisory(
     crop_key = crop.strip().lower()
 
     if dist_key not in DISTRICT_REGISTRY:
-        dist_key = "rajshahi"
+        raise ValueError(
+            f"Unsupported district '{district}'. Supported districts: "
+            + ", ".join(DISTRICT_REGISTRY.keys())
+        )
     if crop_key not in RICE_SEASON_WINDOWS:
-        crop_key = "aman"
+        raise ValueError(
+            f"Unsupported crop '{crop}'. Supported crops: "
+            + ", ".join(RICE_SEASON_WINDOWS.keys())
+        )
 
     district_meta = DISTRICT_REGISTRY[dist_key]
+
+    # Rule 1.4: Boro is irrigated dry-season rice; rainfall onset analysis does not apply
+    if crop_key == "boro":
+        return {
+            "status": "not_applicable",
+            "district": district_meta,
+            "crop": "boro",
+            "recommendation": {
+                "status": "not_applicable",
+                "evidence_level": "not_applicable",
+                "bangla_headline": "বোরো সেচনির্ভর শুষ্ক মৌসুমের ধান; বর্ষা শুরুর বিশ্লেষণ এর জন্য প্রযোজ্য নয়।",
+                "english_headline": "Boro is irrigated dry-season rice; rainfall onset analysis does not apply.",
+                "bangla_sms": f"{district_meta['name_bn']} বোরো: বোরো সেচনির্ভর ধান, বর্ষা শুরুর বিশ্লেষণ প্রযোজ্য নয়। সেচ নিশ্চিত করুন।",
+                "sms_character_count": len(f"{district_meta['name_bn']} বোরো: বোরো সেচনির্ভর ধান, বর্ষা শুরুর বিশ্লেষণ প্রযোজ্য নয়। সেচ নিশ্চিত করুন।"),
+                "suggested_nursery_window_bn": "১৫ নভেম্বর – ১৫ ডিসেম্বর",
+                "suggested_transplant_window_bn": "১৫ ডিসেম্বর – ১৫ জানুয়ারি",
+                "suggested_nursery_window_en": "November 15 – December 15",
+                "suggested_transplant_window_en": "December 15 – January 15",
+            },
+            "provenance": {
+                "dataset_name": "NASA Prediction Of Worldwide Energy Resources (POWER) Daily Point API",
+                "spatial_resolution": "0.5° x 0.5° latitude/longitude (~50 km)",
+                "data_mode": "cache" if offline else "cache",
+                "offline_forced": bool(offline or os.getenv("OFFLINE") == "1"),
+                "coordinates": {
+                    "latitude": district_meta["latitude"],
+                    "longitude": district_meta["longitude"],
+                },
+                "aez_context": {
+                    "aez_code": district_meta["aez_code"],
+                    "aez_name": district_meta["aez_name"],
+                    "soil_texture": district_meta["soil_type"],
+                },
+            },
+            "methodology": {
+                "note": "Rainfall onset analysis is not applicable to winter irrigated Boro rice."
+            }
+        }
+
     season_window = RICE_SEASON_WINDOWS[crop_key]
     thermal_spec = RICE_THERMAL_SPECS.get(crop_key, RICE_THERMAL_SPECS["default"])
 
@@ -260,6 +305,23 @@ def build_planting_advisory(
 
     # 2. Mann-Whitney comparison between Period 1 (2001-2012) and Period 2 (2013-2025)
     comparison = compare_periods(p1_data["doys"], p2_data["doys"])
+    censored_years = series_results.get("window_start_censored_years", [])
+    censored_fraction = series_results.get("censored_fraction", 0.0)
+
+    comparison["window_start_censored_years"] = censored_years
+    comparison["censored_fraction"] = censored_fraction
+
+    if censored_fraction > 0.30:
+        comparison["status"] = "unreliable_window_censored"
+        k = len(censored_years)
+        n = p1_data["valid_samples"] + p2_data["valid_samples"]
+        bn_digits = {"0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯"}
+        k_bn = "".join(bn_digits.get(c, c) for c in str(k))
+        n_bn = "".join(bn_digits.get(c, c) for c in str(n))
+        data_warning_en = f"Onset detection is unreliable here: in {k} of {n} years the detected onset fell on the first day of the search window."
+        data_warning_bn = f"সতর্কতা: {n_bn} বছরের মধ্যে {k_bn} বছরে বর্ষা শুরুর তারিখ অনুসন্ধানের প্রথম দিনেই পড়েছে, তাই এই ফলাফল নির্ভরযোগ্য নয়।"
+        comparison["data_warning_en"] = data_warning_en
+        comparison["data_warning_bn"] = data_warning_bn
 
     # 3. Growing Degree Day (GDD) accumulation and thermal context
     gdd_context = calculate_growing_degree_days(

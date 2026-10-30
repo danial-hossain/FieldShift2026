@@ -250,11 +250,15 @@ def compute_onset_series(
     """Compute annual onset dates and DOYs for all years between start_year and end_year."""
     cfg = config or AgronomicConfig()
     series = []
+    window_start_censored_years = []
     
     for yr in range(start_year, end_year + 1):
         onset = detect_rainfall_onset(daily_df, yr, cfg)
         if onset:
             series.append(onset)
+            search_start_str = f"{yr}-{cfg.search_start_month:02d}-{cfg.search_start_day:02d}"
+            if onset.get("onset_date") == search_start_str:
+                window_start_censored_years.append(yr)
         else:
             series.append({
                 "year": yr,
@@ -270,8 +274,13 @@ def compute_onset_series(
     p1 = [item for item in series if 2001 <= item["year"] <= 2012 and item.get("doy") is not None]
     p2 = [item for item in series if 2013 <= item["year"] <= 2025 and item.get("doy") is not None]
 
+    valid_samples = len(p1) + len(p2)
+    censored_fraction = round(len(window_start_censored_years) / valid_samples, 4) if valid_samples > 0 else 0.0
+
     return {
         "full_series": series,
+        "window_start_censored_years": window_start_censored_years,
+        "censored_fraction": censored_fraction,
         "period_1": {
             "label": "2001–2012 Baseline",
             "start_year": 2001,
@@ -456,16 +465,35 @@ def generate_recommendation(
     """
     shift = comparison.get("shift_days_median") or 0.0
     status = comparison.get("status", "no_statistically_significant_shift")
+    is_significant = bool(comparison.get("is_significant", False))
     p_val = comparison.get("p_value")
-    n1 = comparison.get("n1", 0)
-    n2 = comparison.get("n2", 0)
+    censored_fraction = comparison.get("censored_fraction", 0.0)
+    is_censored = bool(censored_fraction > 0.30 or status == "unreliable_window_censored")
 
-    district_display = district.capitalize()
-    crop_display = crop.capitalize()
+    dist_registry = {
+        "rajshahi": {"name_en": "Rajshahi", "name_bn": "রাজশাহী"},
+        "bogura": {"name_en": "Bogura", "name_bn": "বগুড়া"},
+        "rangpur": {"name_en": "Rangpur", "name_bn": "রংপুর"},
+        "mymensingh": {"name_en": "Mymensingh", "name_bn": "ময়মনসিংহ"},
+        "jashore": {"name_en": "Jashore", "name_bn": "যশোর"},
+        "cumilla": {"name_en": "Cumilla", "name_bn": "কুমিল্লা"},
+    }
+    crop_registry = {
+        "aman": {"name_en": "Aman", "name_bn": "আমন"},
+        "aus": {"name_en": "Aus", "name_bn": "আউশ"},
+        "boro": {"name_en": "Boro", "name_bn": "বোরো"},
+    }
 
-    # Recommended Calendar Windows (Day-Month string format)
-    # Default Aman baseline: Sowing June 15-30, Transplanting July 15-30
-    if shift > 0:
+    dist_key = district.strip().lower()
+    crop_key = crop.strip().lower()
+
+    district_bn = dist_registry.get(dist_key, {}).get("name_bn", district)
+    district_en = dist_registry.get(dist_key, {}).get("name_en", district.capitalize())
+    crop_bn = crop_registry.get(crop_key, {}).get("name_bn", crop)
+    crop_en = crop_registry.get(crop_key, {}).get("name_en", crop.capitalize())
+
+    # Recommended Calendar Windows: apply buffer ONLY in case (a)
+    if is_significant and shift >= 3.0 and not is_censored:
         buffer_days = min(int(round(shift)), 12)
         sow_start_doy = 166 + buffer_days  # June 15 + buffer
         sow_end_doy = 181 + buffer_days    # June 30 + buffer
@@ -484,39 +512,52 @@ def generate_recommendation(
 
     # Headline and SMS formulations
     if status == "insufficient_evidence":
-        headline_bn = f"{district_display} জেলায় পর্যাপ্ত পর্যবেক্ষণ উপাত্ত না থাকায় প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
-        headline_en = f"Insufficient continuous observation data for {district_display}; follow standard BRRI crop calendar."
-        sms_bn = f"{district_display}: আমন ধানের বীজতলা জুনের শেষ সপ্তাহে ফেলুন। পর্যাপ্ত বৃষ্টি না হলে সম্পূরক সেচ দিন। বিআরআরআই পরামর্শ।"
-    elif shift >= 3.0:
+        evidence_level = "insufficient"
+        headline_bn = f"{district_bn} জেলায় পর্যাপ্ত পর্যবেক্ষণ উপাত্ত না থাকায় প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
+        headline_en = f"Insufficient continuous observation data for {district_en}; follow standard BRRI crop calendar."
+        sms_bn = f"{district_bn} {crop_bn}: বীজতলা জুনের শেষ সপ্তাহে ফেলুন। পর্যাপ্ত বৃষ্টি না হলে সম্পূরক সেচ দিন। বিআরআরআই পরামর্শ।"
+    elif is_significant and shift >= 3.0 and not is_censored:
+        evidence_level = "significant"
         delay_int = int(round(shift))
         headline_bn = (
-            f"নাসা উপাত্তে {district_display} অঞ্চলে বৃষ্টিপাত শুরুর মধ্যমা {delay_int} দিন পিছিয়েছে; "
+            f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত শুরুর মধ্যমা {delay_int} দিন পিছিয়েছে; "
             f"বীজতলা বপন ৭-১০ দিন পিছিয়ে স্বল্পমেয়াদী ব্রি ধান-৭৫ চাষের পরামর্শ দেওয়া হচ্ছে।"
         )
         headline_en = (
-            f"NASA observations indicate a {delay_int}-day delay in median rainfall onset for {district_display}. "
+            f"NASA observations indicate a {delay_int}-day delay in median rainfall onset for {district_en}. "
             f"Shift nursery sowing by 7–10 days and cultivate short-duration BRRI dhan75."
         )
-        # SMS length strictly < 160 characters
         sms_bn = (
-            f"{district_display} আমন: বৃষ্টি {delay_int} দিন দেরিতে আসছে। "
+            f"{district_bn} {crop_bn}: বৃষ্টি {delay_int} দিন দেরিতে আসছে। "
             f"বীজতলা {doy_to_bn_date(2025, sow_start_doy)} এর পরে ফেলুন। "
             f"ব্রি ধান৭৫ চাষ করুন ও সম্পূরক সেচ প্রস্তুত রাখুন।"
         )
-    elif shift <= -3.0:
+    elif is_significant and shift <= -3.0 and not is_censored:
+        evidence_level = "significant"
         adv_int = abs(int(round(shift)))
-        headline_bn = f"নাসা উপাত্তে {district_display} অঞ্চলে বৃষ্টিপাত {adv_int} দিন এগিয়ে এসেছে; আগাম বীজতলা প্রস্তুতি নিন।"
-        headline_en = f"NASA data indicates rainfall onset advanced by {adv_int} days in {district_display}; prepare early seedbeds."
-        sms_bn = f"{district_display} আমন: বৃষ্টি {adv_int} দিন আগে শুরু হচ্ছে। বীজতলা জুনের দ্বিতীয় সপ্তাহে ফেলুন। ব্রি ধান৪৯/৭৫ লাগান।"
+        headline_bn = f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত {adv_int} দিন এগিয়ে এসেছে; আগাম বীজতলা প্রস্তুতি নিন।"
+        headline_en = f"NASA data indicates rainfall onset advanced by {adv_int} days in {district_en}; prepare early seedbeds."
+        sms_bn = f"{district_bn} {crop_bn}: বৃষ্টি {adv_int} দিন আগে শুরু হচ্ছে। বীজতলা জুনের দ্বিতীয় সপ্তাহে ফেলুন। ব্রি ধান৪৯/৭৫ লাগান।"
     else:
-        headline_bn = f"{district_display} অঞ্চলে ঐতিহাসিক বৃষ্টিপাত অনসেটে বড় কোনো পরিবর্তন দেখা যায়নি; স্বাভাবিক সময়ে চারা রোপণ করুন।"
-        headline_en = f"No substantial shift in rainfall onset detected for {district_display}; adhere to normal planting schedule."
-        sms_bn = f"{district_display} আমন: স্বাভাবিক রোপণ সময় জুনের শেষ থেকে জুলাইর প্রথম সপ্তাহ। ব্রি ধান৪৯ বা ব্রি ধান৭৫ চাষ করুন।"
-
-    # Ensure SMS is strictly <= 160 chars
-    sms_bn = sms_bn[:158]
+        # Case (c): Not significant / censored / moderate trend
+        evidence_level = "not_significant"
+        p_val_display = p_val if p_val is not None else "N/A"
+        headline_bn = (
+            f"{district_bn} অঞ্চলে ২৫ বছরের নাসা উপাত্তে বর্ষা শুরুর সময়ে পরিসংখ্যানগতভাবে নিশ্চিত কোনো পরিবর্তন পাওয়া যায়নি, "
+            f"তবে বছরভেদে শুরুর সময় অনেক ওঠানামা করে। ঝুঁকি কমাতে দুই কিস্তিতে বীজতলা ফেলুন এবং স্বল্পমেয়াদী জাত বিবেচনা করুন।"
+        )
+        english_headline = (
+            f"No statistically significant change in rainfall onset for {district_en} over 2001-2025 (p = {p_val_display}). "
+            f"Onset varies widely from year to year, so stagger seedbeds and consider short-duration varieties."
+        )
+        headline_en = english_headline
+        sms_bn = (
+            f"{district_bn} {crop_bn}: বর্ষা শুরুর সময় অনিশ্চিত। বীজতলা ৭ দিন ব্যবধানে দুই কিস্তিতে ফেলুন। "
+            f"স্বল্পমেয়াদী জাত (ব্রি ধান৭৫) বিবেচনা করুন।"
+        )
 
     return {
+        "evidence_level": evidence_level,
         "bangla_headline": headline_bn,
         "english_headline": headline_en,
         "bangla_sms": sms_bn,

@@ -46,6 +46,7 @@ export function NasaPlantingAdvisoryView({
       } catch (err) {
         if (!isCancelled) {
           setError(err.message || 'Failed to load NASA planting advisory.');
+          setAdvisoryData(null);
           setLoading(false);
         }
       }
@@ -88,7 +89,7 @@ export function NasaPlantingAdvisoryView({
 
   return (
     <div className="nasa-advisory-container" style={{ padding: '20px 16px', maxWidth: 1100, margin: '0 auto' }}>
-      
+
       {/* 1. TOP BANGLA ADVISORY SENTENCE (MOBILE-FIRST HERO BANNER) */}
       <div
         className="advisory-hero-banner"
@@ -142,6 +143,31 @@ export function NasaPlantingAdvisoryView({
           <div style={{ color: '#f87171', padding: '8px 0' }}>{error}</div>
         ) : (
           <div>
+            {(comp?.data_warning_bn || rec?.data_warning_bn || comp?.data_warning_en || rec?.data_warning_en) && (
+              <div
+                className="advisory-warning-box"
+                style={{
+                  background: 'rgba(251, 191, 36, 0.15)',
+                  border: '1px solid #fbbf24',
+                  color: '#fbbf24',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  marginBottom: 12,
+                  fontSize: '0.88rem',
+                  lineHeight: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <span style={{ fontSize: 16 }}>⚠️</span>
+                <span>
+                  {lang === 'bn'
+                    ? (comp?.data_warning_bn || rec?.data_warning_bn)
+                    : (comp?.data_warning_en || rec?.data_warning_en)}
+                </span>
+              </div>
+            )}
             <h1
               style={{
                 fontSize: '1.35rem',
@@ -153,19 +179,21 @@ export function NasaPlantingAdvisoryView({
             >
               {lang === 'bn' ? rec?.bangla_headline : rec?.english_headline}
             </h1>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ab0c4', lineHeight: 1.5 }}>
-              {lang === 'bn' ? (
-                <>
-                  <strong style={{ color: '#00df81' }}>প্রস্তাবিত বীজতলা:</strong> {rec?.suggested_nursery_window_bn} &nbsp;|&nbsp;
-                  <strong style={{ color: '#38bdf8' }}> চারা রোপণ:</strong> {rec?.suggested_transplant_window_bn}
-                </>
-              ) : (
-                <>
-                  <strong style={{ color: '#00df81' }}>Nursery Sowing:</strong> {rec?.suggested_nursery_window_en} &nbsp;|&nbsp;
-                  <strong style={{ color: '#38bdf8' }}> Transplanting:</strong> {rec?.suggested_transplant_window_en}
-                </>
-              )}
-            </p>
+            {advisoryData?.status !== 'not_applicable' && rec?.status !== 'not_applicable' && (
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ab0c4', lineHeight: 1.5 }}>
+                {lang === 'bn' ? (
+                  <>
+                    <strong style={{ color: '#00df81' }}>প্রস্তাবিত বীজতলা:</strong> {rec?.suggested_nursery_window_bn} &nbsp;|&nbsp;
+                    <strong style={{ color: '#38bdf8' }}> চারা রোপণ:</strong> {rec?.suggested_transplant_window_bn}
+                  </>
+                ) : (
+                  <>
+                    <strong style={{ color: '#00df81' }}>Nursery Sowing:</strong> {rec?.suggested_nursery_window_en} &nbsp;|&nbsp;
+                    <strong style={{ color: '#38bdf8' }}> Transplanting:</strong> {rec?.suggested_transplant_window_en}
+                  </>
+                )}
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -244,9 +272,9 @@ export function NasaPlantingAdvisoryView({
       </div>
 
       {/* 3. TWO-PERIOD COMPARISON & SHIFT METRICS */}
-      {advisoryData && !loading && (
+      {advisoryData && !loading && !error && advisoryData?.status !== 'not_applicable' && rec?.status !== 'not_applicable' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16, marginBottom: 20 }}>
-          
+
           {/* Card A: Historical Shift in Days & Statistics */}
           <div
             style={{
