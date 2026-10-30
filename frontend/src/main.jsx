@@ -22,6 +22,12 @@ import { FarmerCropAdviceView } from './FarmerCropAdviceView.jsx';
 import { FarmerHarvestProfitView } from './FarmerHarvestProfitView.jsx';
 import { FarmerVoiceAssistant } from './FarmerVoiceAssistant.jsx';
 import { ResearchWorkspaceView } from './ResearchWorkspaceView.jsx';
+import { NasaPlantingAdvisoryView } from './NasaPlantingAdvisoryView.jsx';
+import { MyFarmWorkspaceView } from './MyFarmWorkspaceView.jsx';
+import { FarmPlanningView } from './FarmPlanningView.jsx';
+import { WaterIrrigationView } from './WaterIrrigationView.jsx';
+import { DigitalTwin3DView } from './DigitalTwin3DView.jsx';
+import { DataEvidenceView } from './DataEvidenceView.jsx';
 import { useTranslation, formatArea } from './i18n.js';
 import {
   buildCounterfactualPayload,
@@ -497,36 +503,139 @@ export function App() {
     localStorage.setItem('fieldshift_lang', lang);
   }, [lang]);
 
+  // Sub-navigation state for 12 unified destinations
+  const [cropSubTab, setCropSubTab] = useState('advisory'); // 'advisory' | 'advice' | 'catalog'
+  const [weatherSubTab, setWeatherSubTab] = useState('station_3d'); // 'station_3d' | 'uncertainty' | 'satellites'
+  const [harvestSubTab, setHarvestSubTab] = useState('calculator'); // 'calculator' | 'market' | 'outcomes' | 'sustainability'
+  const [assistantSubTab, setAssistantSubTab] = useState('chat'); // 'chat' | 'voice'
+  const [farmPlanningSubTab, setFarmPlanningSubTab] = useState('milp'); // 'milp' | 'replan' | 'comparison'
+  const [waterSubTab, setWaterSubTab] = useState('balance'); // 'balance' | 'optimization' | 'profile' | 'stress'
+  const [twinSubTab, setTwinSubTab] = useState('farm'); // 'farm' | 'growth' | 'hydrology' | 'climate' | 'compare'
+  const [dataEvidenceSubTab, setDataEvidenceSubTab] = useState('sources'); // 'sources' | 'provenance' | 'reports' | 'methodology'
+  const [myFarmSubTab, setMyFarmSubTab] = useState('overview'); // 'overview' | 'parcels' | 'map' | 'soil' | 'history'
+
   const handleNavigate = (nav, tab = null) => {
     setMobileNavOpen(false);
-    if (nav === 'crop_advice' || nav === 'harvest_profit' || nav === 'research') {
-      setActiveNav(nav);
+
+    // Backward-compatible mapping for legacy analytics tab calls
+    if (nav === 'analytics') {
+      if (tab === 'optimization' || tab === 'milp') {
+        setActiveNav('farm_planning');
+        setFarmPlanningSubTab('milp');
+        return;
+      }
+      if (tab === 'comparison_lab' || tab === 'lab') {
+        setActiveNav('farm_planning');
+        setFarmPlanningSubTab('comparison');
+        return;
+      }
+      if (tab === 'replan') {
+        setActiveNav('farm_planning');
+        setFarmPlanningSubTab('replan');
+        return;
+      }
+      if (tab === 'water' || tab === 'irrigation') {
+        setActiveNav('water_irrigation');
+        setWaterSubTab('optimization');
+        return;
+      }
+      if (tab === 'canvas_3d' || tab === '3d') {
+        setActiveNav('digital_twin');
+        setTwinSubTab('farm');
+        return;
+      }
+      if (tab === 'sources' || tab === 'evidence') {
+        setActiveNav('data_evidence');
+        setDataEvidenceSubTab('sources');
+        return;
+      }
+      if (tab === 'synthetic_lab' || tab === 'provenance') {
+        setActiveNav('data_evidence');
+        setDataEvidenceSubTab('provenance');
+        return;
+      }
+      if (tab === 'market') {
+        setActiveNav('harvest_profit');
+        setHarvestSubTab('market');
+        return;
+      }
+      if (tab === 'outcomes') {
+        setActiveNav('harvest_profit');
+        setHarvestSubTab('outcomes');
+        return;
+      }
+      if (tab === 'sustainability') {
+        setActiveNav('harvest_profit');
+        setHarvestSubTab('sustainability');
+        return;
+      }
+      if (tab === 'crops' || tab === 'crop_catalog') {
+        setActiveNav('crop_advice');
+        setCropSubTab('catalog');
+        return;
+      }
+      if (tab === 'weather' || tab === 'uncertainty') {
+        setActiveNav('weather');
+        setWeatherSubTab('uncertainty');
+        return;
+      }
+      if (tab === 'field' || tab === 'field_map') {
+        setActiveNav('field');
+        if (tab === 'field_map') setMyFarmSubTab('map');
+        return;
+      }
+      if (tab === 'assistant') {
+        setActiveNav('assistant');
+        return;
+      }
+      if (tab === 'account') {
+        setActiveNav('account');
+        return;
+      }
+      if (tab === 'dashboard') {
+        setActiveNav('dashboard');
+        return;
+      }
+      // Route any other research sub-tabs cleanly to the 20-module research lab
+      setActiveNav('research');
+      if (tab) setAnalysisTab(tab);
       return;
     }
-    if (nav === 'market' || nav === 'synthetic_lab' || nav === 'sensitivity') {
-      setActiveNav(nav);
+
+    if (nav === 'market') {
+      setActiveNav('harvest_profit');
+      setHarvestSubTab('market');
       return;
     }
-    if (nav === 'analytics' && (tab === 'field' || tab === 'weather' || tab === 'assistant' || tab === 'account' || tab === 'dashboard' || tab === 'market' || tab === 'synthetic_lab' || tab === 'sensitivity')) {
-      setActiveNav(tab);
+    if (nav === 'synthetic_lab') {
+      setActiveNav('data_evidence');
+      setDataEvidenceSubTab('provenance');
       return;
     }
-    const tabMap = {
-      milp: 'optimization',
-      lab: 'comparison_lab',
-      failure: 'recovery',
-      scenarios: 'stress_testing',
-      stress: 'stress_testing',
-      crops: 'crop_catalog',
-      market: 'market',
-      synthetic_lab: 'synthetic_lab',
-      sensitivity: 'sensitivity',
-    };
-    if (tab === 'market' || tab === 'synthetic_lab' || tab === 'sensitivity') {
-      setActiveNav(tab);
+    if (nav === 'sensitivity') {
+      setActiveNav('research');
+      setAnalysisTab('sensitivity');
       return;
     }
-    if (tab) setAnalysisTab(tabMap[tab] || tab);
+    if (nav === 'field_map') {
+      setActiveNav('field');
+      setMyFarmSubTab('map');
+      return;
+    }
+
+    // Direct routing for the 12 primary keys with sub-tab support
+    if (tab) {
+      if (nav === 'crop_advice') setCropSubTab(tab);
+      else if (nav === 'weather') setWeatherSubTab(tab);
+      else if (nav === 'harvest_profit') setHarvestSubTab(tab);
+      else if (nav === 'assistant') setAssistantSubTab(tab);
+      else if (nav === 'farm_planning') setFarmPlanningSubTab(tab);
+      else if (nav === 'water_irrigation') setWaterSubTab(tab);
+      else if (nav === 'digital_twin') setTwinSubTab(tab);
+      else if (nav === 'data_evidence') setDataEvidenceSubTab(tab);
+      else if (nav === 'field') setMyFarmSubTab(tab);
+      else if (nav === 'research') setAnalysisTab(tab);
+    }
     setActiveNav(nav);
   };
 
@@ -1616,107 +1725,151 @@ export function App() {
         </div>
 
         <nav className="sidebar-nav" aria-label="Primary Navigation">
-          {/* FARMER MAIN SECTIONS (Section 4 of prompt) */}
-          <div className="nav-section-label">{lang === 'bn' ? 'প্রধান মেন্যু' : 'Main Menu'}</div>
+          <div className="nav-section-label">{lang === 'bn' ? 'প্রধান মেন্যু (১২ বিভাগ)' : 'Navigation (12 Sections)'}</div>
 
-          {/* 1. Home */}
+          {/* 01. Home */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'dashboard' ? 'active' : ''}`}
             onClick={() => handleNavigate('dashboard')}
-            title={lang === 'bn' ? 'হোম - আপনার খামারের সারসংক্ষেপ' : 'Home - Farm Overview'}
+            title={lang === 'bn' ? '০১. হোম - সারসংক্ষেপ' : '01. Home - Overview & Executive Summary'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>🏠</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'হোম' : 'Home'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🏠</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০১. হোম' : '01. Home'}</span>
           </button>
 
-          {/* 2. My Farm */}
+          {/* 02. My Farm */}
           <button
             type="button"
-            className={`nav-item ${(activeNav === 'field' || activeNav === 'field_map') ? 'active' : ''}`}
+            className={`nav-item ${activeNav === 'field' || activeNav === 'field_map' ? 'active' : ''}`}
             onClick={() => handleNavigate('field')}
-            title={lang === 'bn' ? 'আমার জমি - জমির তথ্য ও সীমানা' : 'My Farm - Parcels & Topography'}
+            title={lang === 'bn' ? '০২. আমার জমি - সীমানা, স্যাটেলাইট ম্যাপ ও মাটি' : '02. My Farm - Parcels, Map & Soil'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>🗺️</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'আমার জমি' : 'My Farm'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🗺️</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০২. আমার জমি' : '02. My Farm'}</span>
           </button>
 
-          {/* 3. Crop Advice */}
+          {/* 03. Crop Advice */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'crop_advice' ? 'active' : ''}`}
             onClick={() => handleNavigate('crop_advice')}
-            title={lang === 'bn' ? 'ফসলের পরামর্শ - সবচেয়ে লাভজনক ফসল' : 'Crop Advice - Best Matched Crops'}
+            title={lang === 'bn' ? '০৩. ফসলের পরামর্শ - নাসা ধান রোপণ উপদেষ্টা ও ক্যাটালগ' : '03. Crop Advice - NASA Rice Advisory & Matches'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>🌱</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'ফসলের পরামর্শ' : 'Crop Advice'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🌱</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৩. ফসলের পরামর্শ' : '03. Crop Advice'}</span>
           </button>
 
-          {/* 4. Market Prices */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'market' ? 'active' : ''}`}
-            onClick={() => handleNavigate('market')}
-            title={lang === 'bn' ? 'বাজারদর - পাইকারি ও খুচরা দর' : 'Market Prices - Benchmarks & Tiers'}
-          >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>💰</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'বাজারদর' : 'Market Prices'}</span>
-          </button>
-
-          {/* 5. Weather */}
+          {/* 04. NASA Weather & Climate */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'weather' ? 'active' : ''}`}
             onClick={() => handleNavigate('weather')}
-            title={lang === 'bn' ? 'আবহাওয়া - নাসা উপগ্রহ উপাত্ত ও পূর্বাভাস' : 'Weather - NASA POWER Telemetry'}
+            title={lang === 'bn' ? '০৪. নাসা আবহাওয়া ও জলবায়ু স্টেশন' : '04. NASA Weather & Climate Station'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>🌦️</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'আবহাওয়া' : 'Weather'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🌦️</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৪. আবহাওয়া ও জলবায়ু' : '04. NASA Weather'}</span>
           </button>
 
-          {/* 6. Harvest & Profit */}
+          {/* 05. Farm Planning */}
           <button
             type="button"
-            className={`nav-item ${activeNav === 'harvest_profit' ? 'active' : ''}`}
-            onClick={() => handleNavigate('harvest_profit')}
-            title={lang === 'bn' ? 'ফসলের হিসাব - লাভ-ক্ষতি ও ফলন সংরক্ষণ' : 'Harvest & Profit - Calculator & Logs'}
+            className={`nav-item ${activeNav === 'farm_planning' ? 'active' : ''}`}
+            onClick={() => handleNavigate('farm_planning')}
+            title={lang === 'bn' ? '০৫. খামার পরিকল্পনা - ৬-মৌসুম রোটেশন ও পুনঃপরিকল্পনা' : '05. Farm Planning - 6-Season MILP Rotation'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>📋</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'ফসলের হিসাব' : 'Harvest & Profit'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>📐</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৫. খামার পরিকল্পনা' : '05. Farm Planning'}</span>
           </button>
 
-          {/* 7. AI Assistant */}
+          {/* 06. Water & Irrigation */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'water_irrigation' ? 'active' : ''}`}
+            onClick={() => handleNavigate('water_irrigation')}
+            title={lang === 'bn' ? '০৬. পানি ও সেচ ব্যবস্থাপনা - FAO-56 ব্যালেন্স ও AWD' : '06. Water & Irrigation - FAO-56 Balance & AWD'}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>💧</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৬. পানি ও সেচ' : '06. Water & Irrigation'}</span>
+          </button>
+
+          {/* 07. Research Lab */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'research' || activeNav === 'analytics' ? 'active' : ''}`}
+            onClick={() => handleNavigate('research')}
+            title={lang === 'bn' ? '০৭. উন্নত গবেষণা ল্যাব - ২০টি বৈজ্ঞানিক মডিউল' : '07. Research Lab - 20 Scientific Modules'}
+            style={{ border: '1px dashed var(--border-medium)', background: 'var(--bg-card-subtle)' }}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🔬</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৭. গবেষণা ল্যাব (২০)' : '07. Research Lab (20)'}</span>
+          </button>
+
+          {/* 08. 3D Digital Twin */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'digital_twin' ? 'active' : ''}`}
+            onClick={() => handleNavigate('digital_twin')}
+            title={lang === 'bn' ? '০৮. ৩ডি ডিজিটাল টুইন - খামার দৃশ্যকল্প ও সিমুলেশন' : '08. 3D Digital Twin - Live Farm & Phenology'}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🌐</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৮. ৩ডি ডিজিটাল টুইন' : '08. 3D Digital Twin'}</span>
+          </button>
+
+          {/* 09. Harvest & Market */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'harvest_profit' || activeNav === 'market' ? 'active' : ''}`}
+            onClick={() => handleNavigate('harvest_profit')}
+            title={lang === 'bn' ? '০৯. ফসল ও বাজারদর - লাভ-ক্ষতি ক্যালকুলেটর ও দাম' : '09. Harvest & Market - Profit Calculator & Prices'}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>💰</span>
+            <span className="nav-item-label">{lang === 'bn' ? '০৯. ফসল ও বাজারদর' : '09. Harvest & Market'}</span>
+          </button>
+
+          {/* 10. AI Agronomist */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'assistant' ? 'active' : ''}`}
             onClick={() => handleNavigate('assistant')}
-            title={lang === 'bn' ? 'AI সহকারী - ভয়েস ও চ্যাট সহায়তা' : 'AI Assistant - Decision Support'}
+            title={lang === 'bn' ? '১০. AI কৃষি সহকারী - ভয়েস ও চ্যাট পরামর্শ' : '10. AI Agronomist - Voice & Chat Support'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>🤖</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'AI সহকারী' : 'AI Assistant'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>🤖</span>
+            <span className="nav-item-label">{lang === 'bn' ? '১০. AI কৃষি সহকারী' : '10. AI Agronomist'}</span>
           </button>
 
-          {/* SEPARATE ADVANCED / RESEARCH WORKSPACE BUTTON */}
-          <div className="nav-section-label" style={{ marginTop: 18 }}>
-            {lang === 'bn' ? 'উন্নত প্রযুক্তি' : 'Advanced Tools'}
-          </div>
+          {/* 11. Data & Evidence */}
           <button
             type="button"
-            className={`nav-item ${activeNav === 'research' ? 'active' : ''}`}
-            onClick={() => handleNavigate('research')}
-            title={lang === 'bn' ? 'উন্নত গবেষণা - MILP, RL ও সিন্থেটিক ল্যাব' : 'Advanced Research - MILP, RL, Sensitivity'}
-            style={{ border: '1px dashed var(--border-medium)', background: 'var(--bg-card-subtle)' }}
+            className={`nav-item ${activeNav === 'data_evidence' || activeNav === 'synthetic_lab' ? 'active' : ''}`}
+            onClick={() => handleNavigate('data_evidence')}
+            title={lang === 'bn' ? '১১. উপাত্ত ও প্রমাণ - ৪-স্তরীয় প্রোভেন্যান্স রেজিস্ট্রি' : '11. Data & Evidence - 4-Tier Provenance Registry'}
           >
             <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 17 }}>🔬</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'উন্নত গবেষণা ল্যাব' : 'Research Lab'}</span>
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>📊</span>
+            <span className="nav-item-label">{lang === 'bn' ? '১১. উপাত্ত ও প্রমাণ' : '11. Data & Evidence'}</span>
+          </button>
+
+          {/* 12. Profile & Settings */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'account' ? 'active' : ''}`}
+            onClick={() => handleNavigate('account')}
+            title={lang === 'bn' ? '১২. প্রোফাইল ও সেটিংস - অপারেটর পাসপোর্ট ও ডেটাবেস' : '12. Profile & Settings - Operator Credentials'}
+          >
+            <div className="nav-active-indicator" />
+            <span className="nav-item-icon" style={{ fontSize: 16 }}>⚙️</span>
+            <span className="nav-item-label">{lang === 'bn' ? '১২. প্রোফাইল ও সেটিংস' : '12. Profile & Settings'}</span>
           </button>
         </nav>
 
@@ -1898,24 +2051,123 @@ export function App() {
 
         {/* -------------------- VIEW: CROP ADVICE (FARMER FRIENDLY) -------------------- */}
         {activeNav === 'crop_advice' && (
-          <FarmerCropAdviceView
-            activeField={activeField}
-            plan={plan}
-            nasa={nasa}
-            lang={lang}
-            onNavigate={handleNavigate}
-            onAskAi={(q) => handleNavigate('assistant')}
-          />
+          <div>
+            <div className="subnav-pills-bar" style={{ display: 'flex', gap: 8, padding: '10px 24px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', marginBottom: 16, overflowX: 'auto' }}>
+              <button
+                type="button"
+                className={`btn ${cropSubTab === 'advisory' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setCropSubTab('advisory')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🌾 {lang === 'bn' ? 'নাসা ধান রোপণ উপদেষ্টা' : 'NASA Rice Advisory'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${cropSubTab === 'advice' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setCropSubTab('advice')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🌱 {lang === 'bn' ? 'ফসলের পরামর্শ ও মিল' : 'Crop Advice & Matching'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${cropSubTab === 'catalog' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setCropSubTab('catalog')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                📖 {lang === 'bn' ? '১৫ ফসলের ক্যাটালগ' : '15-Crop Catalog'}
+              </button>
+            </div>
+            {cropSubTab === 'advisory' && (
+              <NasaPlantingAdvisoryView
+                defaultDistrict={activeField?.district?.toLowerCase() || 'rajshahi'}
+                defaultCrop="aman"
+                lang={lang}
+                onNavigate={handleNavigate}
+              />
+            )}
+            {cropSubTab === 'advice' && (
+              <FarmerCropAdviceView
+                activeField={activeField}
+                plan={plan}
+                nasa={nasa}
+                lang={lang}
+                onNavigate={handleNavigate}
+                onAskAi={(q) => handleNavigate('assistant')}
+              />
+            )}
+            {cropSubTab === 'catalog' && (
+              <CropCatalogView
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+          </div>
         )}
 
         {/* -------------------- VIEW: HARVEST & PROFIT CALCULATOR -------------------- */}
         {activeNav === 'harvest_profit' && (
-          <FarmerHarvestProfitView
-            activeField={activeField}
-            user={user}
-            lang={lang}
-            onNavigate={handleNavigate}
-          />
+          <div>
+            <div className="subnav-pills-bar" style={{ display: 'flex', gap: 8, padding: '10px 24px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', marginBottom: 16, overflowX: 'auto' }}>
+              <button
+                type="button"
+                className={`btn ${harvestSubTab === 'calculator' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setHarvestSubTab('calculator')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                📋 {lang === 'bn' ? 'লাভ-ক্ষতি হিসাব' : 'Profit Calculator'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${harvestSubTab === 'market' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setHarvestSubTab('market')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                💰 {lang === 'bn' ? 'বাজারদর ও পূর্বাভাস' : 'Market Intelligence'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${harvestSubTab === 'outcomes' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setHarvestSubTab('outcomes')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                📈 {lang === 'bn' ? 'বাস্তব খামার ফলাফল' : 'Actual Outcomes'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${harvestSubTab === 'sustainability' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setHarvestSubTab('sustainability')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🌱 {lang === 'bn' ? 'স্থায়িত্ব সূচক' : 'Sustainability Tracker'}
+              </button>
+            </div>
+            {harvestSubTab === 'calculator' && (
+              <FarmerHarvestProfitView
+                activeField={activeField}
+                user={user}
+                lang={lang}
+                onNavigate={handleNavigate}
+              />
+            )}
+            {harvestSubTab === 'market' && (
+              <MarketIntelligenceView
+                activeField={activeField}
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+            {harvestSubTab === 'outcomes' && (
+              <ActualOutcomesView
+                activeField={activeField}
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+            {harvestSubTab === 'sustainability' && (
+              <SustainabilityTrackerView
+                activeField={activeField}
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+          </div>
         )}
 
         {/* -------------------- VIEW: ADVANCED RESEARCH WORKSPACE -------------------- */}
@@ -2968,2681 +3220,194 @@ export function App() {
         )}
 
         {/* -------------------- VIEW 2: ANALYSIS & RESEARCH WORKSPACE -------------------- */}
+        {/* -------------------- VIEW: RESEARCH WORKSPACE (LEGACY ANALYTICS COMPATIBILITY) -------------------- */}
         {activeNav === 'analytics' && (
-          <div className="analytics-view-wrapper">
-            <div className="view-sub-header">
-              <div>
-                <h2>Analysis & Research Workspace</h2>
-                <p>MILP Crop Rotation Optimization, Synthetic ML Models, Scenarios & Simulation Controls</p>
-              </div>
-              <button type="button" className="back-btn" onClick={() => setActiveNav('dashboard')} aria-label="Back to Dashboard">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                <span>Back to Dashboard</span>
-              </button>
-            </div>
-
-            {/* Analysis Navigation Sub-tabs */}
-            <div className="analysis-nav-tabs">
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'optimization' || analysisTab === 'milp' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('optimization')}
-              >
-                1. MILP Optimization
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'comparison_lab' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('comparison_lab')}
-              >
-                2. Comparison Lab (MILP vs RL vs Rule)
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'recovery' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('recovery')}
-              >
-                3. Failure &amp; Recovery Simulator
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'replan' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('replan')}
-              >
-                4. Adaptive Next-Season Replan
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'uncertainty' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('uncertainty')}
-              >
-                5. Weather Uncertainty &amp; Robustness
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'sustainability' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('sustainability')}
-              >
-                6. Soil Health &amp; Sustainability
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'crop_catalog' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('crop_catalog')}
-              >
-                7. Crop Database &amp; Provenance
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'satellite' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('satellite')}
-              >
-                8. Satellite &amp; Sensor Readiness
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'outcomes' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('outcomes')}
-              >
-                9. Actual vs Estimated Outcomes
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'ml_models' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('ml_models')}
-              >
-                10. Synthetic ML Yield
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'rl_policy' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('rl_policy')}
-              >
-                11. RL Simulation Sandbox
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'stress_testing' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('stress_testing')}
-              >
-                12. Stress Testing
-              </button>
-              <button
-                type="button"
-                className={`analysis-tab-btn ${analysisTab === 'controls' ? 'active' : ''}`}
-                onClick={() => setAnalysisTab('controls')}
-              >
-                13. Counterfactual Controls
-              </button>
-            </div>
-
-            <div className="dashboard-grid">
-              {/* TAB 1: MILP BASELINE OPTIMIZATION */}
-              {/* TAB 1: MILP BASELINE OPTIMIZATION */}
-              {(analysisTab === 'optimization' || analysisTab === 'milp') && (() => {
-                const displayedStrategiesMap = currentStrategyResults;
-                const activeStrategyName = selectedStrategyId;
-                const inspectedKey = activeStrategyName;
-                const inspectedItem = activeMilpResult || {};
-                const activeItem = inspectedItem;
-                const stratList = Object.values(displayedStrategiesMap);
-                const isFeasiblePlan = item =>
-                  ['optimal', 'feasible'].includes(String(item?.solver_status || '').toLowerCase()) &&
-                  item?.rotation && Object.keys(item.rotation).length > 0;
-                const feasibleStrategyList = stratList.filter(isFeasiblePlan);
-                const hasFeasibleActivePlan = isFeasiblePlan(activeMilpResult);
-                const feasiblePlanPercent = stratList.length ? Math.round((feasibleStrategyList.length / stratList.length) * 100) : 0;
-                const maxProfitStrategy = feasibleStrategyList.reduce((prev, curr) => (Number(curr.profit_component || 0) > Number(prev.profit_component || 0) ? curr : prev), {});
-                const maxWaterStrategy = feasibleStrategyList.reduce((prev, curr) => (Number(curr.water_component || 0) > Number(prev.water_component || 0) ? curr : prev), {});
-                const maxSoilStrategy = feasibleStrategyList.reduce((prev, curr) => (Number(curr.soil_component || 0) > Number(prev.soil_component || 0) ? curr : prev), {});
-
-                const inspectedMeta = {
-                  ...(STRATEGY_META[inspectedKey] || {
-                    title: inspectedKey.replaceAll('_', ' '),
-                    icon: '🌾',
-                    summary: 'Alternative multi-objective MILP crop sequence evaluated against multi-period constraints.',
-                    primaryColor: 'var(--primary)',
-                    badgeClass: 'profit',
-                    priorityKey: 'profit'
-                  }),
-                  title: selectedStrategyName
-                };
-
-                const inspectedRotation = inspectedItem.rotation || {};
-
-                // Determine if all strategies yielded the identical rotation sequence
-                const rotEntries = feasibleStrategyList.map(s => JSON.stringify(s.rotation));
-                const allRotationsSame = rotEntries.length > 1 && rotEntries.every(r => r === rotEntries[0]);
-                const sampleRot = inspectedRotation;
-
-                return (
-                  <div className="strategy-matrix-container" style={{ gridColumn: 'span 12' }}>
-                    {/* PRIMARY STRATEGY SELECTION CONTROL */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 18, marginBottom: 16 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14 }}>
-                        <div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontSize: 20 }}>🎯</span>
-                            <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: 'var(--text-main)' }}>MILP Strategy Selection</h3>
-                            <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)', padding: '2px 8px', borderRadius: 999, fontWeight: 800, border: '1px solid rgba(0, 223, 129, 0.3)' }}>
-                              SINGLE SOURCE OF TRUTH
-                            </span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>
-                            Select a primary strategy profile below to configure the mathematical optimizer objective weights across all research workspace views.
-                          </p>
-                        </div>
-
-                        {/* Segmented Selection Control */}
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                          {[
-                            { key: 'profit_focused', label: 'Profit Focused', icon: '💰' },
-                            { key: 'water_efficiency', label: 'Water Efficiency', icon: '💧' },
-                            { key: 'soil_health', label: 'Soil Health & Regeneration', icon: '🌱' },
-                            { key: 'balanced', label: 'Balanced Multi-Objective', icon: '⚖️' }
-                          ].map(s => {
-                            const isSelected = toCanonicalStrategyKey(s.key) === activeStrategyName;
-                            return (
-                              <button
-                                key={s.key}
-                                type="button"
-                                className={`btn-secondary-sm ${isSelected ? 'active' : ''}`}
-                                onClick={() => handleApplyStrategy(s.key)}
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 6,
-                                  padding: '9px 16px',
-                                  fontSize: 13,
-                                  fontWeight: 700,
-                                  background: isSelected ? 'rgba(0, 223, 129, 0.12)' : 'var(--bg-card-subtle)',
-                                  border: isSelected ? '1px solid var(--primary)' : '1px solid var(--border-light)',
-                                  color: isSelected ? 'var(--primary)' : 'var(--text-main)',
-                                  borderRadius: 10,
-                                  cursor: 'pointer',
-                                  boxShadow: isSelected ? '0 2px 8px rgba(0, 223, 129, 0.2)' : 'none',
-                                  transition: 'all 0.15s ease'
-                                }}
-                              >
-                                <span>{s.icon}</span>
-                                <span>{s.label}</span>
-                                {isSelected && (
-                                  <span style={{ fontSize: 10, background: 'var(--primary)', color: '#0e1318', padding: '1px 6px', borderRadius: 999, fontWeight: 800, marginLeft: 2 }}>
-                                    ✓ Active Strategy
-                                  </span>
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Active Strategy Status Details */}
-                      <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border-light)', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Currently Selected &amp; Active Strategy:</span>
-                          <strong style={{ color: 'var(--primary)', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                            <span>{inspectedMeta.icon}</span>
-                            <span>{activeMilpResult?.strategy_name ?? 'No strategy selected'}</span>
-                          </strong>
-                        </div>
-                                        <div style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
-                          Objective Weights: <strong style={{ color: '#00df81' }}>{Math.round(getStrategyWeights(inspectedItem, inspectedKey).profit * 100)}% Profit</strong> • <strong style={{ color: '#38bdf8' }}>{Math.round(getStrategyWeights(inspectedItem, inspectedKey).water * 100)}% Water</strong> • <strong style={{ color: '#fbbf24' }}>{Math.round(getStrategyWeights(inspectedItem, inspectedKey).soil * 100)}% Soil Health</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* SYNTHETIC BENCHMARK SCENARIO SELECTOR PANEL */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 18, marginBottom: 16 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                        <div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontSize: 18 }}>🧪</span>
-                            <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: 'var(--text-main)' }}>Synthetic Benchmark Scenario Context</h4>
-                            <span className="source-tag demo" style={{ fontSize: 10 }}>SYNTHETIC BENCHMARK</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
-                            Select a synthetic benchmark regime or operational field below to evaluate all 4 MILP strategy profiles under controlled test conditions.
-                          </p>
-                        </div>
-                        {benchmarkLoading && <span style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 700 }}>Solving 4 PuLP CBC strategies...</span>}
-                      </div>
-                      {benchmarkError && selectedBenchmarkContext !== 'operational' && (
-                        <div role="alert" style={{ marginTop: 10, padding: '8px 12px', borderRadius: 8, background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', fontSize: 12 }}>
-                          Benchmark results could not be loaded: {benchmarkError}
-                        </div>
-                      )}
-
-                      {/* Scenario Selector Buttons */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8, marginTop: 14 }}>
-                        {Object.values(BENCHMARK_CONTEXTS).map(scen => {
-                          const isSel = selectedBenchmarkContext === scen.id;
-                          const scenKey = scen.scen_key;
-                          const scenRes = scenKey ? benchmarkSuiteResults[scenKey] : null;
-
-                          return (
-                            <button
-                              key={scen.id}
-                              type="button"
-                              className={`btn-secondary-sm ${isSel ? 'active' : ''}`}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-start',
-                                padding: '10px 12px',
-                                border: isSel ? `1px solid ${scen.color || 'var(--primary)'}` : '1px solid var(--border-light)',
-                                background: isSel ? 'rgba(0, 223, 129, 0.08)' : 'var(--bg-card-subtle)',
-                                textAlign: 'left',
-                                borderRadius: 10,
-                                cursor: 'pointer',
-                                boxShadow: isSel ? '0 2px 8px rgba(0, 223, 129, 0.15)' : 'none',
-                                transition: 'all 0.15s ease'
-                              }}
-                              onClick={() => {
-                                if (scen.id === 'operational') {
-                                  setSelectedBenchmarkContext('operational');
-                                } else {
-                                  handleRunBenchmark(scen.id);
-                                }
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                                <span style={{ fontWeight: 800, fontSize: 12.5, color: scen.color }}>{scen.name}</span>
-                                {scenRes && (
-                                  <span style={{
-                                    fontSize: 9.5,
-                                    padding: '1px 5px',
-                                    borderRadius: 4,
-                                    fontWeight: 800,
-                                    background: scenRes.solver_status === 'Infeasible' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 223, 129, 0.15)',
-                                    color: scenRes.solver_status === 'Infeasible' ? '#f87171' : 'var(--primary)'
-                                  }}>
-                                    {scenRes.solver_status || 'Optimal'}
-                                  </span>
-                                )}
-                              </div>
-                              <span style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>
-                                {scen.id === 'operational'
-                                  ? (summary.field_name || 'Active Parcel Result')
-                                  : `${scen.water_mm} mm, ${scen.temperature_c}°C, pH ${scen.ph}`}
-                              </span>
-                              <div style={{ marginTop: 6, fontSize: 10, fontWeight: 700, color: isSel ? (scen.color || 'var(--primary)') : 'var(--text-dim)' }}>
-                                {isSel ? (scen.id === 'operational' ? '📍 Active Parcel Result' : '✓ Selected Benchmark') : 'Select Scenario'}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Active Benchmark / Operational Context Banner */}
-                      {selectedBenchmarkContext === 'operational' ? (
-                        <div style={{ marginTop: 14, padding: 12, background: 'var(--bg-card-subtle)', borderRadius: 10, border: '1px solid var(--border-light)', fontSize: 12 }}>
-                          <strong style={{ color: 'var(--primary)', fontSize: 13.5 }}>
-                            Operational Field Context: {summary.field_name || activeField?.name || 'Active Registered Parcel'}
-                          </strong>
-                          <div style={{ color: 'var(--text-muted)', marginTop: 2, fontSize: 12 }}>
-                            Area: <strong>{summary.area_ha || summary.field_state?.field_size_ha || activeField?.area_ha || 10.0} ha</strong> • Previous Crop: <strong>{summary.previous_crop || summary.field_state?.previous_crop || activeField?.previous_crop || 'None'}</strong> • Location: <strong>{activeField?.latitude != null && activeField?.longitude != null ? `${Number(activeField.latitude).toFixed(2)}°N, ${Number(activeField.longitude).toFixed(2)}°E` : (activeField ? activeField.name : 'Coordinates unassigned')}</strong>
-                          </div>
-                        </div>
-                      ) : (
-                        (() => {
-                          const scenMeta = BENCHMARK_SCENARIOS[selectedBenchmarkContext] || BENCHMARK_SCENARIOS.scenario_A;
-                          const scenKey = scenMeta.scen_key;
-                          const scenData = benchmarkSuiteResults[selectedBenchmarkContext] || benchmarkSuiteResults[scenKey];
-                          return (
-                            <div style={{ marginTop: 14, padding: 12, background: 'var(--bg-card-subtle)', borderRadius: 10, border: '1px solid var(--border-light)', fontSize: 12 }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-                                <div>
-                                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', marginBottom: 2 }}>Selected Benchmark Context</div>
-                                  <strong style={{ color: 'var(--text-main)', fontSize: 13.5 }}>
-                                    {scenMeta.name}
-                                  </strong>
-                                  <div style={{ color: 'var(--text-muted)', marginTop: 2, fontSize: 12 }}>
-                                    <strong>{scenMeta.water_mm} mm</strong> • <strong>{scenMeta.temperature_c}°C</strong> • <strong>pH {scenMeta.ph}</strong>
-                                    {scenData?.feasible_count != null && (
-                                      <span> • Feasible Domain: <strong>{scenData.feasible_count} of 8 Crops</strong></span>
-                                    )}
-                                  </div>
-                                  {scenData?.feasible_count === 0 && (
-                                    <div role="status" style={{ color: '#f87171', marginTop: 6, fontWeight: 700 }}>
-                                      No MILP plan is feasible in this context: none of the benchmark crops meet the scenario's agronomic constraints.
-                                    </div>
-                                  )}
-                                </div>
-                                <span style={{ fontSize: 11, background: 'var(--bg-card)', padding: '3px 10px', borderRadius: 6, color: 'var(--text-muted)', fontWeight: 700, border: '1px solid var(--border-light)' }}>
-                                  Benchmark Type: Synthetic Solver Responsiveness Test (PuLP CBC Solver)
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })()
-                      )}
-                    </div>
-
-                    {/* What Changed / Decision Impact Card */}
-                    {summary.what_changed && (
-                      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 12, padding: 14, marginBottom: 14 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 800, fontSize: 13, color: 'var(--text-main)', marginBottom: 8 }}>
-                          <span>📊</span>
-                          <span>Decision Impact &amp; Active Field Parameter Deltas</span>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 8 }}>
-                          {(summary.what_changed.active_parameters || []).map((p, idx) => {
-                            const isStrategyEntry = /active operational strategy/i.test(p.parameter || '');
-                            const selectedWeights = getStrategyWeights(activeMilpResult, selectedStrategyId);
-                            return (
-                              <div key={idx} style={{ background: 'var(--bg-card-subtle)', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border-light)', fontSize: 12 }}>
-                                <div style={{ color: 'var(--text-dim)', fontSize: 11, fontWeight: 700 }}>{p.parameter}</div>
-                                <div style={{ color: 'var(--text-main)', fontWeight: 800, margin: '2px 0' }}>{isStrategyEntry ? selectedStrategyName : p.value}</div>
-                                <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>
-                                  {isStrategyEntry
-                                    ? `Weights optimize priorities (${Math.round(selectedWeights.profit * 100)}% Profit, ${Math.round(selectedWeights.water * 100)}% Water, ${Math.round(selectedWeights.soil * 100)}% Soil).`
-                                    : p.impact_description}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Optimization Provenance View */}
-                    <div style={{ border: '1px solid var(--border-light)', borderRadius: 12, padding: '12px 16px', background: 'var(--bg-card)', marginBottom: 16 }}>
-                      <div
-                        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-                        onClick={() => setProvenanceExpanded(prev => !prev)}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontSize: 16 }}>🔍</span>
-                          <strong style={{ fontSize: 13.5, color: 'var(--text-main)' }}>Optimization Provenance: How this recommendation was calculated</strong>
-                        </div>
-                        <span style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 700 }}>
-                          {provenanceExpanded ? 'Hide Calculation Steps ▲' : 'Show Calculation Steps ▼'}
-                        </span>
-                      </div>
-
-                      {provenanceExpanded && (
-                        <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12, fontSize: 12 }}>
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 12, borderRadius: 8, border: '1px solid var(--border-light)' }}>
-                            <strong style={{ color: 'var(--primary)' }}>Step 1: Agro-Climatic Profile</strong>
-                            <div style={{ marginTop: 4, color: 'var(--text-muted)' }}>
-                              Area: {summary.optimization_provenance?.field_inputs?.area_ha ?? 1.0} ha • Temp: {summary.optimization_provenance?.field_inputs?.temperature_c ?? '28'}°C • pH: {summary.optimization_provenance?.field_inputs?.soil_ph ?? '6.5'}
-                            </div>
-                          </div>
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 12, borderRadius: 8, border: '1px solid var(--border-light)' }}>
-                            <strong style={{ color: 'var(--primary)' }}>Step 2: Feasibility Filtering</strong>
-                            <div style={{ marginTop: 4, color: 'var(--text-muted)' }}>
-                              Catalog: {summary.optimization_provenance?.feasibility_filter?.catalog_crop_count ?? 15} species → Feasible: {summary.optimization_provenance?.feasibility_filter?.feasible_crop_count ?? 15} species
-                            </div>
-                          </div>
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 12, borderRadius: 8, border: '1px solid var(--border-light)' }}>
-                            <strong style={{ color: 'var(--primary)' }}>Step 3: PuLP CBC Solver</strong>
-                            <div style={{ marginTop: 4, color: 'var(--text-muted)' }}>
-                              Branch-and-Bound MILP ({summary.optimization_provenance?.decision_model?.decision_variables ?? 90} binary variables across 6 periods).
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Hero Header Banner */}
-                    <div className="strategy-matrix-hero">
-                      <div className="strategy-hero-content">
-                        <h2>MILP Multi-Objective Strategy Comparison Matrix</h2>
-                        <p>
-                          Explore alternative multi-year rotation trajectories computed via Mixed Integer Linear Programming (PuLP CBC Solver).
-                          Each strategy evaluates an alternative multi-objective MILP balance between economic gross margin, water footprint conservation, and soil biology regeneration across 6 seasons.
-                        </p>
-                        <div className="strategy-hero-badges">
-                          <span className="strategy-hero-pill">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true" focusable="false"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span>PuLP CBC Solver: {inspectedItem.solver_status || 'Optimal'}</span>
-                          </span>
-                          <span className="strategy-hero-pill">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            <span>6-Season Multi-Period Model</span>
-                          </span>
-                          <span className="strategy-hero-pill">
-                            <span>🌱 Legume Interval: ≥1 Pulse every 3 Consecutive Seasons</span>
-                          </span>
-                          <span className="strategy-hero-pill" style={{ background: 'rgba(255,255,255,0.25)', fontWeight: 700 }}>
-                            <span>★ Active: {selectedStrategyName}</span>
-                          </span>
-                        </div>
-                      </div>
-                      <div className="strategy-hero-stats">
-                        <div className="strategy-hero-stat-box">
-                          <div className="strategy-hero-stat-val">{stratList.length || 4}</div>
-                          <div className="strategy-hero-stat-lbl">Priority Profiles</div>
-                        </div>
-                        <div className="strategy-hero-stat-box">
-                          <div className="strategy-hero-stat-val">{feasiblePlanPercent}%</div>
-                          <div className="strategy-hero-stat-lbl">Feasible Plans</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Uniform Rotation Agronomic Explanation Banner */}
-                    {allRotationsSame && (
-                      <div style={{
-                        background: 'rgba(0, 223, 129, 0.08)',
-                        border: '1px solid rgba(0, 223, 129, 0.25)',
-                        borderRadius: 12,
-                        padding: '14px 18px',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: 12,
-                        fontSize: 13,
-                        color: 'var(--text-main)',
-                        lineHeight: 1.5
-                      }}>
-                        <span style={{ fontSize: 20 }}>💡</span>
-                        <div>
-                          <strong>All feasible strategies converged on the same optimal rotation ({Object.values(sampleRot).join(' → ')}) under current field parameters:</strong>
-                          <div style={{ marginTop: 4, color: 'var(--primary)' }}>
-                            Under this parcel's temperature regime, pH, and agronomic rotation constraints (legume interval ≥ 1 pulse every 3 consecutive seasons and botanical family alternation), the solver determined that this specific crop sequence simultaneously maximizes profit while satisfying water conservation and soil biology targets. The strategies differ in how objective weights are distributed and composite scores are calculated.
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Selected strategy summary and cross-strategy benchmarks */}
-                    <div className="strategy-kpi-grid">
-                      {/* Active Profile */}
-                      <div className="strategy-kpi-card active-kpi">
-                        <div className="strategy-kpi-top">
-                          <div className="strategy-kpi-icon" style={{ background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)' }}>🎯</div>
-                          <span className="strategy-kpi-tag" style={{ background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)' }}>Selected Strategy</span>
-                        </div>
-                        <div className="strategy-kpi-label">Current Strategy Selection</div>
-                        <div className="strategy-kpi-val" style={{ fontSize: 18 }}>
-                          {selectedStrategyName}
-                        </div>
-                        <div className="strategy-kpi-sub">
-                          <span>Score: <strong>{activeMilpResult?.composite_score != null ? number(activeMilpResult.composite_score, 3) : '—'}</strong></span>
-                          <span>•</span>
-                          <span><strong>{activeMilpResult?.gross_margin_bdt_per_ha != null ? `৳${Number(activeMilpResult.gross_margin_bdt_per_ha).toLocaleString()} BDT` : '—'}</strong></span>
-                        </div>
-                        {activeMilpResult && !hasFeasibleActivePlan && (
-                          <div className="strategy-kpi-sub" style={{ color: '#f87171' }}>
-                            No feasible plan for this strategy/context ({activeMilpResult.solver_status || 'Unavailable'}).
-                          </div>
-                        )}
-                        {!activeMilpResult && <div className="strategy-kpi-sub">No MILP result available for this strategy/context.</div>}
-                      </div>
-                    </div>
-
-                    {feasibleStrategyList.length > 0 ? (
-                      <>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-main)', margin: '0 0 -8px' }}>Cross-Strategy Benchmark Highlights</div>
-                    <div className="strategy-kpi-grid">
-                      {/* Max Profit */}
-                      <div className="strategy-kpi-card">
-                        <div className="strategy-kpi-top">
-                          <div className="strategy-kpi-icon" style={{ background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)' }}>💰</div>
-                          <span className="strategy-kpi-tag" style={{ background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)' }}>Max Revenue</span>
-                        </div>
-                        <div className="strategy-kpi-label">Highest Gross Margin</div>
-                        <div className="strategy-kpi-val" style={{ color: 'var(--primary)' }}>
-                          {maxProfitStrategy.profit_component != null ? `৳${Number(maxProfitStrategy.profit_component).toLocaleString()}` : '—'} <span style={{ fontSize: 13, fontWeight: 600 }}>BDT</span>
-                        </div>
-                        <div className="strategy-kpi-sub">
-                          <strong>{STRATEGY_META[maxProfitStrategy.strategy_id]?.title || (maxProfitStrategy.strategy_id ? maxProfitStrategy.strategy_name : 'No benchmark data')}</strong>
-                          {maxProfitStrategy.strategy_id && <> ({formatNumber(getStrategyWeights(maxProfitStrategy, maxProfitStrategy.strategy_id).profit * 100, 0)}% profit weight)</>}
-                        </div>
-                      </div>
-
-                      {/* Max Water Conservation */}
-                      <div className="strategy-kpi-card">
-                        <div className="strategy-kpi-top">
-                          <div className="strategy-kpi-icon" style={{ background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8' }}>💧</div>
-                          <span className="strategy-kpi-tag" style={{ background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8' }}>Low Water Stress</span>
-                        </div>
-                        <div className="strategy-kpi-label">Water Conservation Rating</div>
-                        <div className="strategy-kpi-val" style={{ color: '#38bdf8' }}>
-                          {maxWaterStrategy.water_component != null ? number(maxWaterStrategy.water_component, 2) : '—'} <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
-                        </div>
-                        <div className="strategy-kpi-sub">
-                          <strong>{STRATEGY_META[maxWaterStrategy.strategy_id]?.title || (maxWaterStrategy.strategy_id ? maxWaterStrategy.strategy_name : 'No benchmark data')}</strong>
-                          {maxWaterStrategy.strategy_id && <> ({formatNumber(getStrategyWeights(maxWaterStrategy, maxWaterStrategy.strategy_id).water * 100, 0)}% water weight)</>}
-                        </div>
-                      </div>
-
-                      {/* Max Soil Regeneration */}
-                      <div className="strategy-kpi-card">
-                        <div className="strategy-kpi-top">
-                          <div className="strategy-kpi-icon" style={{ background: 'rgba(251, 191, 36, 0.12)', color: '#fbbf24' }}>🌱</div>
-                          <span className="strategy-kpi-tag" style={{ background: 'rgba(251, 191, 36, 0.12)', color: '#fbbf24' }}>Max Soil Biology</span>
-                        </div>
-                        <div className="strategy-kpi-label">Soil Health &amp; Nitrogen Index</div>
-                        <div className="strategy-kpi-val" style={{ color: '#fbbf24' }}>
-                          {maxSoilStrategy.soil_component != null ? number(maxSoilStrategy.soil_component, 2) : '—'} <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
-                        </div>
-                        <div className="strategy-kpi-sub">
-                          <strong>{STRATEGY_META[maxSoilStrategy.strategy_id]?.title || (maxSoilStrategy.strategy_id ? maxSoilStrategy.strategy_name : 'No benchmark data')}</strong>
-                          {maxSoilStrategy.strategy_id && <> ({formatNumber(getStrategyWeights(maxSoilStrategy, maxSoilStrategy.strategy_id).soil * 100, 0)}% soil weight)</>}
-                        </div>
-                      </div>
-                    </div>
-                      </>
-                    ) : (
-                      <section className="dash-card" aria-label="Cross-Strategy Benchmark Highlights" style={{ padding: 16 }}>
-                        <h4 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 800 }}>Cross-Strategy Benchmark Highlights</h4>
-                        <div>No feasible strategy results are available in this benchmark context.</div>
-                      </section>
-                    )}
-
-                    <section className="dash-card" aria-label="Selected Strategy Performance" style={{ padding: 16 }}>
-                      <h4 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 800 }}>Selected Strategy Performance</h4>
-                      {hasFeasibleActivePlan ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-                          <div><div className="strategy-kpi-label">Gross Margin</div><strong>৳{activeMilpResult.gross_margin_bdt_per_ha != null ? Number(activeMilpResult.gross_margin_bdt_per_ha).toLocaleString() : '—'} BDT/ha</strong></div>
-                          <div><div className="strategy-kpi-label">Water Score</div><strong>{activeMilpResult.water_score != null ? number(activeMilpResult.water_score, 2) : '—'} / 6.0</strong></div>
-                          <div><div className="strategy-kpi-label">Soil Health</div><strong>{activeMilpResult.soil_score != null ? number(activeMilpResult.soil_score, 2) : '—'} / 6.0</strong></div>
-                          <div><div className="strategy-kpi-label">Composite Score</div><strong>{activeMilpResult.composite_score != null ? number(activeMilpResult.composite_score, 3) : '—'}</strong></div>
-                        </div>
-                      ) : activeMilpResult ? (
-                        <div role="status" style={{ color: '#b91c1c' }}>
-                          This strategy has no feasible MILP solution for the selected benchmark context ({activeMilpResult.solver_status || 'Unavailable'}). Performance metrics are not available.
-                        </div>
-                      ) : (
-                        <div>No MILP result available for this strategy/context.</div>
-                      )}
-                    </section>
-
-                    {/* Toolbar & View Tabs */}
-                    <div className="strategy-toolbar">
-                      <div className="strategy-toolbar-left">
-                        <strong style={{ fontSize: 14 }}>Multi-Objective Matrix View:</strong>
-                        <div className="strategy-view-toggle">
-                          <button
-                            type="button"
-                            className={`strategy-view-btn ${matrixViewMode === 'matrix' ? 'active' : ''}`}
-                            onClick={() => setMatrixViewMode('matrix')}
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-                            <span>Comparison Table</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`strategy-view-btn ${matrixViewMode === 'tradeoffs' ? 'active' : ''}`}
-                            onClick={() => setMatrixViewMode('tradeoffs')}
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" focusable="false"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                            <span>Trade-Off Analytics</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`strategy-view-btn ${matrixViewMode === 'timeline' ? 'active' : ''}`}
-                            onClick={() => setMatrixViewMode('timeline')}
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" focusable="false"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                            <span>Multi-Season Timeline</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
-                        Click any strategy row to select it as the active optimization model
-                      </div>
-                    </div>
-
-                    {/* VIEW 1: ENHANCED COMPARISON MATRIX TABLE */}
-                    {matrixViewMode === 'matrix' && (
-                      <div className="strategy-table-enhanced-wrapper">
-                        <table className="strategy-table-enhanced">
-                          <thead>
-                            <tr>
-                              <th>Strategy Profile</th>
-                              <th style={{ width: 150 }}>Objective Weights</th>
-                              <th>Gross Margin (6-Season / ha)</th>
-                              <th>Water Score (0–6.0)</th>
-                              <th>Soil Health (0–6.0)</th>
-                              <th>Composite Score</th>
-                              <th>6-Season Rotation Sequence</th>
-                              <th>Agronomic Rules</th>
-                              <th>Selection Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Object.entries(displayedStrategiesMap).map(([name, item]) => {
-                              const strategy = { ...item, id: toCanonicalStrategyKey(name) };
-                              const meta = STRATEGY_META[name] || {
-                                title: name.replaceAll('_', ' '),
-                                icon: '🌾',
-                                summary: 'Alternative multi-objective crop sequence',
-                                primaryColor: 'var(--primary)'
-                              };
-                              const isActive = strategy.id === selectedStrategyId;
-                              const weights = getStrategyWeights(item, name);
-                              const pPct = Math.round((weights.profit || 0) * 100);
-                              const wPct = Math.round((weights.water || 0) * 100);
-                              const sPct = Math.round((weights.soil || 0) * 100);
-                              const rot = item.rotation || {};
-
-                              return (
-                                <tr
-                                  key={name}
-                                  className={`strategy-table-row ${isActive ? 'row-active row-inspected' : ''}`}
-                                  onClick={() => setSelectedStrategyId(strategy.id)}
-                                  style={{ cursor: 'pointer' }}
-                                >
-                                  <td>
-                                    <div className="strategy-profile-cell">
-                                      <div className="strategy-profile-icon" style={{ background: meta.accentBg || 'var(--primary-light)', color: meta.primaryColor }}>
-                                        {meta.icon}
-                                      </div>
-                                      <div>
-                                        <div className="strategy-profile-title">
-                                          <span>{meta.title}</span>
-                                        </div>
-                                        <div className="strategy-profile-sub">{meta.summary}</div>
-                                      </div>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div className="strategy-weight-bars">
-                                      <div className="strategy-weight-progress-stacked" title={`Profit: ${pPct}% | Water: ${wPct}% | Soil: ${sPct}%`}>
-                                        <div className="weight-seg-profit" style={{ width: `${pPct}%` }} />
-                                        <div className="weight-seg-water" style={{ width: `${wPct}%` }} />
-                                        <div className="weight-seg-soil" style={{ width: `${sPct}%` }} />
-                                      </div>
-                                      <div className="strategy-weight-legend">
-                                        <span style={{ color: '#27ae60' }}>{pPct}% P</span>
-                                        <span style={{ color: '#2980b9' }}>{wPct}% W</span>
-                                        <span style={{ color: '#e67e22' }}>{sPct}% S</span>
-                                      </div>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div className="profit-bdt-chip">
-                                      <span>৳</span>
-                                      <span>{item.profit_component != null ? Number(item.profit_component).toLocaleString() : '—'}</span>
-                                      <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>BDT/ha</span>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div className="score-chip water">
-                                      <span>💧</span>
-                                      <strong>{item.water_component != null ? number(item.water_component, 2) : '—'}</strong>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div className="score-chip soil">
-                                      <span>🌱</span>
-                                      <strong>{item.soil_component != null ? number(item.soil_component, 2) : '—'}</strong>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div className="score-chip composite">
-                                      <strong>{item.objective_value != null ? number(item.objective_value, 3) : '—'}</strong>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div className="crop-sequence-chain">
-                                      {Object.keys(rot).length ? ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'].map((periodKey, idx) => {
-                                        const crop = rot[periodKey];
-                                        if (!crop) return <span key={periodKey} style={{ color: 'var(--text-muted)' }}>—</span>;
-                                        const cMeta = CROP_META[crop] || { icon: '🌱', is_legume: crop.toLowerCase().includes('bean') || crop.toLowerCase().includes('lentil') };
-                                        const isDry = idx % 2 === 0;
-
-                                        return (
-                                          <React.Fragment key={periodKey}>
-                                            <span
-                                              className={`crop-chain-chip ${cMeta.is_legume ? 'legume-highlight' : ''}`}
-                                              title={`${periodKey} (${isDry ? 'Dry Season' : 'Wet Season'}): ${crop}`}
-                                            >
-                                              <span className="crop-chain-season-tag">{periodKey.replace('Y', 'Y').replace('_S', '·S')}</span>
-                                              <span>{cMeta.icon}</span>
-                                              <span>{crop}</span>
-                                            </span>
-                                            {idx < 5 && <span className="crop-chain-arrow">→</span>}
-                                          </React.Fragment>
-                                        );
-                                      }) : <span style={{ color: 'var(--text-muted)' }}>No feasible rotation</span>}
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11 }}>
-                                      {isFeasiblePlan(item) ? (
-                                        <>
-                                          <span style={{ color: '#27ae60', fontWeight: 700 }}>✓ Legume (≥1 in 3s)</span>
-                                          <span style={{ color: '#27ae60', fontWeight: 700 }}>✓ Family Rotated</span>
-                                        </>
-                                      ) : (
-                                        <span style={{ color: '#b91c1c', fontWeight: 700 }}>No feasible plan</span>
-                                      )}
-                                      <span style={{ color: 'var(--text-muted)' }}>CBC ({item.solver_status || 'Optimal'})</span>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <button
-                                      type="button"
-                                      className={isActive ? 'btn-primary-sm' : 'btn-secondary-sm'}
-                                      style={{
-                                        fontSize: 11.5,
-                                        padding: '5px 12px',
-                                        borderRadius: 6,
-                                        fontWeight: 700,
-                                        background: isActive ? 'var(--primary)' : 'var(--bg-card-subtle)',
-                                        color: isActive ? '#0e1318' : 'var(--text-main)',
-                                        border: isActive ? 'none' : '1px solid var(--border-light)'
-                                      }}
-                                      onClick={e => {
-                                        e.stopPropagation();
-                                        setSelectedStrategyId(strategy.id);
-                                      }}
-                                    >
-                                      {isActive ? '✓ Active Strategy' : 'Select Strategy'}
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-
-                    {/* VIEW 2: TRADE-OFF ANALYTICS CARDS */}
-                    {matrixViewMode === 'tradeoffs' && (
-                      feasibleStrategyList.length ? <div className="tradeoff-comparative-grid">
-                        {Object.entries(displayedStrategiesMap).map(([name, item]) => {
-                          const meta = STRATEGY_META[name] || { title: name.replaceAll('_', ' '), icon: '🌾', summary: 'Trade-off profile' };
-                          const isSelected = toCanonicalStrategyKey(name) === activeStrategyName;
-                          const weights = getStrategyWeights(item, name);
-
-                          const profitVal = item.profit_component != null ? Number(item.profit_component) : null;
-                          const profitPct = profitVal != null ? Math.min(100, Math.round((profitVal / 900000) * 100)) : 0;
-
-                          const waterVal = item.water_component != null ? Number(item.water_component) : null;
-                          const waterPct = waterVal != null ? Math.min(100, Math.round((waterVal / 6.0) * 100)) : 0;
-
-                          const soilVal = item.soil_component != null ? Number(item.soil_component) : null;
-                          const soilPct = soilVal != null ? Math.min(100, Math.round((soilVal / 6.0) * 100)) : 0;
-
-                          return (
-                            <div
-                              key={name}
-                              className={`tradeoff-strategy-card ${isSelected ? 'active-border row-inspected' : ''}`}
-                              onClick={() => handleApplyStrategy(name)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                  <div className="strategy-profile-icon" style={{ background: meta.accentBg || 'rgba(0, 223, 129, 0.12)', color: meta.primaryColor || 'var(--primary)' }}>
-                                    {meta.icon}
-                                  </div>
-                                  <div>
-                                    <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800 }}>{meta.title}</h4>
-                                    <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{meta.summary}</span>
-                                  </div>
-                                </div>
-                                <span style={{
-                                  fontSize: 11,
-                                  background: isSelected ? 'var(--primary)' : 'var(--bg-card-subtle)',
-                                  color: isSelected ? '#0e1318' : 'var(--text-muted)',
-                                  padding: '2px 8px',
-                                  borderRadius: 999,
-                                  fontWeight: 700,
-                                  border: isSelected ? 'none' : '1px solid var(--border-light)'
-                                }}>
-                                  {isSelected ? '✓ Active Strategy' : 'Select Strategy'}
-                                </span>
-                              </div>
-
-                              {/* Trade-off Progress Bars */}
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 6 }}>
-                                <div>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
-                                    <span style={{ color: '#00df81' }}>💰 Profit Component (6-Season Gross Margin)</span>
-                                    <span>{profitVal != null ? `৳${profitVal.toLocaleString()} BDT/ha` : '—'}</span>
-                                  </div>
-                                  <div className="score-bar-track">
-                                    <div className="score-bar-fill" style={{ width: `${profitPct}%`, background: '#00df81' }} />
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
-                                    <span style={{ color: '#38bdf8' }}>💧 Water Conservation Index</span>
-                                    <span>{waterVal != null ? `${number(waterVal, 2)} / 6.0` : '—'}</span>
-                                  </div>
-                                  <div className="score-bar-track">
-                                    <div className="score-bar-fill" style={{ width: `${waterPct}%`, background: '#38bdf8' }} />
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
-                                    <span style={{ color: '#fbbf24' }}>🌱 Soil Regeneration &amp; Biology</span>
-                                    <span>{soilVal != null ? `${number(soilVal, 2)} / 6.0` : '—'}</span>
-                                  </div>
-                                  <div className="score-bar-track">
-                                    <div className="score-bar-fill" style={{ width: `${soilPct}%`, background: '#fbbf24' }} />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, borderTop: '1px solid var(--border-light)', fontSize: 12 }}>
-                                <span style={{ color: 'var(--text-muted)' }}>
-                                  Weights: <strong>{Math.round(weights.profit * 100)}% P</strong> • <strong>{Math.round(weights.water * 100)}% W</strong> • <strong>{Math.round(weights.soil * 100)}% S</strong>
-                                </span>
-                                <span style={{ fontWeight: 800, color: 'var(--primary)' }}>
-                                  Score: {item.objective_value != null ? number(item.objective_value, 3) : '—'}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div> : <div className="dash-card">No feasible strategy plans are available in this benchmark context.</div>
-                    )}
-
-                    {/* VIEW 3: MULTI-SEASON PROGRESSION TIMELINE */}
-                    {matrixViewMode === 'timeline' && (
-                      feasibleStrategyList.length ? <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 16, border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: 18 }}>
-                        <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800 }}>Side-by-Side 6-Season Crop Trajectories</h4>
-                        {Object.entries(displayedStrategiesMap).map(([name, item]) => {
-                          const meta = STRATEGY_META[name] || { title: name.replaceAll('_', ' '), icon: '🌾' };
-                          const isSelected = toCanonicalStrategyKey(name) === activeStrategyName;
-                          const rot = item.rotation || {};
-
-                          return (
-                            <div
-                              key={name}
-                              onClick={() => handleApplyStrategy(name)}
-                              style={{
-                                background: 'var(--bg-card-subtle)',
-                                padding: 14,
-                                borderRadius: 12,
-                                border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border-light)',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                  <span>{meta.icon}</span>
-                                  <strong style={{ fontSize: 14 }}>{meta.title}</strong>
-                                  {isSelected && <span style={{ fontSize: 10, background: 'var(--primary)', color: '#0e1318', padding: '1px 6px', borderRadius: 999, fontWeight: 800 }}>✓ Active Strategy</span>}
-                                </div>
-                                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                                  Profit: <strong>{item.profit_component != null ? `৳${Number(item.profit_component).toLocaleString()}` : '—'}</strong> • Water: <strong>{item.water_component != null ? number(item.water_component, 2) : '—'}</strong> • Soil: <strong>{item.soil_component != null ? number(item.soil_component, 2) : '—'}</strong>
-                                </span>
-                              </div>
-                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
-                                {['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'].map((periodKey, idx) => {
-                                  const crop = rot[periodKey];
-                                  const cMeta = crop ? (CROP_META[crop] || { family: 'Other', is_legume: crop.toLowerCase().includes('bean') || crop.toLowerCase().includes('lentil'), duration: 90, water_mm: 400, icon: '🌱' }) : null;
-                                  const isDry = idx % 2 === 0;
-
-                                  return (
-                                    <div
-                                      key={periodKey}
-                                      style={{
-                                        background: 'var(--bg-card)',
-                                        padding: '8px 10px',
-                                        borderRadius: 8,
-                                        border: cMeta?.is_legume ? '1px solid rgba(0, 223, 129, 0.4)' : '1px solid var(--border-light)',
-                                        borderLeft: cMeta?.is_legume ? '3px solid var(--primary)' : undefined,
-                                        textAlign: 'center'
-                                      }}
-                                    >
-                                      <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                                        {periodKey} ({isDry ? 'Dry' : 'Wet'})
-                                      </div>
-                                      <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
-                                        {cMeta ? `${cMeta.icon} ${crop}` : '—'}
-                                      </div>
-                                      <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
-                                        {cMeta ? `${cMeta.family} • ${cMeta.water_mm}mm` : 'Unassigned'}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div> : <div className="dash-card">No feasible strategy rotations are available in this benchmark context.</div>
-                    )}
-
-                    {/* DEEP-DIVE STRATEGY INSPECTOR PANEL */}
-                    {hasFeasibleActivePlan ? (
-                    <div className="strategy-inspector-card" style={{ marginTop: 20 }}>
-                      <div className="inspector-top-banner">
-                        <div className="inspector-title-group">
-                          <div className="inspector-icon-lg" style={{ background: inspectedMeta.accentBg || 'rgba(0, 223, 129, 0.12)', color: inspectedMeta.primaryColor || 'var(--primary)' }}>
-                            {inspectedMeta.icon}
-                          </div>
-                          <div className="inspector-title-text">
-                            <h3>Selected Strategy Analysis: {inspectedMeta.title}</h3>
-                            <p>{inspectedMeta.summary}</p>
-                          </div>
-                        </div>
-                        <div className="inspector-actions">
-                          <span className="score-chip composite" style={{ fontSize: 14, padding: '6px 12px' }}>
-                            Solver Score: <strong>{inspectedItem.objective_value != null ? number(inspectedItem.objective_value, 3) : '—'}</strong>
-                          </span>
-                          <span style={{ background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)', fontWeight: 800, padding: '6px 14px', borderRadius: 8, fontSize: 12.5, border: '1px solid rgba(0, 223, 129, 0.3)' }}>
-                            ★ Active: {selectedStrategyName}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Strategy Priority Focus Breakdown */}
-                      <div className="strategy-formula-box">
-                        <div className="formula-text" style={{ fontSize: 13.5, fontWeight: 700 }}>
-                          Main Priority: {STRATEGY_PRIORITY_DESC[inspectedKey]?.mainPriority || inspectedMeta.summary}
-                        </div>
-                        <div className="formula-weights-breakdown">
-                          <span style={{ color: '#00df81' }}>● Profit Focus: {Math.round(getStrategyWeights(inspectedItem, inspectedKey).profit * 100)}%</span>
-                          <span style={{ color: '#38bdf8' }}>● Water Focus: {Math.round(getStrategyWeights(inspectedItem, inspectedKey).water * 100)}%</span>
-                          <span style={{ color: '#fbbf24' }}>● Soil Focus: {Math.round(getStrategyWeights(inspectedItem, inspectedKey).soil * 100)}%</span>
-                        </div>
-                      </div>
-
-                      {/* 3-Year Visual Rotation Timeline Schedule */}
-                      <div>
-                        <h4 style={{ margin: '0 0 12px', fontSize: 13, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.03em' }}>
-                          3-Year (6-Season) Multi-Period Optimal Rotation Schedule ({inspectedMeta.title})
-                        </h4>
-                        <div className="strategy-3year-timeline">
-                          {[
-                            { year: 1, label: 'Year 1', badge: 'Seasons 1 & 2', s1: 'Y1_S1', s2: 'Y1_S2' },
-                            { year: 2, label: 'Year 2', badge: 'Seasons 3 & 4', s1: 'Y2_S1', s2: 'Y2_S2' },
-                            { year: 3, label: 'Year 3', badge: 'Seasons 5 & 6', s1: 'Y3_S1', s2: 'Y3_S2' }
-                          ].map(y => {
-                            const crop1 = inspectedRotation[y.s1];
-                            const crop2 = inspectedRotation[y.s2];
-                            const meta1 = crop1 ? (CROP_META[crop1] || { family: 'Other', is_legume: crop1.toLowerCase().includes('bean') || crop1.toLowerCase().includes('lentil'), duration: 75, water_mm: 350, icon: '🌱' }) : null;
-                            const meta2 = crop2 ? (CROP_META[crop2] || { family: 'Other', is_legume: crop2.toLowerCase().includes('bean') || crop2.toLowerCase().includes('lentil'), duration: 110, water_mm: 600, icon: '🌽' }) : null;
-
-                            return (
-                              <div key={y.year} className="timeline-year-card">
-                                <div className="timeline-year-header">
-                                  <span className="timeline-year-title">{y.label}</span>
-                                  <span className="timeline-year-badge">{y.badge}</span>
-                                </div>
-                                <div className="timeline-season-row">
-                                  {/* Season 1 (Dry) */}
-                                  <div className={`timeline-season-card ${meta1?.is_legume ? 'is-legume' : ''}`}>
-                                    <div className="timeline-season-meta">
-                                      <span>Season 1 (Dry / Rabi)</span>
-                                      {meta1?.is_legume && <span style={{ color: '#00df81', fontWeight: 800 }}>🌱 Nitrogen Fixer</span>}
-                                    </div>
-                                    <div className="timeline-crop-main">
-                                      <span className="timeline-crop-name">{meta1 ? `${meta1.icon} ${crop1}` : '—'}</span>
-                                      {meta1 && <span className="trait-pill">{meta1.family}</span>}
-                                    </div>
-                                    <div className="timeline-crop-traits">
-                                      {meta1 ? (
-                                        <>
-                                          <span className="trait-pill">⏳ {meta1.duration} days</span>
-                                          <span className="trait-pill">💧 {meta1.water_mm} mm req</span>
-                                          <span className="trait-pill">{meta1.is_legume ? 'Bio-N Fixation' : 'Cash Margin'}</span>
-                                        </>
-                                      ) : (
-                                        <span className="trait-pill">Unscheduled</span>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  {/* Season 2 (Wet) */}
-                                  <div className={`timeline-season-card ${meta2?.is_legume ? 'is-legume' : ''}`}>
-                                    <div className="timeline-season-meta">
-                                      <span>Season 2 (Wet / Kharif)</span>
-                                      {meta2?.is_legume && <span style={{ color: '#00df81', fontWeight: 800 }}>🌱 Nitrogen Fixer</span>}
-                                    </div>
-                                    <div className="timeline-crop-main">
-                                      <span className="timeline-crop-name">{meta2 ? `${meta2.icon} ${crop2}` : '—'}</span>
-                                      {meta2 && <span className="trait-pill">{meta2.family}</span>}
-                                    </div>
-                                    <div className="timeline-crop-traits">
-                                      {meta2 ? (
-                                        <>
-                                          <span className="trait-pill">⏳ {meta2.duration} days</span>
-                                          <span className="trait-pill">💧 {meta2.water_mm} mm req</span>
-                                          <span className="trait-pill">{meta2.is_legume ? 'Bio-N Fixation' : 'High Cash Margin'}</span>
-                                        </>
-                                      ) : (
-                                        <span className="trait-pill">Unscheduled</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Decomposition & Constraints Grid */}
-                      <div className="inspector-details-grid">
-                        {/* Objective Decomposition */}
-                        <div className="decomposition-card">
-                          <h4>Objective Score Component Decomposition ({inspectedMeta.title})</h4>
-
-                          <div className="score-bar-item">
-                            <div className="score-bar-header">
-                              <span style={{ color: '#00df81' }}>💰 Expected Net Revenue (6-Season Gross Margin)</span>
-                              <span>{inspectedItem.profit_component != null ? `৳${Number(inspectedItem.profit_component).toLocaleString()} BDT/ha` : '—'}</span>
-                            </div>
-                            <div className="score-bar-track">
-                              <div className="score-bar-fill" style={{ width: `${inspectedItem.profit_component != null ? Math.min(100, Math.round((Number(inspectedItem.profit_component) / 900000) * 100)) : 0}%`, background: '#00df81' }} />
-                            </div>
-                            <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>
-                              Weight: {number(getStrategyWeights(inspectedItem, inspectedKey).profit, 2)} • Maximizes commercial agricultural margin.
-                            </small>
-                          </div>
-
-                          <div className="score-bar-item">
-                            <div className="score-bar-header">
-                              <span style={{ color: '#38bdf8' }}>💧 Water Conservation Component</span>
-                              <span>{inspectedItem.water_component != null ? `${number(inspectedItem.water_component, 2)} / 6.0` : '—'}</span>
-                            </div>
-                            <div className="score-bar-track">
-                              <div className="score-bar-fill" style={{ width: `${inspectedItem.water_component != null ? Math.min(100, Math.round((Number(inspectedItem.water_component) / 6.0) * 100)) : 0}%`, background: '#38bdf8' }} />
-                            </div>
-                            <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>
-                              Weight: {number(getStrategyWeights(inspectedItem, inspectedKey).water, 2)} • Minimizes irrigation demand in dry seasons.
-                            </small>
-                          </div>
-
-                          <div className="score-bar-item">
-                            <div className="score-bar-header">
-                              <span style={{ color: '#fbbf24' }}>🌱 Soil Health &amp; Biology Component</span>
-                              <span>{inspectedItem.soil_component != null ? `${number(inspectedItem.soil_component, 2)} / 6.0` : '—'}</span>
-                            </div>
-                            <div className="score-bar-track">
-                              <div className="score-bar-fill" style={{ width: `${inspectedItem.soil_component != null ? Math.min(100, Math.round((Number(inspectedItem.soil_component) / 6.0) * 100)) : 0}%`, background: '#fbbf24' }} />
-                            </div>
-                            <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>
-                              Weight: {number(getStrategyWeights(inspectedItem, inspectedKey).soil, 2)} • Rewards nitrogen-fixing pulses and root biomass.
-                            </small>
-                          </div>
-                        </div>
-
-                        {/* Dynamic Per-Season Decision Explanations */}
-                        <div style={{ gridColumn: 'span 2', background: 'var(--bg-card)', padding: 20, borderRadius: 14, border: '1px solid var(--border-light)' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <span style={{ fontSize: 20 }}>🌱</span>
-                              <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800 }}>
-                                Agronomic Decision Explanation &amp; Alternatives ({inspectedMeta.title})
-                              </h4>
-                            </div>
-                            <span style={{ fontSize: 12, background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)', padding: '3px 10px', borderRadius: 12, fontWeight: 700, border: '1px solid rgba(0, 223, 129, 0.3)' }}>
-                              {inspectedMeta.title}
-                            </span>
-                          </div>
-
-                          <div style={{ background: 'rgba(0, 223, 129, 0.08)', border: '1px solid rgba(0, 223, 129, 0.25)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12.5, color: 'var(--text-main)', lineHeight: 1.5 }}>
-                            <strong>Strategy Focus: </strong>{inspectedItem.decision_explanation?.strategy_summary || inspectedMeta.summary}
-                          </div>
-
-                          {inspectedItem.decision_explanation?.pattern_explanation && (
-                            <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 8, padding: '8px 12px', marginBottom: 16, fontSize: 12, color: 'var(--text-muted)' }}>
-                              <strong>Rotation Pattern: </strong>{inspectedItem.decision_explanation.pattern_explanation}
-                            </div>
-                          )}
-
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 14 }}>
-                            {(() => {
-                              const reasons = inspectedItem.decision_explanation?.period_reasons;
-                              const pWeights = inspectedItem.weights || { profit: 0.34, water: 0.33, soil: 0.33 };
-                              if (reasons && reasons.length > 0) {
-                                return reasons.map((p, pIdx) => (
-                                  <div key={p.period || pIdx} style={{ background: 'var(--bg-card-subtle)', borderRadius: 10, border: '1px solid var(--border-light)', padding: 14, display: 'flex', flexDirection: 'column', gap: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-light)', paddingBottom: 6 }}>
-                                      <div>
-                                        <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--primary)' }}>{p.crop}</span>
-                                        <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 6 }}>({p.family})</span>
-                                        {p.is_legume && <span style={{ marginLeft: 6, fontSize: 11, background: 'rgba(0, 223, 129, 0.12)', color: 'var(--primary)', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>BNF Legume</span>}
-                                      </div>
-                                      <span style={{ fontSize: 11, background: 'var(--bg-card)', color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 6, fontWeight: 700, border: '1px solid var(--border-light)' }}>
-                                        {p.season_label || p.period}
-                                      </span>
-                                    </div>
-
-                                    {/* Why This Crop */}
-                                    <div>
-                                      <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Why This Crop?</div>
-                                      <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.4 }}>{p.why_this_crop || p.why_feasible}</p>
-                                    </div>
-
-                                    {/* Feasibility Bullets */}
-                                    {p.feasibility_bullets && p.feasibility_bullets.length > 0 && (
-                                      <div style={{ background: 'var(--bg-card)', padding: '6px 10px', borderRadius: 6, fontSize: 11.5 }}>
-                                        <div style={{ fontWeight: 700, color: 'var(--text-dim)', marginBottom: 3 }}>Feasibility Factors:</div>
-                                        <ul style={{ margin: 0, paddingLeft: 16, color: 'var(--text-muted)' }}>
-                                          {p.feasibility_bullets.map((b, bIdx) => (
-                                            <li key={bIdx} style={{ marginBottom: 2 }}>{b}</li>
-                                          ))}
-                                        </ul>
-                                      </div>
-                                    )}
-
-                                    {/* Expected Performance */}
-                                    <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: 6, padding: '6px 10px', fontSize: 11.5 }}>
-                                      <div style={{ fontWeight: 700, color: '#c084fc', marginBottom: 2 }}>Expected Seasonal Performance ({inspectedMeta.title}):</div>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6, color: 'var(--text-main)' }}>
-                                        <span>Margin: <strong>BDT {Number(p.expected_gross_margin_bdt_ha || 0).toLocaleString()}/ha</strong></span>
-                                        <span>Water: <strong>{Number(p.water_requirement_mm || 0).toFixed(0)} mm</strong></span>
-                                        <span>Yield: <strong>{Number(p.expected_yield_t_ha || 0).toFixed(2)} t/ha</strong></span>
-                                        {p.composite_score != null && <span>Score: <strong>{Number(p.composite_score).toFixed(3)}</strong></span>}
-                                      </div>
-                                    </div>
-
-                                    {/* Why Selected */}
-                                    <div>
-                                      <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Why Selected?</div>
-                                      <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.4 }}>{p.why_selected}</p>
-                                    </div>
-
-                                    {/* Main Alternatives */}
-                                    {p.alternatives_considered && p.alternatives_considered.length > 0 && (
-                                      <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: 6 }}>
-                                        <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>Main Alternatives Evaluated:</div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                          {p.alternatives_considered.map((alt, aIdx) => (
-                                            <div key={aIdx} style={{ fontSize: 11, color: 'var(--text-muted)', background: 'var(--bg-card)', padding: '3px 6px', borderRadius: 4 }}>
-                                              <strong style={{ color: 'var(--text-main)' }}>{alt.crop}:</strong> {alt.reason_not_chosen || `BDT ${Number(alt.expected_gross_margin_bdt || 0).toLocaleString()}/ha margin`}
-                                            </div>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {/* Key Takeaway */}
-                                    {p.key_takeaway && (
-                                      <div style={{ fontSize: 11.5, color: 'var(--primary)', fontWeight: 600, borderLeft: '3px solid var(--primary)', paddingLeft: 8, marginTop: 2 }}>
-                                        {p.key_takeaway}
-                                      </div>
-                                    )}
-
-                                    {/* Collapsible Technical Details */}
-                                    <details style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>
-                                      <summary style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--text-muted)' }}>Technical Optimization Details</summary>
-                                      <div style={{ marginTop: 4, padding: 6, background: 'var(--bg-card)', borderRadius: 4, fontFamily: 'monospace', fontSize: 10.5 }}>
-                                        <div>Strategy: {inspectedMeta.title}</div>
-                                        <div>Weights: Profit {formatNumber((pWeights.profit || 0.34) * 100, 0)}%, Water {formatNumber((pWeights.water || 0.33) * 100, 0)}%, Soil {formatNumber((pWeights.soil || 0.33) * 100, 0)}%</div>
-                                        <div>Calculated Composite Score: {formatNumber(p.composite_score || 0, 3)} / 1.000</div>
-                                        <div>Legume BNF Interval Constraint: Satisfied</div>
-                                      </div>
-                                    </details>
-                                  </div>
-                                ));
-                              }
-                              // Strategy-isolated fallback
-                              const periods = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
-                              return periods.map((periodKey, pIdx) => {
-                                const crop = inspectedRotation[periodKey] || 'Unassigned';
-                                const cMeta = CROP_META[crop] || { family: 'Agronomic', is_legume: false };
-                                const isDry = pIdx % 2 === 0;
-                                return (
-                                  <div key={periodKey} style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)', fontSize: 12 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                                      <strong style={{ color: 'var(--primary)', fontSize: 12.5 }}>{periodKey}: {crop} ({cMeta.family})</strong>
-                                      <span style={{ fontSize: 10.5, background: 'var(--bg-card)', padding: '2px 6px', borderRadius: 4, fontWeight: 700, color: 'var(--text-muted)' }}>
-                                        Year {Math.floor(pIdx/2) + 1}, Season {(pIdx%2) + 1} ({isDry ? 'Dry/Rabi' : 'Wet/Kharif'})
-                                      </span>
-                                    </div>
-                                    <div style={{ marginBottom: 4 }}>
-                                      <span style={{ fontWeight: 700, color: 'var(--text-muted)' }}>Why Feasible: </span>
-                                      <span style={{ color: 'var(--text-dim)' }}>Meets parcel agro-climatic boundaries and botanical family alternation.</span>
-                                    </div>
-                                    <div style={{ marginBottom: 4 }}>
-                                      <span style={{ fontWeight: 700, color: 'var(--text-muted)' }}>Why Selected ({inspectedMeta.title}): </span>
-                                      <span style={{ color: 'var(--text-dim)' }}>
-                                        Selected for optimal trade-off under {formatNumber((pWeights.profit || 0) * 100, 0)}% Profit / {formatNumber((pWeights.water || 0) * 100, 0)}% Water / {formatNumber((pWeights.soil || 0) * 100, 0)}% Soil weights.
-                                      </span>
-                                    </div>
-                                  </div>
-                                );
-                              });
-                            })()}
-                          </div>
-                        </div>
-
-                        {/* Agronomic Constraints Verification */}
-                        <div className="compliance-checklist-card">
-                          <h4>Agronomic Constraints &amp; Solver Integrity</h4>
-                          <div className="checklist-items">
-                            <div className="checklist-row">
-                              <div className="check-icon-circle">✓</div>
-                              <div>
-                                <strong>Legume Interval Constraint Satisfied:</strong>
-                                <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-                                  Enforces biological nitrogen-fixing pulse (e.g. Mungbean/Lentil) at least once every 3 consecutive seasons via mathematical constraint.
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="checklist-row">
-                              <div className="check-icon-circle">✓</div>
-                              <div>
-                                <strong>Botanical Family Alternation Verified:</strong>
-                                <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-                                  Consecutive seasons avoid matching botanical families (e.g. Fabaceae rotated with Poaceae) to break pest cycles.
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="checklist-row">
-                              <div className="check-icon-circle">✓</div>
-                              <div>
-                                <strong>Agro-Climatic &amp; Soil pH Feasibility:</strong>
-                                <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-                                  Every scheduled crop is verified within temperature bounds and soil pH limits for the parcel.
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="checklist-row">
-                              <div className="check-icon-circle">✓</div>
-                              <div>
-                                <strong>PuLP Branch-and-Bound Solver Formulation:</strong>
-                                <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-                                  Solved to global integer optimality without heuristic shortcuts ({inspectedItem.solver_status || 'Optimal'}).
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    ) : (
-                      <section className="dash-card" role="status" style={{ marginTop: 20, padding: 18, borderColor: '#fecaca', color: '#991b1b' }}>
-                        <h3 style={{ margin: '0 0 6px', fontSize: 16 }}>No Feasible Strategy Analysis</h3>
-                        <div>
-                          {selectedBenchmarkContext !== 'operational' && benchmarkSuiteResults[BENCHMARK_SCENARIOS[selectedBenchmarkContext]?.scen_key]?.feasible_count === 0
-                            ? 'The selected benchmark has no feasible crops, so no rotation, performance metrics, constraint checks, or agronomic explanation can be calculated.'
-                            : `No feasible rotation or analysis is available for ${selectedStrategyName} in this context (${activeMilpResult?.solver_status || 'No result'}).`}
-                        </div>
-                      </section>
-                    )}
-                    </div>
-              );
-            })()}
-
-              {/* TAB: COMPARISON LAB (MILP vs RL vs Rule) */}
-              {analysisTab === 'comparison_lab' && (
-                <ComparisonLabView
-                  activeField={activeField}
-                  analysisResult={result}
-                  request={request}
-                  formatNumber={formatNumber}
-                  onNavigateTab={setAnalysisTab}
-                />
-              )}
-
-              {/* TAB: CROP FAILURE & RECOVERY SIMULATOR */}
-              {analysisTab === 'recovery' && (
-                <CropFailureRecoveryView
-                  activeField={activeField}
-                  analysisResult={result}
-                  request={request}
-                  formatNumber={formatNumber}
-                  onNavigateTab={setAnalysisTab}
-                />
-              )}
-
-              {/* TAB: ADAPTIVE REPLANNING */}
-              {analysisTab === 'replan' && (
-                <AdaptiveReplanningView
-                  activeField={activeField}
-                  analysisResult={result}
-                  request={request}
-                  formatNumber={formatNumber}
-                  onNavigateTab={setAnalysisTab}
-                />
-              )}
-
-              {/* TAB: WEATHER UNCERTAINTY & ROBUSTNESS */}
-              {analysisTab === 'uncertainty' && (
-                <WeatherUncertaintyView
-                  activeField={activeField}
-                  analysisResult={result}
-                  request={request}
-                  formatNumber={formatNumber}
-                  onNavigateTab={setAnalysisTab}
-                />
-              )}
-
-              {/* TAB: SOIL HEALTH & SUSTAINABILITY TRACKER */}
-              {analysisTab === 'sustainability' && (
-                <SustainabilityTrackerView
-                  activeField={activeField}
-                  analysisResult={result}
-                  formatNumber={formatNumber}
-                  onNavigateTab={setAnalysisTab}
-                />
-              )}
-
-              {/* TAB: CROP DATABASE & PROVENANCE */}
-              {analysisTab === 'crop_catalog' && (
-                <CropCatalogView
-                  request={request}
-                  formatNumber={formatNumber}
-                />
-              )}
-
-              {/* TAB: SATELLITE & SENSOR READINESS */}
-              {analysisTab === 'satellite' && (
-                <SatelliteReadinessView
-                  request={request}
-                  formatNumber={formatNumber}
-                />
-              )}
-
-              {/* TAB: ACTUAL VS ESTIMATED OUTCOMES */}
-              {analysisTab === 'outcomes' && (
-                <ActualOutcomesView
-                  activeField={activeField}
-                  analysisResult={result}
-                  request={request}
-                  formatNumber={formatNumber}
-                  onNavigateTab={setAnalysisTab}
-                />
-              )}
-
-              {/* TAB 10: SYNTHETIC ML YIELD ANALYSIS */}
-              {analysisTab === 'ml_models' && (() => {
-                const activeStrategyName = selectedStrategyId;
-                const selectedStrategyMeta = STRATEGY_META[activeStrategyName] || STRATEGY_META.balanced;
-                const selectedMilpPlan = activeMilpResult || {};
-                const rotationMap = activeMilpResult?.rotation || {};
-                if (!activeMilpResult || !Object.keys(rotationMap).length) {
-                  return <div className="dash-card" style={{ gridColumn: 'span 12' }}>No MILP result available for this strategy/context.</div>;
-                }
-                const rawFieldArea = activeField?.area_ha ?? summary.field_state?.field_size_ha;
-                const fieldArea = rawFieldArea == null ? null : Number(rawFieldArea);
-                const fieldName = activeField?.name || summary.field_state?.name || 'Not Available';
-                const cropSeasonMatrix = selectedMilpPlan.dynamic_agronomic_matrix?.crop_season_matrix || selectedMilpPlan.dynamic_crop_matrix || {};
-                const periodKeys = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
-                const mlStrategyKey = selectedStrategyId === 'water_efficiency'
-                  ? 'water_focused'
-                  : selectedStrategyId === 'soil_health' ? 'soil_focused' : selectedStrategyId;
-                const activeStrategyYieldAnalysis = ml.strategy_yield_analysis?.[mlStrategyKey];
-                const seasonalYieldData = (activeStrategyYieldAnalysis?.seasons || []).map((prediction, idx) => {
-                  const crop = prediction.crop;
-                  const cMeta = CROP_META[crop] || { duration: null, water_mm: null, icon: '🌱', family: 'Unknown', is_legume: false };
-                  const dynCropInfo = cropSeasonMatrix[prediction.period_key]?.[crop] || {};
-                  const yield_t_ha = Number(prediction.predicted_yield_t_ha);
-                  const uncertainty_t_ha = Number(prediction.uncertainty_t_ha);
-                  const minYield = Number(prediction.lower_yield_t_ha);
-                  const maxYield = Number(prediction.upper_yield_t_ha);
-                  const productionTons = prediction.production_tons == null ? null : Number(prediction.production_tons);
-                  const minProductionTons = prediction.lower_production_tons == null ? null : Number(prediction.lower_production_tons);
-                  const maxProductionTons = prediction.upper_production_tons == null ? null : Number(prediction.upper_production_tons);
-                  return {
-                    periodKey: prediction.period_key,
-                    year: Math.floor(idx / 2) + 1,
-                    seasonNum: (idx % 2) + 1,
-                    isDry: prediction.season_type === 'dry',
-                    crop,
-                    cMeta,
-                    duration: cMeta.duration,
-                    yield_t_ha,
-                    uncertainty_t_ha,
-                    minYield,
-                    maxYield,
-                    productionTons,
-                    minProductionTons,
-                    maxProductionTons,
-                    waterReq: dynCropInfo.water_balance?.crop_et_mm ?? cMeta.water_mm,
-                    featuresUsed: prediction.features_used,
-                    uncertaintyNote: prediction.uncertainty_note
-                  };
-                });
-                const predictionMatchesRotation = seasonalYieldData.length === periodKeys.length
-                  && periodKeys.every((periodKey, idx) => seasonalYieldData[idx]?.periodKey === periodKey
-                    && seasonalYieldData[idx]?.crop === rotationMap[periodKey]);
-                const totalProductionTons = activeStrategyYieldAnalysis?.metrics?.total_production_tons ?? null;
-                const averageYield_t_ha = activeStrategyYieldAnalysis?.metrics?.mean_yield_t_ha ?? null;
-                const totalMinProductionTons = activeStrategyYieldAnalysis?.metrics?.production_envelope_tons?.lower ?? null;
-                const totalMaxProductionTons = activeStrategyYieldAnalysis?.metrics?.production_envelope_tons?.upper ?? null;
-                const averageUncertainty_t_ha = activeStrategyYieldAnalysis?.metrics?.mean_uncertainty_t_ha ?? null;
-                const activeSeasonData = predictionMatchesRotation
-                  ? seasonalYieldData.find(s => s.periodKey === selectedMlSeasonKey) || seasonalYieldData[0]
-                  : null;
-                if (!activeSeasonData) {
-                  return (
-                    <div className="dash-card" role="status" style={{ gridColumn: 'span 12' }}>
-                      Crop- and season-conditioned synthetic ML predictions are not available for this MILP result/context.
-                      No optimizer yield values or fallback crop estimates are substituted for the ML output.
-                    </div>
-                  );
-                }
-                const strategyMlKeys = {
-                  profit_focused: 'profit_focused',
-                  water_efficiency: 'water_focused',
-                  soil_health: 'soil_focused',
-                  balanced: 'balanced'
-                };
-                const strategyYieldRows = Object.entries(strategyMlKeys).map(([strategyId, modelKey]) => {
-                  const analysis = ml.strategy_yield_analysis?.[modelKey];
-                  const result = currentStrategyResults?.[strategyId] || {};
-                  const rotation = result.rotation || result.selected_crop_by_period || {};
-                  const predictions = analysis?.seasons || [];
-                  const rotationMatchesPredictions = predictions.length === periodKeys.length
-                    && periodKeys.every((periodKey, idx) => predictions[idx]?.period_key === periodKey
-                      && predictions[idx]?.crop === rotation[periodKey]);
-                  return {
-                    strategyId,
-                    name: STRATEGY_PROFILES[strategyId]?.name || strategyId,
-                    rotation,
-                    analysis,
-                    rotationMatchesPredictions
-                  };
-                });
-                const allRotationsAvailable = strategyYieldRows.every(row => periodKeys.every(key => row.rotation?.[key]));
-                const rotationsIdentical = allRotationsAvailable && strategyYieldRows.every(row =>
-                  periodKeys.every(key => row.rotation[key] === strategyYieldRows[0].rotation[key])
-                );
-                return (
-                  <div style={{ gridColumn: 'span 12', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                    {/* 1. PAGE HEADER */}
-                    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 18, boxShadow: 'var(--shadow-card)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <span style={{ fontSize: 24 }}>📊</span>
-                          <div>
-                            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: 'var(--text-main)' }}>Synthetic ML Yield Analysis</h3>
-                            <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>
-                              Estimate crop-specific yield and production for each season in the selected MILP rotation. Predictions are generated by a synthetic benchmark model for research and algorithm evaluation. They are not field-validated yield forecasts.
-                            </p>
-                          </div>
-                        </div>
-                        <span style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)', fontSize: 11.5, fontWeight: 800, padding: '4px 12px', borderRadius: 999 }}>
-                          Synthetic ML Benchmark — Not Field Validated
-                        </span>
-                      </div>
-
-                      {/* Explicit MILP vs ML Distinction Callout */}
-                      <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border-light)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 10, fontSize: 12.5 }}>
-                        <div style={{ background: 'rgba(0, 223, 129, 0.08)', border: '1px solid rgba(0, 223, 129, 0.25)', borderRadius: 8, padding: '8px 12px', color: 'var(--text-main)' }}>
-                          <strong style={{ color: 'var(--primary)' }}>MILP Optimizer Answers:</strong> <em>"Which crop should be scheduled in each season?"</em> (MILP → Rotation Schedule)
-                        </div>
-                        <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: 8, padding: '8px 12px', color: 'var(--text-main)' }}>
-                          <strong style={{ color: '#38bdf8' }}>ML Model Answers:</strong> <em>"Given that crop and season, what yield does the synthetic model estimate?"</em> (ML → Yield &amp; Uncertainty)
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* 2. MILP -> ML CONTEXT */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 16 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                        <div>
-                          <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.04em' }}>
-                            MILP → ML CONTEXT (CANONICAL SELECTED STRATEGY)
-                          </span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                            <span style={{ fontSize: 18 }}>{selectedStrategyMeta.icon}</span>
-                            <strong style={{ fontSize: 16, color: 'var(--text-main)' }}>{selectedStrategyMeta.title}</strong>
-                            <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.15)', color: 'var(--primary)', padding: '2px 8px', borderRadius: 999, fontWeight: 700 }}>
-                              Canonical Active Model
-                            </span>
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', gap: 16, fontSize: 12.5, flexWrap: 'wrap' }}>
-                          <div><span style={{ color: 'var(--text-muted)' }}>Field:</span> <strong>{fieldName}</strong></div>
-                          <div><span style={{ color: 'var(--text-muted)' }}>Field Area:</span> <strong>{formatNumber(fieldArea, 1)} ha</strong></div>
-                          <div><span style={{ color: 'var(--text-muted)' }}>Rotation Length:</span> <strong>6 Seasons (3 Years)</strong></div>
-                        </div>
-                      </div>
-
-                      {/* 6-Season Rotation Chain */}
-                      <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border-light)' }}>
-                        <div style={{ fontSize: 11.5, color: 'var(--text-muted)', fontWeight: 700, marginBottom: 6 }}>
-                          6-Season Active Rotation Trajectory:
-                        </div>
-                        <div className="crop-sequence-chain" style={{ flexWrap: 'wrap' }}>
-                          {periodKeys.map((pKey, idx) => {
-                            const c = rotationMap[pKey] || 'Mungbean';
-                            const cm = CROP_META[c] || { icon: '🌱', is_legume: true };
-                            return (
-                              <React.Fragment key={pKey}>
-                                <span className={`crop-chain-chip ${cm.is_legume ? 'legume-highlight' : ''}`}>
-                                  <span className="crop-chain-season-tag">{pKey.replace('_S', '·S')}</span>
-                                  <span>{cm.icon}</span>
-                                  <span>{c}</span>
-                                </span>
-                                {idx < 5 && <span className="crop-chain-arrow">→</span>}
-                              </React.Fragment>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 3. 6-SEASON CROP YIELD ANALYSIS (MAIN SECTION TABLE) */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 18 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
-                        <div>
-                          <h4 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text-main)' }}>6-Season Crop Yield Analysis</h4>
-                          <p style={{ margin: '2px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
-                          Backend synthetic ML estimates conditioned on each strategy's actual crop and season. Click Inspect on any row to display prediction details below.
-                          </p>
-                        </div>
-                        <span style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 700 }}>
-                          Field Area: {formatNumber(fieldArea, 1)} ha
-                        </span>
-                      </div>
-
-                      <div className="strategy-table-enhanced-wrapper">
-                        <table className="strategy-table-enhanced">
-                          <thead>
-                            <tr>
-                              <th>Season</th>
-                              <th>Crop</th>
-                              <th>Duration</th>
-                              <th>Predicted Yield</th>
-                              <th>Uncertainty (±)</th>
-                              <th>Prediction Range</th>
-                              <th>Estimated Production</th>
-                              <th>Water Req</th>
-                              <th style={{ textAlign: 'center' }}>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {seasonalYieldData.map(s => {
-                              const isInspected = s.periodKey === selectedMlSeasonKey;
-                              return (
-                                <tr
-                                  key={s.periodKey}
-                                  className={`strategy-table-row ${isInspected ? 'row-active' : ''}`}
-                                  onClick={() => setSelectedMlSeasonKey(s.periodKey)}
-                                  style={{
-                                    cursor: 'pointer',
-                                    background: isInspected ? 'rgba(0, 223, 129, 0.12)' : undefined
-                                  }}
-                                >
-                                  <td>
-                                    <strong style={{ fontSize: 13, color: 'var(--primary)' }}>
-                                      Year {s.year}, Season {s.seasonNum}
-                                    </strong>
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                                      {s.periodKey} ({s.isDry ? 'Dry / Rabi' : 'Wet / Kharif'})
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13.5 }}>
-                                      <span>{s.cMeta.icon}</span>
-                                      <span>{s.crop}</span>
-                                      {s.cMeta.is_legume && (
-                                        <span style={{ fontSize: 10, background: 'rgba(0, 223, 129, 0.15)', color: 'var(--primary)', padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>
-                                          BNF
-                                        </span>
-                                      )}
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>
-                                      ⏱ {s.duration} days
-                                    </span>
-                                  </td>
-
-                                  <td>
-                                    <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-main)' }}>
-                                      {number(s.yield_t_ha, 2)} <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)' }}>t/ha</span>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div style={{ fontSize: 12.5, fontWeight: 700, color: '#f59e0b' }}>
-                                      ±{number(s.uncertainty_t_ha, 2)} <span style={{ fontSize: 11, color: '#fbbf24' }}>t/ha</span>
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div style={{ fontSize: 12, color: 'var(--text-main)', fontWeight: 600 }}>
-                                      {number(s.minYield, 2)} – {number(s.maxYield, 2)} t/ha
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--primary)' }}>
-                                      {number(s.productionTons, 1)} <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--primary)' }}>tons</span>
-                                    </div>
-                                    <div style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>
-                                      ({number(s.yield_t_ha, 2)} t/ha × {formatNumber(fieldArea, 1)} ha)
-                                    </div>
-                                  </td>
-
-                                  <td>
-                                    <span style={{ fontSize: 12, color: '#38bdf8', fontWeight: 600 }}>
-                                      💧 {number(s.waterReq, 0)} mm
-                                    </span>
-                                  </td>
-
-                                  <td style={{ textAlign: 'center' }}>
-                                    <button
-                                      type="button"
-                                      className={isInspected ? 'btn-primary-sm' : 'btn-secondary-sm'}
-                                      style={{
-                                        padding: '4px 12px',
-                                        fontSize: 11,
-                                        borderRadius: 6,
-                                        fontWeight: 700,
-                                        background: isInspected ? 'var(--primary)' : undefined,
-                                        color: isInspected ? '#0e1318' : undefined
-                                      }}
-                                      onClick={e => {
-                                        e.stopPropagation();
-                                        setSelectedMlSeasonKey(s.periodKey);
-                                      }}
-                                    >
-                                      {isInspected ? 'Selected' : 'Inspect'}
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 18 }}>
-                      <h4 style={{ margin: '0 0 5px', fontSize: 15, fontWeight: 800 }}>Synthetic ML Yield by MILP Strategy</h4>
-                      <p style={{ margin: '0 0 10px', fontSize: 12, color: 'var(--text-muted)' }}>
-                        Each row uses that strategy's own backend rotation and crop-season predictions; objective weights do not directly alter yield.
-                      </p>
-                      {rotationsIdentical && (
-                        <div role="status" style={{ marginBottom: 10, padding: 9, borderRadius: 8, background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', color: 'var(--text-main)', fontSize: 11.5 }}>
-                          All four MILP results currently select the same six-season crop rotation. Identical crop and season inputs therefore produce identical synthetic ML yields; different strategy weights change the MILP objective score, not the yield model input.
-                        </div>
-                      )}
-                      <div className="strategy-table-enhanced-wrapper">
-                        <table className="strategy-table-enhanced">
-                          <thead><tr><th>Strategy</th><th>Selected Rotation</th><th>ML Estimated Production</th><th>Mean Yield</th><th>Mean RMSE Bound</th></tr></thead>
-                          <tbody>
-                            {strategyYieldRows.map(row => (
-                              <tr key={row.strategyId} className={row.strategyId === selectedStrategyId ? 'row-active' : ''}>
-                                <td><strong>{row.name}</strong>{row.strategyId === selectedStrategyId ? ' · Selected' : ''}</td>
-                                <td>{periodKeys.map(key => row.rotation?.[key]).filter(Boolean).join(' → ') || 'Not Available'}</td>
-                                <td>{row.rotationMatchesPredictions && row.analysis?.metrics?.total_production_tons != null
-                                  ? `${number(row.analysis.metrics.total_production_tons, 1)} tons`
-                                  : 'Prediction unavailable for this strategy/context'}</td>
-                                <td>{row.rotationMatchesPredictions && row.analysis?.metrics?.mean_yield_t_ha != null
-                                  ? `${number(row.analysis.metrics.mean_yield_t_ha, 2)} t/ha`
-                                  : '—'}</td>
-                                <td>{row.rotationMatchesPredictions && row.analysis?.metrics?.mean_uncertainty_t_ha != null
-                                  ? `±${number(row.analysis.metrics.mean_uncertainty_t_ha, 2)} t/ha`
-                                  : '—'}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    {/* 4. 6-SEASON YIELD SUMMARY */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-                      <div className="dash-card" style={{ background: 'rgba(0, 223, 129, 0.08)', border: '1px solid rgba(0, 223, 129, 0.25)', padding: 16, borderRadius: 12 }}>
-                        <small style={{ color: 'var(--primary)', fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase' }}>TOTAL ESTIMATED PRODUCTION</small>
-                        <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--primary)', marginTop: 4 }}>
-                          {number(totalProductionTons, 1)} <span style={{ fontSize: 14 }}>tons</span>
-                        </div>
-                        <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2 }}>
-                          Sum of 6 crop- and season-conditioned synthetic ML predictions across {formatNumber(fieldArea, 1)} ha
-                        </div>
-                      </div>
-
-                      <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', padding: 16, borderRadius: 12 }}>
-                        <small style={{ color: 'var(--text-muted)', fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase' }}>AVERAGE CROP YIELD</small>
-                        <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-                          {number(averageYield_t_ha, 2)} <span style={{ fontSize: 14 }}>t/ha</span>
-                        </div>
-                        <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2 }}>
-                          Mean predicted yield per season
-                        </div>
-                      </div>
-
-                      <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', padding: 16, borderRadius: 12 }}>
-                        <small style={{ color: 'var(--text-muted)', fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase' }}>TOTAL PRODUCTION RANGE</small>
-                        <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-main)', marginTop: 6 }}>
-                          {number(totalMinProductionTons, 1)} – {number(totalMaxProductionTons, 1)} <span style={{ fontSize: 13 }}>tons</span>
-                        </div>
-                        <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2 }}>
-                          Sum of synthetic RMSE bounds; not a confidence interval
-                        </div>
-                      </div>
-
-                      <div className="dash-card" style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', padding: 16, borderRadius: 12 }}>
-                        <small style={{ color: '#f59e0b', fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase' }}>AVG PREDICTION UNCERTAINTY</small>
-                        <div style={{ fontSize: 24, fontWeight: 800, color: '#fbbf24', marginTop: 4 }}>
-                          ±{number(averageUncertainty_t_ha, 2)} <span style={{ fontSize: 14 }}>t/ha</span>
-                        </div>
-                        <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2 }}>
-                          Synthetic model held-out RMSE bound; not real-world confidence
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 5. PREDICTION DETAIL / SELECTED SEASON PREDICTION INSPECTOR */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--primary)', borderRadius: 14, padding: 18, boxShadow: '0 0 16px rgba(0, 223, 129, 0.1)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, borderBottom: '1px solid var(--border-light)', paddingBottom: 12, marginBottom: 14 }}>
-                        <div>
-                          <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                            SELECTED SEASON PREDICTION INSPECTOR
-                          </span>
-                          <h4 style={{ margin: '2px 0 0', fontSize: 16, fontWeight: 800, color: 'var(--text-main)' }}>
-                            Selected Prediction: Year {activeSeasonData.year} Season {activeSeasonData.seasonNum} ({activeSeasonData.periodKey}) {activeSeasonData.crop}
-                          </h4>
-                        </div>
-                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                          {periodKeys.map(pk => (
-                            <button
-                              key={pk}
-                              type="button"
-                              className={`btn-secondary-sm ${pk === selectedMlSeasonKey ? 'active' : ''}`}
-                              style={{
-                                padding: '4px 10px',
-                                fontSize: 11,
-                                borderRadius: 6,
-                                fontWeight: 700,
-                                background: pk === selectedMlSeasonKey ? 'var(--primary)' : 'var(--bg-card-subtle)',
-                                color: pk === selectedMlSeasonKey ? '#0e1318' : 'var(--text-muted)'
-                              }}
-                              onClick={() => setSelectedMlSeasonKey(pk)}
-                            >
-                              {pk.replace('_S', '·S')}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
-                        <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)' }}>
-                          <small style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' }}>PREDICTED YIELD</small>
-                          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-                            {number(activeSeasonData.yield_t_ha, 3)} <span style={{ fontSize: 13 }}>t/ha</span>
-                          </div>
-                          <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
-                            Uncertainty: <strong style={{ color: '#fbbf24' }}>±{number(activeSeasonData.uncertainty_t_ha, 3)} t/ha</strong>
-                          </div>
-                        </div>
-
-                        <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)' }}>
-                          <small style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' }}>PREDICTION RANGE</small>
-                          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-                            {number(activeSeasonData.minYield, 2)} – {number(activeSeasonData.maxYield, 2)} <span style={{ fontSize: 13 }}>t/ha</span>
-                          </div>
-                          <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
-                            Synthetic RMSE envelope; not a confidence interval
-                          </div>
-                        </div>
-
-                        <div style={{ background: 'rgba(0, 223, 129, 0.08)', padding: 14, borderRadius: 10, border: '1px solid rgba(0, 223, 129, 0.25)' }}>
-                          <small style={{ color: 'var(--primary)', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' }}>ESTIMATED SEASON HARVEST</small>
-                          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--primary)', marginTop: 4 }}>
-                            {number(activeSeasonData.productionTons, 1)} <span style={{ fontSize: 13 }}>tons</span>
-                          </div>
-                          <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
-                            Formula: {number(activeSeasonData.yield_t_ha, 2)} t/ha × {formatNumber(fieldArea, 1)} ha = {number(activeSeasonData.productionTons, 1)} tons
-                          </div>
-                        </div>
-
-                        <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)' }}>
-                          <small style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' }}>CROP &amp; AGRONOMIC CONTEXT</small>
-                          <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-main)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span>{activeSeasonData.cMeta.icon}</span>
-                            <span>{activeSeasonData.crop}</span>
-                            <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>({activeSeasonData.cMeta.family || 'Fabaceae'})</span>
-                          </div>
-                          <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
-                            ⏱ {activeSeasonData.duration} days • 💧 {activeSeasonData.waterReq} mm water req
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 6. MODEL-ATTRIBUTED FEATURE CONTRIBUTORS (EXPLAINABLE AI) */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 20 }}>
-                      {(() => {
-                        // Dynamic XAI calculation for active selected crop-season
-                        const obsFeatures = activeSeasonData.featuresUsed || {};
-                        const featureNames = ml.feature_names || [];
-                        const coeffs = ml.coefficients || [];
-                        const means = ml.normalization_mean || [];
-                        const stds = ml.normalization_std || [];
-
-                        const attributions = featureNames.map((name, idx) => {
-                          const val = obsFeatures[name];
-                          const isAvailable = val != null && Number.isFinite(Number(val));
-                          if (!isAvailable) {
-                            return {
-                              feature: name,
-                              displayName: name.replaceAll('_', ' ').replace(/\b\w/g, c => c.toUpperCase()),
-                              observedLabel: 'Unavailable',
-                              raw: null,
-                              contribution: 0,
-                              direction: 'neutral',
-                              isAvailable: false
-                            };
-                          }
-                          const raw = Number(val);
-                          const mean = means[idx] ?? 0;
-                          const std = stds[idx] || 1.0;
-                          const coeff = coeffs[idx] ?? 0;
-                          const stdVal = (raw - mean) / std;
-                          const contribution = Number((coeff * stdVal).toFixed(3));
-
-                          let formatVal = number(raw);
-                          if (name.includes('water') || name.includes('rainfall')) { formatVal = `${number(raw, 0)} mm`; }
-                          else if (name.includes('temp')) { formatVal = `${number(raw, 1)} °C`; }
-                          else if (name.includes('nitrogen') || name.includes('phosphorus') || name.includes('potassium')) { formatVal = `${number(raw, 0)} kg/ha`; }
-                          else if (name === 'ph') { formatVal = `${number(raw, 1)} pH`; }
-                          else if (name.includes('organic')) { formatVal = `${number(raw, 1)} %`; }
-                          else if (name.includes('yield')) { formatVal = `${number(raw, 2)} t/ha`; }
-                          else if (name.includes('moisture')) { formatVal = `${number(raw, 2)} v/v`; }
-                          else if (name.includes('indicator')) { formatVal = raw > 0.5 ? '1.0 (Active)' : '0.0 (Inactive)'; }
-
-                          return {
-                            feature: name,
-                            displayName: name.replaceAll('_', ' ').replace(/\b\w/g, c => c.toUpperCase()),
-                            observedLabel: formatVal,
-                            raw,
-                            contribution,
-                            direction: contribution >= 0 ? 'positive' : 'negative',
-                            isAvailable: true
-                          };
-                        });
-
-                        attributions.sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
-
-                        const posDrivers = attributions.filter(a => a.isAvailable && a.contribution >= 0).sort((a, b) => b.contribution - a.contribution);
-                        const negDrivers = attributions.filter(a => a.isAvailable && a.contribution < 0).sort((a, b) => a.contribution - b.contribution);
-
-                        const topPositive = posDrivers[0] || null;
-                        const topNegative = negDrivers[0] || null;
-
-                        const posDesc = topPositive ? `${topPositive.displayName} (+${number(topPositive.contribution, 3)} t/ha)` : 'None';
-                        const negDesc = topNegative ? `${topNegative.displayName} (${number(topNegative.contribution, 3)} t/ha)` : 'None';
-
-                        return (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                            {/* Header */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, borderBottom: '1px solid var(--border-light)', paddingBottom: 12 }}>
-                              <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                  <span style={{ fontSize: 18 }}>🔍</span>
-                                  <h4 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: 'var(--text-main)' }}>
-                                    Explainable AI (XAI) — Selected Season
-                                  </h4>
-                                  <span className="source-tag math" style={{ fontSize: 10 }}>SHAP-EQUIVALENT LOCAL ATTRIBUTION</span>
-                                </div>
-                                <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>
-                                  Feature attribution explaining predicted yield of <strong>{number(activeSeasonData.yield_t_ha, 2)} t/ha</strong> for <strong>{activeSeasonData.periodKey} ({activeSeasonData.crop})</strong> based on exact ML model inputs.
-                                </p>
-                              </div>
-                              <div style={{ background: 'rgba(0, 223, 129, 0.12)', border: '1px solid rgba(0, 223, 129, 0.3)', padding: '6px 14px', borderRadius: 10, fontSize: 13, fontWeight: 800, color: 'var(--primary)' }}>
-                                Canonical Yield: {number(activeSeasonData.yield_t_ha, 2)} t/ha
-                              </div>
-                            </div>
-
-                            {/* Top Model Drivers Section */}
-                            <div style={{ marginTop: 4 }}>
-                              <h5 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                Top Model Drivers
-                              </h5>
-                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 12 }}>
-                                {/* Top Positive Driver */}
-                                <div style={{ background: 'rgba(0, 223, 129, 0.08)', border: '1.5px solid rgba(0, 223, 129, 0.35)', borderRadius: 12, padding: 14 }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                                    <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                      ▲ TOP POSITIVE DRIVER
-                                    </span>
-                                    <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.2)', color: 'var(--primary)', padding: '2px 8px', borderRadius: 999, fontWeight: 800 }}>
-                                      +{topPositive ? number(topPositive.contribution, 3) : '0.000'} t/ha
-                                    </span>
-                                  </div>
-                                  <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-main)' }}>
-                                    {topPositive ? topPositive.displayName : 'None Identified'}
-                                  </div>
-                                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-                                    Observed Value: <strong style={{ color: 'var(--text-main)' }}>{topPositive ? topPositive.observedLabel : 'N/A'}</strong>
-                                  </div>
-                                </div>
-
-                                {/* Top Negative Driver */}
-                                <div style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1.5px solid rgba(239, 68, 68, 0.35)', borderRadius: 12, padding: 14 }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                                    <span style={{ fontSize: 11, fontWeight: 800, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                      ▼ TOP NEGATIVE DRIVER
-                                    </span>
-                                    <span style={{ fontSize: 11, background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', padding: '2px 8px', borderRadius: 999, fontWeight: 800 }}>
-                                      {topNegative ? number(topNegative.contribution, 3) : '0.000'} t/ha
-                                    </span>
-                                  </div>
-                                  <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-main)' }}>
-                                    {topNegative ? topNegative.displayName : 'None Identified'}
-                                  </div>
-                                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-                                    Observed Value: <strong style={{ color: 'var(--text-main)' }}>{topNegative ? topNegative.observedLabel : 'N/A'}</strong>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Feature Contributions Table */}
-                            <div style={{ marginTop: 4 }}>
-                              <h5 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                Feature Contributions Table
-                              </h5>
-                              <div className="strategy-table-enhanced-wrapper">
-                                <table className="strategy-table-enhanced" style={{ fontSize: 12.5 }}>
-                                  <thead>
-                                    <tr>
-                                      <th style={{ textAlign: 'left' }}>Model Feature</th>
-                                      <th style={{ textAlign: 'right' }}>Observed Input Value</th>
-                                      <th style={{ textAlign: 'right' }}>Feature Contribution</th>
-                                      <th style={{ textAlign: 'center' }}>Direction</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {attributions.map(attr => {
-                                      const isPos = attr.contribution >= 0;
-                                      return (
-                                        <tr key={attr.feature}>
-                                          <td style={{ fontWeight: 700, color: 'var(--text-main)' }}>
-                                            {attr.displayName}
-                                          </td>
-                                          <td style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-muted)' }}>
-                                            {attr.observedLabel}
-                                          </td>
-                                          <td style={{ textAlign: 'right', fontWeight: 800, color: isPos ? 'var(--primary)' : '#f87171' }}>
-                                            {isPos ? '+' : ''}{number(attr.contribution, 3)} <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)' }}>t/ha</span>
-                                          </td>
-                                          <td style={{ textAlign: 'center' }}>
-                                            <span style={{
-                                              padding: '2px 8px',
-                                              borderRadius: 999,
-                                              fontSize: 11,
-                                              fontWeight: 800,
-                                              background: isPos ? 'rgba(0, 223, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                                              color: isPos ? 'var(--primary)' : '#f87171'
-                                            }}>
-                                              {isPos ? 'Positive' : 'Negative'}
-                                            </span>
-                                          </td>
-                                        </tr>
-                                      );
-                                    })}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-
-                            {/* Model Interpretation */}
-                            <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', borderRadius: 12, padding: 14 }}>
-                              <strong style={{ fontSize: 12.5, textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>
-                                Model Interpretation
-                              </strong>
-                              <p style={{ margin: 0, fontSize: 13, color: 'var(--text-main)', lineHeight: 1.5 }}>
-                                The predicted yield for <strong>{activeSeasonData.periodKey} ({activeSeasonData.crop})</strong> is most strongly boosted by <strong>{posDesc}</strong> and most strongly reduced by <strong>{negDesc}</strong>.
-                              </p>
-                            </div>
-
-                            {/* Agronomic Safety Disclaimer */}
-                            <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: 12, padding: '12px 14px', fontSize: 12, color: '#fbbf24', display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                              <span style={{ fontSize: 16 }}>💡</span>
-                              <div>
-                                <strong style={{ color: '#fbbf24' }}>Important Agronomic Disclaimer:</strong> These feature attributions explain how model input features influenced the mathematical ML prediction. They describe model behavior and are not direct agronomic prescriptions or validated field rules.
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-
-                    {/* 7. SYNTHETIC BENCHMARK PERFORMANCE (BELOW PREDICTIONS) */}
-                    <div className="dash-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: 14, padding: 18 }}>
-                      <div className="panel-heading" style={{ marginBottom: 10 }}>
-                        <div>
-                          <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: 'var(--text-main)' }}>
-                            Synthetic Benchmark Performance
-                          </h4>
-                          <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--text-muted)' }}>
-                            These metrics describe performance on the synthetic benchmark dataset and do not represent field validation.
-                          </p>
-                        </div>
-                        <span style={{ fontSize: 10.5, background: 'var(--bg-card-subtle)', color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
-                          BENCHMARK METRICS ONLY
-                        </span>
-                      </div>
-
-                      <div className="strategy-table-enhanced-wrapper">
-                        <table className="strategy-table-enhanced" style={{ fontSize: 12 }}>
-                          <thead>
-                            <tr>
-                              <th>Metric Name</th>
-                              <th>Training Set Value</th>
-                              <th>Testing / Holdout Set Value</th>
-                              <th>Description &amp; Interpretation</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Object.entries(ml.metrics || {}).map(([k, v]) => {
-                              const isTest = k.toLowerCase().includes('test');
-                              return (
-                                <tr key={k}>
-                                  <td>
-                                    <code style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-main)' }}>{k}</code>
-                                  </td>
-                                  <td>
-                                    <strong style={{ color: !isTest ? 'var(--primary)' : 'var(--text-muted)' }}>
-                                      {!isTest ? number(v, 4) : '—'}
-                                    </strong>
-                                  </td>
-                                  <td>
-                                    <strong style={{ color: isTest ? 'var(--primary)' : 'var(--text-muted)' }}>
-                                      {isTest ? number(v, 4) : '—'}
-                                    </strong>
-                                  </td>
-                                  <td style={{ color: 'var(--text-muted)' }}>
-                                    {k.includes('mae') ? 'Mean Absolute Error in t/ha' : k.includes('rmse') ? 'Root Mean Squared Error in t/ha' : 'R² Coefficient of Determination'}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <p style={{ margin: '12px 0 0', fontSize: 11.5, color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                        Notice: Benchmark metrics describe mathematical performance on synthetic holdout samples and are presented strictly for algorithm verification.
-                      </p>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* TAB 3: EXPERIMENTAL RL POLICY & ADAPTIVE STRESS SIMULATION */}
-              <div style={{ display: analysisTab === 'rl_policy' ? 'contents' : 'none' }}>
-                <AdaptiveRlExperiment
-                  activeField={activeField}
-                  fieldState={field}
-                  loading={running || benchmarkLoading}
-                  selectedStrategyId={selectedStrategyId}
-                  selectedBenchmarkContext={selectedBenchmarkContext}
-                  strategyProfiles={STRATEGY_PROFILES}
-                  benchmarkLoading={benchmarkLoading}
-                  benchmarkError={selectedBenchmarkContext === 'operational' ? '' : benchmarkError}
-                  onRetryBenchmark={() => handleRunBenchmark(selectedBenchmarkContext)}
-                  benchmarkData={selectedBenchmarkContext === 'operational' ? null : benchmarkSuiteResults[BENCHMARK_CONTEXTS[selectedBenchmarkContext]?.scen_key]}
-                  activeMilpResult={activeMilpResult}
-                  strategyMetrics={selectedBenchmarkContext === 'operational'
-                    ? summary.strategy_field_metrics || {}
-                    : benchmarkSuiteResults[BENCHMARK_CONTEXTS[selectedBenchmarkContext]?.scen_key]?.strategy_metrics || {}}
-                  strategyYieldAnalysis={ml.strategy_yield_analysis || {}}
-                  form={form}
-                  workflowPayload={workflowPayload}
-                  request={request}
-                />
-              </div>
-
-              {/* TAB 4: STRESS TESTING & MILP RE-OPTIMIZATION */}
-              {analysisTab === 'stress_testing' && (
-                <section className="dash-card" style={{ gridColumn: 'span 12' }}>
-                  <div className="panel-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <span style={{ fontSize: 18 }}>🧪</span>
-                        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>Stress Testing &amp; MILP Re-Optimization</h3>
-                      </div>
-                      <p style={{ margin: 0, fontSize: 13, color: 'var(--text-muted)' }}>
-                        Evaluate mathematical optimizer resilience and counterfactual adaptation under hypothetical environmental perturbations.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Scenario Selector Cards */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginTop: 16 }}>
-                    {[
-                      { key: 'normal', name: 'Normal', icon: '☀️', desc: 'Baseline NASA POWER climate state (0 perturbation, 0 metric drift).' },
-                      { key: 'drought', name: 'Drought', icon: '🌵', desc: 'Precipitation deficit testing baseline soil moisture bounds & MILP adaptation.' },
-                      { key: 'heat', name: 'Heat Wave', icon: '🔥', desc: 'Elevated temperature regime testing thermal crop tolerance envelopes.' },
-                      { key: 'low_water', name: 'Low Water', icon: '💧', desc: 'Constrained seasonal irrigation capacity testing aquifer resilience.' }
-                    ].map(item => {
-                      const isSel = selectedStressScenarioKey === item.key;
-                      return (
-                        <div
-                          key={item.key}
-                          onClick={() => setSelectedStressScenarioKey(item.key)}
-                          style={{
-                            cursor: 'pointer',
-                            background: isSel ? 'rgba(0, 223, 129, 0.12)' : 'var(--bg-card-subtle)',
-                            padding: 14,
-                            borderRadius: 12,
-                            border: isSel ? '1.5px solid var(--primary)' : '1px solid var(--border-light)',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 800, fontSize: 14, color: isSel ? 'var(--primary)' : 'var(--text-main)' }}>
-                            <span>{item.icon}</span>
-                            <span>{item.name} Scenario</span>
-                          </div>
-                          <p style={{ margin: '6px 0 0', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                            {item.desc}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Scenario Re-Optimization Results View */}
-                  {(() => {
-                    const scenariosObj = summary?.stress_test?.scenarios || {};
-                    const activeScenarioObj = Array.isArray(scenariosObj)
-                      ? scenariosObj.find(s => s.scenario === selectedStressScenarioKey)
-                      : scenariosObj[selectedStressScenarioKey];
-
-                    const isNormal = selectedStressScenarioKey === 'normal';
-                    const baselineRot = activeMilpResult?.rotation;
-                    const scenarioRot = activeMilpResult ? activeScenarioObj?.scenario_rotation || baselineRot : null;
-                    const rotChanged = isNormal ? false : (activeScenarioObj?.rotation_changed ?? false);
-
-                    const formatRot = (rot) => {
-                      if (!rot) return '—';
-                      if (Array.isArray(rot)) return rot.join(' → ');
-                      if (typeof rot === 'object') return Object.values(rot).join(' → ');
-                      return String(rot);
-                    };
-
-                    const bProfit = activeMilpResult?.profit_component;
-                    const sProfit = activeMilpResult ? activeScenarioObj?.scenario_objective_components?.profit ?? bProfit : null;
-                    const profitDelta = isNormal || bProfit == null || sProfit == null ? 0 : sProfit - bProfit;
-
-                    const bWater = activeMilpResult?.water_component;
-                    const sWater = activeMilpResult ? activeScenarioObj?.scenario_objective_components?.water ?? bWater : null;
-                    const waterDelta = isNormal || bWater == null || sWater == null ? 0 : sWater - bWater;
-
-                    const bSoil = activeMilpResult?.soil_component;
-                    const sSoil = activeMilpResult ? activeScenarioObj?.scenario_objective_components?.soil ?? bSoil : null;
-                    const soilDelta = isNormal || bSoil == null || sSoil == null ? 0 : sSoil - bSoil;
-
-                    return (
-                      <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                        {/* Active Scenario Status Banner */}
-                        <div style={{
-                          background: isNormal ? 'rgba(0, 223, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
-                          border: `1px solid ${isNormal ? 'rgba(0, 223, 129, 0.25)' : 'rgba(245, 158, 11, 0.25)'}`,
-                          borderRadius: 12,
-                          padding: 14
-                        }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <span style={{ fontSize: 18 }}>{isNormal ? '☀️' : '🧪'}</span>
-                              <strong style={{ fontSize: 14, color: isNormal ? 'var(--primary)' : '#fbbf24' }}>
-                                {isNormal ? 'Normal Scenario — Baseline Field State (0 Perturbation, Zero Metric Drift)' : `Stress Perturbation: ${selectedStressScenarioKey.toUpperCase()} Scenario`}
-                              </strong>
-                            </div>
-                            <span className="source-tag math" style={{ textTransform: 'none' }}>
-                              PuLP/CBC MILP Re-Optimization: <strong>{activeScenarioObj?.status || 'completed'}</strong>
-                            </span>
-                          </div>
-                          <p style={{ margin: '6px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
-                            {activeScenarioObj?.reason || (isNormal ? 'Evaluated under unperturbed baseline field record.' : `Hypothetical environmental perturbation applied for ${selectedStressScenarioKey}.`)}
-                          </p>
-                        </div>
-
-                        {/* Changed Fields / Perturbations Table */}
-                        <div style={{ background: 'var(--bg-card-subtle)', borderRadius: 12, border: '1px solid var(--border-light)', padding: 14 }}>
-                          <h4 style={{ margin: '0 0 10px', fontSize: 13, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
-                            Environmental Input Perturbations
-                          </h4>
-                          {isNormal || !activeScenarioObj?.changed_fields || Object.keys(activeScenarioObj.changed_fields).length === 0 ? (
-                            <div style={{ fontSize: 13, color: 'var(--primary)', background: 'rgba(0, 223, 129, 0.08)', padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(0, 223, 129, 0.25)' }}>
-                              ✓ Zero perturbations applied. Environmental inputs match baseline field record exactly.
-                            </div>
-                          ) : (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
-                              {Object.entries(activeScenarioObj.changed_fields).map(([fieldKey, vals]) => (
-                                <div key={fieldKey} style={{ background: 'var(--bg-card)', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border-light)' }}>
-                                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'capitalize' }}>
-                                    {fieldKey.replaceAll('_', ' ')}
-                                  </div>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, fontSize: 13, fontWeight: 800 }}>
-                                    <span>Baseline: {vals?.baseline ?? '—'}</span>
-                                    <span>→</span>
-                                    <span style={{ color: '#fbbf24' }}>Stress: {vals?.scenario ?? '—'}</span>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* MILP Re-Optimization Strategy Comparison Cards */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 12, border: '1px solid var(--border-light)' }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>Baseline Rotation Sequence</div>
-                            <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--primary)', marginTop: 4 }}>
-                              {formatRot(baselineRot)}
-                            </div>
-                          </div>
-
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 12, border: '1px solid var(--border-light)' }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>
-                              {isNormal ? 'Normal Scenario Rotation' : 'Stress-Optimized Rotation'}
-                            </div>
-                            <div style={{ fontSize: 13, fontWeight: 800, color: rotChanged ? '#f59e0b' : 'var(--primary)', marginTop: 4 }}>
-                              {formatRot(scenarioRot)}
-                            </div>
-                            <div style={{ fontSize: 11, marginTop: 4, color: rotChanged ? '#f59e0b' : 'var(--primary)', fontWeight: 700 }}>
-                              {rotChanged ? '⚠️ Rotation Sequence Adapted' : '✓ Unchanged from Baseline'}
-                            </div>
-                          </div>
-
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 12, border: '1px solid var(--border-light)' }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>Gross Margin (BDT/ha)</div>
-                            <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-                              ৳{Number(sProfit).toLocaleString()} /ha
-                            </div>
-                            <div style={{ fontSize: 11, color: profitDelta < 0 ? '#f87171' : 'var(--primary)', marginTop: 2, fontWeight: 700 }}>
-                              Delta: {profitDelta >= 0 ? '+' : ''}৳{Math.round(profitDelta).toLocaleString()} BDT
-                            </div>
-                          </div>
-
-                          <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 12, border: '1px solid var(--border-light)' }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>Water Efficiency Score</div>
-                            <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-                              {Number(sWater).toFixed(2)}
-                            </div>
-                            <div style={{ fontSize: 11, color: waterDelta < 0 ? '#f87171' : 'var(--primary)', marginTop: 2, fontWeight: 700 }}>
-                              Delta: {waterDelta >= 0 ? '+' : ''}{Number(waterDelta).toFixed(2)}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Methodological Explanation Note */}
-                        <div style={{ background: 'var(--bg-card-subtle)', padding: 12, borderRadius: 8, border: '1px solid var(--border-light)', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                          💡 <strong>Stress Testing Methodology Note:</strong> Stress testing evaluates how the baseline PuLP/CBC MILP optimizer responds to hypothetical environmental shifts (such as drought or heat waves). Re-optimization is performed on the perturbed constraint parameters. For the <strong>Normal</strong> scenario, inputs match the baseline field state exactly, guaranteeing zero metric or rotation sequence drift.
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </section>
-              )}
-
-              {/* TAB 5: ADVANCED COUNTERFACTUAL CONTROLS */}
-              {analysisTab === 'controls' && (
-                <section className="dash-card form-panel-card" style={{ gridColumn: 'span 8', margin: '0 auto' }}>
-                  <div className="panel-heading">
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800 }}>Advanced Counterfactual Simulation Controls</h3>
-                      <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
-                        Configure custom weather window parameters, counterfactual rainfall deltas, and agronomic constraint toggles to run dynamic scenario re-optimizations.
-                      </p>
-                    </div>
-                    <span className="source-tag math" style={{ textTransform: 'none' }}>
-                      Weather: <strong>NASA POWER API</strong>
-                    </span>
-                  </div>
-
-                  <form onSubmit={runCounterfactual} style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 12 }}>
-                    {/* Active Field Properties (Read-Only Context) */}
-                    <div style={{ background: 'var(--bg-card-subtle)', padding: 14, borderRadius: 12, border: '1px solid var(--border-light)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                        <strong style={{ fontSize: 13, color: 'var(--text-main)' }}>
-                          Active Field: {activeField?.name || 'Selected Farm Parcel'}
-                        </strong>
-                        <span style={{ fontSize: 11, background: 'var(--primary-light)', color: 'var(--primary)', padding: '2px 8px', borderRadius: 999, fontWeight: 700 }}>
-                          {activeField?.id === 'demo' ? 'Offline Research Demo' : 'PostgreSQL Source'}
-                        </span>
-                      </div>
-                      <div className="form-grid-inner">
-                        <div className="form-group">
-                          <label>Latitude &amp; Longitude</label>
-                          <input className="input-box" type="text" value={activeField?.latitude != null && activeField?.longitude != null ? `${Number(activeField.latitude).toFixed(4)}, ${Number(activeField.longitude).toFixed(4)}` : 'Not available'} readOnly />
-                        </div>
-                        <div className="form-group">
-                          <label>Field Area (ha)</label>
-                          <input className="input-box" type="text" value={activeField?.area_ha != null ? `${Number(activeField.area_ha).toFixed(1)} ha` : 'Not Available'} readOnly />
-                        </div>
-                        <div className="form-group">
-                          <label>Soil Texture</label>
-                          <input className="input-box" type="text" value={activeField?.soil_texture || 'Not Available'} readOnly />
-                        </div>
-                        <div className="form-group">
-                          <label>Organic Matter (%)</label>
-                          <input className="input-box" type="text" value={activeField?.organic_matter != null ? `${Number(activeField.organic_matter).toFixed(1)}%` : 'Not Available'} readOnly />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Operational Strategy Selector */}
-                    <div className="form-group full">
-                      <label style={{ fontWeight: 800, fontSize: 13 }}>Operational Optimization Strategy</label>
-                      <div className="pill-selector">
-                        {[
-                          { id: 'profit', label: 'Profit Focused (70% P / 20% W / 10% S)' },
-                          { id: 'water_efficiency', label: 'Water Efficiency (20% P / 60% W / 20% S)' },
-                          { id: 'soil_health', label: 'Soil Health (20% P / 20% W / 60% S)' },
-                          { id: 'balanced', label: 'Balanced (34% P / 33% W / 33% S)' },
-                        ].map(prio => (
-                          <button
-                            type="button"
-                            key={prio.id}
-                            className={`pill-option ${toCanonicalStrategyKey(prio.id) === selectedStrategyId ? 'active' : ''}`}
-                            onClick={() => handlePrioritySelect(prio.id)}
-                            style={{ fontSize: 12, padding: '8px 14px' }}
-                          >
-                            {prio.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Counterfactual Simulation Parameters */}
-                    <div style={{ background: 'var(--bg-card-subtle)', borderRadius: 12, border: '1px solid var(--border-light)', padding: 14 }}>
-                      <strong style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-main)' }}>
-                        Counterfactual Weather &amp; Agronomic Parameters
-                      </strong>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
-                        <div className="form-grid-inner">
-                          <div className="form-group">
-                            <label>Weather Window Start</label>
-                            <input className="input-box" name="start_date" type="date" value={form.start_date} onChange={change} required />
-                          </div>
-                          <div className="form-group">
-                            <label>Weather Window End</label>
-                            <input className="input-box" name="end_date" type="date" value={form.end_date} onChange={change} required />
-                          </div>
-                          <div className="form-group">
-                            <label>Counterfactual Rainfall Delta (mm)</label>
-                            <input className="input-box" name="counterfactual_rainfall_delta_mm" type="number" step=".1" placeholder="e.g. 10" value={form.counterfactual_rainfall_delta_mm} onChange={change} />
-                          </div>
-                          <div className="form-group">
-                            <label>Irrigation Capacity (mm)</label>
-                            <input className="input-box" type="number" value={activeField?.irrigation_capacity_mm ?? ''} readOnly />
-                          </div>
-                        </div>
-
-                        <div className="switch-row" style={{ marginTop: 4 }}>
-                          <div className="switch-label">
-                            <strong>Include Previous Crop History</strong>
-                            <small>Enforces initial family rotation constraint from field history</small>
-                          </div>
-                          <div
-                            className={`toggle-switch ${form.include_history ? 'on' : ''}`}
-                            onClick={() => {
-                              setForm(prev => ({ ...prev, include_history: !prev.include_history }));
-                              setCounterfactualSimulation({ running: false, result: null, error: '' });
-                            }}
-                            role="switch"
-                            aria-checked={Boolean(form.include_history)}
-                            tabIndex={0}
-                            onKeyDown={event => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault();
-                                setForm(prev => ({ ...prev, include_history: !prev.include_history }));
-                                setCounterfactualSimulation({ running: false, result: null, error: '' });
-                              }
-                            }}
-                          >
-                            <div className="toggle-switch-handle" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button type="submit" className="run-cta-btn" style={{ justifyContent: 'center', marginTop: 8 }} disabled={counterfactualSimulation.running}>
-                      {counterfactualSimulation.running
-                        ? 'Running Counterfactual Simulation…'
-                        : counterfactualSimulation.error
-                          ? 'Retry Counterfactual Simulation'
-                          : counterfactualSimulation.result
-                            ? 'Run Again'
-                            : 'Run Counterfactual Simulation'}
-                    </button>
-                  </form>
-                  {counterfactualSimulation.error && (
-                    <div role="alert" style={{ marginTop: 12, padding: 12, borderRadius: 9, color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca', fontSize: 12.5 }}>
-                      {counterfactualSimulation.error}
-                    </div>
-                  )}
-                  {counterfactualResult && (() => {
-                    const baselineInputs = counterfactualResult.baseline_inputs || {};
-                    const changedInputs = counterfactualResult.counterfactual_inputs || {};
-                    const baselineMetrics = counterfactualResult.baseline_metrics || {};
-                    const changedMetrics = counterfactualResult.counterfactual_metrics || {};
-                    const metricDeltas = counterfactualResult.metric_deltas || {};
-                    const baselineRotation = counterfactualResult.baseline_rotation || {};
-                    const changedRotation = counterfactualResult.counterfactual_rotation || {};
-                    const periods = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
-                    const rotationRows = periods.map(period => ({
-                      period,
-                      baseline: baselineRotation[period],
-                      counterfactual: changedRotation[period],
-                    }));
-                    const rotationChanges = rotationRows.filter(row =>
-                      row.baseline != null
-                      && row.counterfactual != null
-                      && row.baseline !== row.counterfactual
-                    ).length;
-                    const inputRows = [
-                      {
-                        label: 'Rainfall window total (mm)',
-                        baseline: baselineInputs.rainfall_window_mm,
-                        perturbation: `${Number(changedInputs.rainfall_delta_mm) >= 0 ? '+' : ''}${number(changedInputs.rainfall_delta_mm, 1)} mm`,
-                        counterfactual: changedInputs.rainfall_window_mm,
-                      },
-                      {
-                        label: 'Irrigation capacity (mm)',
-                        baseline: baselineInputs.irrigation_capacity_mm,
-                        perturbation: 'Unchanged; separate irrigation input',
-                        counterfactual: changedInputs.irrigation_capacity_mm,
-                      },
-                      ...[
-                        ['Temperature (°C)', 'temperature_c'],
-                        ['Soil pH', 'soil_ph'],
-                        ['Organic matter (%)', 'organic_matter_pct'],
-                      ].filter(([, key]) =>
-                        baselineInputs[key] != null || changedInputs[key] != null
-                      ).map(([label, key]) => ({
-                        label,
-                        baseline: baselineInputs[key],
-                        perturbation: 'Unchanged',
-                        counterfactual: changedInputs[key],
-                      })),
-                    ];
-                    const metricRows = [
-                      ['Production (tons)', 'production_tons', 2],
-                      ['Gross margin (BDT/ha)', 'gross_margin_bdt_per_ha', 2],
-                      ['Water demand (mm)', 'water_demand_mm', 1],
-                      ['Water efficiency', 'water_efficiency_score', 3],
-                      ['Soil metric', 'soil_metric', 3],
-                      ['Objective score', 'objective_score', 3],
-                    ].filter(([, key]) =>
-                      baselineMetrics[key] != null || changedMetrics[key] != null
-                    );
-                    const isCompleted = counterfactualResult.status === 'completed';
-
-                    return (
-                      <section aria-label="Counterfactual Simulation Result" className="dash-card" style={{ marginTop: 16, padding: 16, border: `1px solid ${isCompleted ? '#86efac' : '#fecaca'}` }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-                          <h4 style={{ margin: 0 }}>Counterfactual Simulation Result</h4>
-                          <strong role="status" style={{ color: isCompleted ? '#166534' : '#991b1b' }}>
-                            {isCompleted ? 'Completed' : counterfactualResult.status === 'infeasible' ? 'Infeasible' : 'Failed'}
-                          </strong>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8, marginTop: 10, fontSize: 12 }}>
-                          <div>Selected field<br /><strong>{counterfactualResult.selected_field ?? 'Not Available'}</strong></div>
-                          <div>Selected strategy<br /><strong>{counterfactualResult.selected_strategy ?? 'Not Available'}</strong></div>
-                          <div>Solver<br /><strong>{counterfactualResult.solver ?? 'Not Available'}</strong></div>
-                          <div>Solver status<br /><strong>{counterfactualResult.solver_status ?? 'Not Available'}</strong></div>
-                        </div>
-
-                        <h5 style={{ margin: '16px 0 6px' }}>Environmental Input Comparison</h5>
-                        <div style={{ overflowX: 'auto' }}>
-                          <table className="strategy-table-enhanced" style={{ minWidth: 540, fontSize: 11.5 }}>
-                            <thead><tr><th>Parameter</th><th>Baseline</th><th>Perturbation</th><th>Counterfactual</th></tr></thead>
-                            <tbody>
-                              {inputRows.map(row => (
-                                <tr key={row.label}>
-                                  <td>{row.label}</td>
-                                  <td>{typeof row.baseline === 'number' ? number(row.baseline, 2) : 'Not Available'}</td>
-                                  <td>{row.perturbation}</td>
-                                  <td>{typeof row.counterfactual === 'number' ? number(row.counterfactual, 2) : 'Not Available'}</td>
-                                </tr>
-                              ))}
-                              <tr><td>Weather date window</td><td colSpan={3}>{baselineInputs.weather_start_date || 'Not Available'} – {baselineInputs.weather_end_date || 'Not Available'}</td></tr>
-                            </tbody>
-                          </table>
-                        </div>
-
-                        <h5 style={{ margin: '16px 0 6px' }}>Baseline vs Counterfactual Rotation</h5>
-                        <div style={{ overflowX: 'auto' }}>
-                          <table className="strategy-table-enhanced" style={{ minWidth: 520, fontSize: 11.5 }}>
-                            <thead><tr><th>Season</th><th>Baseline crop</th><th>Re-optimized crop</th><th>Change</th></tr></thead>
-                            <tbody>
-                              {rotationRows.map(row => {
-                                const changed = row.baseline != null
-                                  && row.counterfactual != null
-                                  && row.baseline !== row.counterfactual;
-                                return (
-                                  <tr key={row.period}>
-                                    <td>{row.period.replace('_', ' ')}</td>
-                                    <td>{row.baseline ?? 'Not Available'}</td>
-                                    <td>{row.counterfactual ?? 'Not Available'}</td>
-                                    <td>{row.baseline == null || row.counterfactual == null ? 'Not Available' : changed ? 'Changed' : 'Unchanged'}</td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-                        <strong style={{ display: 'block', marginTop: 7, fontSize: 12 }}>
-                          Rotation Changes: {rotationChanges} / {periods.length} seasons
-                        </strong>
-
-                        <h5 style={{ margin: '16px 0 6px' }}>Optimization Metrics</h5>
-                        <div style={{ overflowX: 'auto' }}>
-                          <table className="strategy-table-enhanced" style={{ minWidth: 640, fontSize: 11.5 }}>
-                            <thead><tr><th>Metric</th><th>Baseline</th><th>Counterfactual</th><th>Delta</th></tr></thead>
-                            <tbody>
-                              {metricRows.map(([label, key, digits]) => (
-                                <tr key={key}>
-                                  <td>{label}</td>
-                                  <td>{baselineMetrics[key] == null ? 'Not Available' : number(baselineMetrics[key], digits)}</td>
-                                  <td>{changedMetrics[key] == null ? 'Not Available' : number(changedMetrics[key], digits)}</td>
-                                  <td>{metricDeltas[key] == null ? 'Not Available' : `${Number(metricDeltas[key]) >= 0 ? '+' : ''}${number(metricDeltas[key], digits)}`}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-
-                        <h5 style={{ margin: '16px 0 6px' }}>Methodology and Provenance</h5>
-                        <div style={{ fontSize: 11.5, lineHeight: 1.55, color: 'var(--text-muted)' }}>
-                          <div>Weather source: {counterfactualResult.provenance.weather_source || 'Not Available'} · Field source: {counterfactualResult.provenance.field_source || 'Not Available'}</div>
-                          <div>Perturbation: rainfall {changedInputs.rainfall_delta_mm == null ? 'Not Available' : `${Number(changedInputs.rainfall_delta_mm) >= 0 ? '+' : ''}${number(changedInputs.rainfall_delta_mm, 1)} mm`} · Irrigation remains a separate input and is not added to rainfall.</div>
-                          <div>Previous crop history constraint: {counterfactualResult.provenance.include_previous_crop_history ? 'applied' : 'not applied'} · Source: {counterfactualResult.provenance.history_source || 'Not Available'}</div>
-                          <div>Solver: {counterfactualResult.provenance.solver || 'PuLP/CBC'} · Scenario: hypothetical/counterfactual · Validation: not field validated.</div>
-                        </div>
-                      </section>
-                    );
-                  })()}
-                </section>
-              )}
-
-            </div>
-          </div>
-        )}
-
-        {/* -------------------- VIEW 3: FIELD & PARCEL MANAGER -------------------- */}
-        {(activeNav === 'field' || activeNav === 'field_map') && (
-          <div>
-            <div style={{ background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 16px' }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? '🗺️ জমি ও সীমানা ব্যবস্থাপনা — সক্রিয় জমি ও স্যাটেলাইট অবস্থান' : '🗺️ Farm Parcel Manager — Active parcels and satellite geolocations'}
-              </span>
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={() => handleNavigate('dashboard')}
-                style={{ fontSize: 12.5, padding: '5px 14px', borderRadius: 9999, cursor: 'pointer' }}
-              >
-                🏠 {lang === 'bn' ? 'সহজ হোম স্ক্রিনে ফিরুন' : 'Back to Home'}
-              </button>
-            </div>
-            <FieldParcelManagerView
-              user={user}
-              userFarms={userFarms}
-              fieldsLoaded={fieldsLoaded}
-              fieldsError={fieldsError}
-              activeField={activeField}
-              userFields={userFields}
-              onSelectField={handleSelectActiveField}
-              onSelectForAnalysis={selectFieldForAnalysis}
-              onViewField={setViewingField}
-              onEditField={openEditFieldModal}
-              onArchiveField={handleArchiveField}
-              onAddField={openAddFieldModal}
-              formatDate={formatDate}
-              formatNumber={formatNumber}
-              onBack={() => setActiveNav('dashboard')}
-            />
-          </div>
-        )}
-
-        {/* -------------------- VIEW 4: NASA POWER WEATHER & CLIMATE -------------------- */}
-        {activeNav === 'weather' && (
-          <div>
-            <div style={{ background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 16px' }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? '🛰️ নাসা (NASA POWER) উপগ্রহ ভিত্তিক জলবায়ু ও আবহাওয়া স্টেশন' : '🛰️ NASA POWER Satellite Agrometeorological Station'}
-              </span>
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={() => handleNavigate('dashboard')}
-                style={{ fontSize: 12.5, padding: '5px 14px', borderRadius: 9999, cursor: 'pointer' }}
-              >
-                🏠 {lang === 'bn' ? 'সহজ হোম স্ক্রিনে ফিরুন' : 'Back to Home'}
-              </button>
-            </div>
-            <NasaWeatherStation3D
-              nasa={nasa}
-              env={env}
-              activeField={activeField}
-              onBack={() => setActiveNav('dashboard')}
-            />
-          </div>
-        )}
-
-        {/* -------------------- VIEW 6: AI ASSISTANT & DECISION SUPPORT -------------------- */}
-        {activeNav === 'assistant' && (
-          <AiAssistantView
+          <ResearchWorkspaceView
             activeField={activeField}
             nasa={nasa}
             summary={summary}
             plan={plan}
             ml={ml}
             rl={rl}
+            comparisonLab={comparisonLab}
+            robustness={robustness}
+            outcomes={outcomes}
             user={user}
+            userFields={userFields}
+            onNavigate={handleNavigate}
+            onRunWorkflow={runAnalysis}
+            initialTab={analysisTab || 'six_seasons_milp'}
             lang={lang}
-            onBack={() => handleNavigate('dashboard')}
-            onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+            request={request}
+            formatNumber={formatNumber}
+            strategyProfiles={STRATEGY_PROFILES}
           />
+        )}
+
+        {(activeNav === 'field' || activeNav === 'field_map') && (
+          <MyFarmWorkspaceView
+            activeField={activeField}
+            user={user}
+            userFields={userFields}
+            onSelectField={handleSelectActiveField}
+            lang={lang}
+            onNavigate={handleNavigate}
+            initialSubTab={myFarmSubTab}
+          />
+        )}
+
+        {/* -------------------- VIEW: FARM PLANNING -------------------- */}
+        {activeNav === 'farm_planning' && (
+          <FarmPlanningView
+            activeField={activeField}
+            summary={summary}
+            plan={plan}
+            ml={ml}
+            user={user}
+            userFields={userFields}
+            lang={lang}
+            onNavigate={handleNavigate}
+            onRunWorkflow={runAnalysis}
+            initialSubTab={farmPlanningSubTab}
+            request={request}
+          />
+        )}
+
+        {/* -------------------- VIEW: WATER & IRRIGATION OPTIMIZATION -------------------- */}
+        {activeNav === 'water_irrigation' && (
+          <WaterIrrigationView
+            activeField={activeField}
+            plan={plan}
+            summary={summary}
+            nasa={nasa}
+            lang={lang}
+            onNavigate={handleNavigate}
+            initialSubTab={waterSubTab}
+          />
+        )}
+
+        {/* -------------------- VIEW: 3D DIGITAL TWIN -------------------- */}
+        {activeNav === 'digital_twin' && (
+          <DigitalTwin3DView
+            activeField={activeField}
+            plan={plan}
+            summary={summary}
+            nasa={nasa}
+            lang={lang}
+            onNavigate={handleNavigate}
+            initialSubTab={twinSubTab}
+          />
+        )}
+
+        {/* -------------------- VIEW: DATA & EVIDENCE -------------------- */}
+        {activeNav === 'data_evidence' && (
+          <DataEvidenceView
+            activeField={activeField}
+            nasa={nasa}
+            lang={lang}
+            request={request}
+            initialSubTab={dataEvidenceSubTab}
+          />
+        )}
+
+        {/* -------------------- VIEW 4: NASA POWER WEATHER & CLIMATE -------------------- */}
+        {activeNav === 'weather' && (
+          <div>
+            <div className="subnav-pills-bar" style={{ display: 'flex', gap: 8, padding: '10px 24px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', marginBottom: 16, overflowX: 'auto' }}>
+              <button
+                type="button"
+                className={`btn ${weatherSubTab === 'station_3d' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setWeatherSubTab('station_3d')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🛰️ {lang === 'bn' ? '৩ডি আবহাওয়া স্টেশন' : '3D Weather Station'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${weatherSubTab === 'uncertainty' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setWeatherSubTab('uncertainty')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                📊 {lang === 'bn' ? 'আবহাওয়া ঝুঁকি ও অনিশ্চয়তা' : 'Weather Uncertainty'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${weatherSubTab === 'satellites' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setWeatherSubTab('satellites')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🛰️ {lang === 'bn' ? 'স্যাটেলাইট প্রস্তুতি' : 'Satellite Telemetry & Readiness'}
+              </button>
+            </div>
+            {weatherSubTab === 'station_3d' && (
+              <NasaWeatherStation3D
+                nasa={nasa}
+                env={env}
+                activeField={activeField}
+                onBack={() => handleNavigate('dashboard')}
+              />
+            )}
+            {weatherSubTab === 'uncertainty' && (
+              <WeatherUncertaintyView
+                activeField={activeField}
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+            {weatherSubTab === 'satellites' && (
+              <SatelliteReadinessView
+                activeField={activeField}
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+          </div>
+        )}
+
+        {/* -------------------- VIEW 6: AI ASSISTANT & DECISION SUPPORT -------------------- */}
+        {activeNav === 'assistant' && (
+          <div>
+            <div className="subnav-pills-bar" style={{ display: 'flex', gap: 8, padding: '10px 24px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-medium)', marginBottom: 16, overflowX: 'auto' }}>
+              <button
+                type="button"
+                className={`btn ${assistantSubTab === 'chat' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setAssistantSubTab('chat')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🤖 {lang === 'bn' ? 'AI কৃষি পরামর্শক চ্যাট' : 'AI Agronomist Chat'}
+              </button>
+              <button
+                type="button"
+                className={`btn ${assistantSubTab === 'voice' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setAssistantSubTab('voice')}
+                style={{ fontSize: 13, padding: '6px 14px', borderRadius: 9999 }}
+              >
+                🎙️ {lang === 'bn' ? 'বাংলা ভয়েস সহকারী' : 'Farmer Voice Assistant'}
+              </button>
+            </div>
+            {assistantSubTab === 'chat' && (
+              <AiAssistantView
+                activeField={activeField}
+                nasa={nasa}
+                summary={summary}
+                plan={plan}
+                ml={ml}
+                rl={rl}
+                user={user}
+                lang={lang}
+                onBack={() => handleNavigate('dashboard')}
+                onNavigateTab={(tab) => handleNavigate('analytics', tab)}
+              />
+            )}
+            {assistantSubTab === 'voice' && (
+              <div style={{ padding: '24px 16px', maxWidth: 860, margin: '0 auto' }}>
+                <FarmerVoiceAssistant
+                  activeField={activeField}
+                  user={user}
+                  lang={lang}
+                  onNavigate={handleNavigate}
+                />
+              </div>
+            )}
+          </div>
         )}
 
         {/* -------------------- VIEW 8: MARKET INTELLIGENCE & PROFITABILITY -------------------- */}
@@ -6626,44 +4391,44 @@ export function App() {
             title="My Farm"
           >
             <span className="mobile-nav-icon">🗺️</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'আমার জমি' : 'Farm'}</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'জমি' : 'Farm'}</span>
           </button>
           <button
             type="button"
             className={`mobile-bottom-nav-item ${activeNav === 'crop_advice' ? 'active' : ''}`}
             onClick={() => handleNavigate('crop_advice')}
-            title="Crop Advice"
+            title="Crop Advice & Planting"
           >
             <span className="mobile-nav-icon">🌱</span>
             <span className="mobile-nav-text">{lang === 'bn' ? 'পরামর্শ' : 'Crops'}</span>
           </button>
           <button
             type="button"
-            className={`mobile-bottom-nav-item ${activeNav === 'harvest_profit' ? 'active' : ''}`}
-            onClick={() => handleNavigate('harvest_profit')}
-            title="Harvest & Profit"
+            className={`mobile-bottom-nav-item ${activeNav === 'farm_planning' ? 'active' : ''}`}
+            onClick={() => handleNavigate('farm_planning')}
+            title="Farm Planning"
           >
-            <span className="mobile-nav-icon">📋</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'হিসাব' : 'Harvest'}</span>
+            <span className="mobile-nav-icon">📐</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'পরিকল্পনা' : 'Plan'}</span>
           </button>
           <button
             type="button"
-            className={`mobile-bottom-nav-item ${activeNav === 'research' ? 'active' : ''}`}
+            className={`mobile-bottom-nav-item ${activeNav === 'research' || activeNav === 'analytics' ? 'active' : ''}`}
             onClick={() => handleNavigate('research')}
             title="Research Lab"
           >
             <span className="mobile-nav-icon">🔬</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'গবেষণা' : 'Lab'}</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'ল্যাব' : 'Lab'}</span>
           </button>
           <button
             type="button"
             className={`mobile-bottom-nav-item ${mobileNavOpen ? 'active' : ''}`}
             onClick={() => setMobileNavOpen(prev => !prev)}
-            aria-label="Open full menu drawer"
+            aria-label="Open full 12-section menu drawer"
             title="Menu"
           >
             <span className="mobile-nav-icon">☰</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'মেনু' : 'Menu'}</span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'মেন্যু' : 'Menu'}</span>
           </button>
         </nav>
       </div>

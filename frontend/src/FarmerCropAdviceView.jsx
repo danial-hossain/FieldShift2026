@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { useTranslation, toBengaliNumber, formatArea } from './i18n.js';
+import { NasaPlantingAdvisoryView } from './NasaPlantingAdvisoryView.jsx';
 
 export function FarmerCropAdviceView({
   activeField,
@@ -13,6 +14,7 @@ export function FarmerCropAdviceView({
   onAskAi
 }) {
   const { t } = useTranslation(lang);
+  const [adviceTab, setAdviceTab] = useState('nasa_advisory'); // 'nasa_advisory' | 'catalog'
   const [selectedSeason, setSelectedSeason] = useState('all');
 
   const CROPS_DATA = [
@@ -199,9 +201,64 @@ export function FarmerCropAdviceView({
 
   return (
     <div className="farmer-view-container">
-      {/* Top Banner */}
-      <div className="farmer-hero-card">
-        <div className="farmer-hero-badge">
+      {/* Top Advisory Nav Switcher */}
+      <div style={{ display: 'flex', gap: 10, margin: '0 0 20px 0', borderBottom: '1px solid #2a3742', paddingBottom: 12 }}>
+        <button
+          type="button"
+          onClick={() => setAdviceTab('nasa_advisory')}
+          style={{
+            background: adviceTab === 'nasa_advisory' ? 'rgba(0, 223, 129, 0.18)' : '#161d23',
+            border: adviceTab === 'nasa_advisory' ? '1px solid #00df81' : '1px solid #2a3742',
+            color: adviceTab === 'nasa_advisory' ? '#00df81' : '#8a99a8',
+            borderRadius: 8,
+            padding: '9px 18px',
+            fontWeight: 700,
+            fontSize: 14,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            transition: 'all 0.15s ease',
+          }}
+        >
+          <span>🛰️</span>
+          <span>{lang === 'bn' ? 'নাসা রোপণ পরামর্শ (Planting Window)' : 'Official NASA Planting Advisory'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setAdviceTab('catalog')}
+          style={{
+            background: adviceTab === 'catalog' ? 'rgba(56, 189, 248, 0.18)' : '#161d23',
+            border: adviceTab === 'catalog' ? '1px solid #38bdf8' : '1px solid #2a3742',
+            color: adviceTab === 'catalog' ? '#38bdf8' : '#8a99a8',
+            borderRadius: 8,
+            padding: '9px 18px',
+            fontWeight: 700,
+            fontSize: 14,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            transition: 'all 0.15s ease',
+          }}
+        >
+          <span>📋</span>
+          <span>{lang === 'bn' ? 'ফসল ক্যাটালগ ও লাভ-ক্ষতি' : 'Crop Catalog & Economics'}</span>
+        </button>
+      </div>
+
+      {adviceTab === 'nasa_advisory' ? (
+        <NasaPlantingAdvisoryView
+          defaultDistrict={activeField?.district ? String(activeField.district).toLowerCase() : 'rajshahi'}
+          defaultCrop="aman"
+          lang={lang}
+          onNavigate={onNavigate}
+        />
+      ) : (
+        <>
+          {/* Top Banner */}
+          <div className="farmer-hero-card">
+            <div className="farmer-hero-badge">
           <span>🌿 {lang === 'bn' ? 'মৌসুমী ফসলের সুপারিশ' : 'Seasonal Crop Advisory'}</span>
         </div>
         <h2 className="farmer-hero-title">
@@ -386,6 +443,8 @@ export function FarmerCropAdviceView({
           {t('advanced_milp_btn')}
         </button>
       </div>
+        </>
+      )}
     </div>
   );
 }

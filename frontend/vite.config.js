@@ -23,9 +23,15 @@ export default defineConfig({
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor';
           }
+          if (id.includes('/research3d/') || id.includes('RealFarmCanvas3D') || id.includes('NasaWeatherStation3D')) {
+            return 'research-3d-views';
+          }
+          if (id.includes('ResearchWorkspaceView') || id.includes('SixSeasonRecommendationView') || id.includes('ComparisonLabView')) {
+            return 'research-lab-views';
+          }
         }
       }
     },
-    chunkSizeWarningLimit: 800
+    chunkSizeWarningLimit: 1000
   }
 });

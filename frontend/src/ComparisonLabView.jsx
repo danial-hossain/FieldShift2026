@@ -1,14 +1,38 @@
-import React, { useState, useEffect } from 'react';
+// frontend/src/ComparisonLabView.jsx
+// 3-Way Optimization Decision Comparison Lab: MILP vs RL vs Rule-Based Baseline
+// Evaluates mathematical optimality, adaptive sequential MDP policy, and regional heuristic rules.
+// Fixes: Strict prop contract, deterministic response validation, removal of fabricated numbers,
+// explicit violation states, resilient winner logic, and transparent field input handling.
+
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Comparison3Way3D } from './research3d/Comparison3Way3D.jsx';
 import { formatNumber as defaultFormatNumber } from './marketUtils.js';
 import { request as defaultRequest } from './apiClient.js';
+import {
+  validateComparisonResponse,
+  formatViolations,
+  getCropForSeason,
+  validateFieldInputs,
+  determineComparisonWinner
+} from './comparisonLabEngine.js';
+
+export {
+  validateComparisonResponse,
+  formatViolations,
+  getCropForSeason,
+  validateFieldInputs,
+  determineComparisonWinner
+};
 
 export function ComparisonLabView({
   activeField,
-  analysisResult,
+  comparisonLab,
+  analysisResult, // backwards compatibility alias for caller fallback
   request: propRequest,
   formatNumber: propFormatNumber,
   onNavigateTab,
+  onBack,
+  lang = 'bn',
 }) {
   const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
   const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
@@ -16,33 +40,56 @@ export function ComparisonLabView({
   const [priority, setPriority] = useState('balanced');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isStale, setIsStale] = useState(false);
   const [labData, setLabData] = useState(null);
   const [show3D, setShow3D] = useState(true);
 
-  // Initialize from analysisResult if available, otherwise fetch
-  useEffect(() => {
-    if (analysisResult?.summary?.comparison_lab) {
-      setLabData(analysisResult.summary.comparison_lab);
-    } else {
-      runLabComparison();
+  // Stable detection of cached comparison data
+  const cachedData = useMemo(() => {
+    const candidate = comparisonLab || analysisResult?.summary?.comparison_lab;
+    if (candidate) {
+      const v = validateComparisonResponse(candidate);
+      if (v.isValid) return candidate;
     }
-  }, [analysisResult, activeField]);
+    return null;
+  }, [comparisonLab, analysisResult]);
+
+  // Track the last evaluated (fieldId, priority) pair to prevent infinite loops
+  const lastFetchKeyRef = useRef(null);
 
   const runLabComparison = async (selectedPriority = priority) => {
+    // Fix 7: Validate field inputs. Show what is missing instead of fabricating field data.
+    const fieldValidation = validateFieldInputs(activeField);
+    if (!fieldValidation.isValid) {
+      setError(`Cannot evaluate comparison: Field "${activeField?.name || 'Selected Parcel'}" is missing required inputs: ${fieldValidation.missingInputs.join(', ')}. Please update parcel coordinates and area in My Farm or switch to Demo mode.`);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
+      const isDemo = fieldValidation.isDemo;
       const payload = {
-        field_id: activeField?.id || 'demo',
-        latitude: activeField?.latitude != null ? Number(activeField.latitude) : 24.8500,
-        longitude: activeField?.longitude != null ? Number(activeField.longitude) : 89.3700,
-        area_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : 10.0,
-        field_size_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : 10.0,
-        soil_ph: activeField?.soil_ph,
-        organic_matter: activeField?.organic_matter,
-        irrigation_capacity_mm: activeField?.irrigation_capacity_mm || 450,
+        field_id: isDemo ? 'demo' : String(activeField.id),
+        latitude: isDemo ? 24.8500 : Number(activeField.latitude),
+        longitude: isDemo ? 89.3700 : Number(activeField.longitude),
+        area_ha: isDemo ? 10.0 : Number(activeField.area_ha),
+        field_size_ha: isDemo ? 10.0 : Number(activeField.area_ha),
         priority: selectedPriority,
       };
+
+      if (activeField?.soil_ph != null && Number.isFinite(Number(activeField.soil_ph))) {
+        payload.soil_ph = Number(activeField.soil_ph);
+      }
+      if (activeField?.organic_matter != null && Number.isFinite(Number(activeField.organic_matter))) {
+        payload.organic_matter = Number(activeField.organic_matter);
+      }
+      if (activeField?.irrigation_capacity_mm != null && Number.isFinite(Number(activeField.irrigation_capacity_mm))) {
+        payload.irrigation_capacity_mm = Number(activeField.irrigation_capacity_mm);
+      } else if (isDemo) {
+        payload.irrigation_capacity_mm = 450;
+      }
 
       const res = await request('/api/lab/compare', {
         method: 'POST',
@@ -50,17 +97,37 @@ export function ComparisonLabView({
         body: JSON.stringify(payload),
       });
 
-      if (res && res.status === 'ok') {
-        setLabData(res);
-      } else {
-        throw new Error(res?.detail || 'Failed to execute 3-way comparison.');
+      const validation = validateComparisonResponse(res);
+      if (!validation.isValid) {
+        throw new Error(validation.error || 'Comparison response failed validation.');
       }
+
+      setLabData(res);
+      setIsStale(false);
+      setError('');
     } catch (err) {
       setError(err.message || 'Error communicating with Comparison Lab endpoint.');
+      if (labData) {
+        setIsStale(true);
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  // Synchronize on mount or when field or priority changes
+  useEffect(() => {
+    const currentKey = `${activeField?.id || 'demo'}_${priority}`;
+    if (cachedData && (cachedData.priority === priority || !cachedData.priority)) {
+      setLabData(cachedData);
+      setIsStale(false);
+      setError('');
+      lastFetchKeyRef.current = currentKey;
+    } else if (lastFetchKeyRef.current !== currentKey) {
+      lastFetchKeyRef.current = currentKey;
+      runLabComparison(priority);
+    }
+  }, [activeField?.id, priority, cachedData]);
 
   const handlePriorityChange = (newP) => {
     setPriority(newP);
@@ -91,19 +158,25 @@ export function ComparisonLabView({
     document.body.removeChild(link);
   };
 
+  // Extract validated methods
   const methods = labData?.methods || [];
-  const milpMethod = methods.find(m => m.id === 'milp') || {};
-  const rlMethod = methods.find(m => m.id === 'rl') || {};
-  const ruleMethod = methods.find(m => m.id === 'rule_based') || {};
+  const milpMethod = methods.find(m => m.id === 'milp') || null;
+  const rlMethod = methods.find(m => m.id === 'rl') || null;
+  const ruleMethod = methods.find(m => m.id === 'rule_based') || null;
   const tradeOffs = labData?.trade_off_analysis || {};
-  const seasons = labData?.seasons || [
-    'Year 1 (Rabi / Dry)',
-    'Year 1 (Kharif / Wet)',
-    'Year 2 (Rabi / Dry)',
-    'Year 2 (Kharif / Wet)',
-    'Year 3 (Rabi / Dry)',
-    'Year 3 (Kharif / Wet)',
-  ];
+  const seasons = Array.isArray(labData?.seasons) && labData.seasons.length > 0 ? labData.seasons : null;
+
+  // Compute violation objects
+  const milpViolationInfo = formatViolations(milpMethod?.constraint_violations, false);
+  const rlViolationInfo = formatViolations(rlMethod?.constraint_violations, true);
+  const ruleViolationInfo = formatViolations(ruleMethod?.constraint_violations, true);
+
+  // Compute validated trade-off winners (Fix 6: No winner when data is incomplete)
+  const profitWinner = determineComparisonWinner(tradeOffs, 'highest_profit');
+  const waterWinner = determineComparisonWinner(tradeOffs, 'most_water_efficient');
+  const soilWinner = determineComparisonWinner(tradeOffs, 'best_soil_stewardship');
+
+  const isDemoField = !activeField || activeField.id === 'demo' || activeField.is_demo || (typeof activeField.name === 'string' && activeField.name.toLowerCase().includes('demo'));
 
   return (
     <div className="comparison-lab-container" style={{ padding: '4px 0 32px' }}>
@@ -116,7 +189,9 @@ export function ComparisonLabView({
                 P0 SCIENTIFIC BENCHMARK
               </span>
               <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                Field: <strong style={{ color: 'var(--text-main)' }}>{activeField?.name || 'বগুড়া ডেমো খামার [DEMO]'}</strong> ({formatNumber(activeField?.area_ha || 10.0, 1)} ha)
+                Field: <strong style={{ color: 'var(--text-main)' }}>
+                  {isDemoField ? 'বগুড়া রেফারেন্স ডেমো খামার [DEMO]' : (activeField?.name || 'Active Parcel')}
+                </strong> ({activeField?.area_ha != null && Number.isFinite(Number(activeField.area_ha)) ? `${formatNumber(activeField.area_ha, 1)} ha` : '10.0 ha [Demo]'})
               </span>
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0, color: 'var(--text-main)' }}>
@@ -179,7 +254,7 @@ export function ComparisonLabView({
               type="button"
               className="btn btn-secondary"
               onClick={handleExportCSV}
-              disabled={!labData}
+              disabled={!labData?.export_csv}
               title="Download CSV report"
               style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, padding: '8px 12px' }}
             >
@@ -210,9 +285,34 @@ export function ComparisonLabView({
           </div>
         </div>
 
-        {error && (
-          <div style={{ marginTop: 14, padding: 10, background: 'rgba(248, 113, 113, 0.12)', border: '1px solid var(--accent-red)', borderRadius: 8, color: 'var(--accent-red)', fontSize: 13 }}>
-            <strong>Evaluation Warning:</strong> {error}
+        {/* Stale data warning if request failed after previous data existed */}
+        {isStale && (
+          <div style={{ marginTop: 14, padding: '10px 14px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid var(--accent-amber)', borderRadius: 8, color: 'var(--accent-amber)', fontSize: 13, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>⚠️ <strong>Stale Data:</strong> Displaying previously evaluated results. Latest evaluation request failed ({error}).</span>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={() => runLabComparison(priority)}
+              style={{ fontSize: 12, padding: '4px 10px', borderColor: 'var(--accent-amber)', color: 'var(--accent-amber)' }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Evaluation warning/error if no labData is available */}
+        {error && !labData && (
+          <div style={{ marginTop: 14, padding: 14, background: 'rgba(248, 113, 113, 0.12)', border: '1px solid var(--accent-red)', borderRadius: 8, color: 'var(--accent-red)', fontSize: 13 }}>
+            <div style={{ fontWeight: 700, marginBottom: 4 }}>Evaluation Warning:</div>
+            <div style={{ marginBottom: 10 }}>{error}</div>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => runLabComparison(priority)}
+              style={{ fontSize: 12, padding: '6px 14px' }}
+            >
+              Retry Evaluation
+            </button>
           </div>
         )}
       </div>
@@ -238,7 +338,7 @@ export function ComparisonLabView({
             labData={labData}
             activeField={activeField}
             priority={priority}
-            lang="en"
+            lang={lang}
           />
         )}
       </div>
@@ -267,43 +367,64 @@ export function ComparisonLabView({
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Estimated Net Return</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--primary)', marginTop: 2 }}>
-                ৳{formatNumber(milpMethod.total_field_profit_bdt, 0) || '0'}
+                {milpMethod?.total_field_profit_bdt != null && Number.isFinite(Number(milpMethod.total_field_profit_bdt))
+                  ? `৳${formatNumber(milpMethod.total_field_profit_bdt, 0)}`
+                  : 'Not available'}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                ৳{formatNumber(milpMethod.profit_bdt_per_ha, 0)}/ha
+                {milpMethod?.profit_bdt_per_ha != null && Number.isFinite(Number(milpMethod.profit_bdt_per_ha))
+                  ? `৳${formatNumber(milpMethod.profit_bdt_per_ha, 0)}/ha`
+                  : '৳—/ha'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Water Consumption</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent-blue)', marginTop: 2 }}>
-                {formatNumber(milpMethod.water_requirement_mm, 0) || '0'} mm
+                {milpMethod?.water_requirement_mm != null && Number.isFinite(Number(milpMethod.water_requirement_mm))
+                  ? `${formatNumber(milpMethod.water_requirement_mm, 0)} mm`
+                  : 'Not available'}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Mean: {formatNumber(milpMethod.mean_water_mm, 0)} mm/season
+                Mean: {milpMethod?.mean_water_mm != null && Number.isFinite(Number(milpMethod.mean_water_mm))
+                  ? `${formatNumber(milpMethod.mean_water_mm, 0)} mm/season`
+                  : 'Not available'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Soil Health Proxy</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent-amber)', marginTop: 2 }}>
-                {milpMethod.final_soil_health || '50'}/100
-                <span style={{ fontSize: 11, color: milpMethod.soil_health_delta >= 0 ? 'var(--primary)' : 'var(--accent-red)', marginLeft: 4 }}>
-                  ({milpMethod.soil_health_delta >= 0 ? '+' : ''}{milpMethod.soil_health_delta})
-                </span>
+                {milpMethod?.final_soil_health != null && Number.isFinite(Number(milpMethod.final_soil_health))
+                  ? `${milpMethod.final_soil_health}/100`
+                  : 'Not available'}
+                {milpMethod?.soil_health_delta != null && Number.isFinite(Number(milpMethod.soil_health_delta)) ? (
+                  <span style={{ fontSize: 11, color: milpMethod.soil_health_delta >= 0 ? 'var(--primary)' : 'var(--accent-red)', marginLeft: 4 }}>
+                    ({milpMethod.soil_health_delta >= 0 ? '+' : ''}{milpMethod.soil_health_delta})
+                  </span>
+                ) : null}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Legumes: {milpMethod.legume_season_count || 0}/6 seasons
+                Legumes: {milpMethod?.legume_season_count != null ? `${milpMethod.legume_season_count}/6 seasons` : '—'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Compliance & Speed</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: milpMethod.constraint_violations === 0 ? 'var(--primary)' : 'var(--accent-red)', marginTop: 2 }}>
-                {milpMethod.constraint_violations === 0 ? '✓ 0 Violations' : `${milpMethod.constraint_violations} Violations`}
+              <div style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: milpViolationInfo.isMissing
+                  ? 'var(--text-muted)'
+                  : milpViolationInfo.isZero
+                  ? 'var(--primary)'
+                  : 'var(--accent-red)',
+                marginTop: 2
+              }}>
+                {milpViolationInfo.text}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Runtime: {milpMethod.runtime_ms || 0} ms
+                Runtime: {milpMethod?.runtime_ms != null && Number.isFinite(Number(milpMethod.runtime_ms)) ? `${milpMethod.runtime_ms} ms` : '—'}
               </div>
             </div>
           </div>
@@ -311,7 +432,7 @@ export function ComparisonLabView({
           <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: 10 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>Rotation Sequence:</div>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-main)', background: 'var(--bg-root)', padding: '8px 10px', borderRadius: 6 }}>
-              {milpMethod.rotation_sequence || 'Evaluating sequence...'}
+              {milpMethod?.rotation_sequence || (milpMethod?.rotation ? Object.values(milpMethod.rotation).join(' -> ') : 'Evaluating sequence...')}
             </div>
           </div>
         </div>
@@ -338,43 +459,64 @@ export function ComparisonLabView({
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Estimated Net Return</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent-purple)', marginTop: 2 }}>
-                ৳{formatNumber(rlMethod.total_field_profit_bdt, 0) || '0'}
+                {rlMethod?.total_field_profit_bdt != null && Number.isFinite(Number(rlMethod.total_field_profit_bdt))
+                  ? `৳${formatNumber(rlMethod.total_field_profit_bdt, 0)}`
+                  : 'Not available'}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                ৳{formatNumber(rlMethod.profit_bdt_per_ha, 0)}/ha
+                {rlMethod?.profit_bdt_per_ha != null && Number.isFinite(Number(rlMethod.profit_bdt_per_ha))
+                  ? `৳${formatNumber(rlMethod.profit_bdt_per_ha, 0)}/ha`
+                  : '৳—/ha'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Water Consumption</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent-blue)', marginTop: 2 }}>
-                {formatNumber(rlMethod.water_requirement_mm, 0) || '0'} mm
+                {rlMethod?.water_requirement_mm != null && Number.isFinite(Number(rlMethod.water_requirement_mm))
+                  ? `${formatNumber(rlMethod.water_requirement_mm, 0)} mm`
+                  : 'Not available'}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Mean: {formatNumber(rlMethod.mean_water_mm, 0)} mm/season
+                Mean: {rlMethod?.mean_water_mm != null && Number.isFinite(Number(rlMethod.mean_water_mm))
+                  ? `${formatNumber(rlMethod.mean_water_mm, 0)} mm/season`
+                  : 'Not available'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Soil Health Proxy</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent-amber)', marginTop: 2 }}>
-                {rlMethod.final_soil_health || '50'}/100
-                <span style={{ fontSize: 11, color: rlMethod.soil_health_delta >= 0 ? 'var(--primary)' : 'var(--accent-red)', marginLeft: 4 }}>
-                  ({rlMethod.soil_health_delta >= 0 ? '+' : ''}{rlMethod.soil_health_delta})
-                </span>
+                {rlMethod?.final_soil_health != null && Number.isFinite(Number(rlMethod.final_soil_health))
+                  ? `${rlMethod.final_soil_health}/100`
+                  : 'Not available'}
+                {rlMethod?.soil_health_delta != null && Number.isFinite(Number(rlMethod.soil_health_delta)) ? (
+                  <span style={{ fontSize: 11, color: rlMethod.soil_health_delta >= 0 ? 'var(--primary)' : 'var(--accent-red)', marginLeft: 4 }}>
+                    ({rlMethod.soil_health_delta >= 0 ? '+' : ''}{rlMethod.soil_health_delta})
+                  </span>
+                ) : null}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Cum. Reward: {rlMethod.cumulative_reward || '0'}
+                Cum. Reward: {rlMethod?.cumulative_reward != null ? rlMethod.cumulative_reward : '—'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Compliance & Speed</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: rlMethod.constraint_violations === 0 ? 'var(--primary)' : 'var(--accent-amber)', marginTop: 2 }}>
-                {rlMethod.constraint_violations === 0 ? '✓ 0 Violations' : `⚠ ${rlMethod.constraint_violations} Violations`}
+              <div style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: rlViolationInfo.isMissing
+                  ? 'var(--text-muted)'
+                  : rlViolationInfo.isZero
+                  ? 'var(--primary)'
+                  : 'var(--accent-amber)',
+                marginTop: 2
+              }}>
+                {rlViolationInfo.text}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Runtime: {rlMethod.runtime_ms || 0} ms
+                Runtime: {rlMethod?.runtime_ms != null && Number.isFinite(Number(rlMethod.runtime_ms)) ? `${rlMethod.runtime_ms} ms` : '—'}
               </div>
             </div>
           </div>
@@ -382,7 +524,7 @@ export function ComparisonLabView({
           <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: 10 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>Rotation Sequence:</div>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-main)', background: 'var(--bg-root)', padding: '8px 10px', borderRadius: 6 }}>
-              {rlMethod.rotation_sequence || 'Evaluating sequence...'}
+              {rlMethod?.rotation_sequence || (rlMethod?.rotation ? Object.values(rlMethod.rotation).join(' -> ') : 'Evaluating sequence...')}
             </div>
           </div>
         </div>
@@ -409,43 +551,64 @@ export function ComparisonLabView({
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Estimated Net Return</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent-amber)', marginTop: 2 }}>
-                ৳{formatNumber(ruleMethod.total_field_profit_bdt, 0) || '0'}
+                {ruleMethod?.total_field_profit_bdt != null && Number.isFinite(Number(ruleMethod.total_field_profit_bdt))
+                  ? `৳${formatNumber(ruleMethod.total_field_profit_bdt, 0)}`
+                  : 'Not available'}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                ৳{formatNumber(ruleMethod.profit_bdt_per_ha, 0)}/ha
+                {ruleMethod?.profit_bdt_per_ha != null && Number.isFinite(Number(ruleMethod.profit_bdt_per_ha))
+                  ? `৳${formatNumber(ruleMethod.profit_bdt_per_ha, 0)}/ha`
+                  : '৳—/ha'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Water Consumption</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent-blue)', marginTop: 2 }}>
-                {formatNumber(ruleMethod.water_requirement_mm, 0) || '0'} mm
+                {ruleMethod?.water_requirement_mm != null && Number.isFinite(Number(ruleMethod.water_requirement_mm))
+                  ? `${formatNumber(ruleMethod.water_requirement_mm, 0)} mm`
+                  : 'Not available'}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Mean: {formatNumber(ruleMethod.mean_water_mm, 0)} mm/season
+                Mean: {ruleMethod?.mean_water_mm != null && Number.isFinite(Number(ruleMethod.mean_water_mm))
+                  ? `${formatNumber(ruleMethod.mean_water_mm, 0)} mm/season`
+                  : 'Not available'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Soil Health Proxy</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent-amber)', marginTop: 2 }}>
-                {ruleMethod.final_soil_health || '50'}/100
-                <span style={{ fontSize: 11, color: ruleMethod.soil_health_delta >= 0 ? 'var(--primary)' : 'var(--accent-red)', marginLeft: 4 }}>
-                  ({ruleMethod.soil_health_delta >= 0 ? '+' : ''}{ruleMethod.soil_health_delta})
-                </span>
+                {ruleMethod?.final_soil_health != null && Number.isFinite(Number(ruleMethod.final_soil_health))
+                  ? `${ruleMethod.final_soil_health}/100`
+                  : 'Not available'}
+                {ruleMethod?.soil_health_delta != null && Number.isFinite(Number(ruleMethod.soil_health_delta)) ? (
+                  <span style={{ fontSize: 11, color: ruleMethod.soil_health_delta >= 0 ? 'var(--primary)' : 'var(--accent-red)', marginLeft: 4 }}>
+                    ({ruleMethod.soil_health_delta >= 0 ? '+' : ''}{ruleMethod.soil_health_delta})
+                  </span>
+                ) : null}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Legumes: {ruleMethod.legume_season_count || 0}/6 seasons
+                Legumes: {ruleMethod?.legume_season_count != null ? `${ruleMethod.legume_season_count}/6 seasons` : '—'}
               </div>
             </div>
 
             <div style={{ background: 'var(--bg-root)', padding: '10px 12px', borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Compliance & Speed</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: ruleMethod.constraint_violations === 0 ? 'var(--primary)' : 'var(--accent-amber)', marginTop: 2 }}>
-                {ruleMethod.constraint_violations === 0 ? '✓ 0 Violations' : `${ruleMethod.constraint_violations} Violations`}
+              <div style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: ruleViolationInfo.isMissing
+                  ? 'var(--text-muted)'
+                  : ruleViolationInfo.isZero
+                  ? 'var(--primary)'
+                  : 'var(--accent-amber)',
+                marginTop: 2
+              }}>
+                {ruleViolationInfo.text}
               </div>
               <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                Runtime: {ruleMethod.runtime_ms || 0} ms
+                Runtime: {ruleMethod?.runtime_ms != null && Number.isFinite(Number(ruleMethod.runtime_ms)) ? `${ruleMethod.runtime_ms} ms` : '—'}
               </div>
             </div>
           </div>
@@ -453,7 +616,7 @@ export function ComparisonLabView({
           <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: 10 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>Rotation Sequence:</div>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-main)', background: 'var(--bg-root)', padding: '8px 10px', borderRadius: 6 }}>
-              {ruleMethod.rotation_sequence || 'Evaluating sequence...'}
+              {ruleMethod?.rotation_sequence || (ruleMethod?.rotation ? Object.values(ruleMethod.rotation).join(' -> ') : 'Evaluating sequence...')}
             </div>
           </div>
         </div>
@@ -471,51 +634,57 @@ export function ComparisonLabView({
           </span>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table className="comparison-table" style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid var(--border-medium)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '10px 12px' }}>Season Period</th>
-                <th style={{ padding: '10px 12px', color: 'var(--primary)' }}>Method A: MILP Optimizer</th>
-                <th style={{ padding: '10px 12px', color: 'var(--accent-purple)' }}>Method B: RL Policy</th>
-                <th style={{ padding: '10px 12px', color: 'var(--accent-amber)' }}>Method C: Rule Baseline</th>
-              </tr>
-            </thead>
-            <tbody>
-              {seasons.map((seasonLabel, idx) => {
-                const milpCrop = (milpMethod.rotation && milpMethod.rotation[seasonLabel]) || (milpMethod.rotation_sequence?.split(' -> ')[idx]) || '—';
-                const rlCrop = (rlMethod.rotation && rlMethod.rotation[seasonLabel]) || (rlMethod.rotation_sequence?.split(' -> ')[idx]) || '—';
-                const ruleCrop = (ruleMethod.rotation && ruleMethod.rotation[seasonLabel]) || (ruleMethod.rotation_sequence?.split(' -> ')[idx]) || '—';
+        {seasons ? (
+          <div style={{ overflowX: 'auto' }}>
+            <table className="comparison-table" style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid var(--border-medium)', color: 'var(--text-muted)' }}>
+                  <th style={{ padding: '10px 12px' }}>Season Period</th>
+                  <th style={{ padding: '10px 12px', color: 'var(--primary)' }}>Method A: MILP Optimizer</th>
+                  <th style={{ padding: '10px 12px', color: 'var(--accent-purple)' }}>Method B: RL Policy</th>
+                  <th style={{ padding: '10px 12px', color: 'var(--accent-amber)' }}>Method C: Rule Baseline</th>
+                </tr>
+              </thead>
+              <tbody>
+                {seasons.map((seasonLabel, idx) => {
+                  const milpCrop = getCropForSeason(milpMethod, seasonLabel, idx);
+                  const rlCrop = getCropForSeason(rlMethod, seasonLabel, idx);
+                  const ruleCrop = getCropForSeason(ruleMethod, seasonLabel, idx);
 
-                return (
-                  <tr key={seasonLabel} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                    <td style={{ padding: '10px 12px', fontWeight: 600 }}>
-                      <span style={{ color: idx % 2 === 0 ? 'var(--accent-blue)' : 'var(--primary)', marginRight: 6 }}>
-                        {idx % 2 === 0 ? '❄ Rabi' : '🌧 Kharif'}
-                      </span>
-                      {seasonLabel}
-                    </td>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: 'var(--text-main)' }}>
-                      <span style={{ padding: '4px 8px', borderRadius: 4, background: 'rgba(0, 223, 129, 0.08)' }}>
-                        {milpCrop}
-                      </span>
-                    </td>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: 'var(--text-main)' }}>
-                      <span style={{ padding: '4px 8px', borderRadius: 4, background: 'rgba(167, 139, 250, 0.08)' }}>
-                        {rlCrop}
-                      </span>
-                    </td>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: 'var(--text-main)' }}>
-                      <span style={{ padding: '4px 8px', borderRadius: 4, background: 'rgba(251, 191, 36, 0.08)' }}>
-                        {ruleCrop}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                  return (
+                    <tr key={seasonLabel} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 600 }}>
+                        <span style={{ color: idx % 2 === 0 ? 'var(--accent-blue)' : 'var(--primary)', marginRight: 6 }}>
+                          {idx % 2 === 0 ? '❄ Rabi' : '🌧 Kharif'}
+                        </span>
+                        {seasonLabel}
+                      </td>
+                      <td style={{ padding: '10px 12px', fontWeight: 700, color: 'var(--text-main)' }}>
+                        <span style={{ padding: '4px 8px', borderRadius: 4, background: milpCrop !== '—' ? 'rgba(0, 223, 129, 0.08)' : 'transparent' }}>
+                          {milpCrop}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px 12px', fontWeight: 700, color: 'var(--text-main)' }}>
+                        <span style={{ padding: '4px 8px', borderRadius: 4, background: rlCrop !== '—' ? 'rgba(167, 139, 250, 0.08)' : 'transparent' }}>
+                          {rlCrop}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px 12px', fontWeight: 700, color: 'var(--text-main)' }}>
+                        <span style={{ padding: '4px 8px', borderRadius: 4, background: ruleCrop !== '—' ? 'rgba(251, 191, 36, 0.08)' : 'transparent' }}>
+                          {ruleCrop}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
+            {loading ? 'Evaluating seasonal rotations across models...' : 'Rotation trajectory data is not yet evaluated or unavailable.'}
+          </div>
+        )}
       </div>
 
       {/* TRADE-OFF & SCIENTIFIC BOUNDARY ANALYSIS */}
@@ -528,33 +697,54 @@ export function ComparisonLabView({
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14, marginBottom: 18 }}>
+          {/* Highest Profit Winner */}
           <div style={{ background: 'var(--bg-root)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase' }}>Highest Profit Winner</div>
             <div style={{ fontSize: 16, fontWeight: 800, margin: '4px 0', color: 'var(--text-main)' }}>
-              {tradeOffs.highest_profit?.method || 'MILP Optimization'} (৳{formatNumber(tradeOffs.highest_profit?.value_bdt_ha, 0)}/ha)
+              {profitWinner.hasWinner ? (
+                <>
+                  {profitWinner.method} (৳{formatNumber(profitWinner.value, 0)}/ha)
+                </>
+              ) : (
+                <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>Winner unavailable (data incomplete)</span>
+              )}
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {tradeOffs.highest_profit?.explanation}
+              {profitWinner.explanation || 'Comparative profit metrics are incomplete across methods.'}
             </div>
           </div>
 
+          {/* Hydrologic Conservation */}
           <div style={{ background: 'var(--bg-root)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent-blue)', textTransform: 'uppercase' }}>Hydrologic Conservation</div>
             <div style={{ fontSize: 16, fontWeight: 800, margin: '4px 0', color: 'var(--text-main)' }}>
-              {tradeOffs.most_water_efficient?.method || 'RL Simulation Policy'} ({formatNumber(tradeOffs.most_water_efficient?.value_mm, 0)} mm)
+              {waterWinner.hasWinner ? (
+                <>
+                  {waterWinner.method} ({formatNumber(waterWinner.value, 0)} mm)
+                </>
+              ) : (
+                <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>Water winner unavailable</span>
+              )}
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {tradeOffs.most_water_efficient?.explanation}
+              {waterWinner.explanation || 'Water consumption metrics are incomplete across methods.'}
             </div>
           </div>
 
+          {/* Soil Stewardship */}
           <div style={{ background: 'var(--bg-root)', padding: 14, borderRadius: 10, border: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent-amber)', textTransform: 'uppercase' }}>Soil Stewardship</div>
             <div style={{ fontSize: 16, fontWeight: 800, margin: '4px 0', color: 'var(--text-main)' }}>
-              {tradeOffs.best_soil_stewardship?.method || 'Agronomic Baseline'} (+{tradeOffs.best_soil_stewardship?.value_delta} pts)
+              {soilWinner.hasWinner ? (
+                <>
+                  {soilWinner.method} (+{soilWinner.value} pts)
+                </>
+              ) : (
+                <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>Soil stewardship winner unavailable</span>
+              )}
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {tradeOffs.best_soil_stewardship?.explanation}
+              {soilWinner.explanation || 'Soil health metrics are incomplete across methods.'}
             </div>
           </div>
         </div>
@@ -564,7 +754,7 @@ export function ComparisonLabView({
             Scientific Integrity &amp; Methodological Boundary Disclosure
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-main)', lineHeight: 1.6 }}>
-            {tradeOffs.honest_evaluation_summary || (
+            {tradeOffs?.honest_evaluation_summary || (
               "MILP delivers provable global mathematical optimality for the modeled objective function, strictly satisfying all constraints without manual tuning. " +
               "The RL policy can adapt dynamically per-season but relies on heuristic future value estimation and simulation dynamics; it is not empirically field-validated. " +
               "The Rule-Based baseline provides high transparency and zero runtime overhead but sacrifices economic yield due to rigid heuristic rules."

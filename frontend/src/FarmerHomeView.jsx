@@ -80,6 +80,65 @@ export function FarmerHomeView({
         </div>
       </div>
 
+      {/* Official NASA Planting Advisory Quick Action Banner */}
+      <div
+        className="farmer-nasa-quick-banner"
+        onClick={() => onNavigate('crop_advice')}
+        style={{
+          background: 'linear-gradient(135deg, rgba(0, 223, 129, 0.16) 0%, rgba(22, 29, 35, 0.95) 100%)',
+          border: '1px solid rgba(0, 223, 129, 0.35)',
+          borderRadius: 12,
+          padding: '14px 18px',
+          marginBottom: 16,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12,
+          transition: 'all 0.2s ease',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 28 }}>🛰️</span>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <strong style={{ color: '#f1f5f9', fontSize: 14 }}>
+                {lang === 'bn' ? 'নাসা রোপণ পরামর্শ (NASA Planting Window Advisory)' : 'NASA Planting Window Advisory 2026'}
+              </strong>
+              <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.2)', color: '#00df81', padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>
+                {lang === 'bn' ? 'নতুন' : 'NEW'}
+              </span>
+            </div>
+            <p style={{ margin: '4px 0 0 0', fontSize: 12, color: '#9ab0c4' }}>
+              {lang === 'bn'
+                ? 'রাজশাহী ও উত্তরবঙ্গে আমন ধানের বৃষ্টিপাত অনসেটের ২৫ বছরের নাসা উপাত্ত ও ব্রি-৭৫ রোপণ ক্যালেন্ডার দেখুন ➔'
+                : 'Explore 25-year NASA POWER rainfall onset shifts and BRRI rice planting calendar ➔'}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNavigate('crop_advice');
+          }}
+          style={{
+            background: '#00df81',
+            color: '#0e1318',
+            border: 'none',
+            borderRadius: 6,
+            padding: '7px 14px',
+            fontSize: 12,
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          {lang === 'bn' ? 'পরামর্শ দেখুন ➔' : 'View Advisory ➔'}
+        </button>
+      </div>
+
       {/* Main Grid: My Farm & Today Weather */}
       <div className="farmer-overview-grid">
         {/* B. My Farm Card */}

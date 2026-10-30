@@ -602,6 +602,47 @@ def crops_catalog():
         ),
     }
 
+
+# -----------------------------------------------------------------------------
+# OFFICIAL NASA PLANTING-WINDOW ADVISORY ENDPOINT
+# -----------------------------------------------------------------------------
+
+@app.get("/api/advisory")
+def get_planting_advisory(
+    district: str = "rajshahi",
+    crop: str = "aman",
+    threshold_mm: float = 25.0,
+    dry_spell_window: int = 21,
+    dry_spell_max: int = 7,
+    offline: bool = False,
+    lang: str = "bn",
+):
+    """Return mobile-first planting window advisory based on NASA observations."""
+    from src.compute.advisory_service import build_planting_advisory
+    try:
+        result = build_planting_advisory(
+            district=district,
+            crop=crop,
+            threshold_mm=threshold_mm,
+            dry_spell_window_days=dry_spell_window,
+            dry_spell_max_consecutive_days=dry_spell_max,
+            offline=offline,
+            lang=lang,
+        )
+        return finite_json_value(jsonable_encoder(result))
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except Exception as e:
+        raise HTTPException(500, f"Error generating planting advisory: {str(e)}")
+
+
+@app.get("/api/advisory/districts")
+def get_advisory_districts():
+    """Return supported Bangladesh agricultural districts with coordinates."""
+    from src.compute.advisory_service import get_supported_districts
+    return {"status": "ok", "districts": get_supported_districts()}
+
+
 @app.get("/api/satellite/readiness")
 def satellite_readiness(latitude: float = 23.8103, longitude: float = 90.4125, lat: float | None = None, lon: float | None = None):
     from src.data.bangladesh_crops import get_satellite_readiness_status

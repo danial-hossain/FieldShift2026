@@ -2,10 +2,14 @@
 // Interactive 3D 3-Way Optimization Comparison (MILP vs RL vs Rule-Based)
 // Features: 3 synchronized 3D parcels representing the 3 competing algorithms,
 // algorithm-specific crop allocation, water consumption footprint, and economic profit pillars.
+// Zero fabricated fallbacks: missing metrics display as "Not available" / "—", and misleading cylinders are omitted.
 
-import React, { useRef, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { Research3DScene } from './Research3DScene.jsx';
+import { extractFirstCrop, parseFiniteMetric } from '../comparisonLabEngine.js';
+
+export { extractFirstCrop, parseFiniteMetric };
 
 export function Comparison3Way3D({
   labData,
@@ -17,24 +21,27 @@ export function Comparison3Way3D({
   const rlRaw = labData?.methods?.find?.(m => m.id === 'rl') || labData?.comparison?.rl;
   const ruleRaw = labData?.methods?.find?.(m => m.id === 'rule_based') || labData?.comparison?.rule_based;
 
-  const milp = {
-    crop: milpRaw?.rotation_sequence?.split('→')?.[0]?.trim() || milpRaw?.crop || 'Mungbean',
-    profit: Number(milpRaw?.profit_bdt_per_ha ?? milpRaw?.total_field_profit_bdt ?? milpRaw?.profit ?? 125000),
-    water: Number(milpRaw?.water_requirement_mm ?? milpRaw?.water ?? 350),
-    yield: Number(milpRaw?.yield ?? 1.4)
-  };
-  const rl = {
-    crop: rlRaw?.rotation_sequence?.split('→')?.[0]?.trim() || rlRaw?.crop || 'Rice',
-    profit: Number(rlRaw?.profit_bdt_per_ha ?? rlRaw?.total_field_profit_bdt ?? rlRaw?.profit ?? 110000),
-    water: Number(rlRaw?.water_requirement_mm ?? rlRaw?.water ?? 420),
-    yield: Number(rlRaw?.yield ?? 4.8)
-  };
-  const rule = {
-    crop: ruleRaw?.rotation_sequence?.split('→')?.[0]?.trim() || ruleRaw?.crop || 'Potato',
-    profit: Number(ruleRaw?.profit_bdt_per_ha ?? ruleRaw?.total_field_profit_bdt ?? ruleRaw?.profit ?? 98000),
-    water: Number(ruleRaw?.water_requirement_mm ?? ruleRaw?.water ?? 480),
-    yield: Number(ruleRaw?.yield ?? 18.5)
-  };
+  // Extract metrics strictly without invented fallbacks
+  const milp = useMemo(() => ({
+    crop: extractFirstCrop(milpRaw),
+    profit: parseFiniteMetric(milpRaw?.profit_bdt_per_ha ?? milpRaw?.total_field_profit_bdt ?? milpRaw?.profit),
+    water: parseFiniteMetric(milpRaw?.water_requirement_mm ?? milpRaw?.water),
+    yield: parseFiniteMetric(milpRaw?.yield)
+  }), [milpRaw]);
+
+  const rl = useMemo(() => ({
+    crop: extractFirstCrop(rlRaw),
+    profit: parseFiniteMetric(rlRaw?.profit_bdt_per_ha ?? rlRaw?.total_field_profit_bdt ?? rlRaw?.profit),
+    water: parseFiniteMetric(rlRaw?.water_requirement_mm ?? rlRaw?.water),
+    yield: parseFiniteMetric(rlRaw?.yield)
+  }), [rlRaw]);
+
+  const rule = useMemo(() => ({
+    crop: extractFirstCrop(ruleRaw),
+    profit: parseFiniteMetric(ruleRaw?.profit_bdt_per_ha ?? ruleRaw?.total_field_profit_bdt ?? ruleRaw?.profit),
+    water: parseFiniteMetric(ruleRaw?.water_requirement_mm ?? ruleRaw?.water),
+    yield: parseFiniteMetric(ruleRaw?.yield)
+  }), [ruleRaw]);
 
   const handleSceneReady = ({ scene }) => {
     const trioGroup = new THREE.Group();
@@ -64,24 +71,28 @@ export function Comparison3Way3D({
       halo.position.y = 0.04;
       pGroup.add(halo);
 
-      // Representative Crop Cluster
-      const cropMat = new THREE.MeshStandardMaterial({ color: algo.color, roughness: 0.6 });
-      for (let cx = -1.2; cx <= 1.2; cx += 0.8) {
-        for (let cz = -1.2; cz <= 1.2; cz += 0.8) {
-          const plant = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.7, 6), cropMat);
-          plant.position.set(cx, 0.35, cz);
-          plant.castShadow = true;
-          pGroup.add(plant);
+      // Representative Crop Cluster (only rendered if valid crop exists)
+      if (algo.data.crop) {
+        const cropMat = new THREE.MeshStandardMaterial({ color: algo.color, roughness: 0.6 });
+        for (let cx = -1.2; cx <= 1.2; cx += 0.8) {
+          for (let cz = -1.2; cz <= 1.2; cz += 0.8) {
+            const plant = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.7, 6), cropMat);
+            plant.position.set(cx, 0.35, cz);
+            plant.castShadow = true;
+            pGroup.add(plant);
+          }
         }
       }
 
-      // 3D Economic Profit Bar
-      const profitHeight = Math.max(0.2, (algo.data.profit / 140000) * 2.5);
-      const barGeo = new THREE.CylinderGeometry(0.25, 0.25, profitHeight, 16);
-      const barMat = new THREE.MeshStandardMaterial({ color: algo.color, metalness: 0.3 });
-      const bar = new THREE.Mesh(barGeo, barMat);
-      bar.position.set(0, profitHeight / 2 + 0.05, 1.6);
-      pGroup.add(bar);
+      // 3D Economic Profit Bar: Only rendered when valid finite profit exists
+      if (algo.data.profit !== null && Number.isFinite(algo.data.profit) && algo.data.profit > 0) {
+        const profitHeight = Math.max(0.2, (algo.data.profit / 140000) * 2.5);
+        const barGeo = new THREE.CylinderGeometry(0.25, 0.25, profitHeight, 16);
+        const barMat = new THREE.MeshStandardMaterial({ color: algo.color, metalness: 0.3 });
+        const bar = new THREE.Mesh(barGeo, barMat);
+        bar.position.set(0, profitHeight / 2 + 0.05, 1.6);
+        pGroup.add(bar);
+      }
 
       trioGroup.add(pGroup);
     });
@@ -98,8 +109,8 @@ export function Comparison3Way3D({
         hudTitle="3-WAY OPTIMIZATION (MILP vs RL vs RULE)"
         hudMetrics={[
           `Priority: ${priority.toUpperCase()}`,
-          `MILP: ৳${Math.round((milp.profit || 0) / 1000)}k`,
-          `RL: ৳${Math.round((rl.profit || 0) / 1000)}k`
+          milp.profit !== null ? `MILP: ৳${Math.round(milp.profit / 1000)}k` : 'MILP: Not available',
+          rl.profit !== null ? `RL: ৳${Math.round(rl.profit / 1000)}k` : 'RL: Not available'
         ]}
         onSceneReady={handleSceneReady}
         minHeight="420px"
@@ -116,10 +127,12 @@ export function Comparison3Way3D({
         <div style={{ background: 'rgba(0, 223, 129, 0.1)', border: '1px solid rgba(0, 223, 129, 0.3)', padding: '8px 10px', borderRadius: 8, fontSize: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <strong style={{ color: '#00df81' }}>PuLP CBC MILP</strong>
-            <span style={{ color: '#00df81', fontWeight: 800 }}>গাণিতিক অপটিমাম</span>
+            <span style={{ color: '#00df81', fontWeight: 800 }}>
+              {lang === 'bn' ? 'গাণিতিক অপটিমাম' : 'Global Optimum'}
+            </span>
           </div>
           <div style={{ color: '#cbd5e1', marginTop: 2 }}>
-            ফসল: <strong>{milp.crop}</strong> · নিট লাভ: <strong>৳{milp.profit?.toLocaleString()}</strong>
+            {lang === 'bn' ? 'ফসল' : 'Crop'}: <strong>{milp.crop || '—'}</strong> · {lang === 'bn' ? 'নিট লাভ' : 'Net Profit'}: <strong>{milp.profit !== null ? `৳${milp.profit.toLocaleString()}` : 'Not available'}</strong>
           </div>
         </div>
 
@@ -127,10 +140,12 @@ export function Comparison3Way3D({
         <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '8px 10px', borderRadius: 8, fontSize: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <strong style={{ color: '#38bdf8' }}>Q-Learning RL</strong>
-            <span style={{ color: '#38bdf8', fontWeight: 800 }}>অভিযোজিত পলিসি</span>
+            <span style={{ color: '#38bdf8', fontWeight: 800 }}>
+              {lang === 'bn' ? 'অভিযোজিত পলিসি' : 'Adaptive Policy'}
+            </span>
           </div>
           <div style={{ color: '#cbd5e1', marginTop: 2 }}>
-            ফসল: <strong>{rl.crop}</strong> · নিট লাভ: <strong>৳{rl.profit?.toLocaleString()}</strong>
+            {lang === 'bn' ? 'ফসল' : 'Crop'}: <strong>{rl.crop || '—'}</strong> · {lang === 'bn' ? 'নিট লাভ' : 'Net Profit'}: <strong>{rl.profit !== null ? `৳${rl.profit.toLocaleString()}` : 'Not available'}</strong>
           </div>
         </div>
 
@@ -138,15 +153,19 @@ export function Comparison3Way3D({
         <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', padding: '8px 10px', borderRadius: 8, fontSize: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <strong style={{ color: '#f59e0b' }}>Rule-Based</strong>
-            <span style={{ color: '#f59e0b', fontWeight: 800 }}>হিউরিস্টিক বেসলাইন</span>
+            <span style={{ color: '#f59e0b', fontWeight: 800 }}>
+              {lang === 'bn' ? 'হিউরিস্টিক বেসলাইন' : 'Heuristic Baseline'}
+            </span>
           </div>
           <div style={{ color: '#cbd5e1', marginTop: 2 }}>
-            ফসল: <strong>{rule.crop}</strong> · নিট লাভ: <strong>৳{rule.profit?.toLocaleString()}</strong>
+            {lang === 'bn' ? 'ফসল' : 'Crop'}: <strong>{rule.crop || '—'}</strong> · {lang === 'bn' ? 'নিট লাভ' : 'Net Profit'}: <strong>{rule.profit !== null ? `৳${rule.profit.toLocaleString()}` : 'Not available'}</strong>
           </div>
         </div>
 
         <div style={{ marginTop: 'auto', fontSize: 10.5, color: '#64748b', lineHeight: 1.4 }}>
-          * ৩টি মডেল একই মাটির বৈশিষ্ট্য ও আবহাওয়া অনুমানের অধীনে তুলনামূলকভাবে রান করা হয়েছে।
+          {lang === 'bn'
+            ? '* ৩টি মডেল একই মাটির বৈশিষ্ট্য ও আবহাওয়া অনুমানের অধীনে তুলনামূলকভাবে রান করা হয়েছে।'
+            : '* All 3 algorithms evaluated under identical soil hydrology, weather telemetry, and planning horizon.'}
         </div>
       </div>
     </div>
