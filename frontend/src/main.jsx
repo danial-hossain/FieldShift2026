@@ -1695,8 +1695,16 @@ export function App() {
     };
   }, [fieldReadiness.isReady, nasa, analysisFreshness.status, scenarios]);
 
+  const isResearchMode = ['research', 'water_irrigation', 'digital_twin', 'data_evidence'].includes(activeNav);
+  const currentMode = isResearchMode ? 'research' : 'farmer';
+
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-mode={currentMode}>
+      {/* Fixed NASA VIIRS Background Layer */}
+      <div className="nasa-bg-layer" aria-hidden="true">
+        <div className="nasa-bg-image" />
+        <div className="nasa-bg-vignette" />
+      </div>
       {/* Mobile Drawer Backdrop */}
       {mobileNavOpen && (
         <div
@@ -3218,6 +3226,9 @@ export function App() {
                 {/* Footer Note */}
                 <footer className="dashboard-footer-note" style={{ gridColumn: 'span 12', color: 'var(--text-dim)' }}>
                   <p>FieldShift Autonomous Agronomy Suite — MILP Allocations, NASA POWER Satellite Feeds & Scientific Decision Support.</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: 4 }}>
+                    Background: NASA GIBS / Worldview, VIIRS NOAA-20 true colour, Bangladesh, 2024-01-20
+                  </p>
                 </footer>
               </div>
             </ResultBoundary>

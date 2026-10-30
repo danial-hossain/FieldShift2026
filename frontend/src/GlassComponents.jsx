@@ -1,10 +1,10 @@
 // frontend/src/GlassComponents.jsx
-// Reusable, tactile, accessible Glassmorphism UI components for FieldShift
+// Backward-compatible wrappers over the modern FieldShift UI Kit (frontend/src/ui/)
 import React from 'react';
+import { Card, Button, Pill, Stat, Tabs } from './ui/index.js';
 
-/**
- * GlassPanel: High-end frosted glass container with luminous border and subtle specular reflection.
- */
+export { Card, CardHeader, Stat, RingGauge, Donut, LineChart, Sparkline, Pill, Badge, Button, Tabs, EmptyState, DataSourceTag, PageHeader } from './ui/index.js';
+
 export function GlassPanel({
   children,
   elevation = 'primary', // 'primary' | 'secondary' | 'elevated' | 'card'
@@ -13,30 +13,20 @@ export function GlassPanel({
   onClick,
   ...props
 }) {
-  const elevationClass =
-    elevation === 'elevated'
-      ? 'glass-panel-elevated'
-      : elevation === 'card'
-      ? 'glass-card'
-      : elevation === 'secondary'
-      ? 'glass-panel-secondary'
-      : 'glass-panel';
-
+  const variant = elevation === 'elevated' || elevation === 'secondary' ? 'glass-strong' : 'glass';
   return (
-    <div
-      className={`${elevationClass} ${className}`}
+    <Card
+      variant={variant}
+      className={`glass-panel ${className}`}
       style={style}
       onClick={onClick}
       {...props}
     >
       {children}
-    </div>
+    </Card>
   );
 }
 
-/**
- * GlassCard: Translucent card with hover lift, luminous borders, and content slots.
- */
 export function GlassCard({
   children,
   className = '',
@@ -46,7 +36,8 @@ export function GlassCard({
   ...props
 }) {
   return (
-    <div
+    <Card
+      variant="glass"
       className={`glass-card ${hoverable ? 'glass-card-hover' : ''} ${className}`}
       style={{
         cursor: onClick ? 'pointer' : 'default',
@@ -56,13 +47,10 @@ export function GlassCard({
       {...props}
     >
       {children}
-    </div>
+    </Card>
   );
 }
 
-/**
- * GlassButton: Tactile button with subtle lift, press-down feedback, and accessible focus.
- */
 export function GlassButton({
   children,
   variant = 'glass', // 'primary' | 'cyan' | 'outline' | 'glass' | 'danger'
@@ -76,127 +64,73 @@ export function GlassButton({
   type = 'button',
   ...props
 }) {
-  let variantClass = 'btn-glass';
-  if (variant === 'primary') variantClass = 'btn-primary';
-  else if (variant === 'cyan') variantClass = 'btn-cyan';
-  else if (variant === 'outline') variantClass = 'btn-outline';
-  else if (variant === 'danger') variantClass = 'btn-danger';
+  let mappedVariant = 'secondary';
+  if (variant === 'primary' || variant === 'cyan') mappedVariant = 'primary';
+  else if (variant === 'outline' || variant === 'ghost') mappedVariant = 'ghost';
 
-  const sizePadding =
-    size === 'sm'
-      ? { padding: '5px 12px', fontSize: '12px' }
-      : size === 'lg'
-      ? { padding: '12px 24px', fontSize: '15px' }
-      : { padding: '8px 18px', fontSize: '13.5px' };
+  const btnSize = size === 'sm' ? 'sm' : 'md';
 
   return (
-    <button
-      type={type}
-      className={`btn ${variantClass} ${className}`}
-      style={{
-        ...sizePadding,
-        ...style
-      }}
+    <Button
+      variant={mappedVariant}
+      size={btnSize}
+      icon={loading ? '⏳' : icon}
       disabled={disabled || loading}
       onClick={onClick}
+      type={type}
+      className={`glass-btn ${className}`}
+      style={style}
       {...props}
     >
-      {loading ? (
-        <span className="spinner-icon" style={{ animation: 'spin 1s linear infinite' }}>⏳</span>
-      ) : icon ? (
-        <span className="btn-icon-wrap" style={{ display: 'inline-flex' }}>{icon}</span>
-      ) : null}
-      <span>{children}</span>
-    </button>
+      {children}
+    </Button>
   );
 }
 
-/**
- * GlassMetricCard: Telemetry display with icon halo, label, bold value, and trend badge.
- */
-export function GlassMetricCard({
-  icon = '📊',
-  label,
-  value,
-  unit = '',
-  badge = null,
-  badgeVariant = 'emerald', // 'emerald' | 'cyan' | 'amber'
-  subtext = null,
-  style = {},
-  className = ''
-}) {
-  return (
-    <div
-      className={`glass-metric-card ${className}`}
-      style={{
-        background: 'var(--surface-2)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-md)',
-        padding: '14px 16px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 6,
-        ...style
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 18, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>{icon}</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)' }}>{label}</span>
-        </div>
-        {badge && (
-          <GlassBadge variant={badgeVariant}>{badge}</GlassBadge>
-        )}
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 2 }}>
-        <strong style={{ fontSize: 22, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em' }}>
-          {value}
-        </strong>
-        {unit && (
-          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-dim)' }}>
-            {unit}
-          </span>
-        )}
-      </div>
-
-      {subtext && (
-        <span style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>
-          {subtext}
-        </span>
-      )}
-    </div>
-  );
-}
-
-/**
- * GlassBadge: Translucent pill with colored luminous rim.
- */
 export function GlassBadge({
   children,
   variant = 'emerald', // 'emerald' | 'cyan' | 'amber' | 'neutral'
   className = '',
   style = {}
 }) {
-  const variantClass =
-    variant === 'cyan'
-      ? 'glass-badge-cyan'
-      : variant === 'amber'
-      ? 'glass-badge-amber'
-      : variant === 'emerald'
-      ? 'glass-badge-emerald'
-      : '';
+  let tone = 'neutral';
+  if (variant === 'emerald' || variant === 'leaf') tone = 'leaf';
+  else if (variant === 'cyan' || variant === 'water') tone = 'water';
+  else if (variant === 'amber' || variant === 'sun') tone = 'sun';
+  else if (variant === 'danger' || variant === 'alert') tone = 'alert';
 
   return (
-    <span className={`glass-badge ${variantClass} ${className}`} style={style}>
+    <Pill tone={tone} className={`glass-badge ${className}`} style={style}>
       {children}
-    </span>
+    </Pill>
   );
 }
 
-/**
- * GlassTabs: Segmented control dock with smooth active glass pill.
- */
+export function GlassMetricCard({
+  icon = '📊',
+  label,
+  value,
+  unit = '',
+  badge = null,
+  badgeVariant = 'emerald',
+  subtext = null,
+  style = {},
+  className = ''
+}) {
+  return (
+    <Card variant="glass" className={`glass-metric-card ${className}`} style={{ padding: '14px 16px', ...style }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 18 }}>{icon}</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)' }}>{label}</span>
+        </div>
+        {badge && <GlassBadge variant={badgeVariant}>{badge}</GlassBadge>}
+      </div>
+      <Stat value={value} unit={unit} sub={subtext} />
+    </Card>
+  );
+}
+
 export function GlassTabs({
   tabs = [],
   activeTab,
@@ -204,46 +138,14 @@ export function GlassTabs({
   style = {},
   className = ''
 }) {
+  const items = tabs.map(t => ({ id: t.id, label: t.label, icon: t.icon }));
   return (
-    <div
-      className={`glass-tabs-dock ${className}`}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 4,
-        padding: 4,
-        background: 'var(--surface-2)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-sm)',
-        ...style
-      }}
-    >
-      {tabs.map((tab) => {
-        const isActive = activeTab === tab.id;
-        return (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => onTabChange(tab.id)}
-            style={{
-              padding: '6px 14px',
-              borderRadius: 8,
-              border: 'none',
-              fontSize: 12.5,
-              fontWeight: isActive ? 800 : 600,
-              cursor: 'pointer',
-              background: isActive ? 'rgba(127, 176, 105, 0.15)' : 'transparent',
-              color: isActive ? 'var(--leaf)' : 'var(--text-muted)',
-              borderBottom: isActive ? '2px solid var(--leaf)' : '2px solid transparent',
-              boxShadow: 'none',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            {tab.icon && <span style={{ marginRight: 6 }}>{tab.icon}</span>}
-            {tab.label}
-          </button>
-        );
-      })}
-    </div>
+    <Tabs
+      items={items}
+      activeId={activeTab}
+      onChange={onTabChange}
+      style={style}
+      className={className}
+    />
   );
 }
