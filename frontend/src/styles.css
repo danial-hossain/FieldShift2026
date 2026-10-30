@@ -379,9 +379,7 @@ html, body {
   transition: width var(--transition-slow) cubic-bezier(0.4,0,0.2,1);
 }
 
-.sidebar:hover {
-  width: var(--sidebar-width-expanded);
-}
+/* .sidebar:hover expanded rule removed for desktop static 248px sidebar */
 
 /* Sidebar header / logo area */
 .sidebar-logo {
@@ -415,12 +413,8 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-}
-
-.sidebar:hover .sidebar-logo-text {
   opacity: 1;
+  transition: opacity var(--transition-base);
 }
 
 .sidebar-logo-name {
@@ -461,15 +455,10 @@ html, body {
   padding: 10px 10px 4px;
   white-space: nowrap;
   overflow: hidden;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  height: 0;
-  pointer-events: none;
-}
-
-.sidebar:hover .nav-section-label {
   opacity: 1;
+  transition: opacity var(--transition-base);
   height: auto;
+  pointer-events: auto;
 }
 
 .nav-item {
@@ -504,13 +493,10 @@ html, body {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--sidebar-text);
-  opacity: 0;
+  opacity: 1;
   transition: opacity var(--transition-base);
   white-space: nowrap;
-}
-
-.sidebar:hover .nav-item-label {
-  opacity: 1;
+  display: inline;
 }
 
 .nav-item:hover {
@@ -598,12 +584,8 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-}
-
-.sidebar:hover .sidebar-user-info {
   opacity: 1;
+  transition: opacity var(--transition-base);
 }
 
 .sidebar-user-name {
@@ -14581,7 +14563,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* >= 1100px: Expanded with labels (240px width) */
+/* >= 1100px: Expanded with labels (248px width) */
 @media (min-width: 1100px) {
   .sidebar {
     position: sticky !important;
@@ -14590,8 +14572,8 @@ h1, h2, h3, h4, h5, h6 {
     margin: 16px 0 16px 16px !important;
     height: calc(100vh - 32px) !important;
     height: calc(100dvh - 32px) !important;
-    width: 240px !important;
-    min-width: 240px !important;
+    width: 248px !important;
+    min-width: 248px !important;
     border-radius: 24px !important;
     background: var(--glass) !important;
     backdrop-filter: blur(14px) saturate(120%) !important;
@@ -14601,6 +14583,22 @@ h1, h2, h3, h4, h5, h6 {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     z-index: 40 !important;
+  }
+
+  .sidebar .nav-item-label {
+    opacity: 1 !important;
+    display: inline !important;
+  }
+
+  .sidebar .nav-section-heading,
+  .sidebar .nav-section-label {
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  .sidebar-logo-text {
+    display: flex !important;
+    opacity: 1 !important;
   }
 
   .sidebar-close-btn {
@@ -14657,10 +14655,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar .nav-item.active .nav-item-icon {
   filter: none !important;
+  color: #0b1a10 !important;
 }
 
 .sidebar .nav-item.active .nav-item-label {
   color: inherit !important;
+  opacity: 1 !important;
+  display: inline !important;
 }
 
 /* Transparent Top Bar with Floating Glass Pills */
