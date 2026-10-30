@@ -24,3 +24,9 @@ test('FIX 2: Advisory source no longer contains statistically_indistinguishable;
   );
   assert.equal(badge.tone, 'neutral');
 });
+
+test('FIX 3: FarmerHomeView.jsx source does not contain headline_bn nor hardcoded advisory sentence', () => {
+  const homeSource = fs.readFileSync(path.join(__dirname, 'FarmerHomeView.jsx'), 'utf-8');
+  assert.ok(!homeSource.includes('headline_bn'), 'FarmerHomeView.jsx must not contain headline_bn');
+  assert.ok(!homeSource.includes('স্বাভাবিক সময়ে চারা রোপণ করুন'), 'FarmerHomeView.jsx must not contain hardcoded advice sentence');
+});

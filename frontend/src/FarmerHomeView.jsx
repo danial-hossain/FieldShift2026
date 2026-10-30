@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation, toBengaliNumber, formatArea } from './i18n.js';
 import { FarmerFarm3D } from './FarmerFarm3D.jsx';
-import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState } from './ui/index.js';
+import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton } from './ui/index.js';
+import { evidenceBadge } from './advisoryBadges.js';
 
 export function FarmerHomeView({
   activeField,
@@ -31,28 +32,41 @@ export function FarmerHomeView({
 
   // Real Advisory Sentence from API
   const [advisoryData, setAdvisoryData] = useState(null);
+  const [advisoryLoading, setAdvisoryLoading] = useState(true);
+  const [advisoryError, setAdvisoryError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const district = activeField?.district || 'rajshahi';
 
   useEffect(() => {
     let isMounted = true;
+    setAdvisoryLoading(true);
+    setAdvisoryError(null);
     fetch(`/api/advisory?district=${encodeURIComponent(district)}&crop=aman`)
-      .then(res => res.ok ? res.json() : null)
+      .then(res => {
+        if (!res.ok) throw new Error('Advisory fetch failed');
+        return res.json();
+      })
       .then(data => {
-        if (isMounted && data?.advisory) {
-          setAdvisoryData(data.advisory);
+        if (isMounted) {
+          setAdvisoryData(data);
         }
       })
-      .catch(() => {});
+      .catch(err => {
+        if (isMounted) {
+          setAdvisoryError(err.message || 'Error');
+        }
+      })
+      .finally(() => {
+        if (isMounted) setAdvisoryLoading(false);
+      });
     return () => { isMounted = false; };
-  }, [district]);
+  }, [district, reloadKey]);
 
-  const advisorySentence = advisoryData
-    ? (lang === 'bn' ? advisoryData.headline_bn : advisoryData.headline_en)
-    : (lang === 'bn'
-        ? 'রাজশাহী অঞ্চলে আমন ধানের বৃষ্টিপাত অনসেটে নিশ্চিত দেরির প্রমাণ পাওয়া যায়নি। স্বাভাবিক সময়ে চারা রোপণ করুন।'
-        : 'No confirmed evidence of monsoon onset delay in Rajshahi. Proceed with regular Aman transplantation.');
+  const headline = advisoryData?.recommendation
+    ? (lang === 'bn' ? advisoryData.recommendation.bangla_headline : advisoryData.recommendation.english_headline)
+    : null;
 
-  const evidenceLevel = advisoryData?.evidence_level || 'statistically_indistinguishable';
+  const badge = evidenceBadge(advisoryData?.recommendation, advisoryData?.comparison, advisoryData?.status);
 
   return (
     <div className="farmer-home-container" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -133,28 +147,54 @@ export function FarmerHomeView({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 24 }}>
         {/* Left 8 Cols: Advisory Card */}
         <Card variant="glass-strong" style={{ gridColumn: 'span 8', padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 24 }}>🛰️</span>
-                <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
-                  {lang === 'bn' ? 'নাসা রোপণ পরামর্শ ২০২৬' : 'NASA Planting Window Advisory 2026'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Pill tone={evidenceLevel === 'statistically_indistinguishable' ? 'neutral' : 'alert'}>
-                  {evidenceLevel === 'statistically_indistinguishable'
-                    ? (lang === 'bn' ? 'স্বাভাবিক অনসেট' : 'Normal Onset')
-                    : (lang === 'bn' ? 'অনসেট বিলম্বিত' : 'Delayed Onset')}
-                </Pill>
-                <DataSourceTag source="NASA POWER" mode="daily" period="2001-2025" />
-              </div>
+          {advisoryLoading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 8 }}>
+              <Skeleton width="40%" height={24} />
+              <Skeleton width="100%" height={20} />
+              <Skeleton width="85%" height={20} />
             </div>
+          ) : advisoryError ? (
+            <EmptyState
+              title={lang === 'bn' ? 'পরামর্শ লোড করা যায়নি' : 'Could not load advisory'}
+              action={
+                <Button size="sm" variant="secondary" onClick={() => setReloadKey(k => k + 1)}>
+                  {lang === 'bn' ? 'পুনরায় চেষ্টা করুন' : 'Retry'}
+                </Button>
+              }
+            />
+          ) : (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 24 }}>🛰️</span>
+                  <div>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+                      {lang === 'bn' ? 'নাসা রোপণ পরামর্শ ২০২৬' : 'NASA Planting Window Advisory 2026'}
+                    </span>
+                    <span style={{ fontSize: 12, color: 'var(--text-3)', marginLeft: 8, fontFamily: 'JetBrains Mono, monospace' }}>
+                      ({district.toUpperCase()})
+                    </span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Pill tone={badge.tone}>
+                    {lang === 'bn' ? badge.bn : badge.en}
+                  </Pill>
+                  <DataSourceTag source="NASA POWER" mode="daily" period="2001-2025" />
+                </div>
+              </div>
 
-            <p style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)', lineHeight: 1.6, margin: '14px 0', fontFamily: 'Hind Siliguri, sans-serif' }}>
-              "{advisorySentence}"
-            </p>
-          </div>
+              {headline ? (
+                <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', lineHeight: 1.6, margin: '14px 0', fontFamily: 'Hind Siliguri, sans-serif' }}>
+                  "{headline}"
+                </p>
+              ) : (
+                <p style={{ fontSize: 14, color: 'var(--text-3)', margin: '14px 0' }}>
+                  {lang === 'bn' ? 'কোনো পরামর্শ পাওয়া যায়নি।' : 'No advisory available.'}
+                </p>
+              )}
+            </div>
+          )}
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, borderTop: '1px solid var(--line)', paddingTop: 14 }}>
             <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
