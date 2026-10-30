@@ -232,13 +232,12 @@ export function ResearchWorkspaceView({
               fontSize: '11px',
               padding: '4px 12px',
               borderRadius: '999px',
-              background: 'rgba(0, 223, 129, 0.15)',
-              color: 'var(--hud-teal)',
-              border: '1px solid rgba(0, 223, 129, 0.3)',
-              fontWeight: 800,
-              letterSpacing: '0.04em'
+              background: 'rgba(95, 211, 243, 0.15)',
+              color: 'var(--hud-cyan, #5fd3f3)',
+              border: '1px solid rgba(95, 211, 243, 0.3)',
+              fontWeight: 700
             }}>
-              FIELDSHIFT ADVANCED RESEARCH SUITE
+              FieldShift Advanced Research Suite
             </span>
           </div>
           <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: 'var(--text)' }}>

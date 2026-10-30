@@ -262,3 +262,33 @@ test('R4: Lag optimization: on-demand 3D rendering and glass surface cleanup', (
     'ClayFarmScene must cap intro animation or stop rendering when static'
   );
 });
+
+test('R5: Unified visual language for research pages', () => {
+  const stylesSrc = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+  const researchViewSrc = fs.readFileSync(path.join(__dirname, 'ResearchWorkspaceView.jsx'), 'utf-8');
+
+  // 1. Asserts [data-mode="research"] in styles.css does NOT define a grid background
+  const bgMatch = stylesSrc.match(/\[data-mode=["']research["']\]\s*\.nasa-bg-layer\s*\{([^}]+)\}/);
+  assert.ok(bgMatch, 'Must find [data-mode="research"] .nasa-bg-layer in styles.css');
+  assert.ok(
+    !bgMatch[1].includes('linear-gradient'),
+    '[data-mode="research"] .nasa-bg-layer must not define a linear-gradient grid pattern'
+  );
+
+  // 2. Asserts .ui-card-hud::before is disabled or has content: none / empty in research mode
+  assert.ok(
+    stylesSrc.includes('.ui-card-hud::before') &&
+    (stylesSrc.includes('content: none') || !stylesSrc.includes("content: ''") || stylesSrc.includes('display: none')),
+    '.ui-card-hud::before must be disabled or have content: none'
+  );
+
+  // 3. Asserts ResearchWorkspaceView does NOT set textTransform: 'uppercase' on section headings
+  assert.ok(
+    !researchViewSrc.includes("textTransform: 'uppercase'"),
+    "ResearchWorkspaceView must not set textTransform: 'uppercase' on section headings"
+  );
+  assert.ok(
+    !researchViewSrc.includes('textTransform: "uppercase"'),
+    'ResearchWorkspaceView must not set textTransform: "uppercase" on section headings'
+  );
+});
