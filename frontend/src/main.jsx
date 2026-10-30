@@ -513,6 +513,11 @@ export function App() {
   const [twinSubTab, setTwinSubTab] = useState('farm'); // 'farm' | 'growth' | 'hydrology' | 'climate' | 'compare'
   const [dataEvidenceSubTab, setDataEvidenceSubTab] = useState('sources'); // 'sources' | 'provenance' | 'reports' | 'methodology'
   const [myFarmSubTab, setMyFarmSubTab] = useState('overview'); // 'overview' | 'parcels' | 'map' | 'soil' | 'history'
+  const [backendHealth, setBackendHealth] = useState({ database: 'sqlite', status: 'connected' });
+
+  useEffect(() => {
+    request('/api/health').then(d => { if (d) setBackendHealth(d); }).catch(() => {});
+  }, []);
 
   const handleNavigate = (nav, tab = null) => {
     setMobileNavOpen(false);
@@ -3519,7 +3524,7 @@ export function App() {
                   {/* Top: Microchip & Clearance */}
                   <div className="holo-card-top-row">
                     <div className="holo-chip-wrap">
-                      <div className="holo-microchip" title="Biometric NFC Crypto Chip" />
+                      <div className="holo-microchip" title="Agronomist Profile" />
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(0, 223, 129, 0.7)" strokeWidth="2">
                         <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
                         <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
@@ -3567,8 +3572,8 @@ export function App() {
                       </span>
                     </div>
                     <div className="holo-spec-box">
-                      <span className="holo-spec-label">Crypto ID Hash</span>
-                      <span className="holo-spec-value" style={{ fontFamily: 'monospace' }}>#AG-5924-BD</span>
+                      <span className="holo-spec-label">Account Status</span>
+                      <span className="holo-spec-value">{user ? 'Signed in' : 'Guest / demo mode'}</span>
                     </div>
                     <div className="holo-spec-box">
                       <span className="holo-spec-label">Member Since</span>
@@ -3582,7 +3587,7 @@ export function App() {
                   <div className="holo-card-actions">
                     <span style={{ fontSize: 11, color: 'var(--text-dim)', display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span className="live-pulse-dot" style={{ width: 6, height: 6 }} />
-                      Biometric Session Verified
+                      {user ? 'Signed in' : 'Guest / demo mode'}
                     </span>
                     <button
                       type="button"
@@ -3821,9 +3826,9 @@ export function App() {
                   <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>PORT 8000 / 5173</span>
                 </div>
                 <div className="terminal-logs-stream">
-                  <div className="terminal-line-ok">[AUTH_OK] PostgreSQL authoritative session verified</div>
-                  <div className="terminal-line-ok">[DATA_OK] NASA POWER Daily Point API hydrated (2026-09-29)</div>
-                  <div className="terminal-line-ok">[AI_ONLINE] Gemini reasoning agent (gemini-3.5-flash) ready</div>
+                  <div className="terminal-line-ok">[SYSTEM] Database Engine: {backendHealth?.database || 'sqlite'} ({backendHealth?.status || 'connected'})</div>
+                  <div className="terminal-line-ok">[CLIMATE] NASA POWER data mode: {nasa?.data_mode || 'cache'}</div>
+                  <div className="terminal-line-ok">[SOLVER] PuLP CBC MILP engine active</div>
                   <div className="terminal-line-ok">[SOLVER_OK] MILP CBC dynamic rotation optimization Pareto active</div>
                   <div className="terminal-line-dim">[INFO] Active field target: {activeField ? `#${activeField.id} (${activeField.name})` : 'Unassigned'}</div>
                 </div>

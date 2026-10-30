@@ -53,6 +53,28 @@ export function SatelliteReadinessView({
         padding: '24px',
         marginBottom: '20px',
       }}>
+        {/* Planned Data Sources Disclaimer */}
+        <div style={{
+          background: 'rgba(245, 158, 11, 0.15)',
+          border: '1px solid #f59e0b',
+          color: '#fbbf24',
+          padding: '10px 14px',
+          borderRadius: '8px',
+          marginBottom: '16px',
+          fontSize: '13px',
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span>⚠️</span>
+          <span>
+            {lang === 'bn'
+              ? 'পরিকল্পিত ডেটা উৎস। বর্তমানে হিসাবের জন্য শুধু NASA POWER ব্যবহৃত হয়।'
+              : 'Planned data sources. Currently only NASA POWER is used in calculations.'}
+          </span>
+        </div>
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
@@ -120,15 +142,23 @@ export function SatelliteReadinessView({
       {/* Sensor Readiness Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '16px', marginBottom: '24px' }}>
         {sensors.map(sensor => {
-          const isConnected = sensor.status === 'CONNECTED';
-          const isStandby = sensor.status === 'STANDBY';
-          const statusColor = isConnected ? '#00df81' : isStandby ? '#f59e0b' : '#94a3b8';
-          const statusBg = isConnected ? 'rgba(0, 223, 129, 0.15)' : isStandby ? 'rgba(245, 158, 11, 0.15)' : '#1e293b';
+          const isNasaPower = sensor.sensor_id === 'nasa_power';
+          const isSmap = sensor.sensor_id === 'nasa_smap';
+
+          let displayStatus = 'Planned';
+          if (isNasaPower) {
+            displayStatus = 'OPERATIONAL';
+          } else if (isSmap) {
+            displayStatus = 'Planned (demo data only)';
+          }
+
+          const statusColor = isNasaPower ? '#00df81' : '#f59e0b';
+          const statusBg = isNasaPower ? 'rgba(0, 223, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)';
 
           return (
             <div key={sensor.sensor_id} className="dash-card" style={{
               background: '#131920',
-              border: `1px solid ${isConnected ? 'rgba(0, 223, 129, 0.3)' : '#1e293b'}`,
+              border: `1px solid ${isNasaPower ? 'rgba(0, 223, 129, 0.3)' : '#1e293b'}`,
               borderRadius: '14px',
               padding: '20px',
               display: 'flex',
@@ -148,7 +178,7 @@ export function SatelliteReadinessView({
                     color: statusColor,
                     fontWeight: 800,
                   }}>
-                    {sensor.status}
+                    {displayStatus}
                   </span>
                 </div>
 
@@ -174,9 +204,9 @@ export function SatelliteReadinessView({
 
               <div>
                 <div style={{ borderTop: '1px solid #1e293b', paddingTop: '12px', fontSize: '11.5px', color: '#cbd5e1' }}>
-                  {isConnected ? (
+                  {isNasaPower ? (
                     <div style={{ color: '#00df81', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span>✓</span> Live point endpoint operational via NASA Langley ASDC.
+                      <span>✓</span> Point endpoint operational via NASA Langley ASDC.
                     </div>
                   ) : (
                     <div>

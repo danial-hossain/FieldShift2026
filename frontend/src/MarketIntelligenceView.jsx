@@ -128,7 +128,7 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
             </h1>
           </div>
           <p style={{ margin: '6px 0 0', fontSize: 14, color: 'var(--text-muted, #64748b)' }}>
-            বাজারদর ও লাভ বিশ্লেষণ — Transparent price benchmarks, authentic source citations, and conditional gross margin projections.
+            Reference prices (static benchmark, not live) / রেফারেন্স মূল্য (স্থির তালিকা, লাইভ নয়) — Transparent price benchmarks, authentic source citations, and conditional gross margin projections.
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
         <div className="card" style={{ padding: 20, borderRadius: 14 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
             <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
-              🇧🇩 Bangladesh Crop Price Catalog
+              🇧🇩 Bangladesh Crop Price Catalog — Reference prices (static benchmark, not live)
             </h2>
             {/* Unit selector pills */}
             <div style={{ display: 'flex', background: 'var(--bg-subtle, #f1f5f9)', padding: 3, borderRadius: 8 }}>

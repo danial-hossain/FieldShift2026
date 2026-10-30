@@ -544,8 +544,8 @@ def get_satellite_readiness_status(
             "sensor_id": "nasa_power",
             "name": "NASA POWER Daily Point API",
             "agency": "NASA Langley Research Center",
-            "status": "connected_live",
-            "connection_state": "LIVE_VERIFIED",
+            "status": "operational",
+            "connection_state": "OPERATIONAL",
             "latency": "2.8s HTTP point retrieval",
             "parameters": [
                 {"code": "T2M", "name": "Temperature at 2 Meters", "unit": "°C"},
@@ -566,8 +566,8 @@ def get_satellite_readiness_status(
             "sensor_id": "nasa_smap",
             "name": "NASA SMAP (Soil Moisture Active Passive)",
             "agency": "NASA Jet Propulsion Laboratory (JPL)",
-            "status": "ready_via_connector",
-            "connection_state": "NORMALIZED_CSV_CONNECTOR",
+            "status": "planned_demo",
+            "connection_state": "PLANNED_DEMO",
             "parameters": [
                 {"code": "SM_SURFACE", "name": "Top 5cm Volumetric Soil Moisture", "unit": "m³/m³ (fraction)"},
                 {"code": "SM_ROOTZONE", "name": "Root Zone 0-100cm Soil Moisture", "unit": "m³/m³ (fraction)"},
@@ -586,8 +586,8 @@ def get_satellite_readiness_status(
             "sensor_id": "sentinel_2",
             "name": "ESA Copernicus Sentinel-2 MSI (MultiSpectral)",
             "agency": "European Space Agency (ESA)",
-            "status": "interface_ready_not_connected",
-            "connection_state": "CREDENTIALS_REQUIRED",
+            "status": "planned",
+            "connection_state": "PLANNED",
             "parameters": [
                 {"code": "NDVI", "name": "Normalized Difference Vegetation Index", "unit": "Unitless [-1 to 1]"},
                 {"code": "NDRE", "name": "Normalized Difference Red Edge (Chlorophyll)", "unit": "Unitless"},
