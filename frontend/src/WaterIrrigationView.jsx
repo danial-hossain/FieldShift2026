@@ -67,7 +67,7 @@ export function WaterIrrigationView({
       
       {/* Header Banner */}
       <div
-        className="dash-card"
+        className="dash-card ui-card-hud"
         style={{
           background: 'linear-gradient(135deg, rgba(2, 136, 209, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)',
           border: '1px solid rgba(2, 136, 209, 0.3)',
@@ -84,7 +84,7 @@ export function WaterIrrigationView({
                 style={{
                   fontSize: 11,
                   fontWeight: 800,
-                  color: '#38bdf8',
+                  color: 'var(--water)',
                   background: 'rgba(56, 189, 248, 0.15)',
                   padding: '3px 10px',
                   borderRadius: 999,
@@ -98,7 +98,7 @@ export function WaterIrrigationView({
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: '#00df81',
+                  color: 'var(--leaf)',
                   background: 'rgba(0, 223, 129, 0.12)',
                   padding: '3px 8px',
                   borderRadius: 999,
@@ -107,10 +107,10 @@ export function WaterIrrigationView({
                 {activeField?.name || 'Bogura Demo Field'} ({formatNumber(areaHa, 1)} ha)
               </span>
             </div>
-            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: '#f8fafc' }}>
+            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: 'var(--text)' }}>
               {lang === 'bn' ? 'পানি ব্যবস্থাপনা ও সেচ অপ্টিমাইজেশন' : 'Water & Irrigation Optimization'}
             </h1>
-            <p style={{ margin: 0, fontSize: 13.5, color: '#94a3b8', lineHeight: 1.5, maxWidth: 840 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 840 }}>
               {lang === 'bn'
                 ? 'এফএও-৫৬ মৃত্তিকা পানি ব্যালেন্স, এডব্লিউডি (AWD) সেচ শিডিউলিং, এবং ভূগর্ভস্থ পানির অপচয় রোধে এমআইএলপি ওয়াটার-এফিসিয়েন্সি বিশ্লেষণ।'
                 : 'FAO-56 soil water balance, Alternate Wetting & Drying (AWD) irrigation scheduling, and MILP water-efficiency optimization to conserve Barind groundwater.'}
@@ -122,8 +122,8 @@ export function WaterIrrigationView({
               type="button"
               onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
               style={{
-                background: viewMode === '3d' ? '#0284c7' : '#1e293b',
-                color: '#ffffff',
+                background: viewMode === '3d' ? 'var(--water)' : 'var(--line)',
+                color: 'var(--text)',
                 border: '1px solid rgba(56, 189, 248, 0.4)',
                 borderRadius: 8,
                 padding: '8px 14px',
@@ -145,9 +145,9 @@ export function WaterIrrigationView({
               type="button"
               onClick={() => setSubTab(tab.id)}
               style={{
-                background: subTab === tab.id ? 'rgba(56, 189, 248, 0.2)' : '#161d23',
-                border: subTab === tab.id ? '1px solid #38bdf8' : '1px solid #2a3742',
-                color: subTab === tab.id ? '#38bdf8' : '#94a3b8',
+                background: subTab === tab.id ? 'rgba(56, 189, 248, 0.2)' : 'var(--glass-strong)',
+                border: subTab === tab.id ? '1px solid var(--water)' : '1px solid var(--line)',
+                color: subTab === tab.id ? 'var(--water)' : 'var(--text-2)',
                 borderRadius: 8,
                 padding: '7px 16px',
                 fontSize: 13,
@@ -168,50 +168,50 @@ export function WaterIrrigationView({
 
       {/* Quick Hydrology Scorecard */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14, marginBottom: 20 }}>
-        <div className="dash-card" style={{ background: '#131920', border: '1px solid #1e293b', borderRadius: 12, padding: '16px 18px' }}>
-          <span style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 18px' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             {lang === 'bn' ? 'মোট ধারণক্ষমতা (TAW)' : 'Total Available Water (TAW)'}
           </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#38bdf8', marginTop: 4 }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--water)', marginTop: 4 }}>
             {tawMm} mm
           </div>
-          <span style={{ fontSize: 11, color: '#64748b' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
             {soilTexture.replace('_', ' ')} (0–{zRootM * 100} cm root zone)
           </span>
         </div>
 
-        <div className="dash-card" style={{ background: '#131920', border: '1px solid #1e293b', borderRadius: 12, padding: '16px 18px' }}>
-          <span style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 18px' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             {lang === 'bn' ? 'সহজলভ্য আর্দ্রতা (RAW)' : 'Readily Available Water (RAW)'}
           </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#00df81', marginTop: 4 }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--leaf)', marginTop: 4 }}>
             {rawMm} mm
           </div>
-          <span style={{ fontSize: 11, color: '#64748b' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
             {Math.round(soilWaterSpecs.p * 100)}% depletion threshold without stress
           </span>
         </div>
 
-        <div className="dash-card" style={{ background: '#131920', border: '1px solid #1e293b', borderRadius: 12, padding: '16px 18px' }}>
-          <span style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 18px' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             {lang === 'bn' ? 'সেচ সাশ্রয়ী অপ্টিমাইজেশন' : 'MILP Water Conservation'}
           </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#a78bfa', marginTop: 4 }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--accent)', marginTop: 4 }}>
             {waterSavedPct > 0 ? `-${waterSavedPct}%` : 'Optimal'}
           </div>
-          <span style={{ fontSize: 11, color: '#64748b' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
             {waterUsageMm} mm vs {baselineWaterMm} mm baseline
           </span>
         </div>
 
-        <div className="dash-card" style={{ background: '#131920', border: '1px solid #1e293b', borderRadius: 12, padding: '16px 18px' }}>
-          <span style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 18px' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             {lang === 'bn' ? 'সেচ নলকূপ সীমা' : 'Borewell / Canal Limit'}
           </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#f59e0b', marginTop: 4 }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--sun)', marginTop: 4 }}>
             {irrigCapMm} mm
           </div>
-          <span style={{ fontSize: 11, color: '#64748b' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
             Max seasonal delivery per parcel
           </span>
         </div>
@@ -219,17 +219,22 @@ export function WaterIrrigationView({
 
       {/* SUB-TAB 1: WATER BALANCE (FAO-56 LYSIMETER) */}
       {subTab === 'balance' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
-                {lang === 'bn' ? 'ত্রিমাত্রিক পানি ব্যালেন্স ও লাইসিমিটার মডেল' : '3D Hydrological Water Balance & Lysimeter Model'}
-              </h3>
-              <p style={{ margin: '4px 0 0', fontSize: 12, color: '#94a3b8' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
+                  {lang === 'bn' ? 'ত্রিমাত্রিক পানি ব্যালেন্স ও লাইসিমিটার মডেল' : '3D Hydrological Water Balance & Lysimeter Model'}
+                </h3>
+                <span style={{ fontSize: 11, background: 'rgba(242, 193, 78, 0.15)', color: 'var(--sun)', border: '1px solid rgba(242, 193, 78, 0.3)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                  {lang === 'bn' ? 'উদাহরণমূলক মান' : 'Illustrative example values'}
+                </span>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--text-2)' }}>
                 FAO-56 daily mass conservation: Inflow (Rainfall + Irrigation) - Outflow (ETa + Deep Percolation) = ΔStorage
               </p>
             </div>
-            <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.1)', color: '#00df81', padding: '3px 8px', borderRadius: 6, fontWeight: 700 }}>
+            <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.1)', color: 'var(--leaf)', padding: '3px 8px', borderRadius: 6, fontWeight: 700 }}>
               Mass Residual: 0.0 mm (Conserved)
             </span>
           </div>
@@ -250,11 +255,16 @@ export function WaterIrrigationView({
 
       {/* SUB-TAB 2: IRRIGATION OPTIMIZATION */}
       {subTab === 'optimization' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
-            {lang === 'bn' ? 'এমআইএলপি সেচ অপ্টিমাইজেশন ও এডব্লিউডি শিডিউল' : 'MILP Irrigation Optimization & AWD Scheduling'}
-          </h3>
-          <p style={{ margin: '0 0 16px', fontSize: 13, color: '#94a3b8', lineHeight: 1.5 }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
+              {lang === 'bn' ? 'এমআইএলপি সেচ অপ্টিমাইজেশন ও এডব্লিউডি শিডিউল' : 'MILP Irrigation Optimization & AWD Scheduling'}
+            </h3>
+            <span style={{ fontSize: 11, background: 'rgba(242, 193, 78, 0.15)', color: 'var(--sun)', border: '1px solid rgba(242, 193, 78, 0.3)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+              {lang === 'bn' ? 'উদাহরণমূলক মান' : 'Illustrative example values'}
+            </span>
+          </div>
+          <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>
             {lang === 'bn'
               ? 'বোরো ও আমন মৌসুমে বিকল্প ভেজানো ও শুকানো (Alternate Wetting and Drying - AWD) পদ্ধতি প্রয়োগে ২৫-৩০% ভূগর্ভস্থ পানি সাশ্রয় হয়। নিচে অপ্টিমাইজারের সেচ বণ্টন ছক দেওয়া হলো:'
               : 'Applying Alternate Wetting and Drying (AWD) reduces seasonal irrigation by 25–30% without yield loss. The MILP water-efficiency strategy aligns crop selection to rainfall peaks:'}
@@ -263,7 +273,7 @@ export function WaterIrrigationView({
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid #334155', color: '#94a3b8', textAlign: 'left' }}>
+                <tr style={{ borderBottom: '1px solid var(--line)', color: 'var(--text-2)', textAlign: 'left' }}>
                   <th style={{ padding: '10px 12px' }}>মৌসুম (Season)</th>
                   <th style={{ padding: '10px 12px' }}>নির্ধারিত ফসল (Crop)</th>
                   <th style={{ padding: '10px 12px' }}>পানি চাহিদা (Crop Water)</th>
@@ -281,13 +291,13 @@ export function WaterIrrigationView({
                   { season: 'Y2_S2 (Kharif (May-Oct, wet))', crop: 'Sesame (তিল)', demand: '250 mm', rain: '190 mm', irrig: '60 mm', tech: 'Rainfed Furrow Basin' },
                   { season: 'Y2_S3 (Kharif-2 / Monsoon)', crop: 'BRRI dhan71 (আমন)', demand: '1150 mm', rain: '880 mm', irrig: '270 mm', tech: 'AWD Pipe System (Drought-tolerant)' },
                 ].map((row, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid #1e293b' }}>
-                    <td style={{ padding: '12px', fontWeight: 600, color: '#f1f5f9' }}>{row.season}</td>
-                    <td style={{ padding: '12px', color: '#00df81', fontWeight: 700 }}>{row.crop}</td>
-                    <td style={{ padding: '12px', color: '#94a3b8' }}>{row.demand}</td>
-                    <td style={{ padding: '12px', color: '#38bdf8' }}>{row.rain}</td>
-                    <td style={{ padding: '12px', color: '#fbbf24', fontWeight: 700 }}>{row.irrig}</td>
-                    <td style={{ padding: '12px', color: '#cbd5e1', fontSize: 12 }}>{row.tech}</td>
+                  <tr key={idx} style={{ borderBottom: '1px solid var(--line)' }}>
+                    <td style={{ padding: '12px', fontWeight: 600, color: 'var(--text)' }}>{row.season}</td>
+                    <td style={{ padding: '12px', color: 'var(--leaf)', fontWeight: 700 }}>{row.crop}</td>
+                    <td style={{ padding: '12px', color: 'var(--text-2)' }}>{row.demand}</td>
+                    <td style={{ padding: '12px', color: 'var(--water)' }}>{row.rain}</td>
+                    <td style={{ padding: '12px', color: 'var(--sun)', fontWeight: 700 }}>{row.irrig}</td>
+                    <td style={{ padding: '12px', color: 'var(--text-2)', fontSize: 12 }}>{row.tech}</td>
                   </tr>
                 ))}
               </tbody>
@@ -298,11 +308,11 @@ export function WaterIrrigationView({
 
       {/* SUB-TAB 3: SOIL WATER PROFILE (ROOT ZONE) */}
       {subTab === 'profile' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'শিকড় অঞ্চলে মাটির আর্দ্রতা প্রোফাইল' : 'Soil Profile & Root-Zone Moisture Digital Twin'}
           </h3>
-          <p style={{ margin: '0 0 16px', fontSize: 13, color: '#94a3b8' }}>
+          <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text-2)' }}>
             Stratified 3D visualization showing O, A, B, and C soil horizons, branching root architectures, and the dynamic saturation water table.
           </p>
 
@@ -320,13 +330,13 @@ export function WaterIrrigationView({
 
       {/* SUB-TAB 4: WATER STRESS ANALYSIS (FAO-33) */}
       {subTab === 'stress' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'এফএও-৩৩ পানি চাপ ও ফলন হ্রাস মডেল' : 'FAO-33 Water Stress & Yield Reduction Analysis'}
           </h3>
-          <p style={{ margin: '0 0 16px', fontSize: 13, color: '#94a3b8', lineHeight: 1.5 }}>
+          <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>
             Mathematical relationship between relative evapotranspiration deficit and actual harvest yield:
-            <code style={{ display: 'block', background: '#0e1318', padding: '10px 14px', borderRadius: 6, margin: '10px 0', color: '#38bdf8' }}>
+            <code style={{ display: 'block', background: 'var(--bg-deep)', padding: '10px 14px', borderRadius: 6, margin: '10px 0', color: 'var(--water)' }}>
               (1 - Ya / Ym) = Ky * (1 - ETa / ETc)
             </code>
             Where Ky is the crop yield response factor (Rice Ky = 1.20 during flowering, Lentil Ky = 0.85, Maize Ky = 1.25).
@@ -339,15 +349,15 @@ export function WaterIrrigationView({
               { crop: 'Mustard (সরিষা)', stage: 'Pod filling (ফেব্রুয়ারি)', ky: 0.90, risk: 'Low', note: 'Deep taproot scavenges moisture; moderate drought tolerance.' },
               { crop: 'Mungbean (মুগডাল)', stage: 'Vegetative / Pod (মে)', ky: 0.80, risk: 'Low', note: 'Short duration (70 days); escapes terminal pre-monsoon heat.' },
             ].map((item, idx) => (
-              <div key={idx} style={{ background: '#131920', border: '1px solid #222c36', borderRadius: 10, padding: 14 }}>
+              <div key={idx} style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 10, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                  <strong style={{ fontSize: 14, color: '#f8fafc' }}>{item.crop}</strong>
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: item.risk === 'High' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(0, 223, 129, 0.15)', color: item.risk === 'High' ? '#ef4444' : '#00df81' }}>
+                  <strong style={{ fontSize: 14, color: 'var(--text)' }}>{item.crop}</strong>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: item.risk === 'High' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(0, 223, 129, 0.15)', color: item.risk === 'High' ? 'var(--alert)' : 'var(--leaf)' }}>
                     {item.risk} Sensitivity
                   </span>
                 </div>
-                <div style={{ fontSize: 12, color: '#38bdf8', marginBottom: 4 }}>সংবেদনশীল পর্যায়: {item.stage}</div>
-                <div style={{ fontSize: 11, color: '#94a3b8' }}>Ky ফ্যাক্টর: {item.ky} • {item.note}</div>
+                <div style={{ fontSize: 12, color: 'var(--water)', marginBottom: 4 }}>সংবেদনশীল পর্যায়: {item.stage}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-2)' }}>Ky ফ্যাক্টর: {item.ky} • {item.note}</div>
               </div>
             ))}
           </div>

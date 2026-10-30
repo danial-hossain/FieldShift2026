@@ -77,9 +77,9 @@ export function DataEvidenceView({
       name: 'Soil Moisture Active Passive (Root Zone)',
       units: 'm³/m³ (Volumetric %)',
       source: 'NASA SMAP Level-4 Global Assimilation',
-      tier: 'Tier 1 / Tier 3 Calibrated',
-      coverage: '2015–2025',
-      missingRule: 'Validated against local BARI soil texture moisture retention curves',
+      tier: 'Not used',
+      coverage: 'Planned - demo data only (not used in calculations)',
+      missingRule: 'Planned - demo data only (not used in calculations)',
     },
   ];
 
@@ -88,7 +88,7 @@ export function DataEvidenceView({
       
       {/* Header Banner */}
       <div
-        className="dash-card"
+        className="dash-card ui-card-hud"
         style={{
           background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)',
           border: '1px solid rgba(56, 189, 248, 0.3)',
@@ -105,7 +105,7 @@ export function DataEvidenceView({
                 style={{
                   fontSize: 11,
                   fontWeight: 800,
-                  color: '#38bdf8',
+                  color: 'var(--water)',
                   background: 'rgba(56, 189, 248, 0.15)',
                   padding: '3px 10px',
                   borderRadius: 999,
@@ -119,7 +119,7 @@ export function DataEvidenceView({
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: '#00df81',
+                  color: 'var(--leaf)',
                   background: 'rgba(0, 223, 129, 0.12)',
                   padding: '3px 8px',
                   borderRadius: 999,
@@ -128,10 +128,10 @@ export function DataEvidenceView({
                 {lang === 'bn' ? 'উৎস ও পদ্ধতি' : 'Sources and methods'}
               </span>
             </div>
-            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: '#f8fafc' }}>
+            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: 'var(--text)' }}>
               {lang === 'bn' ? 'তথ্য প্রমাণ ও বৈজ্ঞানিক প্রোভেন্যান্স' : 'Data Evidence & Scientific Provenance'}
             </h1>
-            <p style={{ margin: 0, fontSize: 13.5, color: '#94a3b8', lineHeight: 1.5, maxWidth: 840 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 840 }}>
               {lang === 'bn'
                 ? 'নাসা পাওয়ার দৈনিক উপাত্তের স্পেশাল ও টেম্পোরাল কভারেজ, ৪-স্তরের প্রোভেন্যান্স হায়ারার্কি, এবং বিআরআরআই ও এফএও অনুমোদিত বৈজ্ঞানিক পদ্ধতির প্রমাণ্য দলিল।'
                 : 'Traceable NASA Earth Observations, 4-tier data provenance hierarchy, dataset citations, and validated agro-meteorological calibration methodologies.'}
@@ -147,9 +147,9 @@ export function DataEvidenceView({
               type="button"
               onClick={() => setSubTab(tab.id)}
               style={{
-                background: subTab === tab.id ? 'rgba(56, 189, 248, 0.2)' : '#161d23',
-                border: subTab === tab.id ? '1px solid #38bdf8' : '1px solid #2a3742',
-                color: subTab === tab.id ? '#38bdf8' : '#94a3b8',
+                background: subTab === tab.id ? 'rgba(56, 189, 248, 0.2)' : 'var(--glass-strong)',
+                border: subTab === tab.id ? '1px solid var(--water)' : '1px solid var(--line)',
+                color: subTab === tab.id ? 'var(--water)' : 'var(--text-2)',
                 borderRadius: 8,
                 padding: '7px 16px',
                 fontSize: 13,
@@ -170,13 +170,13 @@ export function DataEvidenceView({
 
       {/* SUB-TAB 1: NASA DATA SOURCES */}
       {subTab === 'sources' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
                 {lang === 'bn' ? 'নাসা পাওয়ার অনুমোদিত প্যারামিটার রেজিস্ট্রি' : 'Official NASA POWER Telemetry Registry'}
               </h3>
-              <span style={{ fontSize: 12, color: '#94a3b8' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
                 NASA Prediction Of Worldwide Energy Resources (POWER) Daily Point API • 0.5° x 0.5° Spatial Grid
               </span>
             </div>
@@ -185,8 +185,8 @@ export function DataEvidenceView({
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                background: '#0284c7',
-                color: '#ffffff',
+                background: 'var(--water)',
+                color: 'var(--text)',
                 padding: '6px 12px',
                 borderRadius: 6,
                 fontSize: 12,
@@ -201,7 +201,7 @@ export function DataEvidenceView({
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid #334155', color: '#94a3b8', textAlign: 'left' }}>
+                <tr style={{ borderBottom: '1px solid var(--line)', color: 'var(--text-2)', textAlign: 'left' }}>
                   <th style={{ padding: '10px 12px' }}>Parameter</th>
                   <th style={{ padding: '10px 12px' }}>Variable Name</th>
                   <th style={{ padding: '10px 12px' }}>Units</th>
@@ -212,17 +212,17 @@ export function DataEvidenceView({
               </thead>
               <tbody>
                 {DATASET_REGISTRY.map((d, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid #1e293b' }}>
-                    <td style={{ padding: '12px', fontFamily: 'monospace', fontWeight: 700, color: '#38bdf8' }}>{d.code}</td>
-                    <td style={{ padding: '12px', fontWeight: 600, color: '#f1f5f9' }}>{d.name}</td>
-                    <td style={{ padding: '12px', color: '#fbbf24' }}>{d.units}</td>
-                    <td style={{ padding: '12px', color: '#cbd5e1' }}>{d.source}</td>
+                  <tr key={idx} style={{ borderBottom: '1px solid var(--line)' }}>
+                    <td style={{ padding: '12px', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: 'var(--water)' }}>{d.code}</td>
+                    <td style={{ padding: '12px', fontWeight: 600, color: 'var(--text)' }}>{d.name}</td>
+                    <td style={{ padding: '12px', color: 'var(--sun)' }}>{d.units}</td>
+                    <td style={{ padding: '12px', color: 'var(--text-2)' }}>{d.source}</td>
                     <td style={{ padding: '12px' }}>
-                      <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.15)', color: '#00df81', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                      <span style={{ fontSize: 11, background: 'rgba(0, 223, 129, 0.15)', color: 'var(--leaf)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
                         {d.tier}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', fontSize: 12, color: '#94a3b8', maxWidth: 280 }}>{d.missingRule}</td>
+                    <td style={{ padding: '12px', fontSize: 12, color: 'var(--text-2)', maxWidth: 280 }}>{d.missingRule}</td>
                   </tr>
                 ))}
               </tbody>
@@ -246,8 +246,8 @@ export function DataEvidenceView({
 
       {/* SUB-TAB 3: RESEARCH REPORTS & BENCHMARKS */}
       {subTab === 'reports' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'গবেষণা ও এলগরিদমিক বেঞ্চমার্ক রিপোর্ট' : 'Algorithmic Optimization & Robustness Reports'}
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
@@ -271,15 +271,15 @@ export function DataEvidenceView({
                 desc: 'Tested across 4 objective profiles (Balanced, Profit-Focused, Water-Efficiency, Soil-Health). Verified legume BNF intervals and botanical family alternation.',
               },
             ].map((rep, idx) => (
-              <div key={idx} style={{ background: '#131920', border: '1px solid #222c36', borderRadius: 10, padding: 16 }}>
+              <div key={idx} style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 10, padding: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 11, color: '#94a3b8' }}>{rep.date}</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#00df81', background: 'rgba(0, 223, 129, 0.12)', padding: '2px 8px', borderRadius: 4 }}>
+                  <span style={{ fontSize: 11, color: 'var(--text-2)' }}>{rep.date}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--leaf)', background: 'rgba(0, 223, 129, 0.12)', padding: '2px 8px', borderRadius: 4 }}>
                     {rep.status}
                   </span>
                 </div>
-                <strong style={{ fontSize: 14, color: '#f8fafc', display: 'block', marginBottom: 6 }}>{rep.title}</strong>
-                <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.5 }}>{rep.desc}</p>
+                <strong style={{ fontSize: 14, color: 'var(--text)', display: 'block', marginBottom: 6 }}>{rep.title}</strong>
+                <p style={{ margin: 0, fontSize: 12, color: 'var(--text-2)', lineHeight: 1.5 }}>{rep.desc}</p>
               </div>
             ))}
           </div>
@@ -288,35 +288,35 @@ export function DataEvidenceView({
 
       {/* SUB-TAB 4: SCIENTIFIC METHODOLOGY */}
       {subTab === 'methodology' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'বৈজ্ঞানিক পদ্ধতি, কৃষি নিয়ম ও সতর্কর্তা' : 'Scientific Methodology & Agronomic Calibration Protocols'}
           </h3>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, fontSize: 13, color: '#cbd5e1', lineHeight: 1.6 }}>
-            <div style={{ background: '#131920', padding: 16, borderRadius: 10, border: '1px solid #1e293b' }}>
-              <strong style={{ color: '#00df81', display: 'block', marginBottom: 6, fontSize: 14 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6 }}>
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 10, border: '1px solid var(--line)' }}>
+              <strong style={{ color: 'var(--leaf)', display: 'block', marginBottom: 6, fontSize: 14 }}>
                 1. বৃষ্টিপাত অনসেট নির্ধারণ নিয়ম (Rainfall Onset Definition):
               </strong>
               আমন মৌসুমে জুনের ১ তারিখ থেকে প্রতিদিনের বৃষ্টিপাত পরিমাপ করা হয়। প্রথম যে তারিখে পরপর ৩ দিনে মোট বৃষ্টিপাত ২৫ মিমি বা তার বেশি হয় এবং কমপক্ষে ১ দিন কার্যকর বৃষ্টি (≥ ১.০ মিমি) হয়, সেটিকে প্রাথমিক অনসেট বিবেচনা করা হয়।
             </div>
 
-            <div style={{ background: '#131920', padding: 16, borderRadius: 10, border: '1px solid #1e293b' }}>
-              <strong style={{ color: '#38bdf8', display: 'block', marginBottom: 6, fontSize: 14 }}>
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 10, border: '1px solid var(--line)' }}>
+              <strong style={{ color: 'var(--water)', display: 'block', marginBottom: 6, fontSize: 14 }}>
                 2. শুষ্ক স্পেল প্রত্যাখ্যান নিয়ম (Dry-Spell Lookahead Rule):
               </strong>
               প্রাথমিক অনসেটের পরবর্তী ২১ দিনের মধ্যে যদি একটানা ৭ বা তার বেশি দিন শুষ্ক (বৃষ্টি ২.০ মিমি এর কম) থাকে, তবে সেটিকে ভুয়া অনসেট (False Onset) হিসেবে বাতিল করা হয় এবং পরবর্তী টেকসই বৃষ্টিপাতের জন্য অনুসন্ধান অব্যাহত রাখা হয়।
             </div>
 
-            <div style={{ background: '#131920', padding: 16, borderRadius: 10, border: '1px solid #1e293b' }}>
-              <strong style={{ color: '#fbbf24', display: 'block', marginBottom: 6, fontSize: 14 }}>
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 10, border: '1px solid var(--line)' }}>
+              <strong style={{ color: 'var(--sun)', display: 'block', marginBottom: 6, fontSize: 14 }}>
                 3. ডিগ্রি-ডে সঞ্চয়ন (Growing Degree Days - GDD):
               </strong>
               ধানের শারীরবৃত্তীয় বৃদ্ধি পরিমাপে T_base = ১০°C এবং T_cap = ৩৫°C ব্যবহৃত হয়। সূত্র: Daily GDD = max(0, min(35, T_mean) - 10)। খরিফ মৌসুমে ডিগ্রি-ডে বৃদ্ধির ফলে উদ্ভিদের পানি চাহিদা বাড়ে।
             </div>
 
-            <div style={{ background: '#131920', padding: 16, borderRadius: 10, border: '1px solid #1e293b' }}>
-              <strong style={{ color: '#f87171', display: 'block', marginBottom: 6, fontSize: 14 }}>
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 10, border: '1px solid var(--line)' }}>
+              <strong style={{ color: 'var(--alert)', display: 'block', marginBottom: 6, fontSize: 14 }}>
                 4. রোপণ শিফট ও অনসেট শিফটের পার্থক্য (Recommendation Rule):
               </strong>
               বৃষ্টিপাত অনসেটের শিফট সরাসরি ধানের চারা রোপণ শিফটের সমান নয়। আগস্টের ১৫ তারিখের পরে রোপণ করলে অক্টোবরের শেষভাগে ধানের শীষ বের হওয়ার সময় খরা এবং নভেম্বরের ঠান্ডায় চিটা হওয়ার ঝুঁকি তৈরি হয়। তাই FieldShift সর্বোচ্চ ৭-১০ দিনের পরিমিত বীজতলা শিফট এবং স্বল্পমেয়াদী দ্রুত পরিপক্ক জাত (ব্রি ধান-৭৫, ১১৫ দিন) চাষের সুনির্দিষ্ট সুপারিশ করে।

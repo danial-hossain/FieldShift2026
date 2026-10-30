@@ -68,6 +68,13 @@ export function ComparisonLabView({
 
     setLoading(true);
     setError('');
+
+    // UI 5.2: 30-second client-side timeout to cancel stuck evaluation
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 30000);
+
     try {
       const isDemo = fieldValidation.isDemo;
       const payload = {
@@ -95,7 +102,10 @@ export function ComparisonLabView({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const validation = validateComparisonResponse(res);
       if (!validation.isValid) {
@@ -106,7 +116,11 @@ export function ComparisonLabView({
       setIsStale(false);
       setError('');
     } catch (err) {
-      setError(err.message || 'Error communicating with Comparison Lab endpoint.');
+      clearTimeout(timeoutId);
+      const msg = err.name === 'AbortError'
+        ? 'Request timed out after 30 seconds: /api/lab/compare did not respond in time.'
+        : (err.message || 'Error communicating with Comparison Lab endpoint.');
+      setError(msg);
       if (labData) {
         setIsStale(true);
       }
@@ -346,7 +360,7 @@ export function ComparisonLabView({
       {/* 3-COLUMN SIDE-BY-SIDE METHOD CARDS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))', gap: 18, marginBottom: 24 }}>
         {/* METHOD A: MILP OPTIMIZER */}
-        <div className="dash-card" style={{ borderTop: '4px solid var(--primary)', position: 'relative' }}>
+        <div className="dash-card ui-card-hud" style={{ borderTop: '4px solid var(--primary)', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
             <div>
               <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', letterSpacing: 0.5, textTransform: 'uppercase' }}>
@@ -530,7 +544,7 @@ export function ComparisonLabView({
         </div>
 
         {/* METHOD C: RULE-BASED BASELINE */}
-        <div className="dash-card" style={{ borderTop: '4px solid var(--accent-amber)', position: 'relative' }}>
+        <div className="dash-card ui-card-hud" style={{ borderTop: '4px solid var(--accent-amber)', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
             <div>
               <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent-amber)', letterSpacing: 0.5, textTransform: 'uppercase' }}>

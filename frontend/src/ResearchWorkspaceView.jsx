@@ -41,13 +41,13 @@ class WorkspaceErrorBoundary extends React.Component {
           margin: '20px 0'
         }}>
           <div style={{ fontSize: 36, marginBottom: 12 }}>⚠️</div>
-          <h4 style={{ margin: '0 0 8px', color: '#f87171', fontSize: 17, fontWeight: 800 }}>
+          <h4 style={{ margin: '0 0 8px', color: 'var(--hud-red)', fontSize: 17, fontWeight: 800 }}>
             {this.props.fallbackTitle || 'Display Module Notice'}
           </h4>
-          <p style={{ margin: '0 0 16px', color: '#94a3b8', fontSize: 13, maxWidth: 600, marginInline: 'auto' }}>
+          <p style={{ margin: '0 0 16px', color: 'var(--text-2)', fontSize: 13, maxWidth: 600, marginInline: 'auto' }}>
             {this.props.fallbackMessage || 'An unexpected rendering or graphics context issue occurred in this research module.'}
           </p>
-          <div style={{ fontSize: 12, color: '#fca5a5', background: 'rgba(239,68,68,0.1)', padding: '8px 12px', borderRadius: 8, maxWidth: 640, margin: '0 auto 16px', wordBreak: 'break-all' }}>
+          <div style={{ fontSize: 12, color: 'var(--hud-red)', background: 'rgba(239,68,68,0.1)', padding: '8px 12px', borderRadius: 8, maxWidth: 640, margin: '0 auto 16px', wordBreak: 'break-all' }}>
             {String(this.state.error?.message || this.state.error)}
           </div>
           <button
@@ -56,8 +56,8 @@ class WorkspaceErrorBoundary extends React.Component {
             style={{
               padding: '8px 18px',
               borderRadius: 8,
-              background: '#0284c7',
-              color: '#ffffff',
+              background: 'var(--hud-cyan)',
+              color: 'var(--text)',
               border: 'none',
               fontWeight: 700,
               fontSize: 13,
@@ -214,7 +214,7 @@ export function ResearchWorkspaceView({
   return (
     <div className="research-workspace-container" style={{ padding: '0 0 40px 0' }}>
       {/* Research Workspace Top Header Banner */}
-      <div className="research-header-banner" style={{
+      <div className="research-header-banner ui-card-hud" style={{
         background: 'linear-gradient(135deg, rgba(14, 23, 38, 0.95) 0%, rgba(10, 16, 26, 0.98) 100%)',
         border: '1px solid rgba(56, 189, 248, 0.2)',
         borderRadius: '20px',
@@ -235,7 +235,7 @@ export function ResearchWorkspaceView({
               padding: '4px 12px',
               borderRadius: '999px',
               background: 'rgba(0, 223, 129, 0.15)',
-              color: '#00df81',
+              color: 'var(--hud-teal)',
               border: '1px solid rgba(0, 223, 129, 0.3)',
               fontWeight: 800,
               letterSpacing: '0.04em'
@@ -247,17 +247,17 @@ export function ResearchWorkspaceView({
               padding: '4px 10px',
               borderRadius: '999px',
               background: 'rgba(56, 189, 248, 0.12)',
-              color: '#38bdf8',
+              color: 'var(--hud-cyan)',
               border: '1px solid rgba(56, 189, 248, 0.25)',
               fontWeight: 700
             }}>
               100% 3D IMMERSIVE
             </span>
           </div>
-          <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: '#f8fafc' }}>
+          <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: 'var(--text)' }}>
             {lang === 'bn' ? 'উন্নত কৃষি বিজ্ঞান, অ্যালগরিদমিক অপ্টিমাইজেশন ও ৩ডি ল্যাব' : 'Agricultural Science, Algorithmic Optimization & 3D Research Lab'}
           </h1>
-          <p style={{ margin: 0, fontSize: '13.5px', color: '#94a3b8', lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.5 }}>
             {lang === 'bn'
               ? 'PuLP MILP মাল্টি-পিরিয়ড অপ্টিমাইজেশন, কিউ-লার্নিং (RL), সেনসিটিভিটি সুইপস, সিন্থেটিক ডেটাবেঞ্চ এবং ৪-স্তরের প্রোভেন্যান্স বিশিষ্ট বৈজ্ঞানিক রিসার্চ ইন্টারফেস।'
               : 'PuLP MILP multi-period optimization, Q-learning RL, sensitivity sweeps, synthetic benchmark generation, and 4-tier data provenance for precision agricultural scientists and judges.'}
@@ -317,14 +317,14 @@ export function ResearchWorkspaceView({
                 {lang === 'bn' ? 'ল্যাব ওভারভিউ ও লঞ্চপ্যাড' : 'Workspace Overview & Launchpad'}
               </span>
             </div>
-            <span className="research-nav-badge" style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8' }}>
+            <span className="research-nav-badge" style={{ background: 'rgba(56, 189, 248, 0.2)', color: 'var(--hud-cyan)' }}>
               ALL
             </span>
           </button>
 
           {/* Search / Filter Box */}
           <div className="research-search-box">
-            <span style={{ fontSize: '14px', color: '#64748b' }}>🔍</span>
+            <span style={{ fontSize: '14px', color: 'var(--text-3)' }}>🔍</span>
             <input
               type="text"
               className="research-search-input"
@@ -336,7 +336,7 @@ export function ResearchWorkspaceView({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-2)', cursor: 'pointer', padding: 0 }}
               >
                 ✕
               </button>
@@ -357,7 +357,7 @@ export function ResearchWorkspaceView({
                     <span>{group.icon}</span>
                     <span>{group.title}</span>
                   </span>
-                  <span style={{ fontSize: '10px', color: '#64748b' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--text-3)' }}>
                     {isCollapsed ? '▼' : '▲'} ({group.items.length})
                   </span>
                 </button>
@@ -383,7 +383,7 @@ export function ResearchWorkspaceView({
                               className="research-nav-badge"
                               style={{
                                 background: isActive ? 'rgba(0, 223, 129, 0.2)' : 'rgba(255, 255, 255, 0.08)',
-                                color: isActive ? '#00df81' : '#94a3b8'
+                                color: isActive ? 'var(--hud-teal)' : 'var(--text-2)'
                               }}
                             >
                               {item.badge}
@@ -404,11 +404,11 @@ export function ResearchWorkspaceView({
             paddingTop: '14px',
             borderTop: '1px solid rgba(255, 255, 255, 0.08)',
             fontSize: '11.5px',
-            color: '#64748b'
+            color: 'var(--text-3)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-              <span style={{ color: '#94a3b8', fontWeight: 600 }}>{lang === 'bn' ? 'সক্রিয় জমি:' : 'Active Field:'}</span>
-              <span style={{ color: '#00df81', fontWeight: 700 }}>
+              <span style={{ color: 'var(--text-2)', fontWeight: 600 }}>{lang === 'bn' ? 'সক্রিয় জমি:' : 'Active Field:'}</span>
+              <span style={{ color: 'var(--hud-teal)', fontWeight: 700 }}>
                 {activeField?.name || 'Bogura Demo Field'} ({formatNumber(activeField?.area_ha || 10.0, 1)} ha)
               </span>
             </div>
@@ -454,7 +454,7 @@ export function ResearchWorkspaceView({
                 padding: '3px 8px',
                 borderRadius: '6px',
                 background: 'rgba(0, 223, 129, 0.1)',
-                color: '#00df81',
+                color: 'var(--hud-teal)',
                 border: '1px solid rgba(0, 223, 129, 0.25)',
                 fontWeight: 700
               }}>
@@ -481,10 +481,10 @@ export function ResearchWorkspaceView({
                 padding: '24px',
                 marginBottom: '20px'
               }}>
-                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: '#f8fafc' }}>
+                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: 'var(--text)' }}>
                   🧭 {lang === 'bn' ? 'রিসার্চ ল্যাব কমান্ড সেন্টার ও লঞ্চপ্যাড' : 'Research Lab Command Center & Launchpad'}
                 </h3>
-                <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8', lineHeight: 1.5 }}>
+                <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 }}>
                   {lang === 'bn'
                     ? 'নিচে ৪টি প্রধান গ্রুপের ২০টি বৈজ্ঞানিক মডিউলের তালিকা দেওয়া হলো। যেকোনো মডিউল এক ক্লিকে খুলুন।'
                     : 'Instant access to all 20 scientific modules categorized into 4 research domains. Select any card to launch.'}
@@ -498,7 +498,7 @@ export function ResearchWorkspaceView({
                       margin: '0 0 12px',
                       fontSize: '15px',
                       fontWeight: 800,
-                      color: '#f8fafc',
+                      color: 'var(--text)',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px'
@@ -522,7 +522,7 @@ export function ResearchWorkspaceView({
                                 padding: '3px 8px',
                                 borderRadius: '999px',
                                 background: 'rgba(56, 189, 248, 0.15)',
-                                color: '#38bdf8',
+                                color: 'var(--hud-cyan)',
                                 border: '1px solid rgba(56, 189, 248, 0.3)'
                               }}>
                                 {item.badge}
@@ -530,10 +530,10 @@ export function ResearchWorkspaceView({
                             )}
                           </div>
                           <div>
-                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', marginBottom: '4px' }}>
+                            <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>
                               {item.label}
                             </div>
-                            <span style={{ fontSize: '11.5px', color: '#64748b' }}>
+                            <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>
                               {lang === 'bn' ? 'ল্যাবে প্রবেশ করুন →' : 'Launch Module →'}
                             </span>
                           </div>

@@ -44,7 +44,7 @@ export function DigitalTwin3DView({
       
       {/* Header Banner */}
       <div
-        className="dash-card"
+        className="dash-card ui-card-hud"
         style={{
           background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)',
           border: '1px solid rgba(16, 185, 129, 0.3)',
@@ -61,7 +61,7 @@ export function DigitalTwin3DView({
                 style={{
                   fontSize: 11,
                   fontWeight: 800,
-                  color: '#00df81',
+                  color: 'var(--hud-teal)',
                   background: 'rgba(0, 223, 129, 0.15)',
                   padding: '3px 10px',
                   borderRadius: 999,
@@ -75,7 +75,7 @@ export function DigitalTwin3DView({
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: '#38bdf8',
+                  color: 'var(--hud-cyan)',
                   background: 'rgba(56, 189, 248, 0.12)',
                   padding: '3px 8px',
                   borderRadius: 999,
@@ -84,10 +84,10 @@ export function DigitalTwin3DView({
                 {activeField?.name || 'Bogura Demo Field'} ({formatNumber(areaHa, 1)} ha)
               </span>
             </div>
-            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: '#f8fafc' }}>
+            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: 'var(--text)' }}>
               {lang === 'bn' ? 'ত্রিমাত্রিক ডিজিটাল টুইন ও কৃষি সিমুলেশন' : '3D Agricultural Digital Twin Simulator'}
             </h1>
-            <p style={{ margin: 0, fontSize: 13.5, color: '#94a3b8', lineHeight: 1.5, maxWidth: 840 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 840 }}>
               {lang === 'bn'
                 ? 'বাস্তবসম্মত থ্রি.জেএস (Three.js) দৃশ্যকল্পে ধানের বৃদ্ধি, সেচ খালের পানি প্রবাহ, মাটির আর্দ্রতা প্রোফাইল এবং জলবায়ু চাপের ত্রিমাত্রিক মডেল।'
                 : 'Interactive Three.js physics-based digital twin visualizing rice tiller phenology, canal hydrology, soil moisture stratifications, and climate stress scenarios.'}
@@ -99,8 +99,8 @@ export function DigitalTwin3DView({
               type="button"
               onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
               style={{
-                background: viewMode === '3d' ? '#00df81' : '#1e293b',
-                color: viewMode === '3d' ? '#0e1318' : '#ffffff',
+                background: viewMode === '3d' ? 'var(--hud-teal)' : 'var(--line)',
+                color: viewMode === '3d' ? 'var(--bg-deep)' : 'var(--text)',
                 border: '1px solid rgba(0, 223, 129, 0.4)',
                 borderRadius: 8,
                 padding: '8px 14px',
@@ -122,9 +122,9 @@ export function DigitalTwin3DView({
               type="button"
               onClick={() => setSubTab(tab.id)}
               style={{
-                background: subTab === tab.id ? 'rgba(0, 223, 129, 0.2)' : '#161d23',
-                border: subTab === tab.id ? '1px solid #00df81' : '1px solid #2a3742',
-                color: subTab === tab.id ? '#00df81' : '#94a3b8',
+                background: subTab === tab.id ? 'rgba(0, 223, 129, 0.2)' : 'var(--glass-strong)',
+                border: subTab === tab.id ? '1px solid var(--hud-teal)' : '1px solid var(--line)',
+                color: subTab === tab.id ? 'var(--hud-teal)' : 'var(--text-2)',
                 borderRadius: 8,
                 padding: '7px 16px',
                 fontSize: 13,
@@ -145,13 +145,13 @@ export function DigitalTwin3DView({
 
       {/* SUB-TAB 1: LIVE FARM 3D CANVAS */}
       {subTab === 'farm' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
                 {lang === 'bn' ? 'সরাসরি খামার দৃশ্য (Interactive Farm Field Canvas)' : 'Interactive 3D Farm Field Canvas'}
               </h3>
-              <p style={{ margin: '4px 0 0', fontSize: 12, color: '#94a3b8' }}>
+              <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--text-2)' }}>
                 Rotate: Left Click + Drag | Pan: Right Click + Drag | Zoom: Mouse Wheel
               </p>
             </div>
@@ -163,9 +163,9 @@ export function DigitalTwin3DView({
                   type="button"
                   onClick={() => setActiveOverlay(ov)}
                   style={{
-                    background: activeOverlay === ov ? 'rgba(0, 223, 129, 0.2)' : '#1c242c',
-                    color: activeOverlay === ov ? '#00df81' : '#94a3b8',
-                    border: activeOverlay === ov ? '1px solid #00df81' : '1px solid #2a3742',
+                    background: activeOverlay === ov ? 'rgba(0, 223, 129, 0.2)' : 'var(--glass)',
+                    color: activeOverlay === ov ? 'var(--hud-teal)' : 'var(--text-2)',
+                    border: activeOverlay === ov ? '1px solid var(--hud-teal)' : '1px solid var(--line)',
                     borderRadius: 6,
                     padding: '4px 10px',
                     fontSize: 11,
@@ -180,7 +180,7 @@ export function DigitalTwin3DView({
             </div>
           </div>
 
-          <div style={{ height: 480, width: '100%', borderRadius: 10, overflow: 'hidden', background: '#0e1318', position: 'relative' }}>
+          <div style={{ height: 480, width: '100%', borderRadius: 10, overflow: 'hidden', background: 'var(--bg-deep)', position: 'relative' }}>
             <RealFarmCanvas3D
               fieldProfile={{
                 name: activeField?.name || 'Bogura Demo Farm',
@@ -204,7 +204,7 @@ export function DigitalTwin3DView({
                 padding: '4px 8px',
                 borderRadius: 4,
                 fontSize: 11,
-                color: '#94a3b8',
+                color: 'var(--text-2)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
               }}
             >
@@ -216,11 +216,11 @@ export function DigitalTwin3DView({
 
       {/* SUB-TAB 2: CROP GROWTH 3D */}
       {subTab === 'growth' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'ফসলের বৃদ্ধি ও ফেনোলজি সিমুলেটর' : 'Crop Growth Stage & Phenology Digital Twin'}
           </h3>
-          <p style={{ margin: '0 0 16px', fontSize: 13, color: '#94a3b8' }}>
+          <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text-2)' }}>
             FAO-33 phenology stages: Emergence (চারা গজানো), Tillering (কুশি বৃদ্ধি), Panicle Initiation (শীষ গঠন), Heading (ফুল ফোটা), Maturity (দানা পুষ্ট হওয়া).
           </p>
           <CropGrowth3D
@@ -238,13 +238,13 @@ export function DigitalTwin3DView({
 
       {/* SUB-TAB 3: HYDROLOGY 3D */}
       {subTab === 'hydrology' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'মাটি ও পানির স্তর সিমুলেশন' : 'Soil Horizon & Water Balance Simulator'}
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16 }}>
             <div>
-              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#38bdf8' }}>Lysimeter Inflow / Outflow</h4>
+              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--hud-cyan)' }}>Lysimeter Inflow / Outflow</h4>
               <WaterBalance3D
                 rainfallMm={22.0}
                 irrigationMm={30.0}
@@ -257,7 +257,7 @@ export function DigitalTwin3DView({
               />
             </div>
             <div>
-              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#00df81' }}>Root Zone Stratification</h4>
+              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--hud-teal)' }}>Root Zone Stratification</h4>
               <SoilProfile3D
                 crop="rice"
                 rootDepthCm={75}
@@ -272,8 +272,8 @@ export function DigitalTwin3DView({
 
       {/* SUB-TAB 4: CLIMATE STRESS 3D */}
       {subTab === 'climate' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'জলবায়ু চাপ ও তাপমাত্রা সিমুলেশন' : 'Climate Stress Scenarios & Thermal Load'}
           </h3>
           <ClimateStress3D
@@ -290,8 +290,8 @@ export function DigitalTwin3DView({
 
       {/* SUB-TAB 5: SCENARIO A/B COMPARISON */}
       {subTab === 'compare' && (
-        <div className="dash-card" style={{ background: '#161d23', border: '1px solid #222c36', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: '#f8fafc' }}>
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
             {lang === 'bn' ? 'দ্বৈত দৃশ্যকল্প এ/বি ত্রিমাত্রিক তুলনা' : 'Scenario A/B Dual 3D Comparison'}
           </h3>
           <ScenarioComparison3D

@@ -101,7 +101,7 @@ export function Research3DScene({
 
     // 1. Scene & Atmospheric Fog
     const scene = new THREE.Scene();
-    const bgCol = isHologram ? '#05090f' : fogColor;
+    const bgCol = isHologram ? 'var(--bg-deep)' : fogColor;
     scene.background = new THREE.Color(bgCol);
     scene.fog = new THREE.FogExp2(bgCol, isHologram ? 0.012 : fogDensity);
     sceneRef.current = scene;
@@ -158,7 +158,7 @@ export function Research3DScene({
     controlsRef.current = controls;
 
     // 5. Lighting
-    const sunLight = new THREE.DirectionalLight('#fffbeb', 2.0);
+    const sunLight = new THREE.DirectionalLight('var(--text)', 2.0);
     sunLight.position.set(16, 28, 14);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = isMobile ? 512 : 1024;
@@ -166,7 +166,7 @@ export function Research3DScene({
     sunLight.shadow.bias = -0.0005;
     scene.add(sunLight);
 
-    const hemiLight = new THREE.HemisphereLight('#38bdf8', '#1e293b', 0.85);
+    const hemiLight = new THREE.HemisphereLight('var(--hud-cyan)', 'var(--line)', 0.85);
     scene.add(hemiLight);
 
     // Initialize Hologram Bloom Composer if applicable
@@ -297,7 +297,7 @@ export function Research3DScene({
   if (!webGlSupported || viewMode === '2d') {
     return (
       <div
-        className={`research-3d-scene-wrapper ${className}`}
+        className={`research-3d-scene-wrapper ui-card-hud ${className}`}
         style={{
           position: 'relative',
           width: '100%',
@@ -307,7 +307,7 @@ export function Research3DScene({
           background: 'rgba(15, 23, 42, 0.92)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           padding: '20px',
-          color: '#cbd5e1',
+          color: 'var(--text-2)',
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
@@ -319,7 +319,7 @@ export function Research3DScene({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>📊</span>
-            <strong style={{ color: '#f8fafc', fontSize: '14px' }}>
+            <strong style={{ color: 'var(--text)', fontSize: '14px' }}>
               {hudTitle} — {lang === 'bn' ? 'সায়েন্টিফিক ডেটা টেবিল' : 'Scientific Data Table View'}
             </strong>
           </div>
@@ -331,8 +331,8 @@ export function Research3DScene({
                 padding: '6px 12px',
                 borderRadius: '6px',
                 background: 'rgba(0, 223, 129, 0.15)',
-                border: '1px solid #00df81',
-                color: '#00df81',
+                border: '1px solid var(--hud-teal)',
+                color: 'var(--hud-teal)',
                 fontSize: '11.5px',
                 fontWeight: 700,
                 cursor: 'pointer'
@@ -353,16 +353,16 @@ export function Research3DScene({
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', textAlign: 'left' }}>
               <thead>
                 <tr style={{ background: 'rgba(30, 41, 59, 0.6)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                  <th style={{ padding: '8px 12px', color: '#94a3b8' }}>{lang === 'bn' ? 'প্যারামিটার / মেট্রিক' : 'Metric / Variable'}</th>
-                  <th style={{ padding: '8px 12px', color: '#94a3b8' }}>{lang === 'bn' ? 'মান ও একক' : 'Value & Unit'}</th>
-                  <th style={{ padding: '8px 12px', color: '#94a3b8' }}>{lang === 'bn' ? 'বৈজ্ঞানিক প্রাসঙ্গিকতা' : 'Scientific Context'}</th>
+                  <th style={{ padding: '8px 12px', color: 'var(--text-2)' }}>{lang === 'bn' ? 'প্যারামিটার / মেট্রিক' : 'Metric / Variable'}</th>
+                  <th style={{ padding: '8px 12px', color: 'var(--text-2)' }}>{lang === 'bn' ? 'মান ও একক' : 'Value & Unit'}</th>
+                  <th style={{ padding: '8px 12px', color: 'var(--text-2)' }}>{lang === 'bn' ? 'বৈজ্ঞানিক প্রাসঙ্গিকতা' : 'Scientific Context'}</th>
                 </tr>
               </thead>
               <tbody>
                 {hudMetrics.map((metric, idx) => {
                   let label = `Metric ${idx + 1}`;
                   let value = '';
-                  let color = '#f8fafc';
+                  let color = 'var(--text)';
                   if (typeof metric === 'object' && metric !== null) {
                     label = metric.label != null ? String(metric.label).trim() : label;
                     value = metric.value != null ? String(metric.value).trim() : '';
@@ -380,9 +380,9 @@ export function Research3DScene({
                   }
                   return (
                     <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ padding: '8px 12px', fontWeight: 700, color: '#38bdf8' }}>{label}</td>
+                      <td style={{ padding: '8px 12px', fontWeight: 700, color: 'var(--hud-cyan)' }}>{label}</td>
                       <td style={{ padding: '8px 12px', fontWeight: 800, color }}>{value}</td>
-                      <td style={{ padding: '8px 12px', color: '#94a3b8', fontSize: '11.5px' }}>
+                      <td style={{ padding: '8px 12px', color: 'var(--text-2)', fontSize: '11.5px' }}>
                         FAO / NASA POWER / BARI Verified
                       </td>
                     </tr>
@@ -393,7 +393,7 @@ export function Research3DScene({
           </div>
         )}
 
-        <div style={{ fontSize: '11px', color: '#64748b', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--text-3)', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
           * {lang === 'bn'
             ? 'অ্যাক্সেসিবিলিটি ও কম ক্ষমতাসম্পন্ন ডিভাইসের জন্য উচ্চ-স্পষ্টতাসম্পন্ন ২ডি বৈজ্ঞানিক ডেটা ভিউ।'
             : 'Accessible high-contrast scientific table fallback for screen readers, mobile battery saver, and non-WebGL environments.'}
@@ -404,7 +404,7 @@ export function Research3DScene({
 
   return (
     <div
-      className={`research-3d-scene-wrapper ${className}`}
+      className={`research-3d-scene-wrapper ui-card-hud ${className}`}
       style={{
         position: 'relative',
         width: '100%',
@@ -432,8 +432,8 @@ export function Research3DScene({
           background: 'rgba(15, 23, 42, 0.85)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           fontSize: '11px',
-          fontFamily: 'monospace',
-          color: '#38bdf8',
+          fontFamily: "'JetBrains Mono', monospace",
+          color: 'var(--hud-cyan)',
           backdropFilter: 'blur(8px)',
           WebkitBackdropFilter: 'blur(8px)',
           pointerEvents: 'none',
@@ -443,13 +443,13 @@ export function Research3DScene({
           whiteSpace: 'nowrap'
         }}
       >
-        <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#00df81', display: 'inline-block', flexShrink: 0 }} />
+        <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--hud-teal)', display: 'inline-block', flexShrink: 0 }} />
         <span style={{ fontWeight: 800 }}>{hudTitle}</span>
-        <span style={{ color: '#64748b' }}>|</span>
+        <span style={{ color: 'var(--text-3)' }}>|</span>
         <span>{fps} FPS</span>
         {hudMetrics.map((m, idx) => {
           let text = '';
-          let color = '#f8fafc';
+          let color = 'var(--text)';
           if (typeof m === 'object' && m !== null) {
             const labelStr = m.label != null ? String(m.label).trim() : '';
             const valStr = m.value != null ? String(m.value).trim() : '';
@@ -463,7 +463,7 @@ export function Research3DScene({
           if (!text) return null;
           return (
             <React.Fragment key={idx}>
-              <span style={{ color: '#64748b' }}>|</span>
+              <span style={{ color: 'var(--text-3)' }}>|</span>
               <span style={{ color }}>{text}</span>
             </React.Fragment>
           );
@@ -491,7 +491,7 @@ export function Research3DScene({
             borderRadius: 6,
             background: 'rgba(30, 41, 59, 0.85)',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#38bdf8',
+            color: 'var(--hud-cyan)',
             fontSize: '11px',
             fontWeight: 700,
             cursor: 'pointer',
@@ -512,7 +512,7 @@ export function Research3DScene({
             borderRadius: 6,
             background: 'rgba(30, 41, 59, 0.85)',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#f8fafc',
+            color: 'var(--text)',
             fontSize: '11px',
             fontWeight: 700,
             cursor: 'pointer',
@@ -542,7 +542,7 @@ export function Research3DScene({
           fontSize: '10.5px'
         }}
       >
-        <span style={{ color: '#64748b', fontWeight: 700, paddingRight: 4, fontSize: '10px' }}>CAM:</span>
+        <span style={{ color: 'var(--text-3)', fontWeight: 700, paddingRight: 4, fontSize: '10px' }}>CAM:</span>
         {[
           { id: 'iso', label: '📐 Iso' },
           { id: 'top', label: '🔝 Top' },
@@ -556,9 +556,9 @@ export function Research3DScene({
             style={{
               padding: '2px 6px',
               borderRadius: 4,
-              border: activePreset === p.id ? '1px solid #00df81' : '1px solid transparent',
+              border: activePreset === p.id ? '1px solid var(--hud-teal)' : '1px solid transparent',
               background: activePreset === p.id ? 'rgba(0, 223, 129, 0.2)' : 'transparent',
-              color: activePreset === p.id ? '#00df81' : '#cbd5e1',
+              color: activePreset === p.id ? 'var(--hud-teal)' : 'var(--text-2)',
               cursor: 'pointer',
               fontSize: '10.5px',
               fontWeight: 600

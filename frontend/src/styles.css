@@ -14653,3 +14653,36 @@ h1, h2, h3, h4, h5, h6 {
     gap: 16px !important;
   }
 }
+
+/* UI 5: Research Mode HUD enhancements */
+[data-mode="research"] .research-nav-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+[data-mode="research"] .research-nav-item.active {
+  background: rgba(95, 211, 243, 0.12);
+  color: var(--hud-cyan, #5fd3f3);
+  border-color: rgba(95, 211, 243, 0.35);
+  box-shadow: 0 0 14px rgba(95, 211, 243, 0.15);
+}
+
+[data-mode="research"] .research-nav-item.active::before {
+  background: var(--hud-cyan, #5fd3f3);
+  box-shadow: 0 0 10px var(--hud-cyan, #5fd3f3);
+}
+
+[data-mode="research"] .research-breadcrumb,
+[data-mode="research"] .header-breadcrumbs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--hud-cyan, #5fd3f3);
+  letter-spacing: 0.04em;
+}
+
+[data-mode="research"] .research-sidebar {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+}
