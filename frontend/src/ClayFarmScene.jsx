@@ -9,6 +9,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import {
+  createGrassTexture,
+  createTilledSoilTexture,
+  createTerracottaStrataTexture,
+  createDirtPathTexture,
+} from './farmTextures.js';
 
 // Color Palette — Matte Pastels & Soil Strata (UI 4 & Phase 4 compliant)
 export const CLAY_PALETTE = {
@@ -265,7 +271,7 @@ export function ClayFarmScene({
       disposables.push(envTex, roomEnv, pmrem);
 
       // Warm Sun DirectionalLight
-      const sunLight = new THREE.DirectionalLight(0xfff3e0, 1.8);
+      const sunLight = new THREE.DirectionalLight(0xffe2b8, 2.6);
       sunLight.position.set(14, 22, 10);
       sunLight.castShadow = true;
       sunLight.shadow.radius = 5;
@@ -280,28 +286,44 @@ export function ClayFarmScene({
       scene.add(sunLight);
 
       // Soft Sky HemisphereLight
-      const hemiLight = new THREE.HemisphereLight(0xdfe8ee, 0x6b5a45, 0.4);
+      const hemiLight = new THREE.HemisphereLight(0xc8e0f4, 0x6b5a45, 0.7);
       scene.add(hemiLight);
 
-      // 5. Materials (matte clay roughness 0.85 - 0.95, metalness 0)
+      // 5. Procedural Textures & Materials (matte clay roughness 0.85 - 0.95, metalness 0)
+      const grassTex = createGrassTexture();
+      const soilTex = createTilledSoilTexture();
+      const strataTex = createTerracottaStrataTexture();
+      const dirtPathTex = createDirtPathTexture();
+      disposables.push(grassTex, soilTex, strataTex, dirtPathTex);
+
       const matGrassTop = new THREE.MeshStandardMaterial({
         color: CLAY_PALETTE.grass,
-        roughness: 0.95,
+        map: grassTex,
+        roughness: 0.92,
         metalness: 0,
       });
       const matSoilTopBand = new THREE.MeshStandardMaterial({
         color: CLAY_PALETTE.soil_top, // #b36a3c
+        map: strataTex,
         roughness: 0.92,
         metalness: 0,
       });
       const matSoilMidBand = new THREE.MeshStandardMaterial({
         color: CLAY_PALETTE.soil_layer_1, // #9a5a33
+        map: strataTex,
         roughness: 0.94,
         metalness: 0,
       });
       const matSoilBotBand = new THREE.MeshStandardMaterial({
         color: CLAY_PALETTE.soil_layer_2, // #7a4628
+        map: strataTex,
         roughness: 0.95,
+        metalness: 0,
+      });
+      const matDirtPath = new THREE.MeshStandardMaterial({
+        color: '#c4a682',
+        map: dirtPathTex,
+        roughness: 0.94,
         metalness: 0,
       });
       const matWater = new THREE.MeshStandardMaterial({
@@ -346,7 +368,7 @@ export function ClayFarmScene({
       });
 
       disposables.push(
-        matGrassTop, matSoilTopBand, matSoilMidBand, matSoilBotBand,
+        matGrassTop, matSoilTopBand, matSoilMidBand, matSoilBotBand, matDirtPath,
         matWater, matBarnWall, matBarnRoof, matSilo, matFence,
         matTreeDark, matTreeLight, matWood
       );
@@ -471,6 +493,49 @@ export function ClayFarmScene({
 
       sceneGroup.add(siloGroup);
 
+      // 9b. Wooden Barrels & Crates near Barn / Silo
+      const barrelGeo = new THREE.CylinderGeometry(0.18, 0.20, 0.42, 10);
+      disposables.push(barrelGeo);
+      const b1 = new THREE.Mesh(barrelGeo, matWood);
+      b1.position.set(-2.5, 1.51, -2.4);
+      b1.castShadow = true;
+      sceneGroup.add(b1);
+      const b2 = new THREE.Mesh(barrelGeo, matWood);
+      b2.position.set(-2.15, 1.51, -2.7);
+      b2.castShadow = true;
+      sceneGroup.add(b2);
+
+      const crateGeo = new THREE.BoxGeometry(0.36, 0.36, 0.36);
+      disposables.push(crateGeo);
+      const crate = new THREE.Mesh(crateGeo, matWood);
+      crate.position.set(-2.8, 1.48, -2.8);
+      crate.rotation.y = 0.25;
+      crate.castShadow = true;
+      sceneGroup.add(crate);
+
+      // 9c. Winding Dirt Walkway Paths (#c4a682 with procedural stippling)
+      const mainPathGeo = new RoundedBoxGeometry(0.52, 0.02, 7.8, 2, 0.04);
+      const mainPathMesh = new THREE.Mesh(mainPathGeo, matDirtPath);
+      mainPathMesh.position.set(0, 1.34, 0.7);
+      mainPathMesh.receiveShadow = true;
+      sceneGroup.add(mainPathMesh);
+      disposables.push(mainPathGeo);
+
+      const barnBranchGeo = new RoundedBoxGeometry(2.6, 0.02, 0.48, 2, 0.04);
+      const barnBranchMesh = new THREE.Mesh(barnBranchGeo, matDirtPath);
+      barnBranchMesh.position.set(-1.4, 1.34, -2.4);
+      barnBranchMesh.rotation.y = -0.3;
+      barnBranchMesh.receiveShadow = true;
+      sceneGroup.add(barnBranchMesh);
+      disposables.push(barnBranchGeo);
+
+      const canalCrossGeo = new RoundedBoxGeometry(3.6, 0.02, 0.45, 2, 0.04);
+      const canalCrossMesh = new THREE.Mesh(canalCrossGeo, matDirtPath);
+      canalCrossMesh.position.set(2.0, 1.34, 0.7);
+      canalCrossMesh.receiveShadow = true;
+      sceneGroup.add(canalCrossMesh);
+      disposables.push(canalCrossGeo);
+
       // 10. Low Fence Ring around farm perimeter (#c9b48c)
       const fenceGroup = new THREE.Group();
       const fencePostGeo = new THREE.BoxGeometry(0.08, 0.35, 0.08);
@@ -591,6 +656,7 @@ export function ClayFarmScene({
         const bedColor = isNeutralSoil ? '#8a5a3a' : overlay.color;
         const bedMat = new THREE.MeshStandardMaterial({
           color: bedColor,
+          map: isNeutralSoil ? soilTex : null,
           roughness: 0.9,
           metalness: 0,
         });
@@ -636,9 +702,9 @@ export function ClayFarmScene({
             sceneGroup.add(sprout);
           });
         } else if (plot.crop) {
-          // Instanced crop plants inside bed (deterministic pseudo-random placement)
-          const rows = 4;
-          const cols = 5;
+          // Dense instanced crop plants inside bed (deterministic pseudo-random placement)
+          const rows = 8;
+          const cols = 12;
           const totalInstances = rows * cols;
           const instMesh = new THREE.InstancedMesh(plantConGeo, plantMat, totalInstances);
           instMesh.castShadow = true;
@@ -649,12 +715,12 @@ export function ClayFarmScene({
           for (let ri = 0; ri < rows; ri++) {
             for (let ci = 0; ci < cols; ci++) {
               const seed = idx * 100 + ri * 10 + ci;
-              const rndScale = 0.8 + pseudoRandom(seed) * 0.4;
+              const rndScale = 0.65 + pseudoRandom(seed) * 0.35;
               const rndRotY = pseudoRandom(seed + 1) * Math.PI * 2;
-              const offsetX = (ci - 2) * 0.45 + (pseudoRandom(seed + 2) - 0.5) * 0.08;
-              const offsetZ = (ri - 1.5) * 0.45 + (pseudoRandom(seed + 3) - 0.5) * 0.08;
+              const offsetX = (ci - 5.5) * 0.18 + (pseudoRandom(seed + 2) - 0.5) * 0.04;
+              const offsetZ = (ri - 3.5) * 0.22 + (pseudoRandom(seed + 3) - 0.5) * 0.04;
 
-              dummy.position.set(posX + offsetX, 1.58, posZ + offsetZ);
+              dummy.position.set(posX + offsetX, 1.50, posZ + offsetZ);
               dummy.rotation.y = rndRotY;
               dummy.scale.set(rndScale, rndScale * 1.1, rndScale);
               dummy.updateMatrix();
