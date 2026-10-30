@@ -171,3 +171,32 @@ test('FIX 10: ClayFarmScene exports bedAppearance returning { kind: "soil" } for
   assert.ok(twinSrc.includes('disabled={!ov.live}'), 'DigitalTwin3DView must disable overlays without live telemetry');
   assert.ok(!twinSrc.includes('* খেতের ত্রিমাত্রিক রেন্ডারিং একটি বিজ্ঞানভিত্তিক সিমুলেশন'), 'DigitalTwin3DView must not render duplicate overlapping caption banner');
 });
+
+test('R1: Every .jsx file importing/calling React hooks must import each called hook from react or call React.hook', () => {
+  const hooks = ['useState', 'useEffect', 'useMemo', 'useRef', 'useCallback', 'useContext', 'useReducer', 'useLayoutEffect'];
+  const violations = [];
+
+  function scanDir(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const ent of entries) {
+      const fullPath = path.join(dir, ent.name);
+      if (ent.isDirectory()) {
+        scanDir(fullPath);
+      } else if (ent.name.endsWith('.jsx')) {
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        for (const hook of hooks) {
+          const hookCallRegex = new RegExp(`(?<!React\\.)\\b${hook}\\s*\\(`, 'g');
+          if (hookCallRegex.test(content)) {
+            const importRegex = new RegExp(`import\\s+[^;]*\\{[^}]*\\b${hook}\\b[^}]*\\}\\s+from\\s+['"]react['"]`);
+            if (!importRegex.test(content)) {
+              violations.push(`${path.relative(__dirname, fullPath)} calls ${hook}() without importing ${hook} from 'react'`);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  scanDir(__dirname);
+  assert.equal(violations.length, 0, `Missing hook imports detected:\n${violations.join('\n')}`);
+});

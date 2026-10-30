@@ -11,7 +11,7 @@ import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skelet
 // Y3_S1 (Year 3, Rabi (Nov-Apr, dry))
 // Y3_S2 (Year 3, Kharif (May-Oct, wet))
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation, formatCurrency, toBengaliNumber } from './i18n.js';
 import { GlassPanel, GlassCard, GlassButton, GlassBadge } from './GlassComponents.jsx';
 import {
