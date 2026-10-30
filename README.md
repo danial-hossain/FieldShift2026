@@ -84,7 +84,8 @@ npm run smoke
 
 ## Scientific Limitations & Honesty Contract
 
-- **Spatial Resolution:** NASA POWER data is provided at 0.5° × 0.5° resolution (~50 km grid cells). While exceptional for long-term climatological trends and regional onset shifts, microclimate variations, localized bund water storage, and tubewell availability must mediate on-farm decisions.
+- **Gridded Reanalysis Resolution:** NASA POWER meteorology is 0.5° × 0.5° (~50 km) gridded reanalysis (GEOS-5 / MERRA-2), not localized microclimate sensor truth. While exceptional for multi-decadal climatological baselines and regional synoptic trends, microclimate variations, localized bund water storage, and tubewell availability must mediate on-farm decisions.
+- **Soil Salinity Dynamics:** Soil salinity is not dynamically modelled; coastal fields (such as Satkhira) require localized salinity management and tidal sluice gate monitoring not captured in atmospheric and reanalysis models.
 - **Data Honesty:** FieldShift strictly rejects data fabrication. Telemetry metrics that cannot be verified from satellite or user inputs (such as single-bed NDVI or real-time sensor moisture) are never synthesized; they are honestly displayed as "তথ্য নেই" / "No data".
 
 ---
