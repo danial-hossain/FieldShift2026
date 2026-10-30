@@ -1,3 +1,4 @@
+import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton } from './ui/index.js';
 // frontend/src/SixSeasonRecommendationView.jsx
 // 6-Season Crop Recommendation & Rotation Planner (PuLP MILP Model)
 // Restored first-class feature for FieldShift Research Lab
@@ -17,7 +18,6 @@ import {
   CANONICAL_PERIODS,
   CROP_DATABASE,
   STRATEGY_DEFINITIONS,
-  CANONICAL_ROTATIONS,
   buildSixSeasonRecommendations
 } from './sixSeasonEngine.js';
 import { SixSeasonTrajectory3D } from './research3d/SixSeasonTrajectory3D.jsx';
@@ -26,7 +26,6 @@ export {
   CANONICAL_PERIODS,
   CROP_DATABASE,
   STRATEGY_DEFINITIONS,
-  CANONICAL_ROTATIONS,
   buildSixSeasonRecommendations
 };
 
@@ -41,17 +40,77 @@ export function SixSeasonRecommendationView({
   onBack,
   lang = 'bn',
   onSelectField,
-  onRunWorkflow
+  onRunWorkflow,
+  defaultDistrict = 'rajshahi',
 }) {
   const { t } = useTranslation(lang);
-
-  // Strategy & Context State
+  const district = activeField?.district || defaultDistrict || 'rajshahi';
   const [selectedStrategy, setSelectedStrategy] = useState('balanced');
   const [selectedPeriodKey, setSelectedPeriodKey] = useState('Y1_S1');
   const [viewMode, setViewMode] = useState('recommendations'); // 'recommendations' | 'comparison' | 'timeline'
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationSuccessMsg, setSimulationSuccessMsg] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Backend planning fetch state
+  const [backendPlan, setBackendPlan] = useState(plan || null);
+  const [loading, setLoading] = useState(!plan);
+  const [fetchError, setFetchError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    let isCancelled = false;
+    setLoading(true);
+    setFetchError(null);
+
+    const priorityParam = selectedStrategy === 'water_efficiency'
+      ? 'water'
+      : selectedStrategy === 'soil_health'
+      ? 'soil'
+      : selectedStrategy === 'profit_focused'
+      ? 'profit'
+      : 'balanced';
+
+    fetch('/api/planning', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        district,
+        priority: priorityParam,
+        field_size_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
+        area_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
+      }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          let msg = `HTTP ${res.status}: ${res.statusText}`;
+          try {
+            const j = JSON.parse(text);
+            if (j.detail) msg = typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail);
+          } catch (_) {
+            if (text) msg = text;
+          }
+          throw new Error(msg);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!isCancelled) {
+          setBackendPlan(data);
+        }
+      })
+      .catch((err) => {
+        if (!isCancelled) {
+          setFetchError(err.message || 'Failed to load six-season plan');
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) setLoading(false);
+      });
+
+    return () => { isCancelled = true; };
+  }, [district, selectedStrategy, reloadKey, activeField?.area_ha]);
 
   // Extract field area with safe fallbacks
   const fieldAreaHa = useMemo(() => {
@@ -60,35 +119,34 @@ export function SixSeasonRecommendationView({
     return Number.isFinite(num) && num > 0 ? num : 10.0;
   }, [activeField, summary]);
 
-  // Extract or synthesize strategy rotation results
+    // Extract strategy rotation results from backend response
   const activePlanData = useMemo(() => {
-    // 1. Check if backend summary has planning results
-    const backendPlanning = summary?.planning?.strategy_comparison || summary?.planning?.all_strategies;
-    const backendStrategy = backendPlanning?.[selectedStrategy] || backendPlanning?.[selectedStrategy === 'water_efficiency' ? 'water_focused' : selectedStrategy === 'soil_health' ? 'soil_focused' : selectedStrategy];
+    const planningData = backendPlan?.summary?.planning || summary?.planning;
+    const backendPlanning = planningData?.strategy_comparison || planningData?.all_strategies;
+    const backendStrategy = backendPlanning?.[selectedStrategy] ||
+      backendPlanning?.[selectedStrategy === 'water_efficiency' ? 'water_focused' : selectedStrategy === 'soil_health' ? 'soil_focused' : selectedStrategy] ||
+      planningData?.milp_status || planningData?.selected_strategy_result;
 
-    // 2. Fall back to deterministic PuLP canonical baseline
-    const fallback = CANONICAL_ROTATIONS[selectedStrategy] || CANONICAL_ROTATIONS.balanced;
-
-    const rotation = backendStrategy?.rotation || backendStrategy?.selected_crop_by_period || fallback.rotation;
-    const grossMargin = backendStrategy?.gross_margin_bdt_per_ha ?? backendStrategy?.profit_bdt_ha ?? backendStrategy?.profit_component ?? fallback.gross_margin_bdt_per_ha;
-    const waterScore = backendStrategy?.water_score ?? backendStrategy?.water_component ?? fallback.water_score;
-    const soilScore = backendStrategy?.soil_score ?? backendStrategy?.soil_component ?? fallback.soil_score;
-    const compositeScore = backendStrategy?.composite_score ?? backendStrategy?.objective_value ?? fallback.composite_score;
-    const solverStatus = backendStrategy?.solver_status || fallback.solver_status;
+    const rotation = backendStrategy?.rotation || backendStrategy?.selected_crop_by_period || {};
+    const grossMargin = backendStrategy?.gross_margin_bdt_per_ha ?? backendStrategy?.profit_bdt_ha ?? backendStrategy?.profit_component ?? null;
+    const waterScore = backendStrategy?.water_score ?? backendStrategy?.water_component ?? null;
+    const soilScore = backendStrategy?.soil_score ?? backendStrategy?.soil_component ?? null;
+    const compositeScore = backendStrategy?.composite_score ?? backendStrategy?.objective_value ?? null;
+    const solverStatus = backendStrategy?.solver_status || planningData?.milp_status?.solver_status || backendPlan?.status || null;
     const decisionExplanation = backendStrategy?.decision_explanation || {};
 
     return {
       strategyId: selectedStrategy,
       rotation,
-      grossMargin: Number(grossMargin),
-      waterScore: Number(waterScore),
-      soilScore: Number(soilScore),
-      compositeScore: Number(compositeScore),
+      grossMargin: grossMargin != null ? Number(grossMargin) : null,
+      waterScore: waterScore != null ? Number(waterScore) : null,
+      soilScore: soilScore != null ? Number(soilScore) : null,
+      compositeScore: compositeScore != null ? Number(compositeScore) : null,
       solverStatus,
       decisionExplanation,
-      fallbackReasons: fallback.reasons
+      fallbackReasons: {}
     };
-  }, [summary, selectedStrategy]);
+  }, [backendPlan, summary, selectedStrategy]);
 
   // Construct 6-Season Recommendation List
   const sixSeasonRecommendations = useMemo(() => {
@@ -323,11 +381,12 @@ export function SixSeasonRecommendationView({
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 22, borderBottom: '1px solid var(--glass-border)', paddingBottom: 18 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-            <span style={{ background: 'var(--leaf)', color: 'var(--bg-deep)', padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 900, letterSpacing: '0.04em' }}>
-              RESTORED 6-SEASON OPTIMIZER
+            <DataSourceTag source="NASA POWER" mode="climatology" period="2001-2025" />
+            <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
+              NASA POWER climatology 2001-2025, {district.toUpperCase()}
             </span>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              Solver: <strong>PuLP CBC Branch-and-Bound ({activePlanData.solverStatus})</strong>
+            <span style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'JetBrains Mono, monospace', marginLeft: 8 }}>
+              {activePlanData.solverStatus ? `Solver: ${activePlanData.solverStatus}` : (lang === 'bn' ? 'সলভার স্ট্যাটাস: তথ্য নেই' : 'Solver: No data')}
             </span>
             <span style={{ fontSize: 12, color: 'var(--water)' }}>
               Parcel: <strong>{activeField?.name || 'বগুড়া ডেমো খামার (১০ হেক্টর) [DEMO]'}</strong> ({fieldAreaHa} ha)
@@ -734,7 +793,9 @@ export function SixSeasonRecommendationView({
             <tbody>
               {Object.keys(STRATEGY_DEFINITIONS).map(stratKey => {
                 const stratMeta = STRATEGY_DEFINITIONS[stratKey];
-                const data = CANONICAL_ROTATIONS[stratKey];
+                const planningData = backendPlan?.summary?.planning || summary?.planning;
+                const stratComparison = planningData?.strategy_comparison || planningData?.all_strategies;
+                const data = stratComparison?.[stratKey] || (selectedStrategy === stratKey ? (planningData?.milp_status || planningData?.selected_strategy_result) : null);
                 const isSelected = selectedStrategy === stratKey;
 
                 return (
@@ -757,7 +818,7 @@ export function SixSeasonRecommendationView({
                     <td style={{ padding: '12px 14px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
                         {CANONICAL_PERIODS.map((p, pIdx) => {
-                          const c = data.rotation[p.key];
+                          const c = data?.rotation?.[p.key] || data?.selected_crop_by_period?.[p.key] || null;
                           const cm = CROP_DATABASE[c] || { icon: '🌱' };
                           return (
                             <React.Fragment key={p.key}>

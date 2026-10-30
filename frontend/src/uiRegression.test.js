@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evidenceBadge } from './advisoryBadges.js';
+import { buildSixSeasonRecommendations } from './sixSeasonEngine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,4 +30,13 @@ test('FIX 3: FarmerHomeView.jsx source does not contain headline_bn nor hardcode
   const homeSource = fs.readFileSync(path.join(__dirname, 'FarmerHomeView.jsx'), 'utf-8');
   assert.ok(!homeSource.includes('headline_bn'), 'FarmerHomeView.jsx must not contain headline_bn');
   assert.ok(!homeSource.includes('স্বাভাবিক সময়ে চারা রোপণ করুন'), 'FarmerHomeView.jsx must not contain hardcoded advice sentence');
+});
+
+test('FIX 4: SixSeasonRecommendationView.jsx does not reference CANONICAL_ROTATIONS; buildSixSeasonRecommendations({}, undefined) does not produce Chickpea or Rice', () => {
+  const viewSource = fs.readFileSync(path.join(__dirname, 'SixSeasonRecommendationView.jsx'), 'utf-8');
+  assert.ok(!viewSource.includes('CANONICAL_ROTATIONS'), 'SixSeasonRecommendationView.jsx must not reference CANONICAL_ROTATIONS');
+  const recs = buildSixSeasonRecommendations({}, undefined);
+  const crops = recs.map(r => r.cropName);
+  assert.ok(!crops.includes('Chickpea'), 'buildSixSeasonRecommendations({}, undefined) must not produce Chickpea');
+  assert.ok(!crops.includes('Rice'), 'buildSixSeasonRecommendations({}, undefined) must not produce Rice');
 });
