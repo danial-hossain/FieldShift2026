@@ -318,27 +318,27 @@ export function SixSeasonRecommendationView({
   };
 
   return (
-    <div className="six-season-recommendation-workspace" style={{ padding: '24px 28px', background: 'radial-gradient(ellipse at 50% 0%, #0d1e2e 0%, #060b13 70%, #04070c 100%)', minHeight: '100vh', color: '#f8fafc' }}>
+    <div className="six-season-recommendation-workspace" style={{ padding: '24px 28px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
       {/* 1. Header Command Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 22, borderBottom: '1px solid var(--glass-border)', paddingBottom: 18 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-            <span style={{ background: '#00df81', color: '#04130c', padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 900, letterSpacing: '0.04em' }}>
+            <span style={{ background: 'var(--leaf)', color: '#04130c', padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 900, letterSpacing: '0.04em' }}>
               RESTORED 6-SEASON OPTIMIZER
             </span>
-            <span style={{ fontSize: 12, color: '#94a3b8' }}>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               Solver: <strong>PuLP CBC Branch-and-Bound ({activePlanData.solverStatus})</strong>
             </span>
-            <span style={{ fontSize: 12, color: '#38bdf8' }}>
+            <span style={{ fontSize: 12, color: 'var(--water)' }}>
               Parcel: <strong>{activeField?.name || 'বগুড়া ডেমো খামার (১০ হেক্টর) [DEMO]'}</strong> ({fieldAreaHa} ha)
             </span>
           </div>
 
-          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.02em' }}>
+          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em' }}>
             {lang === 'bn' ? '🌾 ৬-মৌসুমের ফসল সুপারিশ ও আবর্তন পরিকল্পনা (MILP)' : '🌾 6-Season Crop Recommendation & Rotation Planner (MILP)'}
           </h1>
 
-          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94a3b8', maxWidth: 880, lineHeight: 1.5 }}>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)', maxWidth: 880, lineHeight: 1.5 }}>
             {lang === 'bn'
               ? '৩ বছরের ৬টি ধারাবাহিক মৌসুমে (Y1_S1 থেকে Y3_S2) সর্বোচ্চ লাভ, ভূগর্ভস্থ পানি সাশ্রয় এবং মাটির নাইট্রোজেন বৃদ্ধিতে গাণিতিক অপ্টিমাইজেশন (PuLP CBC Solver) ভিত্তিক পূর্ণাঙ্গ ফসল পরিকল্পনা ও বৈজ্ঞানিক ব্যাখ্যা।'
               : 'Multi-period Mixed Integer Linear Programming (PuLP CBC) solving simultaneously across 6 consecutive agricultural seasons (Y1_S1 through Y3_S2). Balances gross margin, water conservation, and soil health with strict legume BNF interval and botanical alternation constraints.'}
@@ -352,7 +352,7 @@ export function SixSeasonRecommendationView({
             size="md"
             loading={isSimulating}
             onClick={handleRunSimulation}
-            style={{ fontWeight: 800, background: 'linear-gradient(135deg, #00df81 0%, #00a860 100%)', color: '#04130c' }}
+            style={{ fontWeight: 800, background: 'linear-gradient(135deg, var(--leaf) 0%, #00a860 100%)', color: '#04130c' }}
           >
             ▶ {lang === 'bn' ? '৬-মৌসুমের পরিকল্পনা চালান' : 'Run 6-Season Simulation'}
           </GlassButton>
@@ -397,29 +397,29 @@ export function SixSeasonRecommendationView({
 
       {/* Alerts */}
       {simulationSuccessMsg && (
-        <div style={{ marginBottom: 16, padding: '10px 16px', borderRadius: 10, background: 'rgba(0, 223, 129, 0.12)', border: '1px solid rgba(0, 223, 129, 0.3)', color: '#00df81', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ marginBottom: 16, padding: '10px 16px', borderRadius: 10, background: 'rgba(0, 223, 129, 0.12)', border: '1px solid rgba(0, 223, 129, 0.3)', color: 'var(--leaf)', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span>✓ {simulationSuccessMsg}</span>
-          <button type="button" onClick={() => setSimulationSuccessMsg('')} style={{ background: 'transparent', border: 'none', color: '#00df81', cursor: 'pointer', fontSize: 14 }}>✕</button>
+          <button type="button" onClick={() => setSimulationSuccessMsg('')} style={{ background: 'transparent', border: 'none', color: 'var(--leaf)', cursor: 'pointer', fontSize: 14 }}>✕</button>
         </div>
       )}
       {errorMessage && (
-        <div style={{ marginBottom: 16, padding: '10px 16px', borderRadius: 10, background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', fontSize: 13, fontWeight: 700 }}>
+        <div style={{ marginBottom: 16, padding: '10px 16px', borderRadius: 10, background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--alert)', fontSize: 13, fontWeight: 700 }}>
           ⚠️ {errorMessage}
         </div>
       )}
 
       {/* 2. Strategy Profiles Selector */}
-      <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 18, marginBottom: 20, boxShadow: 'var(--glass-shadow)' }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 18, marginBottom: 20, boxShadow: 'var(--glass-shadow)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#f8fafc' }}>
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: 'var(--text)' }}>
               🎯 {lang === 'bn' ? 'অপ্টিমাইজেশন কৌশল ও ওজন নির্বাচন (MILP Strategy Profiles)' : 'Optimization Strategy Profiles (Objective Weights)'}
             </h3>
-            <p style={{ margin: '2px 0 0', fontSize: 12, color: '#94a3b8' }}>
+            <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--text-muted)' }}>
               {lang === 'bn' ? 'যেকোনো কৌশল নির্বাচন করে ৬-মৌসুমের ফলাফল ও আবর্তন তুলনা করুন:' : 'Select a primary strategy below to solve for alternative multi-season objectives:'}
             </p>
           </div>
-          <span style={{ fontSize: 12, color: '#38bdf8', fontWeight: 700 }}>
+          <span style={{ fontSize: 12, color: 'var(--water)', fontWeight: 700 }}>
             {lang === 'bn' ? 'সক্রিয় কৌশল: ' : 'Active Strategy: '} <strong>{STRATEGY_DEFINITIONS[selectedStrategy]?.[lang === 'bn' ? 'titleBn' : 'titleEn']}</strong>
           </span>
         </div>
@@ -449,7 +449,7 @@ export function SixSeasonRecommendationView({
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: 4 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontSize: 18 }}>{strat.icon}</span>
-                    <strong style={{ fontSize: 13, color: isSelected ? strat.color : '#f8fafc' }}>
+                    <strong style={{ fontSize: 13, color: isSelected ? strat.color : 'var(--text)' }}>
                       {strat[lang === 'bn' ? 'titleBn' : 'titleEn']}
                     </strong>
                   </div>
@@ -459,15 +459,15 @@ export function SixSeasonRecommendationView({
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: 11, color: '#94a3b8', margin: '4px 0 8px', lineHeight: 1.35 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', margin: '4px 0 8px', lineHeight: 1.35 }}>
                   {strat[lang === 'bn' ? 'summaryBn' : 'summaryEn']}
                 </div>
                 <div style={{ fontSize: 10.5, fontWeight: 700, color: '#cbd5e1', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  <span style={{ color: '#00df81' }}>{Math.round(strat.weights.profit * 100)}% {lang === 'bn' ? 'মুনাফা' : 'Profit'}</span>
+                  <span style={{ color: 'var(--leaf)' }}>{Math.round(strat.weights.profit * 100)}% {lang === 'bn' ? 'মুনাফা' : 'Profit'}</span>
                   <span>•</span>
-                  <span style={{ color: '#38bdf8' }}>{Math.round(strat.weights.water * 100)}% {lang === 'bn' ? 'পানি' : 'Water'}</span>
+                  <span style={{ color: 'var(--water)' }}>{Math.round(strat.weights.water * 100)}% {lang === 'bn' ? 'পানি' : 'Water'}</span>
                   <span>•</span>
-                  <span style={{ color: '#fbbf24' }}>{Math.round(strat.weights.soil * 100)}% {lang === 'bn' ? 'মাটি' : 'Soil'}</span>
+                  <span style={{ color: 'var(--sun)' }}>{Math.round(strat.weights.soil * 100)}% {lang === 'bn' ? 'মাটি' : 'Soil'}</span>
                 </div>
               </button>
             );
@@ -477,50 +477,50 @@ export function SixSeasonRecommendationView({
 
       {/* 3. 6-Season Aggregate KPI Highlights */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 22 }}>
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
-          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
+          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             {lang === 'bn' ? '৬-মৌসুমের মোট প্রত্যাশিত ফলন' : '6-SEASON TOTAL HARVEST'}
           </span>
-          <div style={{ fontSize: 24, fontWeight: 900, color: '#00df81', marginTop: 4 }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--leaf)', marginTop: 4 }}>
             {aggregateMetrics.totalHarvestTons} <span style={{ fontSize: 13, fontWeight: 600 }}>টন (tons)</span>
           </div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
             {fieldAreaHa} হেক্টর খামারে গড় {aggregateMetrics.avgYieldTonHa} t/ha
           </div>
         </div>
 
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
-          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
+          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             {lang === 'bn' ? '৬-মৌসুমের মোট নিট লাভ' : '6-SEASON GROSS MARGIN'}
           </span>
-          <div style={{ fontSize: 22, fontWeight: 900, color: '#38bdf8', marginTop: 4 }}>
+          <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--water)', marginTop: 4 }}>
             {formatCurrency(activePlanData.grossMargin, lang)} <span style={{ fontSize: 12, fontWeight: 600 }}>/ha</span>
           </div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
             মোট খামারে: {formatCurrency(aggregateMetrics.totalParcelRevenueBdt, lang)}
           </div>
         </div>
 
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
-          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
+          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             {lang === 'bn' ? 'পানি সাশ্রয় সূচক' : 'WATER CONSERVATION'}
           </span>
           <div style={{ fontSize: 24, fontWeight: 900, color: '#0284c7', marginTop: 4 }}>
             {activePlanData.waterScore.toFixed(2)} <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
           </div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
             ৬ মৌসুমে মোট সেচ চাহিদা: {aggregateMetrics.totalWaterReqMm} mm
           </div>
         </div>
 
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
-          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
+          <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             {lang === 'bn' ? 'মাটির স্বাস্থ্য ও জৈব উর্বরতা' : 'SOIL BIOLOGY INDEX'}
           </span>
-          <div style={{ fontSize: 24, fontWeight: 900, color: '#fbbf24', marginTop: 4 }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--sun)', marginTop: 4 }}>
             {activePlanData.soilScore.toFixed(2)} <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
           </div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
             ডাল/BNF সংবন্ধন: {aggregateMetrics.legumeCount} / ৬ মৌসুম (শর্ত পূরিত ✓)
           </div>
         </div>
@@ -538,9 +538,9 @@ export function SixSeasonRecommendationView({
               fontSize: 12.5,
               fontWeight: 800,
               cursor: 'pointer',
-              border: viewMode === 'recommendations' ? '1px solid #00df81' : '1px solid var(--glass-border)',
+              border: viewMode === 'recommendations' ? '1px solid var(--leaf)' : '1px solid var(--glass-border)',
               background: viewMode === 'recommendations' ? 'rgba(0, 223, 129, 0.2)' : 'rgba(15, 23, 42, 0.45)',
-              color: viewMode === 'recommendations' ? '#00df81' : '#94a3b8'
+              color: viewMode === 'recommendations' ? 'var(--leaf)' : 'var(--text-muted)'
             }}
           >
             🌾 {lang === 'bn' ? '৬-মৌসুমের সুপারিশ কার্ড' : '6-Season Recommendation Cards'}
@@ -554,9 +554,9 @@ export function SixSeasonRecommendationView({
               fontSize: 12.5,
               fontWeight: 800,
               cursor: 'pointer',
-              border: viewMode === 'comparison' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+              border: viewMode === 'comparison' ? '1px solid var(--water)' : '1px solid var(--glass-border)',
               background: viewMode === 'comparison' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.45)',
-              color: viewMode === 'comparison' ? '#38bdf8' : '#94a3b8'
+              color: viewMode === 'comparison' ? 'var(--water)' : 'var(--text-muted)'
             }}
           >
             ⚖️ {lang === 'bn' ? '৪-কৌশল তুলনা টেবিল' : '4-Strategy Comparison Matrix'}
@@ -570,9 +570,9 @@ export function SixSeasonRecommendationView({
               fontSize: 12.5,
               fontWeight: 800,
               cursor: 'pointer',
-              border: viewMode === 'timeline' ? '1px solid #fbbf24' : '1px solid var(--glass-border)',
+              border: viewMode === 'timeline' ? '1px solid var(--sun)' : '1px solid var(--glass-border)',
               background: viewMode === 'timeline' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(15, 23, 42, 0.45)',
-              color: viewMode === 'timeline' ? '#fbbf24' : '#94a3b8'
+              color: viewMode === 'timeline' ? 'var(--sun)' : 'var(--text-muted)'
             }}
           >
             📈 {lang === 'bn' ? '৩-বছরের টাইমলাইন ট্রাজেক্টরি' : '3-Year Visual Timeline'}
@@ -586,16 +586,16 @@ export function SixSeasonRecommendationView({
               fontSize: 12.5,
               fontWeight: 800,
               cursor: 'pointer',
-              border: viewMode === '3d_trajectory' ? '1px solid #00df81' : '1px solid var(--glass-border)',
+              border: viewMode === '3d_trajectory' ? '1px solid var(--leaf)' : '1px solid var(--glass-border)',
               background: viewMode === '3d_trajectory' ? 'rgba(0, 223, 129, 0.2)' : 'rgba(15, 23, 42, 0.45)',
-              color: viewMode === '3d_trajectory' ? '#00df81' : '#94a3b8'
+              color: viewMode === '3d_trajectory' ? 'var(--leaf)' : 'var(--text-muted)'
             }}
           >
             🌐 {lang === 'bn' ? '৩ডি আবর্তন ট্রাজেক্টরি' : '3D Rotation Trajectory'}
           </button>
         </div>
 
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>
+        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
           {lang === 'bn' ? 'প্রতিটি কার্ডে ক্লিক করে বিস্তারিত বৈজ্ঞানিক বিশ্লেষণ দেখুন' : 'Click any recommendation card to inspect detailed agronomic parameters'}
         </span>
       </div>
@@ -614,7 +614,7 @@ export function SixSeasonRecommendationView({
                   backdropFilter: 'var(--glass-blur)',
                   WebkitBackdropFilter: 'var(--glass-blur)',
                   borderRadius: 14,
-                  border: isSelected ? '2px solid #00df81' : '1px solid var(--glass-border)',
+                  border: isSelected ? '2px solid var(--leaf)' : '1px solid var(--glass-border)',
                   boxShadow: isSelected ? '0 6px 20px rgba(0, 223, 129, 0.25)' : 'var(--glass-shadow)',
                   padding: 16,
                   cursor: 'pointer',
@@ -628,15 +628,15 @@ export function SixSeasonRecommendationView({
                   {/* Season Badge & Period Header */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: rec.seasonType === 'dry' ? 'rgba(251, 191, 36, 0.18)' : 'rgba(56, 189, 248, 0.18)', color: rec.seasonType === 'dry' ? '#fbbf24' : '#38bdf8', padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 800 }}>
+                      <span style={{ background: rec.seasonType === 'dry' ? 'rgba(251, 191, 36, 0.18)' : 'rgba(56, 189, 248, 0.18)', color: rec.seasonType === 'dry' ? 'var(--sun)' : 'var(--water)', padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 800 }}>
                         {rec.key}
                       </span>
-                      <strong style={{ fontSize: 13, color: '#f8fafc' }}>
+                      <strong style={{ fontSize: 13, color: 'var(--text)' }}>
                         {rec[lang === 'bn' ? 'nameBn' : 'nameEn']}
                       </strong>
                     </div>
                     {rec.cropMeta.is_legume && (
-                      <span style={{ background: 'rgba(0, 223, 129, 0.2)', color: '#00df81', padding: '2px 6px', borderRadius: 6, fontSize: 10.5, fontWeight: 900 }}>
+                      <span style={{ background: 'rgba(0, 223, 129, 0.2)', color: 'var(--leaf)', padding: '2px 6px', borderRadius: 6, fontSize: 10.5, fontWeight: 900 }}>
                         🌱 BNF Legume
                       </span>
                     )}
@@ -646,10 +646,10 @@ export function SixSeasonRecommendationView({
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: '1px solid var(--glass-border)' }}>
                     <span style={{ fontSize: 32 }}>{rec.cropMeta.icon}</span>
                     <div>
-                      <h4 style={{ margin: 0, fontSize: 17, fontWeight: 900, color: '#00df81' }}>
+                      <h4 style={{ margin: 0, fontSize: 17, fontWeight: 900, color: 'var(--leaf)' }}>
                         {rec.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}
                       </h4>
-                      <span style={{ fontSize: 11.5, color: '#94a3b8' }}>
+                      <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
                         {rec.cropMeta.family} • {rec.durationDays} {lang === 'bn' ? 'দিন' : 'days'} • {lang === 'bn' ? 'পানি চাহিদা: ' : 'Water: '}{rec.waterReqMm} mm
                       </span>
                     </div>
@@ -657,7 +657,7 @@ export function SixSeasonRecommendationView({
 
                   {/* Agronomic Rationale (Why Selected?) */}
                   <div style={{ marginBottom: 12, background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, border: '1px solid var(--glass-border)' }}>
-                    <span style={{ display: 'block', fontSize: 10.5, fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', marginBottom: 2 }}>
+                    <span style={{ display: 'block', fontSize: 10.5, fontWeight: 800, color: 'var(--water)', textTransform: 'uppercase', marginBottom: 2 }}>
                       {lang === 'bn' ? 'কেন এই সুপারিশ? (Agronomic Rationale):' : 'Why Recommended? (Agronomic Rationale):'}
                     </span>
                     <p style={{ margin: 0, fontSize: 12, color: '#cbd5e1', lineHeight: 1.4 }}>
@@ -668,34 +668,34 @@ export function SixSeasonRecommendationView({
                   {/* Estimated Production & Economic Grid */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: '#94a3b8' }}>{lang === 'bn' ? 'অনুমিত ফলন:' : 'Predicted Yield:'}</span>
-                      <strong style={{ color: '#00df81', fontSize: 13 }}>{rec.yieldTonHa} t/ha</strong> <span style={{ fontSize: 10.5, color: '#94a3b8' }}>({rec.yieldMaundBigha} md/bg)</span>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'অনুমিত ফলন:' : 'Predicted Yield:'}</span>
+                      <strong style={{ color: 'var(--leaf)', fontSize: 13 }}>{rec.yieldTonHa} t/ha</strong> <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>({rec.yieldMaundBigha} md/bg)</span>
                     </div>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: '#94a3b8' }}>{lang === 'bn' ? 'মোট উৎপাদন:' : 'Total Harvest:'}</span>
-                      <strong style={{ color: '#f8fafc', fontSize: 13 }}>{rec.totalHarvestTons} tons</strong>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'মোট উৎপাদন:' : 'Total Harvest:'}</span>
+                      <strong style={{ color: 'var(--text)', fontSize: 13 }}>{rec.totalHarvestTons} tons</strong>
                     </div>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: '#94a3b8' }}>{lang === 'bn' ? 'প্রত্যাশিত লাভ/ha:' : 'Net Profit/ha:'}</span>
-                      <strong style={{ color: '#38bdf8', fontSize: 12.5 }}>{formatCurrency(rec.netProfitBdtHa, lang)}</strong>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'প্রত্যাশিত লাভ/ha:' : 'Net Profit/ha:'}</span>
+                      <strong style={{ color: 'var(--water)', fontSize: 12.5 }}>{formatCurrency(rec.netProfitBdtHa, lang)}</strong>
                     </div>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: '#94a3b8' }}>{lang === 'bn' ? 'মোট খামার লাভ:' : 'Parcel Profit:'}</span>
-                      <strong style={{ color: '#fbbf24', fontSize: 12.5 }}>{formatCurrency(rec.totalParcelProfitBdt, lang)}</strong>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'মোট খামার লাভ:' : 'Parcel Profit:'}</span>
+                      <strong style={{ color: 'var(--sun)', fontSize: 12.5 }}>{formatCurrency(rec.totalParcelProfitBdt, lang)}</strong>
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginTop: 14, paddingTop: 10, borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 11, color: '#94a3b8' }}>
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                     {lang === 'bn' ? 'অনিশ্চয়তা: ' : 'Uncertainty: '} ±{rec.uncertaintyTonHa} t/ha
                   </span>
                   <button
                     type="button"
                     style={{
-                      background: isSelected ? '#00df81' : 'transparent',
-                      color: isSelected ? '#04130c' : '#00df81',
-                      border: isSelected ? 'none' : '1px solid #00df81',
+                      background: isSelected ? 'var(--leaf)' : 'transparent',
+                      color: isSelected ? '#04130c' : 'var(--leaf)',
+                      border: isSelected ? 'none' : '1px solid var(--leaf)',
                       padding: '4px 10px',
                       borderRadius: 6,
                       fontSize: 11,
@@ -714,8 +714,8 @@ export function SixSeasonRecommendationView({
 
       {/* 6. VIEW B: 4-STRATEGY COMPARISON MATRIX TABLE */}
       {viewMode === 'comparison' && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 20, marginBottom: 24, boxShadow: 'var(--glass-shadow)', overflowX: 'auto' }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 900, color: '#f8fafc' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 20, marginBottom: 24, boxShadow: 'var(--glass-shadow)', overflowX: 'auto' }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 900, color: 'var(--text)' }}>
             ⚖️ {lang === 'bn' ? '৪টি এমআইএলপি কৌশলের সরাসরি তুলনামূলক ম্যাট্রিক্স' : 'Side-by-Side 4-Strategy Multi-Objective Comparison Matrix'}
           </h3>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12.5 }}>
@@ -748,7 +748,7 @@ export function SixSeasonRecommendationView({
                     <td style={{ padding: '12px 14px', fontWeight: 800 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span>{stratMeta.icon}</span>
-                        <span style={{ color: isSelected ? stratMeta.color : '#f8fafc' }}>
+                        <span style={{ color: isSelected ? stratMeta.color : 'var(--text)' }}>
                           {stratMeta[lang === 'bn' ? 'titleBn' : 'titleEn']}
                         </span>
                       </div>
@@ -771,23 +771,23 @@ export function SixSeasonRecommendationView({
                       </div>
                     </td>
 
-                    <td style={{ padding: '12px 14px', fontWeight: 800, color: '#00df81' }}>
+                    <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--leaf)' }}>
                       {formatCurrency(data.gross_margin_bdt_per_ha, lang)}
                     </td>
 
-                    <td style={{ padding: '12px 14px', fontWeight: 800, color: '#38bdf8' }}>
+                    <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--water)' }}>
                       {data.water_score.toFixed(2)} / 6.0
                     </td>
 
-                    <td style={{ padding: '12px 14px', fontWeight: 800, color: '#fbbf24' }}>
+                    <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--sun)' }}>
                       {data.soil_score.toFixed(2)} / 6.0
                     </td>
 
-                    <td style={{ padding: '12px 14px', fontWeight: 900, color: '#f8fafc' }}>
+                    <td style={{ padding: '12px 14px', fontWeight: 900, color: 'var(--text)' }}>
                       {data.composite_score.toFixed(3)}
                     </td>
 
-                    <td style={{ padding: '12px 14px', fontSize: 11, color: '#00df81', fontWeight: 700 }}>
+                    <td style={{ padding: '12px 14px', fontSize: 11, color: 'var(--leaf)', fontWeight: 700 }}>
                       ✓ Legume BNF (≥1/3s)<br />✓ Family Alternation
                     </td>
 
@@ -802,7 +802,7 @@ export function SixSeasonRecommendationView({
                           fontWeight: 800,
                           cursor: 'pointer',
                           background: isSelected ? stratMeta.color : 'rgba(15, 23, 42, 0.6)',
-                          color: isSelected ? '#04130c' : '#f8fafc',
+                          color: isSelected ? '#04130c' : 'var(--text)',
                           border: isSelected ? 'none' : '1px solid var(--glass-border)'
                         }}
                       >
@@ -819,8 +819,8 @@ export function SixSeasonRecommendationView({
 
       {/* 7. VIEW C: 3-YEAR VISUAL TIMELINE TRAJECTORY */}
       {viewMode === 'timeline' && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, marginBottom: 24, boxShadow: 'var(--glass-shadow)' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 900, color: '#f8fafc' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, marginBottom: 24, boxShadow: 'var(--glass-shadow)' }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 900, color: 'var(--text)' }}>
             📈 {lang === 'bn' ? '৩-বছরের ৬-মৌসুম আবর্তন ট্রাজেক্টরি সময়রেখা' : '3-Year (6-Season) Multi-Period Optimal Rotation Schedule'}
           </h3>
 
@@ -832,36 +832,36 @@ export function SixSeasonRecommendationView({
             ].map(y => (
               <div key={y.yearNum} style={{ background: 'rgba(15, 23, 42, 0.55)', borderRadius: 12, border: '1px solid var(--glass-border)', padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, borderBottom: '1px solid var(--glass-border)', paddingBottom: 8 }}>
-                  <strong style={{ fontSize: 14, color: '#38bdf8' }}>{y[lang === 'bn' ? 'labelBn' : 'labelEn']}</strong>
-                  <span style={{ fontSize: 11, background: '#1e293b', padding: '2px 8px', borderRadius: 999, color: '#94a3b8' }}>Year {y.yearNum}</span>
+                  <strong style={{ fontSize: 14, color: 'var(--water)' }}>{y[lang === 'bn' ? 'labelBn' : 'labelEn']}</strong>
+                  <span style={{ fontSize: 11, background: '#1e293b', padding: '2px 8px', borderRadius: 999, color: 'var(--text-muted)' }}>Year {y.yearNum}</span>
                 </div>
 
                 {/* Season 1 */}
-                <div style={{ marginBottom: 10, background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s1.cropMeta.is_legume ? '3px solid #00df81' : '3px solid #fbbf24' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>
+                <div style={{ marginBottom: 10, background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s1.cropMeta.is_legume ? '3px solid var(--leaf)' : '3px solid var(--sun)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
                     <span>Season 1 (Dry / Rabi)</span>
-                    {y.s1.cropMeta.is_legume && <span style={{ color: '#00df81', fontWeight: 800 }}>🌱 BNF Fixer</span>}
+                    {y.s1.cropMeta.is_legume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
                   </div>
-                  <strong style={{ fontSize: 14, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <strong style={{ fontSize: 14, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span>{y.s1.cropMeta.icon}</span>
                     <span>{y.s1.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}</span>
                   </strong>
-                  <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
                     {y.s1.durationDays} days • {y.s1.waterReqMm} mm • Yield {y.s1.yieldTonHa} t/ha
                   </div>
                 </div>
 
                 {/* Season 2 */}
-                <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s2.cropMeta.is_legume ? '3px solid #00df81' : '3px solid #38bdf8' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s2.cropMeta.is_legume ? '3px solid var(--leaf)' : '3px solid var(--water)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
                     <span>Season 2 (Wet / Kharif)</span>
-                    {y.s2.cropMeta.is_legume && <span style={{ color: '#00df81', fontWeight: 800 }}>🌱 BNF Fixer</span>}
+                    {y.s2.cropMeta.is_legume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
                   </div>
-                  <strong style={{ fontSize: 14, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <strong style={{ fontSize: 14, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span>{y.s2.cropMeta.icon}</span>
                     <span>{y.s2.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}</span>
                   </strong>
-                  <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
                     {y.s2.durationDays} days • {y.s2.waterReqMm} mm • Yield {y.s2.yieldTonHa} t/ha
                   </div>
                 </div>
@@ -898,13 +898,13 @@ export function SixSeasonRecommendationView({
 
       {/* 8. Selected Season Deep-Dive Parameter Inspector */}
       {activeSeason && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '2px solid #00df81', padding: 22, marginBottom: 22, boxShadow: '0 8px 30px rgba(0, 223, 129, 0.15)' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 16, border: '2px solid var(--leaf)', padding: 22, marginBottom: 22, boxShadow: '0 8px 30px rgba(0, 223, 129, 0.15)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 14, borderBottom: '1px solid var(--glass-border)', paddingBottom: 12 }}>
             <div>
-              <span style={{ fontSize: 11, fontWeight: 900, color: '#00df81', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <span style={{ fontSize: 11, fontWeight: 900, color: 'var(--leaf)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 🔬 {lang === 'bn' ? 'নির্বাচিত মৌসুমের গভীর বৈজ্ঞানিক বিশ্লেষণ' : 'SELECTED SEASON SCIENTIFIC INSPECTOR'}
               </span>
-              <h3 style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
+              <h3 style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 900, color: 'var(--text)' }}>
                 {activeSeason[lang === 'bn' ? 'nameBn' : 'nameEn']} — {activeSeason.cropMeta.icon} {activeSeason.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}
               </h3>
             </div>
@@ -920,8 +920,8 @@ export function SixSeasonRecommendationView({
                     fontSize: 11,
                     fontWeight: 800,
                     cursor: 'pointer',
-                    background: p.key === selectedPeriodKey ? '#00df81' : 'rgba(15, 23, 42, 0.6)',
-                    color: p.key === selectedPeriodKey ? '#04130c' : '#94a3b8',
+                    background: p.key === selectedPeriodKey ? 'var(--leaf)' : 'rgba(15, 23, 42, 0.6)',
+                    color: p.key === selectedPeriodKey ? '#04130c' : 'var(--text-muted)',
                     border: '1px solid var(--glass-border)'
                   }}
                 >
@@ -933,44 +933,44 @@ export function SixSeasonRecommendationView({
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-              <span style={{ fontSize: 11, color: '#94a3b8' }}>{lang === 'bn' ? 'উদ্ভিদ পরিবার ও জাত' : 'Botanical Family & Traits'}</span>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#f8fafc', marginTop: 2 }}>{activeSeason.cropMeta.family}</div>
-              <div style={{ fontSize: 11.5, color: '#00df81', marginTop: 4 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'উদ্ভিদ পরিবার ও জাত' : 'Botanical Family & Traits'}</span>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', marginTop: 2 }}>{activeSeason.cropMeta.family}</div>
+              <div style={{ fontSize: 11.5, color: 'var(--leaf)', marginTop: 4 }}>
                 {activeSeason.cropMeta.is_legume ? '✓ Biological Nitrogen Fixer (BNF)' : 'Non-legume rotation partner'}
               </div>
             </div>
 
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-              <span style={{ fontSize: 11, color: '#94a3b8' }}>{lang === 'bn' ? 'পানি ও বৃদ্ধি কাল' : 'Hydrological Demand & Duration'}</span>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#38bdf8', marginTop: 2 }}>{activeSeason.waterReqMm} mm ({activeSeason.durationDays} days)</div>
-              <div style={{ fontSize: 11.5, color: '#94a3b8', marginTop: 4 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'পানি ও বৃদ্ধি কাল' : 'Hydrological Demand & Duration'}</span>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--water)', marginTop: 2 }}>{activeSeason.waterReqMm} mm ({activeSeason.durationDays} days)</div>
+              <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
                 {activeSeason.seasonType === 'dry' ? 'Rabi dry season irrigation managed' : 'Monsoon rainfall supported'}
               </div>
             </div>
 
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-              <span style={{ fontSize: 11, color: '#94a3b8' }}>{lang === 'bn' ? 'অনুমিত ফলন ও অনিশ্চয়তা' : 'Yield Prediction & RMSE Bound'}</span>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#00df81', marginTop: 2 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'অনুমিত ফলন ও অনিশ্চয়তা' : 'Yield Prediction & RMSE Bound'}</span>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--leaf)', marginTop: 2 }}>
                 {activeSeason.yieldTonHa} t/ha (±{activeSeason.uncertaintyTonHa} t/ha)
               </div>
-              <div style={{ fontSize: 11.5, color: '#94a3b8', marginTop: 4 }}>
+              <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
                 Range: {activeSeason.minYieldTonHa} — {activeSeason.maxYieldTonHa} t/ha
               </div>
             </div>
 
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-              <span style={{ fontSize: 11, color: '#94a3b8' }}>{lang === 'bn' ? 'অর্থনৈতিক নিট মার্জিন' : 'Economic Net Return'}</span>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fbbf24', marginTop: 2 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'অর্থনৈতিক নিট মার্জিন' : 'Economic Net Return'}</span>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--sun)', marginTop: 2 }}>
                 {formatCurrency(activeSeason.netProfitBdtHa, lang)} /ha
               </div>
-              <div style={{ fontSize: 11.5, color: '#94a3b8', marginTop: 4 }}>
+              <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
                 খামারে মোট: {formatCurrency(activeSeason.totalParcelProfitBdt, lang)} ({fieldAreaHa} ha)
               </div>
             </div>
           </div>
 
           <div style={{ marginTop: 14, background: 'rgba(15, 23, 42, 0.4)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-            <span style={{ fontSize: 11.5, fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: 11.5, fontWeight: 800, color: 'var(--water)', textTransform: 'uppercase' }}>
               {lang === 'bn' ? 'সিদ্ধান্তের বিস্তারিত ব্যাখ্যা (Decision Explanation):' : 'Mathematical Decision Explanation:'}
             </span>
             <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#cbd5e1', lineHeight: 1.5 }}>
@@ -981,8 +981,8 @@ export function SixSeasonRecommendationView({
       )}
 
       {/* 9. Scientific Methodology, Agronomic Caveats & Data Provenance */}
-      <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: 18, color: '#94a3b8', fontSize: 12, lineHeight: 1.6 }}>
-        <strong style={{ color: '#38bdf8', fontSize: 13, display: 'block', marginBottom: 4 }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: 18, color: 'var(--text-muted)', fontSize: 12, lineHeight: 1.6 }}>
+        <strong style={{ color: 'var(--water)', fontSize: 13, display: 'block', marginBottom: 4 }}>
           🔬 বৈজ্ঞানিক ভিত্তি ও স্বচ্ছতা নীতিমালা (Scientific Provenance & Agronomic Caveats):
         </strong>
         <p style={{ margin: '0 0 6px' }}>

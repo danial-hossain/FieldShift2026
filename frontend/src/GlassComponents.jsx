@@ -129,11 +129,9 @@ export function GlassMetricCard({
     <div
       className={`glass-metric-card ${className}`}
       style={{
-        background: 'var(--glass-bg-secondary)',
-        backdropFilter: 'var(--glass-blur-subtle)',
-        WebkitBackdropFilter: 'var(--glass-blur-subtle)',
-        border: '1px solid var(--glass-border)',
-        borderRadius: 12,
+        background: 'var(--surface-2)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-md)',
         padding: '14px 16px',
         display: 'flex',
         flexDirection: 'column',
@@ -152,7 +150,7 @@ export function GlassMetricCard({
       </div>
 
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 2 }}>
-        <strong style={{ fontSize: 22, fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.02em' }}>
+        <strong style={{ fontSize: 22, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em' }}>
           {value}
         </strong>
         {unit && (
@@ -214,12 +212,9 @@ export function GlassTabs({
         alignItems: 'center',
         gap: 4,
         padding: 4,
-        background: 'var(--glass-bg-primary)',
-        backdropFilter: 'var(--glass-blur)',
-        WebkitBackdropFilter: 'var(--glass-blur)',
-        border: '1px solid var(--glass-border)',
-        borderRadius: 10,
-        boxShadow: 'var(--glass-shadow)',
+        background: 'var(--surface-2)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-sm)',
         ...style
       }}
     >
@@ -237,10 +232,10 @@ export function GlassTabs({
               fontSize: 12.5,
               fontWeight: isActive ? 800 : 600,
               cursor: 'pointer',
-              background: isActive ? 'linear-gradient(135deg, rgba(0, 223, 129, 0.22) 0%, rgba(0, 168, 96, 0.18) 100%)' : 'transparent',
-              color: isActive ? '#00df81' : 'var(--text-muted)',
-              borderBottom: isActive ? '2px solid #00df81' : '2px solid transparent',
-              boxShadow: isActive ? '0 2px 8px rgba(0, 223, 129, 0.2)' : 'none',
+              background: isActive ? 'rgba(127, 176, 105, 0.15)' : 'transparent',
+              color: isActive ? 'var(--leaf)' : 'var(--text-muted)',
+              borderBottom: isActive ? '2px solid var(--leaf)' : '2px solid transparent',
+              boxShadow: 'none',
               transition: 'all 0.15s ease'
             }}
           >

@@ -111,7 +111,7 @@ export function NasaPlantingAdvisoryView({
               fontSize: 12,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: '#00df81',
+              color: 'var(--leaf)',
               fontWeight: 700,
               background: 'rgba(0, 223, 129, 0.1)',
               padding: '3px 8px',
@@ -124,7 +124,7 @@ export function NasaPlantingAdvisoryView({
             style={{
               marginLeft: 'auto',
               fontSize: 11,
-              color: prov?.data_mode === 'live_acquired_cache' ? '#38bdf8' : (prov?.data_mode === 'cache' ? '#00df81' : '#fbbf24'),
+              color: prov?.data_mode === 'live_acquired_cache' ? 'var(--water)' : (prov?.data_mode === 'cache' ? 'var(--leaf)' : '#fbbf24'),
               background: 'rgba(255, 255, 255, 0.06)',
               padding: '3px 8px',
               borderRadius: 12,
@@ -170,26 +170,26 @@ export function NasaPlantingAdvisoryView({
             )}
             <h1
               style={{
-                fontSize: '1.35rem',
-                lineHeight: 1.45,
+                fontSize: '28px',
+                lineHeight: 1.6,
                 margin: '0 0 8px 0',
-                color: '#f1f5f9',
-                fontWeight: 700,
+                color: 'var(--text)',
+                fontWeight: 600,
               }}
             >
               {lang === 'bn' ? rec?.bangla_headline : rec?.english_headline}
             </h1>
             {advisoryData?.status !== 'not_applicable' && rec?.status !== 'not_applicable' && (
-              <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ab0c4', lineHeight: 1.5 }}>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 {lang === 'bn' ? (
                   <>
-                    <strong style={{ color: '#00df81' }}>প্রস্তাবিত বীজতলা:</strong> {rec?.suggested_nursery_window_bn} &nbsp;|&nbsp;
-                    <strong style={{ color: '#38bdf8' }}> চারা রোপণ:</strong> {rec?.suggested_transplant_window_bn}
+                    <strong style={{ color: 'var(--leaf)' }}>প্রস্তাবিত বীজতলা:</strong> {rec?.suggested_nursery_window_bn} &nbsp;|&nbsp;
+                    <strong style={{ color: 'var(--water)' }}> চারা রোপণ:</strong> {rec?.suggested_transplant_window_bn}
                   </>
                 ) : (
                   <>
-                    <strong style={{ color: '#00df81' }}>Nursery Sowing:</strong> {rec?.suggested_nursery_window_en} &nbsp;|&nbsp;
-                    <strong style={{ color: '#38bdf8' }}> Transplanting:</strong> {rec?.suggested_transplant_window_en}
+                    <strong style={{ color: 'var(--leaf)' }}>Nursery Sowing:</strong> {rec?.suggested_nursery_window_en} &nbsp;|&nbsp;
+                    <strong style={{ color: 'var(--water)' }}> Transplanting:</strong> {rec?.suggested_transplant_window_en}
                   </>
                 )}
               </p>
@@ -202,15 +202,15 @@ export function NasaPlantingAdvisoryView({
       <div
         className="advisory-selectors-card"
         style={{
-          background: '#161d23',
-          border: '1px solid #222c36',
-          borderRadius: 12,
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-md)',
           padding: '16px 18px',
           marginBottom: 20,
         }}
       >
         <div style={{ marginBottom: 14 }}>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#9ab0c4', display: 'block', marginBottom: 8 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 8 }}>
             {lang === 'bn' ? '১. জেলা নির্বাচন করুন (Select District):' : '1. Select District:'}
           </label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -221,8 +221,8 @@ export function NasaPlantingAdvisoryView({
                 onClick={() => setDistrict(d.id)}
                 style={{
                   background: district === d.id ? 'rgba(0, 223, 129, 0.18)' : '#1c242c',
-                  border: district === d.id ? '1px solid #00df81' : '1px solid #2a3742',
-                  color: district === d.id ? '#00df81' : '#f1f5f9',
+                  border: district === d.id ? '1px solid var(--leaf)' : '1px solid #2a3742',
+                  color: district === d.id ? 'var(--leaf)' : 'var(--text)',
                   borderRadius: 8,
                   padding: '7px 14px',
                   fontSize: 13,
@@ -242,7 +242,7 @@ export function NasaPlantingAdvisoryView({
         </div>
 
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#9ab0c4', display: 'block', marginBottom: 8 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 8 }}>
             {lang === 'bn' ? '২. ধানের ফসল নির্বাচন করুন (Select Rice Crop):' : '2. Select Rice Crop:'}
           </label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -253,8 +253,8 @@ export function NasaPlantingAdvisoryView({
                 onClick={() => setCrop(c.id)}
                 style={{
                   background: crop === c.id ? 'rgba(56, 189, 248, 0.18)' : '#1c242c',
-                  border: crop === c.id ? '1px solid #38bdf8' : '1px solid #2a3742',
-                  color: crop === c.id ? '#38bdf8' : '#f1f5f9',
+                  border: crop === c.id ? '1px solid var(--water)' : '1px solid #2a3742',
+                  color: crop === c.id ? 'var(--water)' : 'var(--text)',
                   borderRadius: 8,
                   padding: '7px 14px',
                   fontSize: 13,
@@ -278,8 +278,8 @@ export function NasaPlantingAdvisoryView({
           {/* Card A: Historical Shift in Days & Statistics */}
           <div
             style={{
-              background: '#161d23',
-              border: '1px solid #222c36',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
               borderRadius: 12,
               padding: '18px 20px',
             }}
@@ -291,7 +291,7 @@ export function NasaPlantingAdvisoryView({
               <span
                 style={{
                   background: comp?.shift_days_median > 0 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(0, 223, 129, 0.15)',
-                  color: comp?.shift_days_median > 0 ? '#fbbf24' : '#00df81',
+                  color: comp?.shift_days_median > 0 ? '#fbbf24' : 'var(--leaf)',
                   border: comp?.shift_days_median > 0 ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid rgba(0, 223, 129, 0.3)',
                   padding: '2px 8px',
                   borderRadius: 6,
@@ -304,10 +304,10 @@ export function NasaPlantingAdvisoryView({
             </div>
 
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 10 }}>
-              <span style={{ fontSize: '2.5rem', fontWeight: 800, color: comp?.shift_days_median > 0 ? '#fbbf24' : '#00df81' }}>
+              <span style={{ fontSize: '2.5rem', fontWeight: 800, color: comp?.shift_days_median > 0 ? '#fbbf24' : 'var(--leaf)' }}>
                 {comp?.shift_days_median > 0 ? `+${comp?.shift_days_median}` : comp?.shift_days_median}
               </span>
-              <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#f1f5f9' }}>
+              <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text)' }}>
                 {lang === 'bn' ? 'দিন দেরিতে অনসেট' : 'Days Delayed'}
               </span>
             </div>
@@ -318,18 +318,18 @@ export function NasaPlantingAdvisoryView({
                 : `Median usable rainfall onset has shifted by ${comp?.shift_days_median} days in 2013-2025 compared to 2001-2012.`}
             </p>
 
-            <div style={{ background: '#1c242c', borderRadius: 8, padding: '10px 14px', fontSize: '0.82rem', color: '#9ab0c4' }}>
+            <div style={{ background: '#1c242c', borderRadius: 8, padding: '10px 14px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                 <span>{lang === 'bn' ? '২০০১–২০১২ মধ্যমা:' : '2001-2012 Median:'}</span>
-                <strong style={{ color: '#f1f5f9' }}>দিন {p1?.median_doy} ({p1?.valid_samples} বছর)</strong>
+                <strong style={{ color: 'var(--text)' }}>দিন {p1?.median_doy} ({p1?.valid_samples} বছর)</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                 <span>{lang === 'bn' ? '২০১৩–২০২৫ মধ্যমা:' : '2013-2025 Median:'}</span>
-                <strong style={{ color: '#f1f5f9' }}>দিন {p2?.median_doy} ({p2?.valid_samples} বছর)</strong>
+                <strong style={{ color: 'var(--text)' }}>দিন {p2?.median_doy} ({p2?.valid_samples} বছর)</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #2a3742', paddingTop: 4, marginTop: 4 }}>
                 <span>{lang === 'bn' ? 'ম্যান-হুইটনি U (p-মান):' : 'Mann-Whitney U (p-val):'}</span>
-                <span style={{ color: '#38bdf8' }}>U={comp?.mann_whitney_u}, p={comp?.p_value}</span>
+                <span style={{ color: 'var(--water)' }}>U={comp?.mann_whitney_u}, p={comp?.p_value}</span>
               </div>
             </div>
           </div>
@@ -337,8 +337,8 @@ export function NasaPlantingAdvisoryView({
           {/* Card B: Thermal Context (GDD) & Climate Evidence */}
           <div
             style={{
-              background: '#161d23',
-              border: '1px solid #222c36',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
               borderRadius: 12,
               padding: '18px 20px',
             }}
@@ -347,16 +347,16 @@ export function NasaPlantingAdvisoryView({
               <span style={{ fontSize: 13, fontWeight: 600, color: '#8a99a8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {lang === 'bn' ? 'তাপমাত্রা ও ডিগ্রি-ডে প্রসঙ্গ (GDD)' : 'Growing Degree Days (GDD)'}
               </span>
-              <span style={{ fontSize: 11, color: '#38bdf8', background: 'rgba(56, 189, 248, 0.1)', padding: '2px 8px', borderRadius: 6 }}>
+              <span style={{ fontSize: 11, color: 'var(--water)', background: 'rgba(56, 189, 248, 0.1)', padding: '2px 8px', borderRadius: 6 }}>
                 Base 10°C / Cap 35°C
               </span>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 10 }}>
-              <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#38bdf8' }}>
+              <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--water)' }}>
                 {gdd?.gdd_change > 0 ? `+${gdd?.gdd_change}` : gdd?.gdd_change}
               </span>
-              <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#f1f5f9' }}>
+              <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text)' }}>
                 {lang === 'bn' ? 'ডিগ্রি-ডে বৃদ্ধি (GDD)' : 'Seasonal GDD Delta'}
               </span>
             </div>
@@ -367,14 +367,14 @@ export function NasaPlantingAdvisoryView({
                 : `Accumulated thermal units increased by ${gdd?.gdd_change} GDD, accelerating growth and increasing water loss.`}
             </p>
 
-            <div style={{ background: '#1c242c', borderRadius: 8, padding: '10px 14px', fontSize: '0.82rem', color: '#9ab0c4' }}>
+            <div style={{ background: '#1c242c', borderRadius: 8, padding: '10px 14px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                 <span>{lang === 'bn' ? '২০০১–২০১২ গড় GDD:' : '2001-2012 Mean GDD:'}</span>
-                <strong style={{ color: '#f1f5f9' }}>{gdd?.period_1_mean_seasonal_gdd} °C-দিন</strong>
+                <strong style={{ color: 'var(--text)' }}>{gdd?.period_1_mean_seasonal_gdd} °C-দিন</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>{lang === 'bn' ? '২০১৩–২০২৫ গড় GDD:' : '2013-2025 Mean GDD:'}</span>
-                <strong style={{ color: '#f1f5f9' }}>{gdd?.period_2_mean_seasonal_gdd} °C-দিন</strong>
+                <strong style={{ color: 'var(--text)' }}>{gdd?.period_2_mean_seasonal_gdd} °C-দিন</strong>
               </div>
             </div>
           </div>
@@ -387,7 +387,7 @@ export function NasaPlantingAdvisoryView({
         <div
           className="sms-advisory-card"
           style={{
-            background: 'linear-gradient(135deg, #1c242c 0%, #161d23 100%)',
+            background: 'linear-gradient(135deg, #1c242c 0%, var(--surface) 100%)',
             border: '1px solid #2b3947',
             borderRadius: 12,
             padding: '16px 20px',
@@ -398,7 +398,7 @@ export function NasaPlantingAdvisoryView({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 18 }}>📱</span>
-              <strong style={{ fontSize: 13, color: '#f1f5f9', letterSpacing: '0.02em' }}>
+              <strong style={{ fontSize: 13, color: 'var(--text)', letterSpacing: '0.02em' }}>
                 {lang === 'bn' ? 'কৃষক মোবাইল এসএমএস সারসংক্ষেপ (১৬০ অক্ষরের নিচে)' : 'SMS-Length Bengali Farmer Summary (<160 chars)'}
               </strong>
             </div>
@@ -409,7 +409,7 @@ export function NasaPlantingAdvisoryView({
                 borderRadius: 4,
                 fontWeight: 600,
                 background: rec.sms_character_count <= 160 ? 'rgba(0, 223, 129, 0.15)' : 'rgba(248, 113, 113, 0.15)',
-                color: rec.sms_character_count <= 160 ? '#00df81' : '#f87171',
+                color: rec.sms_character_count <= 160 ? 'var(--leaf)' : '#f87171',
               }}
             >
               {rec.sms_character_count} / ১৬০ অক্ষর
@@ -418,13 +418,13 @@ export function NasaPlantingAdvisoryView({
 
           <div
             style={{
-              background: '#0e1318',
-              border: '1px solid #222c36',
+              background: 'var(--bg)',
+              border: '1px solid var(--border)',
               borderRadius: 8,
               padding: '14px 16px',
               fontFamily: 'monospace, sans-serif',
               fontSize: '0.95rem',
-              color: '#38bdf8',
+              color: 'var(--water)',
               lineHeight: 1.5,
               marginBottom: 10,
             }}
@@ -437,8 +437,8 @@ export function NasaPlantingAdvisoryView({
               type="button"
               onClick={handleCopySms}
               style={{
-                background: copiedSms ? '#00df81' : '#2a3742',
-                color: copiedSms ? '#0e1318' : '#f1f5f9',
+                background: copiedSms ? 'var(--leaf)' : '#2a3742',
+                color: copiedSms ? 'var(--bg)' : 'var(--text)',
                 border: 'none',
                 borderRadius: 6,
                 padding: '6px 14px',
@@ -461,14 +461,14 @@ export function NasaPlantingAdvisoryView({
       {rec?.recommended_varieties && (
         <div
           style={{
-            background: '#161d23',
-            border: '1px solid #222c36',
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
             borderRadius: 12,
             padding: '18px 20px',
             marginBottom: 20,
           }}
         >
-          <h2 style={{ fontSize: '1.05rem', margin: '0 0 14px 0', color: '#f1f5f9', fontWeight: 600 }}>
+          <h2 style={{ fontSize: '1.05rem', margin: '0 0 14px 0', color: 'var(--text)', fontWeight: 600 }}>
             {lang === 'bn' ? 'অনুকূল জাত ও সময় ব্যবস্থাপনা (BARI/BRRI Calibrated)' : 'Recommended Varieties & Variety Phenology'}
           </h2>
 
@@ -484,12 +484,12 @@ export function NasaPlantingAdvisoryView({
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                  <strong style={{ fontSize: 14, color: idx === 0 ? '#00df81' : '#f1f5f9' }}>{v.name}</strong>
-                  <span style={{ fontSize: 11, background: 'rgba(255, 255, 255, 0.08)', padding: '2px 6px', borderRadius: 4, color: '#9ab0c4' }}>
+                  <strong style={{ fontSize: 14, color: idx === 0 ? 'var(--leaf)' : 'var(--text)' }}>{v.name}</strong>
+                  <span style={{ fontSize: 11, background: 'rgba(255, 255, 255, 0.08)', padding: '2px 6px', borderRadius: 4, color: 'var(--text-muted)' }}>
                     {v.duration_days} দিন
                   </span>
                 </div>
-                <div style={{ fontSize: 12, color: '#38bdf8', marginBottom: 4, fontWeight: 500 }}>{v.role}</div>
+                <div style={{ fontSize: 12, color: 'var(--water)', marginBottom: 4, fontWeight: 500 }}>{v.role}</div>
                 <p style={{ margin: 0, fontSize: 12, color: '#8a99a8', lineHeight: 1.45 }}>{v.why}</p>
               </div>
             ))}
@@ -499,7 +499,7 @@ export function NasaPlantingAdvisoryView({
             <strong style={{ fontSize: 12, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 6 }}>
               {lang === 'bn' ? 'মাঠপর্যায়ের কৌশলগত সুপারিশ:' : 'Tactical Field Actions:'}
             </strong>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: '#9ab0c4', lineHeight: 1.6 }}>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>
               {rec.tactical_actions?.map((act, i) => (
                 <li key={i}>{act}</li>
               ))}
@@ -511,8 +511,8 @@ export function NasaPlantingAdvisoryView({
       {/* 6. SENSITIVITY ANALYSIS CONTROLS (±5 mm RAINFALL THRESHOLD SWEEPS) */}
       <div
         style={{
-          background: '#161d23',
-          border: '1px solid #222c36',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
           borderRadius: 12,
           padding: '18px 20px',
           marginBottom: 20,
@@ -520,7 +520,7 @@ export function NasaPlantingAdvisoryView({
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
           <div>
-            <h2 style={{ fontSize: '1.05rem', margin: 0, color: '#f1f5f9', fontWeight: 600 }}>
+            <h2 style={{ fontSize: '1.05rem', margin: 0, color: 'var(--text)', fontWeight: 600 }}>
               {lang === 'bn' ? 'সংবেদনশীলতা বিশ্লেষণ (Sensitivity Analysis: ±৫ মিমি)' : 'Sensitivity Analysis (Threshold ±5 mm)'}
             </h2>
             <span style={{ fontSize: 12, color: '#8a99a8' }}>
@@ -535,9 +535,9 @@ export function NasaPlantingAdvisoryView({
                 type="button"
                 onClick={() => setThresholdMm(th)}
                 style={{
-                  background: thresholdMm === th ? '#00df81' : '#1c242c',
-                  color: thresholdMm === th ? '#0e1318' : '#f1f5f9',
-                  border: thresholdMm === th ? '1px solid #00df81' : '1px solid #2a3742',
+                  background: thresholdMm === th ? 'var(--leaf)' : '#1c242c',
+                  color: thresholdMm === th ? 'var(--bg)' : 'var(--text)',
+                  border: thresholdMm === th ? '1px solid var(--leaf)' : '1px solid #2a3742',
                   borderRadius: 6,
                   padding: '5px 12px',
                   fontSize: 12,
@@ -559,16 +559,16 @@ export function NasaPlantingAdvisoryView({
                 key={idx}
                 style={{
                   background: s.threshold_mm === thresholdMm ? 'rgba(0, 223, 129, 0.08)' : '#1c242c',
-                  border: s.threshold_mm === thresholdMm ? '1px solid #00df81' : '1px solid #2a3742',
+                  border: s.threshold_mm === thresholdMm ? '1px solid var(--leaf)' : '1px solid #2a3742',
                   borderRadius: 8,
                   padding: '10px 14px',
                 }}
               >
                 <div style={{ fontSize: 11, color: '#8a99a8', marginBottom: 2 }}>থ্রেশহোল্ড {s.threshold_mm} mm</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: s.shift_days_median > 0 ? '#fbbf24' : '#00df81' }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: s.shift_days_median > 0 ? '#fbbf24' : 'var(--leaf)' }}>
                   {s.shift_days_median > 0 ? `+${s.shift_days_median}` : s.shift_days_median} দিন
                 </div>
-                <div style={{ fontSize: 11, color: '#9ab0c4', marginTop: 4 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
                   p-মান: {s.p_value} (নমুনা: {s.valid_samples_p1}/{s.valid_samples_p2})
                 </div>
               </div>
@@ -580,8 +580,8 @@ export function NasaPlantingAdvisoryView({
       {/* 7. EXPANDABLE METHODOLOGY, LIMITATIONS & DATA PROVENANCE */}
       <div
         style={{
-          background: '#161d23',
-          border: '1px solid #222c36',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
           borderRadius: 12,
           padding: '16px 20px',
           marginBottom: 20,
@@ -593,7 +593,7 @@ export function NasaPlantingAdvisoryView({
           style={{
             background: 'none',
             border: 'none',
-            color: '#f1f5f9',
+            color: 'var(--text)',
             fontSize: 14,
             fontWeight: 600,
             cursor: 'pointer',
@@ -605,16 +605,16 @@ export function NasaPlantingAdvisoryView({
           }}
         >
           <span>🔬 {lang === 'bn' ? 'গবেষণা পদ্ধতি, ডেটা প্রোভেন্যান্স ও সীমাবদ্ধতা' : 'Methodology, Data Provenance & Limitations'}</span>
-          <span style={{ fontSize: 12, color: '#00df81' }}>{showMethodology ? '▲ সংক্ষেপ করুন' : '▼ বিস্তারিত দেখুন'}</span>
+          <span style={{ fontSize: 12, color: 'var(--leaf)' }}>{showMethodology ? '▲ সংক্ষেপ করুন' : '▼ বিস্তারিত দেখুন'}</span>
         </button>
 
         {showMethodology && (
-          <div style={{ marginTop: 14, borderTop: '1px solid #222c36', paddingTop: 14, fontSize: '0.85rem', color: '#9ab0c4', lineHeight: 1.6 }}>
-            <h4 style={{ margin: '0 0 6px 0', color: '#f1f5f9' }}>অনসেট ও শুষ্ক স্পেল নির্ধারণের নিয়ম (Scientific Definition):</h4>
+          <div style={{ marginTop: 14, borderTop: '1px solid var(--border)', paddingTop: 14, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            <h4 style={{ margin: '0 0 6px 0', color: 'var(--text)' }}>অনসেট ও শুষ্ক স্পেল নির্ধারণের নিয়ম (Scientific Definition):</h4>
             <p style={{ margin: '0 0 10px 0' }}>{advisoryData?.methodology?.onset_rule || advisoryData?.methodology?.onset_definition}</p>
             <p style={{ margin: '0 0 10px 0' }}>{advisoryData?.methodology?.dry_spell_rule}</p>
 
-            <h4 style={{ margin: '12px 0 6px 0', color: '#f1f5f9' }}>ডেটা প্রোভেন্যান্স ও উৎস (Provenance):</h4>
+            <h4 style={{ margin: '12px 0 6px 0', color: 'var(--text)' }}>ডেটা প্রোভেন্যান্স ও উৎস (Provenance):</h4>
             <ul style={{ margin: '0 0 12px 0', paddingLeft: 18 }}>
               <li><strong>উৎস:</strong> {prov?.dataset_name} ({prov?.spatial_resolution})</li>
               <li><strong>সময়কাল:</strong> {prov?.temporal_coverage}</li>
@@ -624,7 +624,7 @@ export function NasaPlantingAdvisoryView({
               <li><strong>ডেটা মোড:</strong> {prov?.data_mode} ({prov?.offline_forced ? 'অফলাইন মোড কার্যকর' : 'অনলাইন সক্রিয়'})</li>
             </ul>
 
-            <h4 style={{ margin: '12px 0 6px 0', color: '#f1f5f9' }}>সীমাবদ্ধতা (Scientific Limitations):</h4>
+            <h4 style={{ margin: '12px 0 6px 0', color: 'var(--text)' }}>সীমাবদ্ধতা (Scientific Limitations):</h4>
             <p style={{ margin: 0, color: '#f87171' }}>
               নাসা পাওয়ার উপাত্ত ০.৫° গ্রিড পরিমাপের ওপর ভিত্তি করে প্রাপ্ত। মাঠপর্যায়ের স্থানীয় ঢাল, ভূগর্ভস্থ নালার সংযোগ ও বিএমডিএ গভীর নলকূপের সহজলভ্যতার ওপর চূড়ান্ত পানি ব্যবস্থাপনা নির্ভর করে।
             </p>
@@ -635,15 +635,15 @@ export function NasaPlantingAdvisoryView({
       {/* 8. SUPPORTING 3D WORKBENCH / 2D FIELD FALLBACK */}
       <div
         style={{
-          background: '#161d23',
-          border: '1px solid #222c36',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
           borderRadius: 12,
           padding: '16px 20px',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
           <div>
-            <h2 style={{ fontSize: '1.05rem', margin: 0, color: '#f1f5f9', fontWeight: 600 }}>
+            <h2 style={{ fontSize: '1.05rem', margin: 0, color: 'var(--text)', fontWeight: 600 }}>
               {lang === 'bn' ? 'জমির ত্রিমাত্রিক কৃষি মডেল ও হাইড্রোলজি (3D Farm Visualizer)' : '3D Farm Simulation & Hydrology'}
             </h2>
             <span style={{ fontSize: 12, color: '#8a99a8' }}>
@@ -657,8 +657,8 @@ export function NasaPlantingAdvisoryView({
               onClick={() => setShow3dWorkbench(!show3dWorkbench)}
               style={{
                 background: show3dWorkbench ? 'rgba(0, 223, 129, 0.2)' : '#1c242c',
-                border: show3dWorkbench ? '1px solid #00df81' : '1px solid #2a3742',
-                color: show3dWorkbench ? '#00df81' : '#f1f5f9',
+                border: show3dWorkbench ? '1px solid var(--leaf)' : '1px solid #2a3742',
+                color: show3dWorkbench ? 'var(--leaf)' : 'var(--text)',
                 borderRadius: 6,
                 padding: '5px 12px',
                 fontSize: 12,
@@ -672,14 +672,14 @@ export function NasaPlantingAdvisoryView({
         </div>
 
         {show3dWorkbench && (
-          <div style={{ marginTop: 12, borderTop: '1px solid #222c36', paddingTop: 12 }}>
+          <div style={{ marginTop: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
               <button
                 type="button"
                 onClick={() => setViewMode3d('3d')}
                 style={{
-                  background: viewMode3d === '3d' ? '#00df81' : '#1c242c',
-                  color: viewMode3d === '3d' ? '#0e1318' : '#f1f5f9',
+                  background: viewMode3d === '3d' ? 'var(--leaf)' : '#1c242c',
+                  color: viewMode3d === '3d' ? 'var(--bg)' : 'var(--text)',
                   border: 'none',
                   borderRadius: 4,
                   padding: '4px 10px',
@@ -694,8 +694,8 @@ export function NasaPlantingAdvisoryView({
                 type="button"
                 onClick={() => setViewMode3d('2d')}
                 style={{
-                  background: viewMode3d === '2d' ? '#00df81' : '#1c242c',
-                  color: viewMode3d === '2d' ? '#0e1318' : '#f1f5f9',
+                  background: viewMode3d === '2d' ? 'var(--leaf)' : '#1c242c',
+                  color: viewMode3d === '2d' ? 'var(--bg)' : 'var(--text)',
                   border: 'none',
                   borderRadius: 4,
                   padding: '4px 10px',
@@ -708,7 +708,7 @@ export function NasaPlantingAdvisoryView({
               </button>
             </div>
 
-            <div style={{ height: 420, width: '100%', borderRadius: 8, overflow: 'hidden', background: '#0e1318', position: 'relative' }}>
+            <div style={{ height: 420, width: '100%', borderRadius: 8, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }}>
               <RealFarmCanvas3D
                 fieldProfile={{
                   name: `${district.toUpperCase()} Demo Farm`,
@@ -732,7 +732,7 @@ export function NasaPlantingAdvisoryView({
                   padding: '4px 8px',
                   borderRadius: 4,
                   fontSize: 11,
-                  color: '#9ab0c4',
+                  color: 'var(--text-muted)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                 }}
               >

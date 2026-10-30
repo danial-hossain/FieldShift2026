@@ -5,6 +5,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
+  /* Design Tokens — Calm, Warm, Earthy, Matte */
+  --bg:             #0f1412;
+  --surface:        #161d1a;
+  --surface-2:      #1d2622;
+  --border:         rgba(255, 255, 255, 0.07);
+  --text:           #e8ece9;
+  --text-muted:     #9aa5a0;
+  --leaf:           #7fb069;
+  --soil:           #c08552;
+  --water:          #5aa9c9;
+  --sun:            #e0b04b;
+  --alert:          #d9644a;
+
+  --radius-sm:      8px;
+  --radius-md:      14px;
+  --radius-lg:      20px;
+  --radius-xl:      24px;
+  --radius-full:    9999px;
+
+  --shadow-soft:    0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.18);
+
+  --space-1:        4px;
+  --space-2:        8px;
+  --space-3:        12px;
+  --space-4:        16px;
+  --space-5:        24px;
+  --space-6:        32px;
+
+  /* Backward-compatible mappings */
+  --primary:        var(--leaf);
+  --primary-hover:  #6ea058;
+  --primary-dark:   #5b8547;
+  --primary-light:  rgba(127, 176, 105, 0.15);
+  --primary-glow:   rgba(127, 176, 105, 0.25);
+  --bg-root:        var(--bg);
+  --bg-app:         var(--bg);
+  --bg-card:        var(--surface);
+  --bg-card-subtle: var(--surface-2);
+  --bg-overlay:     rgba(15, 20, 18, 0.88);
+  --sidebar-bg:     #131a16;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-item-active: rgba(127, 176, 105, 0.18);
+  --sidebar-text-active: var(--leaf);
+  --border-light:   var(--border);
+  --border-focus:   var(--leaf);
+  --text-main:      var(--text);
+  --text-dim:       #7a8781;
+  --text-inverse:   #0f1412;
+  --accent-blue:    var(--water);
+  --accent-amber:   var(--sun);
+  --accent-red:     var(--alert);
+  --shadow-card:    var(--shadow-soft);
+
   /* Brand palette — Sleek Obsidian Matte with Neon Mint */
   --primary:        #00df81;
   --primary-hover:  #00c773;
@@ -13870,3 +13923,56 @@ html, body {
 
 
 
+
+
+/* Phase 3 Typography & Bangla Rules */
+body {
+  font-family: 'Inter', 'Hind Siliguri', system-ui, sans-serif !important;
+  color: var(--text) !important;
+  background-color: var(--bg) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif !important;
+}
+
+:lang(bn), [lang="bn"], .bangla-text {
+  line-height: 1.6 !important;
+}
+
+.tabular-nums, [data-num], .metric-value, .stat-value, .currency-val {
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* Phase 3: Single Card Style & No Nested Blurs */
+.glass-card, .dash-card, .theme-card {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-soft) !important;
+  padding: var(--space-5) !important;
+}
+
+.glass-card .glass-card,
+.glass-card .dash-card,
+.dash-card .dash-card,
+.dash-card .glass-card,
+.dash-card .card,
+.glass-panel .glass-panel,
+.glass-panel .glass-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Phase 3: Mobile Viewport 390px Rules */
+@media (max-width: 480px) {
+  body, .app-layout, .main-content, .nasa-advisory-container, .farmer-home-container, .six-season-recommendation-workspace {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  button, .btn, select, .mobile-bottom-nav-item, .nav-item {
+    min-height: 44px !important;
+  }
+}
