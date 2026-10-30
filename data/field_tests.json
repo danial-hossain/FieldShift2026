@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Dinajpur Sadar",
+    "lat": 25.6279,
+    "lon": 88.6332,
+    "area_ha": 2.0,
+    "description": "northwest rice belt"
+  },
+  {
+    "name": "Bogura demo",
+    "lat": 24.85,
+    "lon": 89.37,
+    "area_ha": 10.0,
+    "description": "floodplain commercial agriculture"
+  },
+  {
+    "name": "Satkhira coast",
+    "lat": 22.7185,
+    "lon": 89.0705,
+    "area_ha": 1.5,
+    "description": "coastal, salinity zone"
+  }
+]
+

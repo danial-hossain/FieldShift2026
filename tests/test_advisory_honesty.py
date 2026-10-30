@@ -69,12 +69,12 @@ def test_4_synthetic_significant_delay_case_a():
 def test_5_unknown_district_raises_value_error():
     """5 build_planting_advisory('sylhet','aman') raises ValueError."""
     with pytest.raises(ValueError):
-        build_planting_advisory("sylhet", "aman", offline=True)
+        build_planting_advisory("unknown_district_xyz", "aman", offline=True)
 
 
 def test_6_api_unknown_district_returns_400():
     """6 GET /api/advisory?district=sylhet&crop=aman&offline=true -> 400 (FastAPI TestClient)."""
-    response = client.get("/api/advisory?district=sylhet&crop=aman&offline=true")
+    response = client.get("/api/advisory?district=unknown_district_xyz&crop=aman&offline=true")
     assert response.status_code == 400
 
 
@@ -98,7 +98,7 @@ def test_8_rajshahi_aus_sms_crop_name():
 def test_9_all_districts_crops_sms_length_and_name_bn():
     """9 all 6 districts x {aman, aus}: len(bangla_sms) <= 160 and name_bn in bangla_sms."""
     districts = list(DISTRICT_REGISTRY.keys())
-    assert len(districts) == 6
+    assert len(districts) == 64
 
     for dist_id in districts:
         name_bn = DISTRICT_REGISTRY[dist_id]["name_bn"]

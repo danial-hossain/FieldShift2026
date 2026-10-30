@@ -44,7 +44,9 @@ def test_planning_rajshahi_four_priorities(capsys):
 
 
 def test_planning_unsupported_district():
-    res = client.post("/api/planning", json={"district": "sylhet", "priority": "balanced"})
+    # Note: 'sylhet' is now valid (Phase B added all 64 BD districts).
+    # Use a fictitious district name to test the guard.
+    res = client.post("/api/planning", json={"district": "unknown_xyz_not_in_registry", "priority": "balanced"})
     assert res.status_code == 400
     assert "Unsupported district" in res.json().get("detail", "")
 

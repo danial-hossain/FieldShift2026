@@ -829,28 +829,41 @@ def _run_research_workflow(
         )
         smap = pd.DataFrame(columns=SMAP_COLUMNS)
     elif mode == "offline":
+        if latitude < 20.0 or latitude > 27.0 or longitude < 88.0 or longitude > 93.0:
+            raise ValueError(
+                "Bundled offline weather covers locations within Bangladesh. "
+                "Choose NASA POWER mode for other locations."
+            )
         from src.compute.advisory_service import nearest_district, load_district_climate_data
         near_dist = nearest_district(latitude, longitude)
-        try:
-            power, _ = load_district_climate_data(near_dist, offline=True)
-            power = power.copy()
-            power["date"] = pd.to_datetime(power["date"], errors="coerce")
-        except Exception:
-            if not DEFAULT_NASA_PATH.is_file():
-                raise FileNotFoundError(f"Bundled NASA POWER demo CSV was not found: {DEFAULT_NASA_PATH}")
-            power = pd.read_csv(DEFAULT_NASA_PATH)
-            power["date"] = pd.to_datetime(power["date"], errors="coerce")
 
-        available_dates = power["date"].dropna()
-        if not available_dates.empty and (start < available_dates.min().normalize() or end > available_dates.max().normalize()):
-            # If date range is outside, clamp to available dates
-            start = max(start, available_dates.min().normalize())
-            end = min(end, available_dates.max().normalize())
-        power = power.loc[power["date"].between(start, end)].reset_index(drop=True)
-        if power.empty:
-            # Fallback to last 365 rows
-            power = load_district_climate_data(near_dist, offline=True)[0].tail(365).reset_index(drop=True)
-            power["date"] = pd.to_datetime(power["date"], errors="coerce")
+        used_demo = False
+        if DEFAULT_NASA_PATH.is_file():
+            demo_power = pd.read_csv(DEFAULT_NASA_PATH)
+            demo_power["date"] = pd.to_datetime(demo_power["date"], errors="coerce")
+            demo_min = demo_power["date"].min().normalize()
+            demo_max = demo_power["date"].max().normalize()
+            if start >= demo_min and end <= demo_max:
+                power = demo_power.loc[demo_power["date"].between(start, end)].reset_index(drop=True)
+                used_demo = True
+
+        if not used_demo:
+            try:
+                power, _ = load_district_climate_data(near_dist, offline=True)
+                power = power.copy()
+                power["date"] = pd.to_datetime(power["date"], errors="coerce")
+            except Exception:
+                if not DEFAULT_NASA_PATH.is_file():
+                    raise FileNotFoundError(f"Bundled NASA POWER demo CSV was not found: {DEFAULT_NASA_PATH}")
+                power = pd.read_csv(DEFAULT_NASA_PATH)
+                power["date"] = pd.to_datetime(power["date"], errors="coerce")
+
+            matching = power.loc[power["date"].between(start, end)].reset_index(drop=True)
+            if not matching.empty:
+                power = matching
+            else:
+                power = power.tail(365).reset_index(drop=True)
+
         field_id = str(saved_field["id"]) if saved_field else "field_demo"
         soil = (
             load_soil_data(field_id="field_demo", as_of_date=end)

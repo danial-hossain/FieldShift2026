@@ -16,6 +16,9 @@ Key Capabilities:
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import math
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime
@@ -478,6 +481,19 @@ def generate_recommendation(
         "jashore": {"name_en": "Jashore", "name_bn": "যশোর"},
         "cumilla": {"name_en": "Cumilla", "name_bn": "কুমিল্লা"},
     }
+    geo_path = Path(__file__).resolve().parents[2] / "data" / "geo" / "bd_districts.json"
+    if geo_path.exists():
+        try:
+            with open(geo_path, "r", encoding="utf-8") as f:
+                geo_data = json.load(f)
+            for d in geo_data.get("districts", []):
+                k = d["name"].strip().lower().replace(" ", "_").replace("-", "_")
+                if k == "comilla":
+                    k = "cumilla"
+                if k not in dist_registry:
+                    dist_registry[k] = {"name_en": d["name"], "name_bn": d.get("bn_name", d["name"])}
+        except Exception:
+            pass
     crop_registry = {
         "aman": {"name_en": "Aman", "name_bn": "আমন"},
         "aus": {"name_en": "Aus", "name_bn": "আউশ"},

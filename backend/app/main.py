@@ -8,7 +8,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from datetime import datetime, timedelta, timezone
 from typing import Any
-from fastapi import Cookie, Depends, FastAPI, HTTPException, Response
+from fastapi import Body, Cookie, Depends, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, PlainTextResponse
@@ -615,7 +615,20 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             },
             "environment_basis": env_basis,
             "summary": {
+                "field_state": {
+                    "field_id": field_id,
+                    "latitude": lat,
+                    "longitude": lon,
+                    "field_size_ha": area_val,
+                    "area_ha": area_val,
+                    "soil_texture": data.get("soil_texture") or getattr(f_state, "texture", "loam"),
+                    "organic_matter_percent": float(data.get("organic_matter")) if data.get("organic_matter") is not None else getattr(f_state, "organic_matter", 2.0),
+                    "soil_ph": float(data.get("soil_ph")) if data.get("soil_ph") is not None else getattr(f_state, "ph", 6.5),
+                    "temperature_c": getattr(f_state, "temperature", None),
+                    "rainfall_mm": getattr(f_state, "rainfall", None),
+                },
                 "planning": {
+                    "selected_strategy": priority,
                     "milp_status": milp_res,
                     "environment_basis": env_basis,
                     "selected_strategy_result": milp_res,
@@ -1702,6 +1715,58 @@ def create_field_history(field_id:int,payload:Payload,user:User=Depends(require_
     item=FieldHistory(field_id=field_id,crop=data.get("crop"),season=data.get("season"),year=data.get("year"),notes=data.get("notes"),created_at=stamp)
     db.add(item); db.commit(); db.refresh(item); return {"status":"created","history":row(item)}
 
+
+@app.post("/api/fields/{field_id}/enrich")
+def enrich_field_endpoint(
+    field_id: str,
+    payload: dict = Body(default_factory=dict),
+    db: DbSession = Depends(get_db),
+):
+    """Geospatially enrich field with nearest district, POWER cell, and SoilGrids 250m properties."""
+    from src.compute.field_enrichment import enrich_field_data
+    is_offline = bool(os.getenv("OFFLINE") == "1")
+    data = payload or {}
+
+    lat = data.get("latitude") or data.get("lat")
+    lon = data.get("longitude") or data.get("lon")
+    area_ha = data.get("area_ha") or data.get("field_size_ha")
+
+    # If field_id is in DB and lat/lon not provided in payload, look it up
+    if (lat is None or lon is None) and field_id not in {"demo", "field_demo", "0"}:
+        try:
+            f_obj = db.scalar(select(FarmField).where(FarmField.id == int(field_id)))
+            if f_obj:
+                if lat is None: lat = f_obj.latitude
+                if lon is None: lon = f_obj.longitude
+                if area_ha is None: area_ha = f_obj.area_ha
+                if data.get("soil_ph") is None: data["soil_ph"] = f_obj.soil_ph
+                if data.get("organic_matter") is None: data["organic_matter"] = f_obj.organic_matter
+                if data.get("soil_texture") is None: data["soil_texture"] = f_obj.soil_texture
+        except Exception:
+            pass
+
+    # Defaults for demo field
+    if lat is None: lat = 24.8500
+    if lon is None: lon = 89.3700
+    if area_ha is None: area_ha = 10.0
+
+    try:
+        lat = float(lat)
+        lon = float(lon)
+        area_ha = float(area_ha)
+    except (ValueError, TypeError) as e:
+        raise HTTPException(400, f"Invalid coordinates or area: {e}")
+
+    result = enrich_field_data(
+        field_id=str(field_id),
+        latitude=lat,
+        longitude=lon,
+        area_ha=area_ha,
+        user_overrides=data,
+        offline=is_offline,
+    )
+    return finite_json_value(jsonable_encoder(result))
+
 @app.post("/api/analyses",status_code=201)
 def create_analysis(payload:Payload,user:User=Depends(require_user),db:DbSession=Depends(get_db)):
     data=payload.model_dump(); field_id=data.get("field_id"); farm_id=data.get("farm_id")
@@ -1916,7 +1981,7 @@ def run_multi_field_experiment_endpoint(
         validate_scientific_invariants,
         persist_experiment_run,
     )
-    req_data = payload.model_dump() if payload else {}
+    req_data = payload.model_dump() if hasattr(payload, "model_dump") else (payload or {})
     target_field = req_data.get("field_key")
 
     fields_to_run = (

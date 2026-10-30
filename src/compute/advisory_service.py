@@ -7,6 +7,7 @@ in src.compute.agro to provide mobile-first planting window advisories.
 from __future__ import annotations
 
 import os
+import json
 import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
@@ -29,8 +30,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = PROJECT_ROOT / "data" / "nasa_power" / "advisory_cache"
 FIXTURES_DIR = PROJECT_ROOT / "data" / "nasa_power" / "fixtures"
 
-# Authoritative Bangladesh Agricultural District Registry
-DISTRICT_REGISTRY: Dict[str, Dict[str, Any]] = {
+# Authoritative Bangladesh Agricultural District Registry (64 districts)
+def _init_district_registry() -> Dict[str, Dict[str, Any]]:
+    registry: Dict[str, Dict[str, Any]] = {
     "rajshahi": {
         "district_id": "rajshahi",
         "name_en": "Rajshahi",
@@ -109,7 +111,39 @@ DISTRICT_REGISTRY: Dict[str, Dict[str, Any]] = {
         "elevation_m": 14.0,
         "primary_rice": "Aman, Boro & Aus",
     },
-}
+    }
+
+    geo_path = PROJECT_ROOT / "data" / "geo" / "bd_districts.json"
+    if geo_path.exists():
+        try:
+            with open(geo_path, "r", encoding="utf-8") as f:
+                geo_data = json.load(f)
+            for d in geo_data.get("districts", []):
+                raw_name = d["name"].strip()
+                k = raw_name.lower().replace(" ", "_").replace("-", "_")
+                if k == "comilla":
+                    k = "cumilla"
+                if k not in registry:
+                    registry[k] = {
+                        "district_id": k,
+                        "name_en": raw_name,
+                        "name_bn": d.get("bn_name", raw_name),
+                        "division": d.get("division_name", ""),
+                        "aez_code": None,
+                        "aez_name": None,
+                        "latitude": float(d["lat"]),
+                        "longitude": float(d["lon"]),
+                        "soil_type": "loam",
+                        "elevation_m": 10.0,
+                        "primary_rice": "Aman & Boro",
+                    }
+        except Exception:
+            pass
+
+    return registry
+
+
+DISTRICT_REGISTRY: Dict[str, Dict[str, Any]] = _init_district_registry()
 
 
 def get_supported_districts() -> List[Dict[str, Any]]:

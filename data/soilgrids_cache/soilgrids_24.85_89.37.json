@@ -1,0 +1,43 @@
+{
+  "status": "ok",
+  "query_lat": 24.86,
+  "query_lon": 89.38,
+  "is_offset": true,
+  "ph": 6.23,
+  "organic_matter_pct": 2.59,
+  "clay_pct": 34.5,
+  "sand_pct": 23.9,
+  "silt_pct": 41.6,
+  "texture_class": "clay loam",
+  "depth_profile": [
+    {
+      "depth": "0-5cm",
+      "ph": 6.2,
+      "organic_carbon_pct": 2.19,
+      "organic_matter_pct": 3.78,
+      "clay_pct": 33.5,
+      "sand_pct": 24.2,
+      "silt_pct": 42.3
+    },
+    {
+      "depth": "5-15cm",
+      "ph": 6.2,
+      "organic_carbon_pct": 1.5,
+      "organic_matter_pct": 2.59,
+      "clay_pct": 34.1,
+      "sand_pct": 23.9,
+      "silt_pct": 42.0
+    },
+    {
+      "depth": "15-30cm",
+      "ph": 6.3,
+      "organic_carbon_pct": 0.81,
+      "organic_matter_pct": 1.4,
+      "clay_pct": 36.0,
+      "sand_pct": 23.7,
+      "silt_pct": 40.3
+    }
+  ],
+  "source_tag": "ISRIC SoilGrids 250 m",
+  "cached_at": "2026-10-30T20:09:21.372210+00:00"
+}

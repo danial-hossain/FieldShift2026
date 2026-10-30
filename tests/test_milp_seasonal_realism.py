@@ -177,16 +177,19 @@ def test_07_optimize_rotation_rajshahi_climatology(rajshahi_data):
 
 
 def test_08_planning_endpoint_unknown_district_400():
-    """Test 8: planning endpoint with district='sylhet' -> HTTP 400."""
+    """Test 8: planning endpoint with a truly unknown district -> HTTP 400.
+    Note: 'sylhet' is now a valid district (Phase B added all 64 BD districts).
+    Using a completely fictitious name to test the 400 guard.
+    """
     client = TestClient(app)
-    response = client.post("/api/workflow", json={"district": "sylhet"})
+    response = client.post("/api/workflow", json={"district": "unknown_xyz_not_in_registry"})
     assert response.status_code == 400, (
-        f"Expected status 400 for unknown district 'sylhet', got {response.status_code}: {response.text}"
+        f"Expected status 400 for unknown district, got {response.status_code}: {response.text}"
     )
 
     # Also test /api/planning alias
-    resp_alias = client.post("/api/planning", json={"district": "sylhet"})
+    resp_alias = client.post("/api/planning", json={"district": "unknown_xyz_not_in_registry"})
     assert resp_alias.status_code == 400, (
-        f"Expected status 400 on /api/planning for unknown district 'sylhet', got {resp_alias.status_code}"
+        f"Expected status 400 on /api/planning for unknown district, got {resp_alias.status_code}"
     )
 
