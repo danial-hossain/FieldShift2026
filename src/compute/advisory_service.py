@@ -21,9 +21,12 @@ from src.compute.agro import (
     RICE_THERMAL_SPECS,
     calculate_growing_degree_days,
     compare_periods,
+    compute_mann_kendall_theil_sen,
     compute_onset_series,
+    compute_wet_season_series,
     generate_recommendation,
     run_sensitivity_analysis,
+    wet_season_onset_anomalous,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -387,6 +390,56 @@ def build_planting_advisory(
         comparison["data_warning_en"] = data_warning_en
         comparison["data_warning_bn"] = data_warning_bn
 
+    # 2b. Dual Onset Definitions & Trend Analysis (Phase C)
+    aman_valid = [x for x in series_results["full_series"] if x.get("doy") is not None]
+    aman_trend = compute_mann_kendall_theil_sen([x["year"] for x in aman_valid], [x["doy"] for x in aman_valid])
+    comparison["trend"] = aman_trend
+
+    wet_series_results = compute_wet_season_series(daily_df)
+    p1_wet = wet_series_results["period_1"]
+    p2_wet = wet_series_results["period_2"]
+    wet_comparison = compare_periods(p1_wet["doys"], p2_wet["doys"])
+    wet_valid = [x for x in wet_series_results["full_series"] if x.get("doy") is not None]
+    wet_trend = compute_mann_kendall_theil_sen([x["year"] for x in wet_valid], [x["doy"] for x in wet_valid])
+    wet_comparison["trend"] = wet_trend
+
+    # Attach FDR Benjamini-Hochberg q-values from 64-district analysis if cached
+    onset_64_path = PROJECT_ROOT / "data" / "onset_analysis_64.json"
+    if onset_64_path.exists():
+        try:
+            with open(onset_64_path, "r", encoding="utf-8") as f:
+                o64 = json.load(f)
+            for d_rec in o64.get("districts", []):
+                if d_rec.get("district") == dist_key:
+                    comparison["q_value_bh"] = d_rec.get("aman", {}).get("q_value_bh")
+                    wet_comparison["q_value_bh"] = d_rec.get("wet_season", {}).get("q_value_bh")
+                    break
+        except Exception:
+            pass
+
+    aman_onset = {
+        "definition": "agronomic_3day_rainfall_lookahead",
+        "search_window": f"{season_window['start_md'][0]:02d}-{season_window['start_md'][1]:02d} to {season_window['end_md'][0]:02d}-{season_window['end_md'][1]:02d}",
+        "threshold_mm": config.threshold_mm,
+        "period_1": p1_data,
+        "period_2": p2_data,
+        "comparison": comparison,
+        "trend": aman_trend,
+        "censored_fraction": censored_fraction,
+        "q_value_bh": comparison.get("q_value_bh"),
+    }
+
+    wet_season_onset = {
+        "definition": "objective_anomalous_accumulation_liebmann_marengo",
+        "search_window": "03-01 to 08-31",
+        "r_clim_mm_day": wet_series_results.get("r_clim_mm_day"),
+        "period_1": p1_wet,
+        "period_2": p2_wet,
+        "comparison": wet_comparison,
+        "trend": wet_trend,
+        "q_value_bh": wet_comparison.get("q_value_bh"),
+    }
+
     # 3. Growing Degree Day (GDD) accumulation and thermal context
     gdd_context = calculate_growing_degree_days(
         daily_df,
@@ -407,6 +460,7 @@ def build_planting_advisory(
         sensitivity=sensitivity,
         gdd_context=gdd_context,
         lang=lang,
+        wet_season_comparison=wet_comparison,
     )
 
     # 6. Provenance and traceability metadata
@@ -493,6 +547,8 @@ def build_planting_advisory(
             "series": p2_data["onsets"],
         },
         "comparison": comparison,
+        "aman_onset": aman_onset,
+        "wet_season_onset": wet_season_onset,
         "gdd_context": gdd_context,
         "sensitivity": sensitivity,
         "recommendation": recommendation,

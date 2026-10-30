@@ -15,13 +15,16 @@ from src.compute.agro import (
     calculate_growing_degree_days,
     calendar_is_leap,
     compare_periods,
+    compute_mann_kendall_theil_sen,
     compute_onset_series,
+    compute_wet_season_series,
     detect_rainfall_onset,
     doy_to_bn_date,
     doy_to_calendar_date,
     doy_to_en_date,
     generate_recommendation,
     run_sensitivity_analysis,
+    wet_season_onset_anomalous,
 )
 
 
@@ -192,6 +195,60 @@ class AgroComputeTests(unittest.TestCase):
         onset = detect_rainfall_onset(df, 2024, cfg)
         self.assertIsNotNone(onset)
         self.assertEqual(onset["onset_date"], "2024-06-10")
+
+    def test_wet_season_onset_synthetic_known_minimum(self):
+        """Test anomalous accumulation onset on a synthetic series with an engineered minimum."""
+        dates = pd.date_range("2024-01-01", "2024-12-31")
+        # Base daily climatological mean = 4.0 mm/day
+        r_clim = 4.0
+        # 0 mm rain prior to May 14, then heavy sustained rain starting May 15
+        rain = []
+        for d in dates:
+            if d < pd.Timestamp("2024-05-15"):
+                rain.append(0.0)
+            else:
+                rain.append(25.0)
+
+        df = pd.DataFrame({"date": dates, "rainfall": rain})
+        res = wet_season_onset_anomalous(df, 2024, r_clim=r_clim)
+
+        self.assertIsNotNone(res)
+        # Prior to May 15, rain is 0 < r_clim, so cumulative anomaly decreases daily.
+        # On May 14, anomaly reaches its global minimum (-75 * 4.0 = -300 mm).
+        # On May 15, rain is 25 > 4.0, so cumulative anomaly increases to -279 mm.
+        self.assertEqual(res["onset_date"], "2024-05-14")
+        self.assertEqual(res["doy"], 135)
+
+    def test_rajshahi_wet_season_medians_regression(self):
+        """Regression test: Rajshahi wet-season medians must equal 143.5 (P1) and 122.0 (P2), p < 0.005."""
+        from pathlib import Path
+        cache_file = Path(__file__).resolve().parents[1] / "data" / "nasa_power" / "advisory_cache" / "nasa_power_rajshahi_2001_2025.csv"
+        if not cache_file.exists():
+            self.skipTest("Rajshahi cache not found")
+
+        df = pd.read_csv(cache_file)
+        res = compute_wet_season_series(df)
+        p1 = res["period_1"]["doys"]
+        p2 = res["period_2"]["doys"]
+
+        m1 = float(np.median(p1))
+        m2 = float(np.median(p2))
+        comp = compare_periods(p1, p2)
+
+        self.assertEqual(m1, 143.5)
+        self.assertEqual(m2, 122.0)
+        self.assertLess(comp["p_value"], 0.005)
+
+    def test_mann_kendall_theil_sen_computation(self):
+        """Verify Mann-Kendall tau and Theil-Sen slope calculation."""
+        years = list(range(2001, 2021))
+        # Strictly decreasing series: y = 150 - 2 * (year - 2001)
+        values = [150.0 - 2.0 * i for i in range(len(years))]
+        res = compute_mann_kendall_theil_sen(years, values)
+
+        self.assertEqual(res["theil_sen_slope"], -2.0)
+        self.assertEqual(res["kendall_tau"], -1.0)
+        self.assertLess(res["p_value"], 0.001)
 
 
 if __name__ == "__main__":

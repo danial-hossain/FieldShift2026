@@ -767,6 +767,19 @@ def get_advisory_districts():
     return {"status": "ok", "districts": get_supported_districts()}
 
 
+@app.get("/api/advisory/onset-comparison")
+def get_advisory_onset_comparison():
+    """Return all-64-district dual onset analysis with Benjamini-Hochberg FDR control."""
+    onset_file = PROJECT_ROOT / "data" / "onset_analysis_64.json"
+    if onset_file.exists():
+        import json
+        with open(onset_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    from scripts.compute_onset_64 import analyze_all_64_districts
+    records = analyze_all_64_districts()
+    return {"districts": records}
+
+
 @app.get("/api/satellite/readiness")
 def satellite_readiness(latitude: float = 23.8103, longitude: float = 90.4125, lat: float | None = None, lon: float | None = None):
     from src.data.bangladesh_crops import get_satellite_readiness_status

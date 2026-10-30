@@ -80,6 +80,159 @@ class AgronomicConfig:
             raise ValueError("base_temperature_c must be less than upper_cap_temperature_c")
 
 
+def wet_season_onset_anomalous(
+    daily_df: pd.DataFrame,
+    year: int,
+    r_clim: Optional[float] = None,
+) -> Optional[Dict[str, Any]]:
+    """Detect wet-season onset using objective anomalous accumulation (Liebmann & Marengo 2001).
+
+    Scientific Definition:
+      A(d) = sum_{t=1 March}^d (R(t) - R_clim)
+      where R_clim is the mean daily rainfall (2001-2025 climatology).
+      Onset is the Day of Year (DOY) of the minimum anomalous accumulation A(d) within 1 March - 31 August.
+    """
+    if daily_df.empty or "date" not in daily_df.columns:
+        return None
+
+    if "rain_clean" not in daily_df.columns or not pd.api.types.is_datetime64_any_dtype(daily_df["date"]):
+        df = daily_df.copy()
+        if not pd.api.types.is_datetime64_any_dtype(df["date"]):
+            df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        rain_col = "rainfall" if "rainfall" in df.columns else ("PRECTOTCORR" if "PRECTOTCORR" in df.columns else None)
+        if not rain_col:
+            return None
+        r_clean = pd.to_numeric(df[rain_col], errors="coerce").fillna(0.0)
+        df["rain_clean"] = r_clean.apply(lambda v: 0.0 if v < 0 else v)
+    else:
+        df = daily_df
+
+    if r_clim is None:
+        r_clim = float(df["rain_clean"].mean())
+
+    if "year" in df.columns and "month" in df.columns:
+        sub = df[(df["year"] == year) & (df["month"] >= 3) & (df["month"] <= 8)].copy().reset_index(drop=True)
+    else:
+        mar1 = pd.Timestamp(year, 3, 1)
+        aug31 = pd.Timestamp(year, 8, 31)
+        sub = df[(df["date"] >= mar1) & (df["date"] <= aug31)].copy().reset_index(drop=True)
+
+    if sub.empty:
+        return None
+
+    anom = sub["rain_clean"] - r_clim
+    cum_anom = anom.cumsum()
+    min_idx = cum_anom.idxmin()
+
+    onset_date = sub.loc[min_idx, "date"]
+    doy = int(onset_date.dayofyear)
+
+    return {
+        "year": year,
+        "onset_date": onset_date.strftime("%Y-%m-%d"),
+        "doy": doy,
+        "method": "anomalous_accumulation_liebmann_marengo",
+        "r_clim_mm_day": round(float(r_clim), 4),
+        "min_accumulation_anomaly_mm": round(float(cum_anom.loc[min_idx]), 2),
+    }
+
+
+def compute_wet_season_series(
+    daily_df: pd.DataFrame,
+    start_year: int = 2001,
+    end_year: int = 2025,
+    r_clim: Optional[float] = None,
+) -> Dict[str, Any]:
+    """Compute annual wet season onsets using anomalous accumulation for 2001-2025."""
+    if daily_df.empty:
+        return {"full_series": [], "period_1": {"doys": []}, "period_2": {"doys": []}}
+
+    df = daily_df.copy()
+    if not pd.api.types.is_datetime64_any_dtype(df["date"]):
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+
+    rain_col = "rainfall" if "rainfall" in df.columns else ("PRECTOTCORR" if "PRECTOTCORR" in df.columns else None)
+    if rain_col:
+        r_clean = pd.to_numeric(df[rain_col], errors="coerce").fillna(0.0)
+        df["rain_clean"] = r_clean.apply(lambda v: 0.0 if v < 0 else v)
+    else:
+        df["rain_clean"] = 0.0
+
+    if r_clim is None:
+        r_clim = float(df["rain_clean"].mean())
+
+    df["year"] = df["date"].dt.year
+    df["month"] = df["date"].dt.month
+
+    series = []
+    for yr in range(start_year, end_year + 1):
+        res = wet_season_onset_anomalous(df, yr, r_clim=r_clim)
+        if res:
+            series.append(res)
+        else:
+            series.append({
+                "year": yr,
+                "onset_date": None,
+                "doy": None,
+                "method": "anomalous_accumulation_liebmann_marengo",
+                "status": "no_data_for_year"
+            })
+
+    p1 = [item for item in series if 2001 <= item["year"] <= 2012 and item.get("doy") is not None]
+    p2 = [item for item in series if 2013 <= item["year"] <= 2025 and item.get("doy") is not None]
+
+    return {
+        "full_series": series,
+        "r_clim_mm_day": round(float(r_clim), 4) if r_clim is not None else None,
+        "period_1": {
+            "label": "2001–2012 Baseline",
+            "start_year": 2001,
+            "end_year": 2012,
+            "total_years": 12,
+            "valid_samples": len(p1),
+            "onsets": p1,
+            "doys": [x["doy"] for x in p1],
+        },
+        "period_2": {
+            "label": "2013–2025 Recent Era",
+            "start_year": 2013,
+            "end_year": 2025,
+            "total_years": 13,
+            "valid_samples": len(p2),
+            "onsets": p2,
+            "doys": [x["doy"] for x in p2],
+        },
+    }
+
+
+def compute_mann_kendall_theil_sen(years: List[int], values: List[float]) -> Dict[str, Any]:
+    """Calculate Mann-Kendall test (tau, p-value) and Theil-Sen slope over the series."""
+    if len(years) < 5 or len(values) < 5:
+        return {
+            "theil_sen_slope": None,
+            "theil_sen_intercept": None,
+            "theil_sen_low_slope": None,
+            "theil_sen_high_slope": None,
+            "kendall_tau": None,
+            "p_value": None,
+        }
+
+    x = np.array(years, dtype=float)
+    y = np.array(values, dtype=float)
+
+    ts_res = stats.theilslopes(y, x)
+    tau_res = stats.kendalltau(x, y)
+
+    return {
+        "theil_sen_slope": round(float(ts_res.slope), 4),
+        "theil_sen_intercept": round(float(ts_res.intercept), 4),
+        "theil_sen_low_slope": round(float(ts_res.low_slope), 4),
+        "theil_sen_high_slope": round(float(ts_res.high_slope), 4),
+        "kendall_tau": round(float(tau_res.statistic), 4),
+        "p_value": round(float(tau_res.pvalue), 4),
+    }
+
+
 def detect_rainfall_onset(
     daily_df: pd.DataFrame,
     year: int,
@@ -451,6 +604,7 @@ def generate_recommendation(
     sensitivity: List[Dict[str, Any]],
     gdd_context: Dict[str, Any],
     lang: str = "bn",
+    wet_season_comparison: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Generate agronomically defensible recommendations and an SMS summary (< 160 chars).
 
@@ -526,6 +680,13 @@ def generate_recommendation(
     sowing_window_en = f"{doy_to_en_date(2025, sow_start_doy)} - {doy_to_en_date(2025, sow_end_doy)}"
     transplant_window_en = f"{doy_to_en_date(2025, trans_start_doy)} - {doy_to_en_date(2025, trans_end_doy)}"
 
+    # Evaluate whether wet season onset is significantly earlier
+    wet_shift = wet_season_comparison.get("shift_days_median") if wet_season_comparison else None
+    wet_p = wet_season_comparison.get("p_value") if wet_season_comparison else None
+    wet_q = wet_season_comparison.get("q_value_bh", wet_p) if wet_season_comparison else None
+    wet_is_sig_earlier = bool(wet_q is not None and wet_q < 0.05 and wet_shift is not None and wet_shift <= -3.0)
+    aman_not_sig = (not is_significant or shift > -3.0 or is_censored)
+
     # Headline and SMS formulations
     if status == "insufficient_evidence":
         evidence_level = "insufficient"
@@ -554,6 +715,23 @@ def generate_recommendation(
         headline_bn = f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত {adv_int} দিন এগিয়ে এসেছে; আগাম বীজতলা প্রস্তুতি নিন।"
         headline_en = f"NASA data indicates rainfall onset advanced by {adv_int} days in {district_en}; prepare early seedbeds."
         sms_bn = f"{district_bn} {crop_bn}: বৃষ্টি {adv_int} দিন আগে শুরু হচ্ছে। বীজতলা জুনের দ্বিতীয় সপ্তাহে ফেলুন। ব্রি ধান৪৯/৭৫ লাগান।"
+    elif wet_is_sig_earlier and aman_not_sig:
+        # Phase C3: Pre-monsoon / wet-season onset earlier, but conventional Aman onset unchanged
+        if crop_key == "aman":
+            evidence_level = "not_significant"
+            headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।"
+            headline_en = f"Pre-monsoon rains in {district_en} now start earlier: Aus sowing and land preparation can advance, while Aman planting window remains unchanged."
+            sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।"
+        elif crop_key == "aus":
+            evidence_level = "significant"
+            headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।"
+            headline_en = f"Pre-monsoon rains in {district_en} now start earlier: Aus planting and land preparation can advance."
+            sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।"
+        else:
+            evidence_level = "not_significant"
+            headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: জমি প্রস্তুতি আগে করা যায়।"
+            headline_en = f"Pre-monsoon rains in {district_en} now start earlier: early land preparation can advance."
+            sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: জমি প্রস্তুতি আগে করা যায়।"
     else:
         # Case (c): Not significant / censored / moderate trend
         evidence_level = "not_significant"

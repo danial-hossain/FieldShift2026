@@ -36,17 +36,17 @@
 - **Censored Fraction**: 40.0%
 - **Suggested Sowing Window**: ১৫ জুন – ৩০ জুন
 - **Suggested Transplanting Window**: ১৫ জুলাই – ৫ আগস্ট
-- **Bangla Headline**: সাতক্ষীরা অঞ্চলে ২৫ বছরের নাসা উপাত্তে বর্ষা শুরুর সময়ে পরিসংখ্যানগতভাবে নিশ্চিত কোনো পরিবর্তন পাওয়া যায়নি, তবে বছরভেদে শুরুর সময় অনেক ওঠানামা করে। ঝুঁকি কমাতে দুই কিস্তিতে বীজতলা ফেলুন এবং স্বল্পমেয়াদী জাত বিবেচনা করুন।
-- **English Headline**: No statistically significant change in rainfall onset for Satkhira over 2001-2025 (p = 0.2474). Onset varies widely from year to year, so stagger seedbeds and consider short-duration varieties.
-- **Bangla SMS (<160 chars)**: `সাতক্ষীরা আমন: বর্ষা শুরুর সময় অনিশ্চিত। বীজতলা ৭ দিন ব্যবধানে দুই কিস্তিতে ফেলুন। স্বল্পমেয়াদী জাত (ব্রি ধান৭৫) বিবেচনা করুন।`
+- **Bangla Headline**: সাতক্ষীরা অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।
+- **English Headline**: Pre-monsoon rains in Satkhira now start earlier: Aus sowing and land preparation can advance, while Aman planting window remains unchanged.
+- **Bangla SMS (<160 chars)**: `সাতক্ষীরা আমন: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।`
 
 ### Aus Rice Season Advisory:
 - **Status**: `ok`
 - **Median Historical Shift**: -8.0 days
 - **Mann-Whitney p-value**: 0.1087
 - **Statistically Significant**: False
-- **Bangla Headline**: সাতক্ষীরা অঞ্চলে ২৫ বছরের নাসা উপাত্তে বর্ষা শুরুর সময়ে পরিসংখ্যানগতভাবে নিশ্চিত কোনো পরিবর্তন পাওয়া যায়নি, তবে বছরভেদে শুরুর সময় অনেক ওঠানামা করে। ঝুঁকি কমাতে দুই কিস্তিতে বীজতলা ফেলুন এবং স্বল্পমেয়াদী জাত বিবেচনা করুন।
-- **Bangla SMS (<160 chars)**: `সাতক্ষীরা আউশ: বর্ষা শুরুর সময় অনিশ্চিত। বীজতলা ৭ দিন ব্যবধানে দুই কিস্তিতে ফেলুন। স্বল্পমেয়াদী জাত (ব্রি ধান৭৫) বিবেচনা করুন।`
+- **Bangla Headline**: সাতক্ষীরা অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।
+- **Bangla SMS (<160 chars)**: `সাতক্ষীরা আউশ: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।`
 
 ---
 
