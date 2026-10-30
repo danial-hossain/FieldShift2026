@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { formatNumber } from './main.jsx';
+import { formatNumber } from './marketUtils.js';
 import { request, API_BASE } from './apiClient.js';
 import { Card, CardHeader, Stat, Pill, Button } from './ui/index.js';
 

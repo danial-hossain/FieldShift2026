@@ -42,6 +42,8 @@ node_modules/
 frontend/node_modules/
 dist/
 !frontend/dist/
+.smoke/
+frontend/.smoke/
 .npm
 
 # Environment & Credentials (NEVER COMMIT)

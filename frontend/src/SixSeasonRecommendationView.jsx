@@ -222,12 +222,12 @@ export function SixSeasonRecommendationView({
 
   // Aggregate 6-Season Metrics
   const aggregateMetrics = useMemo(() => {
-    const totalHarvestTons = sixSeasonRecommendations.reduce((sum, s) => sum + s.totalHarvestTons, 0);
-    const avgYieldTonHa = Number((sixSeasonRecommendations.reduce((sum, s) => sum + s.yieldTonHa, 0) / 6).toFixed(2));
-    const totalWaterReqMm = sixSeasonRecommendations.reduce((sum, s) => sum + s.waterReqMm, 0);
-    const totalNetProfitBdtHa = sixSeasonRecommendations.reduce((sum, s) => sum + s.netProfitBdtHa, 0);
-    const totalParcelRevenueBdt = sixSeasonRecommendations.reduce((sum, s) => sum + s.totalParcelProfitBdt, 0);
-    const legumeCount = sixSeasonRecommendations.filter(s => s.cropMeta.is_legume).length;
+    const totalHarvestTons = sixSeasonRecommendations.reduce((sum, s) => sum + (s.totalHarvestTons || 0), 0);
+    const avgYieldTonHa = Number((sixSeasonRecommendations.reduce((sum, s) => sum + (s.yieldTonHa || 0), 0) / 6).toFixed(2));
+    const totalWaterReqMm = sixSeasonRecommendations.reduce((sum, s) => sum + (s.waterReqMm || 0), 0);
+    const totalNetProfitBdtHa = sixSeasonRecommendations.reduce((sum, s) => sum + (s.netProfitBdtHa || 0), 0);
+    const totalParcelRevenueBdt = sixSeasonRecommendations.reduce((sum, s) => sum + (s.totalParcelProfitBdt || 0), 0);
+    const legumeCount = sixSeasonRecommendations.filter(s => s.cropMeta?.is_legume || s.isLegume).length;
 
     return {
       totalHarvestTons: Number(totalHarvestTons.toFixed(1)),
@@ -294,8 +294,8 @@ export function SixSeasonRecommendationView({
         seasonNumber: s.seasonNum,
         seasonType: s.seasonType,
         crop: s.cropName,
-        botanicalFamily: s.cropMeta.family,
-        isLegumeBnf: s.cropMeta.is_legume,
+        botanicalFamily: s.cropMeta?.family || s.family || null,
+        isLegumeBnf: Boolean(s.cropMeta?.is_legume || s.isLegume),
         durationDays: s.durationDays,
         waterDemandMm: s.waterReqMm,
         predictedYieldTonHa: s.yieldTonHa,
@@ -361,8 +361,8 @@ export function SixSeasonRecommendationView({
       s.seasonNum,
       s.seasonType,
       `"${s.cropName}"`,
-      `"${s.cropMeta.family}"`,
-      s.cropMeta.is_legume ? 'TRUE' : 'FALSE',
+      `"${s.cropMeta?.family || s.family || ''}"`,
+      (s.cropMeta?.is_legume || s.isLegume) ? 'TRUE' : 'FALSE',
       s.durationDays,
       s.waterReqMm,
       s.yieldTonHa,
@@ -384,6 +384,44 @@ export function SixSeasonRecommendationView({
     link.click();
     document.body.removeChild(link);
   };
+
+  if (loading) {
+    return (
+      <div className="six-season-recommendation-workspace" style={{ padding: '24px 28px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22, borderBottom: '1px solid var(--glass-border)', paddingBottom: 18 }}>
+          <div>
+            <div className="ui-skeleton" style={{ width: 220, height: 24, borderRadius: 999, marginBottom: 8 }} />
+            <div className="ui-skeleton" style={{ width: 440, height: 32, borderRadius: 8, marginBottom: 8 }} />
+            <div className="ui-skeleton" style={{ width: 600, height: 16, borderRadius: 6 }} />
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginTop: 24 }}>
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="ui-skeleton" style={{ height: 220, borderRadius: 16 }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (fetchError && !activePlanData?.periods?.length) {
+    return (
+      <div className="six-season-recommendation-workspace" style={{ padding: '24px 28px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
+        <div style={{ background: 'var(--surface-card, rgba(16, 28, 22, 0.86))', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 16, padding: 24, textAlign: 'center', maxWidth: 640, margin: '40px auto' }}>
+          <span style={{ fontSize: 36 }}>⚠️</span>
+          <h3 style={{ margin: '12px 0 6px', color: 'var(--alert)' }}>
+            {lang === 'bn' ? 'পরিকল্পনা ডেটা লোড করা যায়নি' : 'Unable to Load Crop Planning Data'}
+          </h3>
+          <p style={{ margin: '0 0 16px', color: 'var(--text-2)', fontSize: 13 }}>
+            {fetchError || (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
+          </p>
+          <GlassButton variant="primary" size="sm" onClick={() => setReloadKey(k => k + 1)}>
+            ⟳ {lang === 'bn' ? 'পুনরায় চেষ্টা করুন' : 'Retry'}
+          </GlassButton>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="six-season-recommendation-workspace" style={{ padding: '24px 28px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
@@ -717,7 +755,7 @@ export function SixSeasonRecommendationView({
                         {rec[lang === 'bn' ? 'nameBn' : 'nameEn']}
                       </strong>
                     </div>
-                    {rec.cropMeta.is_legume && (
+                    {(rec.cropMeta?.is_legume || rec.isLegume) && (
                       <span style={{ background: 'rgba(0, 223, 129, 0.2)', color: 'var(--leaf)', padding: '2px 6px', borderRadius: 6, fontSize: 10.5, fontWeight: 900 }}>
                         🌱 BNF Legume
                       </span>
@@ -726,7 +764,7 @@ export function SixSeasonRecommendationView({
 
                   {/* Crop Header */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: '1px solid var(--glass-border)' }}>
-                    <span style={{ fontSize: 32 }}>{rec.cropMeta.icon}</span>
+                    <span style={{ fontSize: 32 }}>{rec.cropMeta?.icon || '🌱'}</span>
                     <div>
                       <h4 style={{ margin: 0, fontSize: 17, fontWeight: 900, color: 'var(--leaf)' }}>
                         {rec.cropMeta ? rec.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn'] : (rec.cropName || (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}
@@ -967,8 +1005,8 @@ export function SixSeasonRecommendationView({
             recommendations={sixSeasonRecommendations.map(s => ({
               period: s.key,
               crop: s.cropName,
-              cropFamily: s.cropMeta.family,
-              isLegume: s.cropMeta.is_legume,
+              cropFamily: s.cropMeta?.family || s.family || null,
+              isLegume: Boolean(s.cropMeta?.is_legume || s.isLegume),
               yieldTonHa: s.yieldTonHa,
               waterDemandMm: s.waterReqMm,
               netProfitBdtHa: s.netProfitBdtHa

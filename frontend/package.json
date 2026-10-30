@@ -1,1 +1,25 @@
-{"name":"fieldshift-frontend","private":true,"version":"1.0.0","type":"module","scripts":{"dev":"node node_modules/vite/bin/vite.js","build":"node node_modules/vite/bin/vite.js build","preview":"node node_modules/vite/bin/vite.js preview","test":"node --test src/*.test.js"},"dependencies":{"@react-three/fiber":"^9.8.2","@vitejs/plugin-react":"latest","react":"latest","react-dom":"latest","three":"^0.186.1","vite":"latest"},"optionalDependencies":{"@rolldown/binding-linux-x64-gnu":"1.2.15","lightningcss-linux-x64-gnu":"1.33.0"}}
+{
+  "name": "fieldshift-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/vite/bin/vite.js",
+    "build": "node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview",
+    "test": "node --test src/*.test.js",
+    "smoke": "node node_modules/vite/bin/vite.js build --ssr scripts/smoke-ssr.jsx --outDir .smoke --emptyOutDir && node .smoke/smoke-ssr.js"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.8.2",
+    "@vitejs/plugin-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "three": "^0.186.1",
+    "vite": "latest"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-linux-x64-gnu": "1.2.15",
+    "lightningcss-linux-x64-gnu": "1.33.0"
+  }
+}
