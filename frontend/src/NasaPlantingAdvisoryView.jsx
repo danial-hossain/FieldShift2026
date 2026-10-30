@@ -6,6 +6,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { request } from './apiClient.js';
 import { RealFarmCanvas3D } from './RealFarmCanvas3D.jsx';
 import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, PageHeader } from './ui/index.js';
+import { evidenceBadge, doyToDate, toBanglaDigits } from './advisoryBadges.js';
+
+export { evidenceBadge };
 
 export function NasaPlantingAdvisoryView({
   defaultDistrict = 'rajshahi',
@@ -162,11 +165,14 @@ export function NasaPlantingAdvisoryView({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 26 }}>🛰️🌾</span>
-            <Pill tone={rec?.evidence_level === 'statistically_indistinguishable' ? 'neutral' : 'alert'}>
-              {rec?.evidence_level === 'statistically_indistinguishable'
-                ? (lang === 'bn' ? 'স্বাভাবিক অনসেট' : 'Normal Onset')
-                : (lang === 'bn' ? 'অনসেট বিলম্বিত' : 'Delayed Onset')}
-            </Pill>
+            {(() => {
+              const badge = evidenceBadge(rec, comp, advisoryData?.status);
+              return (
+                <Pill tone={badge.tone}>
+                  {lang === 'bn' ? badge.bn : badge.en}
+                </Pill>
+              );
+            })()}
           </div>
           <span style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'JetBrains Mono, monospace' }}>
             {district.toUpperCase()} · {crop.toUpperCase()}
@@ -254,8 +260,8 @@ export function NasaPlantingAdvisoryView({
             <Card variant="glass" style={{ padding: 16 }}>
               <Stat
                 label={lang === 'bn' ? '২০০১–২০১২ মধ্যমা' : 'Median Onset 2001-2012'}
-                value={p1?.median_doy != null ? `দিন ${p1.median_doy}` : 'তথ্য নেই'}
-                sub={p1?.valid_samples ? `${p1.valid_samples} বছর` : ''}
+                value={p1?.median_doy != null ? (doyToDate(p1.median_doy, lang) || 'তথ্য নেই') : 'তথ্য নেই'}
+                sub={p1?.median_doy != null ? `DOY ${p1.median_doy}${p1?.valid_samples ? (lang === 'bn' ? ` · ${toBanglaDigits(p1.valid_samples)} বছর` : ` · ${p1.valid_samples} years`) : ''}` : ''}
                 tone="leaf"
               />
             </Card>
@@ -263,8 +269,8 @@ export function NasaPlantingAdvisoryView({
             <Card variant="glass" style={{ padding: 16 }}>
               <Stat
                 label={lang === 'bn' ? '২০১৩–২০২৫ মধ্যমা' : 'Median Onset 2013-2025'}
-                value={p2?.median_doy != null ? `দিন ${p2.median_doy}` : 'তথ্য নেই'}
-                sub={p2?.valid_samples ? `${p2.valid_samples} বছর` : ''}
+                value={p2?.median_doy != null ? (doyToDate(p2.median_doy, lang) || 'তথ্য নেই') : 'তথ্য নেই'}
+                sub={p2?.median_doy != null ? `DOY ${p2.median_doy}${p2?.valid_samples ? (lang === 'bn' ? ` · ${toBanglaDigits(p2.valid_samples)} বছর` : ` · ${p2.valid_samples} years`) : ''}` : ''}
                 tone="water"
               />
             </Card>
@@ -281,8 +287,14 @@ export function NasaPlantingAdvisoryView({
             <Card variant="glass" style={{ padding: 16 }}>
               <Stat
                 label={lang === 'bn' ? 'ম্যান-হুইটনি p-মান' : 'p-value (MW U)'}
-                value={comp?.p_value != null ? comp.p_value : '—'}
-                sub={comp?.is_significant ? (lang === 'bn' ? 'তাৎপর্যপূর্ণ (p < 0.05)' : 'Significant') : (lang === 'bn' ? 'সাধারণ ট্রেন্ড (p >= 0.05)' : 'Not Significant')}
+                value={comp?.p_value != null ? Number(comp.p_value).toFixed(4) : '—'}
+                sub={
+                  comp?.p_value != null
+                    ? (Number(comp.p_value) < 0.05
+                        ? (lang === 'bn' ? 'p < 0.05: তাৎপর্যপূর্ণ' : 'p < 0.05: Significant')
+                        : (lang === 'bn' ? 'p ≥ 0.05: তাৎপর্যপূর্ণ নয়' : 'p ≥ 0.05: Not significant'))
+                    : ''
+                }
                 tone="accent"
               />
             </Card>
