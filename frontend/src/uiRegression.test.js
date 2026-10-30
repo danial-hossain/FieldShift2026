@@ -74,3 +74,26 @@ test('FIX 5: Every line containing var(-- in 3D/canvas files must also contain s
     });
   }
 });
+
+test('FIX 6: Tabs handles both items and tabs props; all Tabs callers pass items= or tabs=', () => {
+  const tabsSource = fs.readFileSync(path.join(__dirname, 'ui', 'Tabs.jsx'), 'utf-8');
+  assert.ok(tabsSource.includes('items'), 'Tabs.jsx must support items');
+  assert.ok(tabsSource.includes('tabs'), 'Tabs.jsx must support tabs');
+  assert.ok(tabsSource.includes('activeId'), 'Tabs.jsx must support activeId');
+  assert.ok(tabsSource.includes('activeTab'), 'Tabs.jsx must support activeTab');
+
+  const callerFiles = [
+    path.join(__dirname, 'FarmPlanningView.jsx'),
+    path.join(__dirname, 'MyFarmWorkspaceView.jsx'),
+    path.join(__dirname, 'FarmerCropAdviceView.jsx'),
+    path.join(__dirname, 'GlassComponents.jsx')
+  ];
+
+  for (const cf of callerFiles) {
+    const src = fs.readFileSync(cf, 'utf-8');
+    assert.ok(
+      src.includes('items=') || src.includes('tabs='),
+      `Caller ${path.basename(cf)} must pass items= or tabs=`
+    );
+  }
+});
