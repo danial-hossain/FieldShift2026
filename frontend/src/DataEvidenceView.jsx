@@ -125,7 +125,7 @@ export function DataEvidenceView({
                   borderRadius: 999,
                 }}
               >
-                100% ZERO FABRICATION
+                {lang === 'bn' ? 'উৎস ও পদ্ধতি' : 'Sources and methods'}
               </span>
             </div>
             <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: '#f8fafc' }}>

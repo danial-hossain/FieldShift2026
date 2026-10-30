@@ -1738,7 +1738,8 @@ export function App() {
         </div>
 
         <nav className="sidebar-nav" aria-label="Primary Navigation">
-          <div className="nav-section-label">{lang === 'bn' ? 'প্রধান মেন্যু (১২ বিভাগ)' : 'Navigation (12 Sections)'}</div>
+          {/* Group 1: Farmer Screens */}
+          <div className="nav-section-heading">{lang === 'bn' ? 'কৃষক' : 'Farmer'}</div>
 
           {/* 01. Home */}
           <button
@@ -1747,9 +1748,8 @@ export function App() {
             onClick={() => handleNavigate('dashboard')}
             title={lang === 'bn' ? '০১. হোম - সারসংক্ষেপ' : '01. Home - Overview & Executive Summary'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🏠</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০১. হোম' : '01. Home'}</span>
+            <span className="nav-item-icon">🏠</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'হোম' : 'Home'}</span>
           </button>
 
           {/* 02. My Farm */}
@@ -1759,9 +1759,8 @@ export function App() {
             onClick={() => handleNavigate('field')}
             title={lang === 'bn' ? '০২. আমার জমি - সীমানা, স্যাটেলাইট ম্যাপ ও মাটি' : '02. My Farm - Parcels, Map & Soil'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🗺️</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০২. আমার জমি' : '02. My Farm'}</span>
+            <span className="nav-item-icon">🗺️</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আমার জমি' : 'My Farm'}</span>
           </button>
 
           {/* 03. Crop Advice */}
@@ -1771,9 +1770,8 @@ export function App() {
             onClick={() => handleNavigate('crop_advice')}
             title={lang === 'bn' ? '০৩. ফসলের পরামর্শ - নাসা ধান রোপণ উপদেষ্টা ও ক্যাটালগ' : '03. Crop Advice - NASA Rice Advisory & Matches'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🌱</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৩. ফসলের পরামর্শ' : '03. Crop Advice'}</span>
+            <span className="nav-item-icon">🌱</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'ফসলের পরামর্শ' : 'Crop Advice'}</span>
           </button>
 
           {/* 04. NASA Weather & Climate */}
@@ -1783,9 +1781,8 @@ export function App() {
             onClick={() => handleNavigate('weather')}
             title={lang === 'bn' ? '০৪. নাসা আবহাওয়া ও জলবায়ু স্টেশন' : '04. NASA Weather & Climate Station'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🌦️</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৪. আবহাওয়া ও জলবায়ু' : '04. NASA Weather'}</span>
+            <span className="nav-item-icon">🌦️</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আবহাওয়া ও জলবায়ু' : 'NASA Weather'}</span>
           </button>
 
           {/* 05. Farm Planning */}
@@ -1795,94 +1792,88 @@ export function App() {
             onClick={() => handleNavigate('farm_planning')}
             title={lang === 'bn' ? '০৫. খামার পরিকল্পনা - ৬-মৌসুম রোটেশন ও পুনঃপরিকল্পনা' : '05. Farm Planning - 6-Season MILP Rotation'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>📐</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৫. খামার পরিকল্পনা' : '05. Farm Planning'}</span>
+            <span className="nav-item-icon">📐</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'খামার পরিকল্পনা' : 'Farm Planning'}</span>
           </button>
 
-          {/* 06. Water & Irrigation */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'water_irrigation' ? 'active' : ''}`}
-            onClick={() => handleNavigate('water_irrigation')}
-            title={lang === 'bn' ? '০৬. পানি ও সেচ ব্যবস্থাপনা - FAO-56 ব্যালেন্স ও AWD' : '06. Water & Irrigation - FAO-56 Balance & AWD'}
-          >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>💧</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৬. পানি ও সেচ' : '06. Water & Irrigation'}</span>
-          </button>
-
-          {/* 07. Research Lab */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'research' || activeNav === 'analytics' ? 'active' : ''}`}
-            onClick={() => handleNavigate('research')}
-            title={lang === 'bn' ? '০৭. উন্নত গবেষণা ল্যাব - ২০টি বৈজ্ঞানিক মডিউল' : '07. Research Lab - 20 Scientific Modules'}
-            style={{ border: '1px dashed var(--border-medium)', background: 'var(--bg-card-subtle)' }}
-          >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🔬</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৭. গবেষণা ল্যাব (২০)' : '07. Research Lab (20)'}</span>
-          </button>
-
-          {/* 08. 3D Digital Twin */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'digital_twin' ? 'active' : ''}`}
-            onClick={() => handleNavigate('digital_twin')}
-            title={lang === 'bn' ? '০৮. ৩ডি ডিজিটাল টুইন - খামার দৃশ্যকল্প ও সিমুলেশন' : '08. 3D Digital Twin - Live Farm & Phenology'}
-          >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🌐</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৮. ৩ডি ডিজিটাল টুইন' : '08. 3D Digital Twin'}</span>
-          </button>
-
-          {/* 09. Harvest & Market */}
+          {/* 06. Harvest & Market */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'harvest_profit' || activeNav === 'market' ? 'active' : ''}`}
             onClick={() => handleNavigate('harvest_profit')}
-            title={lang === 'bn' ? '০৯. ফসল ও বাজারদর - লাভ-ক্ষতি ক্যালকুলেটর ও দাম' : '09. Harvest & Market - Profit Calculator & Prices'}
+            title={lang === 'bn' ? '০৬. ফসল ও বাজারদর - লাভ-ক্ষতি ক্যালকুলেটর ও দাম' : '06. Harvest & Market - Profit Calculator & Prices'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>💰</span>
-            <span className="nav-item-label">{lang === 'bn' ? '০৯. ফসল ও বাজারদর' : '09. Harvest & Market'}</span>
+            <span className="nav-item-icon">💰</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'ফসল ও বাজারদর' : 'Harvest & Market'}</span>
           </button>
 
-          {/* 10. AI Agronomist */}
+          {/* 07. AI Agronomist */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'assistant' ? 'active' : ''}`}
             onClick={() => handleNavigate('assistant')}
-            title={lang === 'bn' ? '১০. AI কৃষি সহকারী - ভয়েস ও চ্যাট পরামর্শ' : '10. AI Agronomist - Voice & Chat Support'}
+            title={lang === 'bn' ? '০৭. AI কৃষি সহকারী - ভয়েস ও চ্যাট পরামর্শ' : '07. AI Agronomist - Voice & Chat Support'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>🤖</span>
-            <span className="nav-item-label">{lang === 'bn' ? '১০. AI কৃষি সহকারী' : '10. AI Agronomist'}</span>
+            <span className="nav-item-icon">🤖</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'AI কৃষি সহকারী' : 'AI Agronomist'}</span>
           </button>
 
-          {/* 11. Data & Evidence */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'data_evidence' || activeNav === 'synthetic_lab' ? 'active' : ''}`}
-            onClick={() => handleNavigate('data_evidence')}
-            title={lang === 'bn' ? '১১. উপাত্ত ও প্রমাণ - ৪-স্তরীয় প্রোভেন্যান্স রেজিস্ট্রি' : '11. Data & Evidence - 4-Tier Provenance Registry'}
-          >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>📊</span>
-            <span className="nav-item-label">{lang === 'bn' ? '১১. উপাত্ত ও প্রমাণ' : '11. Data & Evidence'}</span>
-          </button>
-
-          {/* 12. Profile & Settings */}
+          {/* 08. Profile & Settings */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'account' ? 'active' : ''}`}
             onClick={() => handleNavigate('account')}
-            title={lang === 'bn' ? '১২. প্রোফাইল ও সেটিংস - অপারেটর পাসপোর্ট ও ডেটাবেস' : '12. Profile & Settings - Operator Credentials'}
+            title={lang === 'bn' ? '০৮. প্রোফাইল ও সেটিংস' : '08. Profile & Settings'}
           >
-            <div className="nav-active-indicator" />
-            <span className="nav-item-icon" style={{ fontSize: 16 }}>⚙️</span>
-            <span className="nav-item-label">{lang === 'bn' ? '১২. প্রোফাইল ও সেটিংস' : '12. Profile & Settings'}</span>
+            <span className="nav-item-icon">⚙️</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'প্রোফাইল' : 'Profile'}</span>
+          </button>
+
+          {/* Group 2: Research Screens */}
+          <div className="nav-section-heading" style={{ marginTop: 12 }}>{lang === 'bn' ? 'গবেষণা' : 'Research'}</div>
+
+          {/* 09. Research Lab */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'research' || activeNav === 'analytics' ? 'active' : ''}`}
+            onClick={() => handleNavigate('research')}
+            title={lang === 'bn' ? '০৯. উন্নত গবেষণা ল্যাব - ২০টি বৈজ্ঞানিক মডিউল' : '09. Research Lab - 20 Scientific Modules'}
+          >
+            <span className="nav-item-icon">🔬</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'গবেষণা ল্যাব' : 'Research Lab'}</span>
+          </button>
+
+          {/* 10. Water & Irrigation */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'water_irrigation' ? 'active' : ''}`}
+            onClick={() => handleNavigate('water_irrigation')}
+            title={lang === 'bn' ? '১০. পানি ও সেচ ব্যবস্থাপনা - FAO-56 ব্যালেন্স ও AWD' : '10. Water & Irrigation - FAO-56 Balance & AWD'}
+          >
+            <span className="nav-item-icon">💧</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'পানি ও সেচ' : 'Water & Irrigation'}</span>
+          </button>
+
+          {/* 11. 3D Digital Twin */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'digital_twin' ? 'active' : ''}`}
+            onClick={() => handleNavigate('digital_twin')}
+            title={lang === 'bn' ? '১১. ৩ডি ডিজিটাল টুইন - খামার দৃশ্যকল্প ও সিমুলেশন' : '11. 3D Digital Twin - Live Farm & Phenology'}
+          >
+            <span className="nav-item-icon">🌐</span>
+            <span className="nav-item-label">{lang === 'bn' ? '৩ডি ডিজিটাল টুইন' : '3D Digital Twin'}</span>
+          </button>
+
+          {/* 12. Data & Evidence */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'data_evidence' || activeNav === 'synthetic_lab' ? 'active' : ''}`}
+            onClick={() => handleNavigate('data_evidence')}
+            title={lang === 'bn' ? '১২. উপাত্ত ও প্রমাণ - ৪-স্তরীয় প্রোভেন্যান্স রেজিস্ট্রি' : '12. Data & Evidence - 4-Tier Provenance Registry'}
+          >
+            <span className="nav-item-icon">📊</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'উপাত্ত ও প্রমাণ' : 'Data & Evidence'}</span>
           </button>
         </nav>
 
