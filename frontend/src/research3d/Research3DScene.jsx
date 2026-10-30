@@ -7,6 +7,10 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 export function Research3DScene({
   cameraPosition = [0, 20, 24],
@@ -35,6 +39,8 @@ export function Research3DScene({
   const controlsRef = useRef(null);
   const animFrameIdRef = useRef(null);
   const isVisibleRef = useRef(true);
+  const composerRef = useRef(null);
+  const customAnimateRef = useRef(null);
 
   const [fps, setFps] = useState(60);
   const [webGlSupported, setWebGlSupported] = useState(true);
@@ -91,11 +97,13 @@ export function Research3DScene({
 
     const width = container.clientWidth || 720;
     const height = container.clientHeight || 420;
+    const isHologram = style === 'hologram';
 
     // 1. Scene & Atmospheric Fog
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(fogColor);
-    scene.fog = new THREE.FogExp2(fogColor, fogDensity);
+    const bgCol = isHologram ? '#05090f' : fogColor;
+    scene.background = new THREE.Color(bgCol);
+    scene.fog = new THREE.FogExp2(bgCol, isHologram ? 0.012 : fogDensity);
     sceneRef.current = scene;
 
     // 2. Perspective Camera
@@ -161,9 +169,40 @@ export function Research3DScene({
     const hemiLight = new THREE.HemisphereLight('#38bdf8', '#1e293b', 0.85);
     scene.add(hemiLight);
 
+    // Initialize Hologram Bloom Composer if applicable
+    const canBloom = isHologram &&
+      typeof window !== 'undefined' &&
+      window.innerWidth >= 768 &&
+      (navigator.hardwareConcurrency || 4) > 4;
+
+    if (canBloom) {
+      try {
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloomPass = new UnrealBloomPass(
+          new THREE.Vector2(width, height),
+          0.6,
+          0.4,
+          0.85
+        );
+        composer.addPass(bloomPass);
+        composer.addPass(new OutputPass());
+        composerRef.current = composer;
+      } catch (err) {
+        console.warn('Hologram Bloom composer failed, falling back to direct render:', err);
+      }
+    }
+
     // Call ready callback
     if (onSceneReady) {
-      onSceneReady({ scene, camera, renderer, controls });
+      onSceneReady({
+        scene,
+        camera,
+        renderer,
+        controls,
+        isHologram,
+        setAnimateCallback: (cb) => { customAnimateRef.current = cb; },
+      });
     }
 
     // Resize Handler
@@ -174,6 +213,7 @@ export function Research3DScene({
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      if (composerRef.current) composerRef.current.setSize(w, h);
     };
     window.addEventListener('resize', handleResize);
 
@@ -214,7 +254,15 @@ export function Research3DScene({
       controls.autoRotateSpeed = autoRotateSpeed;
       controls.update();
 
-      renderer.render(scene, camera);
+      if (customAnimateRef.current) {
+        customAnimateRef.current(0.016, performance.now() * 0.001);
+      }
+
+      if (composerRef.current) {
+        composerRef.current.render();
+      } else {
+        renderer.render(scene, camera);
+      }
     };
 
     animFrameIdRef.current = requestAnimationFrame(animate);
@@ -228,6 +276,9 @@ export function Research3DScene({
       if (observer) observer.disconnect();
       canvasEl.removeEventListener('webglcontextlost', handleContextLost);
       canvasEl.removeEventListener('webglcontextrestored', handleContextRestored);
+      if (composerRef.current?.dispose) {
+        composerRef.current.dispose();
+      }
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -261,7 +312,7 @@ export function Research3DScene({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          ...style
+          ...(typeof style === 'object' && style !== null ? style : {})
         }}
       >
         {/* Header with Switch Back to 3D */}
@@ -362,7 +413,7 @@ export function Research3DScene({
         overflow: 'hidden',
         userSelect: 'none',
         touchAction: 'pan-y', // Keep page scroll active on mobile touch
-        ...style
+        ...(typeof style === 'object' && style !== null ? style : {})
       }}
     >
       <div ref={mountRef} style={{ width: '100%', height: '100%', minHeight }} />
