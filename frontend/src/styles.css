@@ -14840,3 +14840,60 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
+
+/* S4: Full-width reference dashboard layout with real NASA metrics */
+.farmer-home-container {
+  max-width: 1680px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.farmer-home-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+.farmer-home-row-2,
+.farmer-home-row-3,
+.farmer-home-row-4 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1280px) {
+  .farmer-home-kpi-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .farmer-home-row-2,
+  .farmer-home-row-3,
+  .farmer-home-row-4 {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .farmer-home-row-2 > *,
+  .farmer-home-row-3 > *,
+  .farmer-home-row-4 > * {
+    grid-column: span 12 !important;
+    width: 100% !important;
+  }
+
+  .farmer-home-kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .farmer-home-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
