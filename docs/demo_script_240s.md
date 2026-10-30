@@ -31,7 +31,7 @@
 > - **Period 1 Baseline:** 2001 to 2012 (12 years)
 > - **Period 2 Recent Era:** 2013 to 2025 (13 years)
 > 
-> Using our documented agronomic onset rule—cumulative rainfall of 25 mm over 3 days followed by a strict 21-day dry-spell lookahead—the calculated median onset in Rajshahi moved from Day of Year 154 (June 3) to Day of Year 158 (June 7), an observed delay of **+4.0 days** at standard 25 mm threshold, and shifting up to **+11.0 days** at 30 mm threshold."
+> Using our documented agronomic onset rule—cumulative rainfall of 25 mm over 3 days followed by a strict 21-day dry-spell lookahead—the calculated median onset in Rajshahi moved from Day of Year 154.5 (June 3) in Period 1 to Day of Year 158.0 (June 7) in Period 2, an observed median delay of **+3.5 days**."
 
 ---
 
@@ -41,11 +41,11 @@
 > **Presenter:**
 > "Notice our scientific integrity: Does a median delay mean we can claim statistical certainty?
 > 
-> We run a two-sided Mann-Whitney rank sum test. With n1=12 and n2=13, the p-value is 0.89. This proves a vital agronomic truth: **high interannual variability**, not a uniform monotonic shift. Monsoons are becoming erratic, not simply later every year.
+> We run a two-sided Mann-Whitney rank sum test. With n1=12 and n2=13, the p-value is 0.9344. This proves a vital agronomic truth: **high interannual variability**, not a uniform monotonic shift. Monsoons are becoming erratic, not simply later every year.
 > 
 > Look at our Sensitivity Analysis panel:
 > - At **20 mm** threshold, the shift is **+3.0 days**.
-> - At **25 mm** (our agronomic baseline), the shift is **+4.0 days**.
+> - At **25 mm** (our agronomic baseline), the shift is **+3.5 days**.
 > - At **30 mm** (higher puddle requirement), the shift widens to **+11.0 days**!
 > 
 > Furthermore, NASA thermal telemetry reveals an increase of **+25.6 Growing Degree Days (GDD)** across the Kharif growing season, accelerating vegetative development and raising water demand during reproductive heading."
@@ -68,13 +68,14 @@
 
 ---
 
-### Phase 5: Offline First, 3D Integration & Provenance (3:15 – 4:00 | 45 seconds)
-*Visual: Toggle the 3D Farm Workbench, toggle 2D fallback, and expand the Methodology & Provenance accordion.*
+### Phase 5: Offline First, 3D Integration & Multi-Season Optimization (3:15 – 4:00 | 45 seconds)
+*Visual: Toggle the 3D Farm Diorama, show the procedural soil strata and instanced crop rows, then switch to Farm Planning and Comparison Lab.*
 
 > **Presenter:**
 > "Finally, let's look under the hood:
-> - **Offline-First:** FieldShift operates seamlessly with `OFFLINE=1`. Judges can unplug their network cable right now; every calculation runs on local verified cache fixtures without making external network calls.
-> - **3D Visualizer & 2D Fallback:** We connect the advisory to our real-time Three.js farm canvas showing soil moisture and canal levels, with an instant 2D fallback for low-spec devices.
+> - **Offline-First:** FieldShift operates seamlessly with `OFFLINE=1`. Judges can run our automated demo check right now (`python scripts/demo_check.py`); every calculation runs on local verified cache fixtures without external network dependencies.
+> - **Stylized 3D Farm Diorama:** Our custom Three.js diorama farm uses procedural CanvasTextures for grass, tilled soil furrows, and layered terracotta strata, populated with over 600 instanced crop plants and an instant 2D schematic fallback for low-spec devices.
+> - **6-Season MILP & Comparison Lab:** Beyond planting windows, FieldShift solves multi-year rotations balancing profit, water limits, and soil organic matter, transparently benchmarking exact MILP against reinforcement learning and heuristic rules.
 > - **Full Provenance:** Every metric cites NASA POWER Daily Point API, GEOS/MERRA-2 assimilation, spatial resolution of 0.5°, and BRRI guidelines.
 > 
 > In summary, FieldShift 2026 transforms complex space-agency telemetry into an actionable, statistically honest, mobile-first Bengali advisory that protects smallholder farmers' harvests. Thank you!"
