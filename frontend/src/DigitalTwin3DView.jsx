@@ -109,7 +109,7 @@ export function DigitalTwin3DView({
                 cursor: 'pointer',
               }}
             >
-              {viewMode === '3d' ? '🌐 WebGL 3D Active' : '📋 2D Accessible Mode'}
+              {viewMode === '3d' ? '🌐 3D View' : '📋 2D Accessible Mode'}
             </button>
           </div>
         </div>

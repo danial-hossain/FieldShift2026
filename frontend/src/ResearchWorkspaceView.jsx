@@ -242,17 +242,6 @@ export function ResearchWorkspaceView({
             }}>
               FIELDSHIFT ADVANCED RESEARCH SUITE
             </span>
-            <span style={{
-              fontSize: '11px',
-              padding: '4px 10px',
-              borderRadius: '999px',
-              background: 'rgba(56, 189, 248, 0.12)',
-              color: 'var(--hud-cyan)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              fontWeight: 700
-            }}>
-              100% 3D IMMERSIVE
-            </span>
           </div>
           <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: 'var(--text)' }}>
             {lang === 'bn' ? 'উন্নত কৃষি বিজ্ঞান, অ্যালগরিদমিক অপ্টিমাইজেশন ও ৩ডি ল্যাব' : 'Agricultural Science, Algorithmic Optimization & 3D Research Lab'}
@@ -449,17 +438,6 @@ export function ResearchWorkspaceView({
             </div>
 
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <span style={{
-                fontSize: '11px',
-                padding: '3px 8px',
-                borderRadius: '6px',
-                background: 'rgba(0, 223, 129, 0.1)',
-                color: 'var(--hud-teal)',
-                border: '1px solid rgba(0, 223, 129, 0.25)',
-                fontWeight: 700
-              }}>
-                ● WEBGL 3D READY
-              </span>
               <button
                 type="button"
                 className="btn-secondary"

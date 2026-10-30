@@ -309,7 +309,7 @@ export default function AiAssistantView({
             <h2>AI Agronomist &amp; Decision Intelligence</h2>
             <span className="ai-status-pill online">
               <span className="ai-status-dot" />
-              Gemini Decision Engine Live
+              AI Decision Assistant
             </span>
           </div>
           <p className="ai-subtitle">

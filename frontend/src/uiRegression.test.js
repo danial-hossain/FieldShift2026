@@ -116,3 +116,39 @@ test('FIX 8: MyFarmWorkspaceView.jsx contains neither 24.8467 nor 89.3777', () =
   assert.ok(!src.includes('24.8467'), 'MyFarmWorkspaceView.jsx must not contain 24.8467');
   assert.ok(!src.includes('89.3777'), 'MyFarmWorkspaceView.jsx must not contain 89.3777');
 });
+
+test('FIX 9: Marketing badges are absent and sidebar has responsive CSS rules', () => {
+  const marketingBadges = [
+    'RESTORED 6-SEASON OPTIMIZER',
+    '100% 3D IMMERSIVE',
+    'WEBGL 3D READY',
+    'Gemini Decision Engine Live',
+    'WebGL 3D Active',
+    '3D Model Active'
+  ];
+
+  function checkDir(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const ent of entries) {
+      const fullPath = path.join(dir, ent.name);
+      if (ent.isDirectory()) {
+        checkDir(fullPath);
+      } else if (/\.(jsx?|css|html)$/.test(ent.name) && ent.name !== 'uiRegression.test.js') {
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        for (const badge of marketingBadges) {
+          assert.ok(
+            !content.includes(badge),
+            `File ${ent.name} must not contain marketing badge ${badge}`
+          );
+        }
+      }
+    }
+  }
+
+  checkDir(__dirname);
+
+  const css = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+  assert.ok(css.includes('min-width: 1100px'), 'styles.css must include >= 1100px expanded sidebar rule');
+  assert.ok(css.includes('min-width: 768px') && css.includes('1099.98px'), 'styles.css must include 768px - 1099px rail rule');
+  assert.ok(css.includes('max-width: 767.98px'), 'styles.css must include < 768px mobile drawer rule');
+});

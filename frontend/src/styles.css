@@ -14525,7 +14525,43 @@ h1, h2, h3, h4, h5, h6 {
   isolation: isolate;
 }
 
-@media (min-width: 900px) {
+/* Responsive Sidebar rules */
+/* < 768px: Mobile drawer (260px width off-screen, translated in when .mobile-open) */
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 260px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.25s ease !important;
+    z-index: 1000 !important;
+    overflow-y: auto !important;
+    background: var(--glass) !important;
+    backdrop-filter: blur(16px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+    border-right: 1px solid var(--line) !important;
+    border-radius: 0 20px 20px 0 !important;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5) !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  .sidebar-close-btn {
+    display: flex !important;
+  }
+}
+
+/* 768px - 1099px: Collapsed rail (76px width), icon centered inside active pill, label in browser tooltip */
+@media (min-width: 768px) and (max-width: 1099.98px) {
   .sidebar {
     position: sticky !important;
     top: 16px !important;
@@ -14533,7 +14569,8 @@ h1, h2, h3, h4, h5, h6 {
     margin: 16px 0 16px 16px !important;
     height: calc(100vh - 32px) !important;
     height: calc(100dvh - 32px) !important;
-    width: 250px !important;
+    width: 76px !important;
+    min-width: 76px !important;
     border-radius: 24px !important;
     background: var(--glass) !important;
     backdrop-filter: blur(14px) saturate(120%) !important;
@@ -14543,6 +14580,94 @@ h1, h2, h3, h4, h5, h6 {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     z-index: 40 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 12px 6px !important;
+    box-sizing: border-box !important;
+  }
+
+  .sidebar-logo {
+    justify-content: center !important;
+    padding: 8px 0 !important;
+    width: 100% !important;
+  }
+
+  .sidebar-logo-text,
+  .nav-section-heading,
+  .sidebar-user-info,
+  .sidebar-close-btn {
+    display: none !important;
+  }
+
+  .sidebar-nav {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .sidebar .nav-item {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    margin: 2px auto !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+  }
+
+  .sidebar .nav-item .nav-item-icon {
+    font-size: 18px !important;
+    margin: 0 !important;
+  }
+
+  .sidebar .nav-item .nav-item-label {
+    display: none !important;
+  }
+
+  .sidebar .nav-item.active {
+    border-radius: 9999px !important;
+  }
+
+  .sidebar-bottom {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    padding: 8px 0 !important;
+  }
+
+  .sidebar-user-mini {
+    justify-content: center !important;
+    padding: 4px !important;
+  }
+}
+
+/* >= 1100px: Expanded with labels (240px width) */
+@media (min-width: 1100px) {
+  .sidebar {
+    position: sticky !important;
+    top: 16px !important;
+    left: 16px !important;
+    margin: 16px 0 16px 16px !important;
+    height: calc(100vh - 32px) !important;
+    height: calc(100dvh - 32px) !important;
+    width: 240px !important;
+    min-width: 240px !important;
+    border-radius: 24px !important;
+    background: var(--glass) !important;
+    backdrop-filter: blur(14px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(120%) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 40 !important;
+  }
+
+  .sidebar-close-btn {
+    display: none !important;
   }
 }
 

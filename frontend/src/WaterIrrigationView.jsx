@@ -132,7 +132,7 @@ export function WaterIrrigationView({
                 cursor: 'pointer',
               }}
             >
-              {viewMode === '3d' ? '🌐 3D Model Active' : '📋 2D Accessible Mode'}
+              {viewMode === '3d' ? '🌐 3D View' : '📋 2D Accessible Mode'}
             </button>
           </div>
         </div>
