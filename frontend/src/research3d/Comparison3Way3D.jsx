@@ -118,7 +118,7 @@ export function Comparison3Way3D({
       />
 
       {/* Comparative Policy Inspector */}
-      <div style={{ background: 'var(--glass-bg-card, rgba(15,23,42,0.8))', backdropFilter: 'blur(12px)', borderRadius: 12, border: '1px solid var(--glass-border, rgba(255,255,255,0.08))', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ background: 'var(--glass-bg-card, rgba(15,23,42,0.8))',borderRadius: 12, border: '1px solid var(--glass-border, rgba(255,255,255,0.08))', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#f8fafc' }}>
           🧪 {lang === 'bn' ? 'অ্যালগরিদম কর্মক্ষমতা তুলনা' : 'Algorithm Performance Benchmarks'}
         </h4>

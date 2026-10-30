@@ -224,7 +224,7 @@ export function NutrientProfile3D({
       />
 
       {/* Numerical Nutrient Availability Panel */}
-      <div style={{ background: 'var(--glass-bg-card, rgba(15,23,42,0.8))', backdropFilter: 'blur(12px)', borderRadius: 12, border: '1px solid var(--glass-border, rgba(255,255,255,0.08))', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ background: 'var(--glass-bg-card, rgba(15,23,42,0.8))',borderRadius: 12, border: '1px solid var(--glass-border, rgba(255,255,255,0.08))', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#f8fafc' }}>
           🧪 {lang === 'bn' ? 'মাটির পুষ্টি ও নাইট্রোজেন ভারসাম্য' : 'Soil Nutrient Profile & BNF'}
         </h4>

@@ -381,7 +381,7 @@ export function ExperimentSimulator3DView({
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 340px', gap: 16, alignItems: 'stretch' }}>
             
             {/* LEFT PANEL: Active Field, Soil, Crop, Irrigation, Simulation Inputs */}
-            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: 'var(--glass-bg-card)',borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 8 }}>
                 <span style={{ fontSize: 13, fontWeight: 800, color: '#f8fafc' }}>
                   ⚙️ {lang === 'bn' ? 'সিমুলেশন ইনপুট' : 'Simulation Inputs'}
@@ -543,7 +543,7 @@ export function ExperimentSimulator3DView({
             </div>
 
             {/* CENTER PANEL: Large Interactive 3D Farm Scene */}
-            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ background: 'var(--glass-bg-card)',borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               
               {/* 3D Stage Top Toolbar */}
               <div style={{ padding: '8px 14px', background: 'rgba(15, 23, 42, 0.75)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
@@ -790,7 +790,7 @@ export function ExperimentSimulator3DView({
             </div>
 
             {/* RIGHT PANEL: Scenario Controls, Playback & Selected Plot Details */}
-            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ background: 'var(--glass-bg-card)',borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
               
               {/* Scenario Selector Switch */}
               <div>
@@ -885,7 +885,7 @@ export function ExperimentSimulator3DView({
           </div>
 
           {/* BOTTOM PANEL: 120-Day Simulation Scrubber & Real-time Comparison Meters */}
-          <div style={{ marginTop: 16, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: '14px 20px', boxShadow: 'var(--glass-shadow)' }}>
+          <div style={{ marginTop: 16, background: 'var(--glass-bg-card)',borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: '14px 20px', boxShadow: 'var(--glass-shadow)' }}>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               <button
@@ -982,7 +982,7 @@ export function ExperimentSimulator3DView({
 
       {/* SCENARIO COMPARISON TAB CONTENT */}
       {activeMainTab === 'scenario_comparison' && comparison && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
+        <div style={{ background: 'var(--glass-bg-card)',borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
             <div>
               <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
@@ -1094,7 +1094,7 @@ export function ExperimentSimulator3DView({
 
       {/* INTERACTIVE STRESS TESTS TAB CONTENT */}
       {activeMainTab === 'stress_tests' && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
+        <div style={{ background: 'var(--glass-bg-card)',borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
           <div style={{ marginBottom: 16 }}>
             <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
               ⚡ {lang === 'bn' ? 'সায়েন্টিফিক স্ট্রেস টেস্ট ও বাউন্ডারি যাচাই ল্যাব' : 'Scientific Stress Tests & Edge-Case Verification Lab'}
@@ -1110,7 +1110,7 @@ export function ExperimentSimulator3DView({
       )}
 
       {/* Provenance & Methodology Footnote */}
-      <div style={{ marginTop: 20, padding: 14, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 12, border: '1px solid rgba(255, 255, 255, 0.08)', color: 'rgba(238, 243, 238, 0.68)', fontSize: 11.5 }}>
+      <div style={{ marginTop: 20, padding: 14, background: 'var(--glass-bg-card)',borderRadius: 12, border: '1px solid rgba(255, 255, 255, 0.08)', color: 'rgba(238, 243, 238, 0.68)', fontSize: 11.5 }}>
         <strong style={{ color: '#38bdf8' }}>🔬 বৈজ্ঞানিক ভিত্তি ও সীমাবদ্ধতা (Scientific Methodology & Provenance):</strong>
         <p style={{ margin: '4px 0 0', lineHeight: 1.5 }}>
           সিমুলেশন মডেলটি জাতিসংঘের খাদ্য ও কৃষি সংস্থা (FAO-33 Stewart Model) এবং পেনম্যান-মন্টেথ ইভাপোট্রান্সপিরেশন (FAO-56) নীতিমালার উপর ভিত্তি করে বাস্তবায়নকৃত।

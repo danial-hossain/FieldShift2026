@@ -465,7 +465,6 @@ export function SatelliteConstellation3D({
                   fontSize: '11.5px',
                   fontWeight: isSelected ? 700 : 500,
                   cursor: 'pointer',
-                  backdropFilter: 'blur(8px)',
                   transition: 'all 0.2s ease',
                   display: 'flex',
                   alignItems: 'center',
@@ -491,7 +490,6 @@ export function SatelliteConstellation3D({
               color: '#e2e8f0',
               fontSize: '11px',
               cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
             }}
           >
             {isRotating ? '⏸️ Pause Orbit' : '▶️ Resume Orbit'}
@@ -512,7 +510,6 @@ export function SatelliteConstellation3D({
               color: '#38bdf8',
               fontSize: '11px',
               cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
             }}
           >
             🎯 Center View
@@ -527,7 +524,6 @@ export function SatelliteConstellation3D({
         left: 14,
         right: 14,
         background: 'rgba(11, 19, 30, 0.82)',
-        backdropFilter: 'blur(12px)',
         border: `1px solid ${activeSensorObj.color}40`,
         borderRadius: '12px',
         padding: '12px 18px',

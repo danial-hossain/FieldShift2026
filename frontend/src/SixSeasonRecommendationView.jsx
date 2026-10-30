@@ -695,8 +695,6 @@ export function SixSeasonRecommendationView({
                 onClick={() => setSelectedPeriodKey(rec.key)}
                 style={{
                   background: isSelected ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.75) 100%)' : 'rgba(15, 23, 42, 0.55)',
-                  backdropFilter: 'var(--glass-blur)',
-                  WebkitBackdropFilter: 'var(--glass-blur)',
                   borderRadius: 14,
                   border: isSelected ? '2px solid var(--leaf)' : '1px solid var(--glass-border)',
                   boxShadow: isSelected ? '0 6px 20px rgba(0, 223, 129, 0.25)' : 'var(--glass-shadow)',

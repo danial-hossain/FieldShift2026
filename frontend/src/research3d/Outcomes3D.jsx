@@ -241,7 +241,6 @@ export function Outcomes3D({
       }}>
         <div style={{
           background: 'rgba(15, 23, 42, 0.85)',
-          backdropFilter: 'blur(10px)',
           padding: '6px 14px',
           borderRadius: '999px',
           border: '1px solid rgba(168, 85, 247, 0.3)',
@@ -270,7 +269,6 @@ export function Outcomes3D({
         {/* Metric Mode Switcher */}
         <div style={{
           background: 'rgba(15, 23, 42, 0.85)',
-          backdropFilter: 'blur(10px)',
           padding: '4px',
           borderRadius: '10px',
           border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -368,7 +366,6 @@ export function Outcomes3D({
         alignItems: 'center',
         padding: '8px 16px',
         background: 'rgba(15, 23, 42, 0.85)',
-        backdropFilter: 'blur(10px)',
         borderRadius: '10px',
         border: '1px solid rgba(255, 255, 255, 0.08)',
         fontSize: '11.5px',

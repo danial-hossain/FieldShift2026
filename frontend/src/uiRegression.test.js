@@ -213,3 +213,52 @@ test('R3: SixSeasonRecommendationView and sixSeasonEngine contain no Chickpea/Ri
   assert.ok(!viewSrc.includes("'Rice'"), 'View must not contain literal Rice');
   assert.ok(!engineSrc.includes("idx % 2 === 0 ? 'Chickpea' : 'Rice'"), 'Engine must not contain literal Chickpea/Rice fallback');
 });
+
+test('R4: Lag optimization: on-demand 3D rendering and glass surface cleanup', () => {
+  const stylesSrc = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+  const claySrc = fs.readFileSync(path.join(__dirname, 'ClayFarmScene.jsx'), 'utf-8');
+
+  // 1. Asserts that .card / .panel in styles.css does NOT have active backdrop-filter
+  const cardPanelBlocks = stylesSrc.match(/\.(?:card|panel|surface-card|farmer-card|ui-card-glass)\s*\{[^}]+\}/g) || [];
+  for (const block of cardPanelBlocks) {
+    assert.ok(
+      !block.includes('backdrop-filter: blur') && !block.includes('backdrop-filter: var'),
+      `Card/panel rule must not have active backdrop-filter: ${block}`
+    );
+  }
+
+  // 2. Asserts total inline backdropFilter in frontend/src/**/*.jsx is 0 (or <= 2)
+  let totalInlineBackdrop = 0;
+  function countBackdropInDir(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const ent of entries) {
+      const fullPath = path.join(dir, ent.name);
+      if (ent.isDirectory()) {
+        countBackdropInDir(fullPath);
+      } else if (ent.name.endsWith('.jsx')) {
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        const matches = content.match(/backdropFilter\s*:/g);
+        if (matches) totalInlineBackdrop += matches.length;
+      }
+    }
+  }
+  countBackdropInDir(__dirname);
+  assert.ok(
+    totalInlineBackdrop <= 2,
+    `Total inline backdropFilter in JSX must be <= 2, found ${totalInlineBackdrop}`
+  );
+
+  // 3. Asserts ClayFarmScene does NOT run an unconditional infinite requestAnimationFrame without a stopping condition or uses on-demand rendering
+  assert.ok(
+    claySrc.includes("controls.addEventListener('change', render)"),
+    'ClayFarmScene must implement on-demand rendering on controls change'
+  );
+  assert.ok(
+    !claySrc.includes('const animate = () => {\n        animId = requestAnimationFrame(animate);\n        const delta = clock.getDelta();'),
+    'ClayFarmScene must not have unconditional infinite 60fps animate loop'
+  );
+  assert.ok(
+    claySrc.includes('4000') || claySrc.includes('cancelAnimationFrame'),
+    'ClayFarmScene must cap intro animation or stop rendering when static'
+  );
+});

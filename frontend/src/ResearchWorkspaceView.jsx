@@ -37,7 +37,6 @@ class WorkspaceErrorBoundary extends React.Component {
           borderRadius: 16,
           border: '1px solid rgba(239, 68, 68, 0.3)',
           textAlign: 'center',
-          backdropFilter: 'blur(16px)',
           margin: '20px 0'
         }}>
           <div style={{ fontSize: 36, marginBottom: 12 }}>⚠️</div>
@@ -220,7 +219,6 @@ export function ResearchWorkspaceView({
         borderRadius: '20px',
         padding: '24px 28px',
         marginBottom: '20px',
-        backdropFilter: 'blur(20px)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

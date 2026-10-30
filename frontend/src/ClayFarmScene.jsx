@@ -226,7 +226,7 @@ export function ClayFarmScene({
         powerPreference: 'high-performance',
       });
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.05;
@@ -269,7 +269,7 @@ export function ClayFarmScene({
       sunLight.position.set(14, 22, 10);
       sunLight.castShadow = true;
       sunLight.shadow.radius = 5;
-      const shadowMapDim = width <= 768 ? 1024 : 2048;
+      const shadowMapDim = (typeof window !== 'undefined' && window.innerWidth <= 768) || width <= 768 ? 512 : 1024;
       sunLight.shadow.mapSize.set(shadowMapDim, shadowMapDim);
       sunLight.shadow.camera.near = 1;
       sunLight.shadow.camera.far = 50;
@@ -688,23 +688,74 @@ export function ClayFarmScene({
       };
       renderer.domElement.addEventListener('pointerdown', onPointerDown);
 
-      // 14. Render Loop & Idle Rotation (respecting prefers-reduced-motion)
-      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let clock = new THREE.Clock();
+      // 14. Render on Demand & Subtle Intro Turn (capped at 4s)
+      let isVisible = true;
+      let isTabActive = typeof document !== 'undefined' ? !document.hidden : true;
 
-      const animate = () => {
-        animId = requestAnimationFrame(animate);
-        const delta = clock.getDelta();
-        controls.update();
-
-        // Slow idle rotation (0.05 rad/s) that stops on user interaction and reduced motion
-        if (!prefersReduced && !isInteracting) {
-          sceneGroup.rotation.y += 0.05 * delta;
-        }
-
+      const render = () => {
+        if (!renderer || !scene || !camera) return;
+        if (!isVisible || !isTabActive) return;
         renderer.render(scene, camera);
       };
-      animate();
+
+      controls.addEventListener('change', render);
+
+      // Initial render & draw calls reporting
+      render();
+      const initialCalls = renderer.info?.render?.calls ?? 0;
+      console.info(`[ClayFarmScene] initial draw calls: ${initialCalls}`);
+
+      // Intro turn (stops after 4 seconds)
+      const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let introTimer = null;
+      let introActive = !prefersReduced;
+
+      if (introActive) {
+        let prevTime = performance.now();
+        const runIntro = (time) => {
+          if (!introActive) return;
+          const delta = (time - prevTime) / 1000;
+          prevTime = time;
+          if (isVisible && isTabActive && !isInteracting) {
+            sceneGroup.rotation.y += 0.05 * delta;
+            render();
+          }
+          animId = requestAnimationFrame(runIntro);
+        };
+        animId = requestAnimationFrame(runIntro);
+
+        introTimer = setTimeout(() => {
+          introActive = false;
+          if (animId) {
+            cancelAnimationFrame(animId);
+            animId = null;
+          }
+        }, 4000);
+      }
+
+      // Intersection Observer to pause rendering when off-screen
+      let intersectionObserver = null;
+      if (typeof IntersectionObserver !== 'undefined') {
+        intersectionObserver = new IntersectionObserver((entries) => {
+          const entry = entries[0];
+          isVisible = entry ? entry.isIntersecting : true;
+          if (isVisible && isTabActive) {
+            render();
+          }
+        }, { threshold: 0.1 });
+        intersectionObserver.observe(container);
+      }
+
+      // Visibility change listener to pause rendering when tab is backgrounded
+      const handleVisibilityChange = () => {
+        isTabActive = typeof document !== 'undefined' ? !document.hidden : true;
+        if (isTabActive && isVisible) {
+          render();
+        }
+      };
+      if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+      }
 
       // 15. Resize Observer
       const resizeObserver = new ResizeObserver(() => {
@@ -718,19 +769,28 @@ export function ClayFarmScene({
         camera.bottom = -frustumSize / 2;
         camera.updateProjectionMatrix();
         renderer.setSize(nw, nh);
+        render();
       });
       resizeObserver.observe(container);
 
       // Clean-up on unmount
       return () => {
-        cancelAnimationFrame(animId);
-        resizeObserver.disconnect();
+        introActive = false;
+        if (animId) cancelAnimationFrame(animId);
+        if (introTimer) clearTimeout(introTimer);
         if (resumeTimeout) clearTimeout(resumeTimeout);
+        controls.removeEventListener('change', render);
+        if (intersectionObserver) intersectionObserver.disconnect();
+        if (typeof document !== 'undefined') {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+        }
+        resizeObserver.disconnect();
         renderer.domElement.removeEventListener('pointerdown', onPointerDown);
 
         disposables.forEach((item) => {
           if (item?.dispose) item.dispose();
         });
+        if (controls?.dispose) controls.dispose();
         if (renderer?.dispose) renderer.dispose();
         if (container.contains(renderer?.domElement)) {
           container.removeChild(renderer.domElement);
@@ -802,7 +862,6 @@ export function ClayFarmScene({
           top: 14,
           left: 14,
           background: CLAY_PALETTE.hud_bg,
-          backdropFilter: 'blur(12px)',
           border: `1px solid ${CLAY_PALETTE.hud_border}`,
           borderRadius: 14,
           padding: '12px 16px',
@@ -845,8 +904,7 @@ export function ClayFarmScene({
           position: 'absolute',
           bottom: 10,
           left: 14,
-          background: 'rgba(16, 28, 22, 0.8)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(16, 28, 22, 0.88)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           borderRadius: 999,
           padding: '4px 12px',

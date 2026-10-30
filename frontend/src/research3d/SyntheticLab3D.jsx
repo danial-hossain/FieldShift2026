@@ -432,7 +432,6 @@ export function SyntheticLab3D({
                   fontSize: 11,
                   fontWeight: isSel ? 700 : 500,
                   cursor: 'pointer',
-                  backdropFilter: 'blur(8px)',
                   transition: 'all 0.18s ease',
                 }}
               >
@@ -453,7 +452,6 @@ export function SyntheticLab3D({
             border: '1px solid rgba(234, 179, 8, 0.35)',
             fontWeight: 800,
             letterSpacing: '0.04em',
-            backdropFilter: 'blur(8px)',
           }}>
             ⚠️ SYNTHETIC — NOT MEASURED FIELD DATA
           </span>
@@ -468,7 +466,6 @@ export function SyntheticLab3D({
               color: '#38bdf8',
               fontSize: 11,
               cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
             }}
           >
             Overview
@@ -483,7 +480,6 @@ export function SyntheticLab3D({
               color: '#38bdf8',
               fontSize: 11,
               cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
             }}
           >
             Soil Profile
@@ -498,7 +494,6 @@ export function SyntheticLab3D({
         left: 14,
         right: 14,
         background: 'rgba(11, 19, 30, 0.85)',
-        backdropFilter: 'blur(12px)',
         border: '1px solid rgba(56, 189, 248, 0.22)',
         borderRadius: 12,
         padding: '10px 18px',

@@ -117,7 +117,7 @@ export function SixSeasonTrajectory3D({
       />
 
       {/* Selected Season Rationale & Agronomic Constraints */}
-      <div style={{ background: 'var(--glass-bg-card, rgba(15,23,42,0.8))', backdropFilter: 'blur(12px)', borderRadius: 12, border: '1px solid var(--glass-border, rgba(255,255,255,0.08))', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ background: 'var(--glass-bg-card, rgba(15,23,42,0.8))',borderRadius: 12, border: '1px solid var(--glass-border, rgba(255,255,255,0.08))', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ background: '#0284c7', color: '#ffffff', padding: '2px 8px', borderRadius: 4, fontWeight: 800, fontSize: 11 }}>
             {activeRec?.periodId}

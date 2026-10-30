@@ -194,7 +194,6 @@ export function ActualOutcomesView({
         borderRadius: '16px',
         padding: '24px',
         marginBottom: '20px',
-        backdropFilter: 'blur(12px)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
@@ -343,7 +342,6 @@ export function ActualOutcomesView({
           borderRadius: '14px',
           padding: '20px',
           marginBottom: '20px',
-          backdropFilter: 'blur(10px)'
         }}>
           <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 800, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>📝</span> {lang === 'bn' ? 'মৌসুমের মাঠ পর্যায়ের ফসল কাটার তথ্য প্রদান' : 'Record Seasonal Harvest Ground Truth'}

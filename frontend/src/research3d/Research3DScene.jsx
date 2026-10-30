@@ -434,8 +434,6 @@ export function Research3DScene({
           fontSize: '11px',
           fontFamily: "'JetBrains Mono', monospace",
           color: '#00f0ff',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
           pointerEvents: 'none',
           maxWidth: 'calc(100% - 150px)',
           overflow: 'hidden',
@@ -495,7 +493,6 @@ export function Research3DScene({
             fontSize: '11px',
             fontWeight: 700,
             cursor: 'pointer',
-            backdropFilter: 'blur(8px)',
             transition: 'all 0.15s ease'
           }}
         >
@@ -516,7 +513,6 @@ export function Research3DScene({
             fontSize: '11px',
             fontWeight: 700,
             cursor: 'pointer',
-            backdropFilter: 'blur(8px)',
             transition: 'all 0.15s ease'
           }}
         >
@@ -537,8 +533,6 @@ export function Research3DScene({
           borderRadius: 6,
           background: 'rgba(15, 23, 42, 0.85)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
           fontSize: '10.5px'
         }}
       >
