@@ -1,0 +1,12 @@
+﻿================================================================
+FIELDSHIFT OFFLINE DEMO INTEGRITY CHECK
+================================================================
+[PASS] 1. GET /api/health -> status=200 (18.5ms)
+[PASS] 2. GET /api/crops -> count=15 crops (448.1ms)
+[PASS] 3. GET /api/advisory (Rajshahi Aman) -> P1=154.5, P2=158.0, Shift=+3.5d, p=0.9344 (1293.9ms)
+[PASS] 4. GET /api/advisory/districts -> 6 districts (3.5ms)
+[PASS] 5. POST /api/planning (Rajshahi Profit) -> status=optimal, 6 seasons resolved (691.9ms)
+[PASS] 6. POST /api/location/weather -> status=200 (1715.3ms)
+================================================================
+SUMMARY: 6/6 CHECKS PASSED
+================================================================
