@@ -125,8 +125,27 @@ def _period_list(
     return periods
 
 
+def _period_season(period: str, period_idx: int) -> str:
+    """Map planning period (e.g. Y1_S1, S2, etc.) to agro-ecological season ('rabi' or 'kharif')."""
+    p_upper = period.upper()
+    if "_S" in p_upper:
+        try:
+            s_num = int(p_upper.split("_S")[-1])
+            return "rabi" if (s_num % 2 == 1) else "kharif"
+        except ValueError:
+            pass
+    if p_upper.startswith("S") and p_upper[1:].isdigit():
+        s_num = int(p_upper[1:])
+        return "rabi" if (s_num % 2 == 1) else "kharif"
+    return "rabi" if (period_idx % 2 == 0) else "kharif"
+
+
 def _crop_frame(crops: Optional[pd.DataFrame]) -> pd.DataFrame:
     frame = load_crop_knowledge() if crops is None else crops.copy()
+    if "allowed_seasons" not in frame.columns:
+        frame["allowed_seasons"] = "rabi|kharif"
+    else:
+        frame["allowed_seasons"] = frame["allowed_seasons"].replace("", "rabi|kharif").fillna("rabi|kharif")
     missing = [column for column in CROP_COLUMNS if column not in frame.columns]
     if missing:
         raise ValueError("Crop data is missing required columns: " + ", ".join(missing))
@@ -389,13 +408,18 @@ def build_milp_model(
     )
     dyn_matrix = dynamic_data["crop_season_matrix"]
 
+    static_check_rules = (
+        ("ph",)
+        if environmental_history is not None
+        else ("temperature", "ph", "water")
+    )
     eligibility = {}
     for _, crop in crop_frame.iterrows():
         result = rule_results[crop["crop"]]
         static_rules = result["rules"]
         explicitly_incompatible = any(
             static_rules[name]["status"] == "incompatible"
-            for name in ("temperature", "ph", "water")
+            for name in static_check_rules
         )
         eligibility[crop["crop"]] = not explicitly_incompatible
 
@@ -444,6 +468,22 @@ def build_milp_model(
                 problem += variables[(crop_name, period)] == 0, (
                     f"dynamic_seasonal_infeasible_{crop_idx}_{period_idx}"
                 )
+
+    # Agro-ecological season suitability constraints (e.g. Chickpea/Wheat/Mustard only in Rabi, Mungbean/Jute only in Kharif)
+    season_suitability_exclusions = {}
+    for period_idx, period in enumerate(periods):
+        p_season = _period_season(period, period_idx)
+        excluded_for_period = []
+        for crop_idx, crop_name in enumerate(candidate_names):
+            crop_row = crop_frame.loc[crop_frame["crop"] == crop_name].iloc[0]
+            allowed_str = str(crop_row.get("allowed_seasons", "rabi|kharif")).lower()
+            allowed = [s.strip() for s in allowed_str.split("|")]
+            if p_season not in allowed:
+                excluded_for_period.append(crop_name)
+                problem += variables[(crop_name, period)] == 0, (
+                    f"season_suitability_{crop_idx}_{period_idx}"
+                )
+        season_suitability_exclusions[period] = excluded_for_period
 
     previous_family = _previous_crop_family(field_state, history, crop_frame)
     first_period_blocked = []
@@ -563,6 +603,7 @@ def build_milp_model(
         },
         "eligibility": eligibility,
         "excluded_static": excluded_static,
+        "season_suitability_exclusions": season_suitability_exclusions,
         "first_period_blocked": first_period_blocked,
         "legume_names": legume_names,
         "legume_window_count": legume_window_count,
@@ -744,6 +785,7 @@ def optimize_rotation(
         ],
         "previous_family_exclusions": metadata["first_period_blocked"],
         "static_compatibility_exclusions": metadata["excluded_static"],
+        "season_suitability_exclusions": metadata.get("season_suitability_exclusions", {}),
         "legume_interval_seasons": metadata["legume_interval_seasons"],
         "legume_windows": metadata["legume_window_count"],
         "binary_decision_variables": len(metadata["variables"]),
@@ -826,6 +868,7 @@ def _empty_result(
             ],
             "previous_family_exclusions": metadata["first_period_blocked"],
             "static_compatibility_exclusions": metadata["excluded_static"],
+            "season_suitability_exclusions": metadata.get("season_suitability_exclusions", {}),
             "legume_interval_seasons": metadata["legume_interval_seasons"],
             "legume_windows": metadata["legume_window_count"],
             "infeasibility_note": (

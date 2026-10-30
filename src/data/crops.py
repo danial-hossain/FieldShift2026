@@ -23,6 +23,7 @@ CROP_COLUMNS = [
     "soil_impact",
     "source",
     "data_status",
+    "allowed_seasons",
 ]
 DEFAULT_CROPS_CSV = (
     Path(__file__).resolve().parents[2] / "data" / "crops" / "crop_knowledge.csv"
@@ -62,12 +63,17 @@ def _parse_boolean(value) -> bool:
 
 def validate_crop_knowledge(records: pd.DataFrame) -> pd.DataFrame:
     """Validate crop entries, units, required names, and deterministic schema."""
+    records = records.copy()
+    if "allowed_seasons" not in records.columns:
+        records["allowed_seasons"] = "rabi|kharif"
+    else:
+        records["allowed_seasons"] = records["allowed_seasons"].replace("", "rabi|kharif").fillna("rabi|kharif")
     missing = [column for column in CROP_COLUMNS if column not in records]
     if missing:
         raise ValueError("Crop data is missing required columns: " + ", ".join(missing))
 
     data = records[CROP_COLUMNS].copy()
-    for column in ("crop", "family", "nutrient_effect", "soil_impact", "source", "data_status"):
+    for column in ("crop", "family", "nutrient_effect", "soil_impact", "source", "data_status", "allowed_seasons"):
         data[column] = data[column].astype("string").str.strip()
         if data[column].isna().any() or data[column].eq("").any():
             raise ValueError(f"Crop {column} must be provided for every record.")
@@ -128,7 +134,11 @@ def load_crop_knowledge(
     if not path.is_file():
         raise FileNotFoundError(f"Crop knowledge CSV was not found: {path}")
     try:
-        records = pd.read_csv(path, keep_default_na=False)
+        records = pd.read_csv(path, keep_default_na=False)
+        if "allowed_seasons" not in records.columns:
+            records["allowed_seasons"] = "rabi|kharif"
+        if "allowed_seasons" not in records.columns:
+            records["allowed_seasons"] = "rabi|kharif"
     except (OSError, pd.errors.ParserError) as error:
         raise ValueError(f"Could not read crop knowledge CSV '{path}': {error}") from error
     return validate_crop_knowledge(records)
