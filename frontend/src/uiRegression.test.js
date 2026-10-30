@@ -200,3 +200,16 @@ test('R1: Every .jsx file importing/calling React hooks must import each called 
   scanDir(__dirname);
   assert.equal(violations.length, 0, `Missing hook imports detected:\n${violations.join('\n')}`);
 });
+
+test('R3: SixSeasonRecommendationView and sixSeasonEngine contain no Chickpea/Rice fallback literals, no 10.0 default, and use request client', () => {
+  const viewSrc = fs.readFileSync(path.join(__dirname, 'SixSeasonRecommendationView.jsx'), 'utf-8');
+  const engineSrc = fs.readFileSync(path.join(__dirname, 'sixSeasonEngine.js'), 'utf-8');
+
+  assert.ok(!viewSrc.includes("fetch('/api/planning'"), 'View must not call fetch(/api/planning directly');
+  assert.ok(viewSrc.includes("request('/api/planning'"), 'View must use request() client from apiClient.js');
+  assert.ok(!viewSrc.includes('10.0'), 'View must not have 10.0 default area');
+  assert.ok(!engineSrc.includes('10.0'), 'Engine must not have 10.0 default area');
+  assert.ok(!viewSrc.includes("'Chickpea'"), 'View must not contain literal Chickpea');
+  assert.ok(!viewSrc.includes("'Rice'"), 'View must not contain literal Rice');
+  assert.ok(!engineSrc.includes("idx % 2 === 0 ? 'Chickpea' : 'Rice'"), 'Engine must not contain literal Chickpea/Rice fallback');
+});

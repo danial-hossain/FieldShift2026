@@ -1,3 +1,4 @@
+import { request } from './apiClient.js';
 import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton } from './ui/index.js';
 // frontend/src/SixSeasonRecommendationView.jsx
 // 6-Season Crop Recommendation & Rotation Planner (PuLP MILP Model)
@@ -21,6 +22,15 @@ import {
   buildSixSeasonRecommendations
 } from './sixSeasonEngine.js';
 import { SixSeasonTrajectory3D } from './research3d/SixSeasonTrajectory3D.jsx';
+
+
+const PRIORITIES = ['balanced', 'profit', 'water', 'soil'];
+const STRATEGY_TO_PRIORITY = {
+  balanced: 'balanced',
+  profit_focused: 'profit',
+  water_efficiency: 'water',
+  soil_health: 'soil'
+};
 
 export {
   CANONICAL_PERIODS,
@@ -52,9 +62,9 @@ export function SixSeasonRecommendationView({
   const [simulationSuccessMsg, setSimulationSuccessMsg] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Backend planning fetch state
-  const [backendPlan, setBackendPlan] = useState(plan || null);
-  const [loading, setLoading] = useState(!plan);
+  // Backend planning fetch state (cache 4 priorities per district)
+  const [plansByPriority, setPlansByPriority] = useState({});
+  const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -63,44 +73,30 @@ export function SixSeasonRecommendationView({
     setLoading(true);
     setFetchError(null);
 
-    const priorityParam = selectedStrategy === 'water_efficiency'
-      ? 'water'
-      : selectedStrategy === 'soil_health'
-      ? 'soil'
-      : selectedStrategy === 'profit_focused'
-      ? 'profit'
-      : 'balanced';
+    const bodyBase = {
+      district,
+      field_size_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
+      area_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
+    };
 
-    fetch('/api/planning', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        district,
-        priority: priorityParam,
-        field_size_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
-        area_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
-      }),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text();
-          let msg = `HTTP ${res.status}: ${res.statusText}`;
-          try {
-            const j = JSON.parse(text);
-            if (j.detail) msg = typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail);
-          } catch (_) {
-            if (text) msg = text;
-          }
-          throw new Error(msg);
-        }
-        return res.json();
-      })
-      .then((data) => {
+    Promise.all(
+      PRIORITIES.map(priority =>
+        request('/api/planning', {
+          method: 'POST',
+          body: JSON.stringify({ ...bodyBase, priority })
+        }).then(data => ({ priority, data }))
+      )
+    )
+      .then(results => {
         if (!isCancelled) {
-          setBackendPlan(data);
+          const map = {};
+          results.forEach(({ priority, data }) => {
+            map[priority] = data;
+          });
+          setPlansByPriority(map);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (!isCancelled) {
           setFetchError(err.message || 'Failed to load six-season plan');
         }
@@ -110,105 +106,119 @@ export function SixSeasonRecommendationView({
       });
 
     return () => { isCancelled = true; };
-  }, [district, selectedStrategy, reloadKey, activeField?.area_ha]);
+  }, [district, reloadKey, activeField?.area_ha]);
 
-  // Extract field area with safe fallbacks
-  const fieldAreaHa = useMemo(() => {
-    const raw = activeField?.area_ha ?? summary?.field_state?.field_size_ha ?? 10.0;
-    const num = Number(raw);
-    return Number.isFinite(num) && num > 0 ? num : 10.0;
-  }, [activeField, summary]);
+  // Extract field area (no hardcoded fallback)
+  const hasArea = activeField?.area_ha != null && Number.isFinite(Number(activeField.area_ha)) && Number(activeField.area_ha) > 0;
+  const fieldAreaHa = hasArea ? Number(activeField.area_ha) : null;
 
-    // Extract strategy rotation results from backend response
+  // Resolve active priority response
+  const currentPriority = STRATEGY_TO_PRIORITY[selectedStrategy] || 'balanced';
+  const activePlanResponse = plansByPriority[currentPriority] || (plan || null);
+
+  // Extract strategy rotation results from backend response
   const activePlanData = useMemo(() => {
-    const planningData = backendPlan?.summary?.planning || summary?.planning;
-    const backendPlanning = planningData?.strategy_comparison || planningData?.all_strategies;
-    const backendStrategy = backendPlanning?.[selectedStrategy] ||
-      backendPlanning?.[selectedStrategy === 'water_efficiency' ? 'water_focused' : selectedStrategy === 'soil_health' ? 'soil_focused' : selectedStrategy] ||
-      planningData?.milp_status || planningData?.selected_strategy_result;
+    const planningData = activePlanResponse?.summary?.planning || summary?.planning;
+    const solverResult = planningData?.selected_strategy_result || planningData?.milp_status;
 
-    const rotation = backendStrategy?.rotation || backendStrategy?.selected_crop_by_period || {};
-    const grossMargin = backendStrategy?.gross_margin_bdt_per_ha ?? backendStrategy?.profit_bdt_ha ?? backendStrategy?.profit_component ?? null;
-    const waterScore = backendStrategy?.water_score ?? backendStrategy?.water_component ?? null;
-    const soilScore = backendStrategy?.soil_score ?? backendStrategy?.soil_component ?? null;
-    const compositeScore = backendStrategy?.composite_score ?? backendStrategy?.objective_value ?? null;
-    const solverStatus = backendStrategy?.solver_status || planningData?.milp_status?.solver_status || backendPlan?.status || null;
-    const decisionExplanation = backendStrategy?.decision_explanation || {};
+    const rotation = solverResult?.selected_crop_by_period || {};
+    const grossMargin = solverResult?.profit_component != null ? Number(solverResult.profit_component) : null;
+    const waterScore = solverResult?.water_component != null ? Number(solverResult.water_component) : null;
+    const soilScore = solverResult?.soil_component != null ? Number(solverResult.soil_component) : null;
+    const compositeScore = solverResult?.objective_value != null ? Number(solverResult.objective_value) : null;
+    const solverStatus = solverResult?.solver_status || solverResult?.status || activePlanResponse?.status || null;
+    const environmentBasis = solverResult?.environment_basis || activePlanResponse?.environment_basis || null;
+    const cropSeasonMatrix = solverResult?.dynamic_agronomic_matrix?.crop_season_matrix || {};
 
     return {
       strategyId: selectedStrategy,
       rotation,
-      grossMargin: grossMargin != null ? Number(grossMargin) : null,
-      waterScore: waterScore != null ? Number(waterScore) : null,
-      soilScore: soilScore != null ? Number(soilScore) : null,
-      compositeScore: compositeScore != null ? Number(compositeScore) : null,
+      grossMargin,
+      waterScore,
+      soilScore,
+      compositeScore,
       solverStatus,
-      decisionExplanation,
+      environmentBasis,
+      climateSource: activePlanResponse?.climate_source,
+      cropSeasonMatrix,
+      decisionExplanation: solverResult?.decision_explanation || {},
       fallbackReasons: {}
     };
-  }, [backendPlan, summary, selectedStrategy]);
+  }, [activePlanResponse, selectedStrategy, summary]);
 
-  // Construct 6-Season Recommendation List
+  // Construct 6-Season Recommendation List strictly from solver result
   const sixSeasonRecommendations = useMemo(() => {
-    return CANONICAL_PERIODS.map((period, idx) => {
-      const cropName = activePlanData.rotation[period.key] || (idx % 2 === 0 ? 'Chickpea' : 'Rice');
-      const cropMeta = CROP_DATABASE[cropName] || {
-        family: 'Agronomic',
-        is_legume: false,
-        water_mm: 400,
-        duration: 90,
-        icon: '🌱',
-        nameBn: cropName,
-        nameEn: cropName,
-        descBn: 'অনুমোদিত ফসল',
-        baseYieldTonHa: 3.0,
-        pricePerMaund: 1500,
-        costPerHa: 50000
-      };
+    const rotation = activePlanData.rotation || {};
+    const matrix = activePlanData.cropSeasonMatrix || {};
 
-      // Calculate economic estimates based on parcel area and crop model
-      const baseYieldTonHa = cropMeta.baseYieldTonHa;
-      const totalHarvestTons = Number((baseYieldTonHa * fieldAreaHa).toFixed(1));
-      const yieldMaundBigha = Number(((baseYieldTonHa * 25) / 7.47).toFixed(1));
-      
-      const grossRevenueBdtHa = baseYieldTonHa * 25 * cropMeta.pricePerMaund;
-      const netProfitBdtHa = grossRevenueBdtHa - cropMeta.costPerHa;
-      const totalParcelProfitBdt = Math.round(netProfitBdtHa * fieldAreaHa);
+    return CANONICAL_PERIODS.map(period => {
+      const periodKey = period.key;
+      const cropName = rotation[periodKey] || null;
+      const matrixEntry = (cropName && matrix[periodKey]?.[cropName]) || null;
+      const cropMeta = cropName ? CROP_DATABASE[cropName] : null;
 
-      // Extract rationale
-      const periodReasons = activePlanData.decisionExplanation?.period_reasons || {};
-      const rationale = periodReasons[period.key] || activePlanData.fallbackReasons[period.key] || (
-        cropMeta.is_legume
-          ? 'Legume BNF biological pulse alternating to satisfy 3-season interval and replenish soil nitrogen.'
-          : 'High economic value cash crop utilizing seasonal agro-climatic window and market demand.'
-      );
+      const seasonName = matrixEntry?.season_name || period.seasonNameEn;
+      const family = matrixEntry?.family || cropMeta?.family || null;
 
-      // Uncertainty bound (RMSE envelope from synthetic ML held-out validation)
-      const uncertaintyTonHa = Number((baseYieldTonHa * 0.045).toFixed(2));
-      const minYieldTonHa = Number((baseYieldTonHa - uncertaintyTonHa).toFixed(2));
-      const maxYieldTonHa = Number((baseYieldTonHa + uncertaintyTonHa).toFixed(2));
+      // dynamic_gross_margin_bdt_ha
+      const grossMarginBdtHa = matrixEntry?.dynamic_gross_margin_bdt_ha != null ? Number(matrixEntry.dynamic_gross_margin_bdt_ha) : null;
+
+      // water_balance
+      const waterBalance = matrixEntry?.water_balance || {};
+      const irrigationReqMm = waterBalance.irrigation_required_mm != null ? Number(waterBalance.irrigation_required_mm) : null;
+      const cropEtMm = waterBalance.crop_et_mm != null ? Number(waterBalance.crop_et_mm) : null;
+
+      // dynamic_yield_t_ha
+      const dynamicYieldTHa = matrixEntry?.dynamic_yield_t_ha != null ? Number(matrixEntry.dynamic_yield_t_ha) : null;
+
+      // feasibility_reasons
+      const feasibilityReasons = matrixEntry?.feasibility_reasons || {};
+
+      let rationale = '';
+      if (feasibilityReasons.thermal || feasibilityReasons.water || feasibilityReasons.soil) {
+        rationale = [feasibilityReasons.thermal, feasibilityReasons.water, feasibilityReasons.soil].filter(Boolean).join('; ');
+      } else if (cropMeta?.is_legume) {
+        rationale = 'Biological nitrogen fixation (BNF) alternating pulse.';
+      } else if (cropName) {
+        rationale = 'Optimized crop selection under regional agro-climatic and economic constraints.';
+      }
+
+      const totalParcelProfitBdt = (hasArea && grossMarginBdtHa != null)
+        ? Math.round(grossMarginBdtHa * fieldAreaHa)
+        : null;
+      const totalHarvestTons = (hasArea && dynamicYieldTHa != null)
+        ? Number((dynamicYieldTHa * fieldAreaHa).toFixed(1))
+        : null;
+
+      const isLegume = Boolean(cropMeta?.is_legume || family === 'Fabaceae');
 
       return {
         ...period,
         cropName,
         cropMeta,
-        yieldTonHa: baseYieldTonHa,
-        yieldMaundBigha,
+        seasonName,
+        family,
+        yieldTonHa: dynamicYieldTHa,
+        yieldMaundBigha: dynamicYieldTHa != null ? Number(((dynamicYieldTHa * 25) / 7.47).toFixed(1)) : null,
         totalHarvestTons,
-        waterReqMm: cropMeta.water_mm,
-        durationDays: cropMeta.duration,
-        costPerHaBdt: cropMeta.costPerHa,
-        grossRevenueBdtHa,
-        netProfitBdtHa,
+        waterReqMm: irrigationReqMm != null ? irrigationReqMm : cropEtMm,
+        cropEtMm,
+        irrigationReqMm,
+        durationDays: cropMeta?.duration ?? null,
+        costPerHaBdt: cropMeta?.costPerHa ?? null,
+        grossMarginBdtHa,
+        netProfitBdtHa: grossMarginBdtHa,
         totalParcelProfitBdt,
         rationale,
-        uncertaintyTonHa,
-        minYieldTonHa,
-        maxYieldTonHa,
-        riskRating: cropMeta.water_mm > 600 && period.seasonType === 'dry' ? 'High' : cropMeta.water_mm > 400 ? 'Moderate' : 'Low'
+        feasibilityReasons,
+        uncertaintyTonHa: dynamicYieldTHa != null ? Number((dynamicYieldTHa * 0.045).toFixed(2)) : null,
+        minYieldTonHa: dynamicYieldTHa != null ? Number((dynamicYieldTHa * 0.955).toFixed(2)) : null,
+        maxYieldTonHa: dynamicYieldTHa != null ? Number((dynamicYieldTHa * 1.045).toFixed(2)) : null,
+        isLegume,
+        riskRating: irrigationReqMm > 300 && period.seasonType === 'dry' ? 'High' : irrigationReqMm > 150 ? 'Moderate' : 'Low'
       };
     });
-  }, [activePlanData, fieldAreaHa]);
+  }, [activePlanData, hasArea, fieldAreaHa]);
 
   // Aggregate 6-Season Metrics
   const aggregateMetrics = useMemo(() => {
@@ -381,15 +391,22 @@ export function SixSeasonRecommendationView({
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 22, borderBottom: '1px solid var(--glass-border)', paddingBottom: 18 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-            <DataSourceTag source="NASA POWER" mode="climatology" period="2001-2025" />
-            <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
-              NASA POWER climatology 2001-2025, {district.toUpperCase()}
-            </span>
+            <DataSourceTag
+              source={activePlanData.climateSource?.district
+                ? `NASA POWER climatology 2001-2025 · ${activePlanData.climateSource.district.charAt(0).toUpperCase() + activePlanData.climateSource.district.slice(1)}`
+                : (activePlanData.environmentBasis || `NASA POWER climatology 2001-2025 · ${district.toUpperCase()}`)}
+            />
             <span style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'JetBrains Mono, monospace', marginLeft: 8 }}>
               {activePlanData.solverStatus ? `Solver: ${activePlanData.solverStatus}` : (lang === 'bn' ? 'সলভার স্ট্যাটাস: তথ্য নেই' : 'Solver: No data')}
             </span>
             <span style={{ fontSize: 12, color: 'var(--water)' }}>
-              Parcel: <strong>{activeField?.name || 'বগুড়া ডেমো খামার (১০ হেক্টর) [DEMO]'}</strong> ({fieldAreaHa} ha)
+              {hasArea ? (
+                <>Parcel: <strong>{activeField?.name || 'My Farm'}</strong> ({fieldAreaHa} ha)</>
+              ) : (
+                <strong style={{ background: 'rgba(56, 189, 248, 0.1)', padding: '2px 8px', borderRadius: 6, color: 'var(--hud-cyan)' }}>
+                  {lang === 'bn' ? 'প্রতি হেক্টর' : 'Per hectare'}
+                </strong>
+              )}
             </span>
           </div>
 
@@ -538,13 +555,16 @@ export function SixSeasonRecommendationView({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 22 }}>
         <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
           <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-            {lang === 'bn' ? '৬-মৌসুমের মোট প্রত্যাশিত ফলন' : '6-SEASON TOTAL HARVEST'}
+            {hasArea ? (lang === 'bn' ? '৬-মৌসুমের মোট প্রত্যাশিত ফলন' : '6-SEASON TOTAL HARVEST') : (lang === 'bn' ? '৬-মৌসুমের গড় ফলন' : '6-SEASON AVERAGE YIELD')}
           </span>
           <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--leaf)', marginTop: 4 }}>
-            {aggregateMetrics.totalHarvestTons} <span style={{ fontSize: 13, fontWeight: 600 }}>টন (tons)</span>
+            {hasArea
+              ? (aggregateMetrics.totalHarvestTons != null ? aggregateMetrics.totalHarvestTons : (lang === 'bn' ? 'তথ্য নেই' : 'No data'))
+              : (aggregateMetrics.avgYieldTonHa != null ? aggregateMetrics.avgYieldTonHa : (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}{' '}
+            <span style={{ fontSize: 13, fontWeight: 600 }}>{hasArea ? (lang === 'bn' ? 'টন (tons)' : 'tons') : 't/ha'}</span>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            {fieldAreaHa} হেক্টর খামারে গড় {aggregateMetrics.avgYieldTonHa} t/ha
+            {hasArea ? `${fieldAreaHa} হেক্টর খামারে গড় ${aggregateMetrics.avgYieldTonHa ?? (lang === 'bn' ? 'তথ্য নেই' : 'No data')} t/ha` : (lang === 'bn' ? 'প্রতি হেক্টর হিসেবে গণনা করা' : 'Calculated on per-hectare basis')}
           </div>
         </div>
 
@@ -553,10 +573,13 @@ export function SixSeasonRecommendationView({
             {lang === 'bn' ? '৬-মৌসুমের মোট নিট লাভ' : '6-SEASON GROSS MARGIN'}
           </span>
           <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--water)', marginTop: 4 }}>
-            {formatCurrency(activePlanData.grossMargin, lang)} <span style={{ fontSize: 12, fontWeight: 600 }}>/ha</span>
+            {activePlanData.grossMargin != null ? formatCurrency(activePlanData.grossMargin, lang) : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}{' '}
+            <span style={{ fontSize: 12, fontWeight: 600 }}>/ha</span>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            মোট খামারে: {formatCurrency(aggregateMetrics.totalParcelRevenueBdt, lang)}
+            {hasArea && aggregateMetrics.totalParcelRevenueBdt != null
+              ? `মোট খামারে: ${formatCurrency(aggregateMetrics.totalParcelRevenueBdt, lang)}`
+              : (lang === 'bn' ? 'প্রতি হেক্টর মার্জিন' : 'Per-hectare margin')}
           </div>
         </div>
 
@@ -565,10 +588,11 @@ export function SixSeasonRecommendationView({
             {lang === 'bn' ? 'পানি সাশ্রয় সূচক' : 'WATER CONSERVATION'}
           </span>
           <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--water)', marginTop: 4 }}>
-            {activePlanData.waterScore.toFixed(2)} <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
+            {activePlanData.waterScore != null ? `${Number(activePlanData.waterScore).toFixed(2)} ` : (lang === 'bn' ? 'তথ্য নেই ' : 'No data ')}
+            <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            ৬ মৌসুমে মোট সেচ চাহিদা: {aggregateMetrics.totalWaterReqMm} mm
+            {lang === 'bn' ? '৬ মৌসুমে মোট সেচ চাহিদা: ' : '6-season water demand: '}{aggregateMetrics.totalWaterReqMm != null ? `${aggregateMetrics.totalWaterReqMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
           </div>
         </div>
 
@@ -577,10 +601,11 @@ export function SixSeasonRecommendationView({
             {lang === 'bn' ? 'মাটির স্বাস্থ্য ও জৈব উর্বরতা' : 'SOIL BIOLOGY INDEX'}
           </span>
           <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--sun)', marginTop: 4 }}>
-            {activePlanData.soilScore.toFixed(2)} <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
+            {activePlanData.soilScore != null ? `${Number(activePlanData.soilScore).toFixed(2)} ` : (lang === 'bn' ? 'তথ্য নেই ' : 'No data ')}
+            <span style={{ fontSize: 13, fontWeight: 600 }}>/ 6.0</span>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            ডাল/BNF সংবন্ধন: {aggregateMetrics.legumeCount} / ৬ মৌসুম (শর্ত পূরিত ✓)
+            {lang === 'bn' ? 'ডাল/BNF সংবন্ধন: ' : 'Legume/BNF seasons: '}{aggregateMetrics.legumeCount} / ৬ মৌসুম
           </div>
         </div>
       </div>
@@ -706,10 +731,10 @@ export function SixSeasonRecommendationView({
                     <span style={{ fontSize: 32 }}>{rec.cropMeta.icon}</span>
                     <div>
                       <h4 style={{ margin: 0, fontSize: 17, fontWeight: 900, color: 'var(--leaf)' }}>
-                        {rec.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}
+                        {rec.cropMeta ? rec.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn'] : (rec.cropName || (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}
                       </h4>
                       <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                        {rec.cropMeta.family} • {rec.durationDays} {lang === 'bn' ? 'দিন' : 'days'} • {lang === 'bn' ? 'পানি চাহিদা: ' : 'Water: '}{rec.waterReqMm} mm
+                        {rec.family || (lang === 'bn' ? 'তথ্য নেই' : 'No data')} • {rec.durationDays != null ? `${rec.durationDays} ${lang === 'bn' ? 'দিন' : 'days'}` : (lang === 'bn' ? 'সময়কাল: তথ্য নেই' : 'Duration: No data')} • {lang === 'bn' ? 'সেচ চাহিদা: ' : 'Irrigation: '}{rec.irrigationReqMm != null ? `${rec.irrigationReqMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                       </span>
                     </div>
                   </div>
@@ -720,7 +745,7 @@ export function SixSeasonRecommendationView({
                       {lang === 'bn' ? 'কেন এই সুপারিশ? (Agronomic Rationale):' : 'Why Recommended? (Agronomic Rationale):'}
                     </span>
                     <p style={{ margin: 0, fontSize: 12, color: 'var(--text-2)', lineHeight: 1.4 }}>
-                      {rec.rationale}
+                      {rec.rationale || (lang === 'bn' ? 'তথ্য নেই' : 'No rationale available')}
                     </p>
                   </div>
 
@@ -728,26 +753,26 @@ export function SixSeasonRecommendationView({
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
                       <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'অনুমিত ফলন:' : 'Predicted Yield:'}</span>
-                      <strong style={{ color: 'var(--leaf)', fontSize: 13 }}>{rec.yieldTonHa} t/ha</strong> <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>({rec.yieldMaundBigha} md/bg)</span>
+                      <strong style={{ color: 'var(--leaf)', fontSize: 13 }}>{rec.yieldTonHa != null ? `${rec.yieldTonHa} t/ha` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}</strong> {rec.yieldMaundBigha != null && <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>({rec.yieldMaundBigha} md/bg)</span>}
                     </div>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'মোট উৎপাদন:' : 'Total Harvest:'}</span>
-                      <strong style={{ color: 'var(--text)', fontSize: 13 }}>{rec.totalHarvestTons} tons</strong>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{hasArea ? (lang === 'bn' ? 'মোট উৎপাদন:' : 'Total Harvest:') : (lang === 'bn' ? 'ফসল ইটি (ET):' : 'Crop ET:')}</span>
+                      <strong style={{ color: 'var(--text)', fontSize: 13 }}>{hasArea ? (rec.totalHarvestTons != null ? `${rec.totalHarvestTons} tons` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')) : (rec.cropEtMm != null ? `${rec.cropEtMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}</strong>
                     </div>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'প্রত্যাশিত লাভ/ha:' : 'Net Profit/ha:'}</span>
-                      <strong style={{ color: 'var(--water)', fontSize: 12.5 }}>{formatCurrency(rec.netProfitBdtHa, lang)}</strong>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'প্রত্যাশিত লাভ/ha:' : 'Gross Margin / ha:'}</span>
+                      <strong style={{ color: 'var(--water)', fontSize: 12.5 }}>{rec.grossMarginBdtHa != null ? formatCurrency(rec.grossMarginBdtHa, lang) : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}</strong>
                     </div>
                     <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '6px 10px', borderRadius: 6 }}>
-                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'মোট খামার লাভ:' : 'Parcel Profit:'}</span>
-                      <strong style={{ color: 'var(--sun)', fontSize: 12.5 }}>{formatCurrency(rec.totalParcelProfitBdt, lang)}</strong>
+                      <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)' }}>{hasArea ? (lang === 'bn' ? 'মোট খামার লাভ:' : 'Parcel Profit:') : (lang === 'bn' ? 'সেচ চাহিদা:' : 'Irrigation Required:')}</span>
+                      <strong style={{ color: 'var(--sun)', fontSize: 12.5 }}>{hasArea ? (rec.totalParcelProfitBdt != null ? formatCurrency(rec.totalParcelProfitBdt, lang) : (lang === 'bn' ? 'তথ্য নেই' : 'No data')) : (rec.irrigationReqMm != null ? `${rec.irrigationReqMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}</strong>
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginTop: 14, paddingTop: 10, borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                    {lang === 'bn' ? 'অনিশ্চয়তা: ' : 'Uncertainty: '} ±{rec.uncertaintyTonHa} t/ha
+                    {rec.uncertaintyTonHa != null ? `${lang === 'bn' ? 'অনিশ্চয়তা: ' : 'Uncertainty: '} ±${rec.uncertaintyTonHa} t/ha` : (lang === 'bn' ? 'অনিশ্চয়তা: তথ্য নেই' : 'Uncertainty: No data')}
                   </span>
                   <button
                     type="button"
@@ -793,9 +818,14 @@ export function SixSeasonRecommendationView({
             <tbody>
               {Object.keys(STRATEGY_DEFINITIONS).map(stratKey => {
                 const stratMeta = STRATEGY_DEFINITIONS[stratKey];
-                const planningData = backendPlan?.summary?.planning || summary?.planning;
-                const stratComparison = planningData?.strategy_comparison || planningData?.all_strategies;
-                const data = stratComparison?.[stratKey] || (selectedStrategy === stratKey ? (planningData?.milp_status || planningData?.selected_strategy_result) : null);
+                const priorityKey = STRATEGY_TO_PRIORITY[stratKey] || 'balanced';
+                const pResponse = plansByPriority[priorityKey] || (selectedStrategy === stratKey ? activePlanResponse : null);
+                const solverRes = pResponse?.summary?.planning?.selected_strategy_result || pResponse?.summary?.planning?.milp_status;
+                const stratRotation = solverRes?.selected_crop_by_period || solverRes?.rotation || {};
+                const gm = solverRes?.profit_component ?? solverRes?.gross_margin_bdt_per_ha ?? null;
+                const ws = solverRes?.water_component ?? solverRes?.water_score ?? null;
+                const ss = solverRes?.soil_component ?? solverRes?.soil_score ?? null;
+                const cs = solverRes?.objective_value ?? solverRes?.composite_score ?? null;
                 const isSelected = selectedStrategy === stratKey;
 
                 return (
@@ -818,12 +848,12 @@ export function SixSeasonRecommendationView({
                     <td style={{ padding: '12px 14px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
                         {CANONICAL_PERIODS.map((p, pIdx) => {
-                          const c = data?.rotation?.[p.key] || data?.selected_crop_by_period?.[p.key] || null;
-                          const cm = CROP_DATABASE[c] || { icon: '🌱' };
+                          const c = stratRotation[p.key] || null;
+                          const cm = c ? (CROP_DATABASE[c] || { icon: '🌱', nameBn: c, nameEn: c }) : null;
                           return (
                             <React.Fragment key={p.key}>
                               <span style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid var(--glass-border)', padding: '2px 6px', borderRadius: 6, fontSize: 11 }}>
-                                {cm.icon} {c}
+                                {cm ? `${cm.icon} ${lang === 'bn' ? cm.nameBn : cm.nameEn}` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                               </span>
                               {pIdx < 5 && <span style={{ color: 'var(--text-3)', fontSize: 10 }}>→</span>}
                             </React.Fragment>
@@ -833,19 +863,19 @@ export function SixSeasonRecommendationView({
                     </td>
 
                     <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--leaf)' }}>
-                      {formatCurrency(data.gross_margin_bdt_per_ha, lang)}
+                      {gm != null ? formatCurrency(gm, lang) : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                     </td>
 
                     <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--water)' }}>
-                      {data.water_score.toFixed(2)} / 6.0
+                      {ws != null ? `${Number(ws).toFixed(2)} / 6.0` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                     </td>
 
                     <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--sun)' }}>
-                      {data.soil_score.toFixed(2)} / 6.0
+                      {ss != null ? `${Number(ss).toFixed(2)} / 6.0` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                     </td>
 
                     <td style={{ padding: '12px 14px', fontWeight: 900, color: 'var(--text)' }}>
-                      {data.composite_score.toFixed(3)}
+                      {cs != null ? Number(cs).toFixed(3) : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                     </td>
 
                     <td style={{ padding: '12px 14px', fontSize: 11, color: 'var(--leaf)', fontWeight: 700 }}>
@@ -898,32 +928,32 @@ export function SixSeasonRecommendationView({
                 </div>
 
                 {/* Season 1 */}
-                <div style={{ marginBottom: 10, background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s1.cropMeta.is_legume ? '3px solid var(--leaf)' : '3px solid var(--sun)' }}>
+                <div style={{ marginBottom: 10, background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s1?.isLegume ? '3px solid var(--leaf)' : '3px solid var(--sun)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
                     <span>Season 1 (Rabi (Nov-Apr, dry))</span>
-                    {y.s1.cropMeta.is_legume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
+                    {y.s1?.isLegume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
                   </div>
                   <strong style={{ fontSize: 14, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span>{y.s1.cropMeta.icon}</span>
-                    <span>{y.s1.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}</span>
+                    <span>{y.s1?.cropMeta?.icon || '🌱'}</span>
+                    <span>{y.s1?.cropMeta ? y.s1.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn'] : (y.s1?.cropName || (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}</span>
                   </strong>
                   <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                    {y.s1.durationDays} days • {y.s1.waterReqMm} mm • Yield {y.s1.yieldTonHa} t/ha
+                    {y.s1?.durationDays != null ? `${y.s1.durationDays} days • ` : ''}{y.s1?.waterReqMm != null ? `${y.s1.waterReqMm} mm • ` : ''}Yield {y.s1?.yieldTonHa != null ? `${y.s1.yieldTonHa} t/ha` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                   </div>
                 </div>
 
                 {/* Season 2 */}
-                <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s2.cropMeta.is_legume ? '3px solid var(--leaf)' : '3px solid var(--water)' }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s2?.isLegume ? '3px solid var(--leaf)' : '3px solid var(--water)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
                     <span>Season 2 (Kharif (May-Oct, wet))</span>
-                    {y.s2.cropMeta.is_legume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
+                    {y.s2?.isLegume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
                   </div>
                   <strong style={{ fontSize: 14, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span>{y.s2.cropMeta.icon}</span>
-                    <span>{y.s2.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}</span>
+                    <span>{y.s2?.cropMeta?.icon || '🌱'}</span>
+                    <span>{y.s2?.cropMeta ? y.s2.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn'] : (y.s2?.cropName || (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}</span>
                   </strong>
                   <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                    {y.s2.durationDays} days • {y.s2.waterReqMm} mm • Yield {y.s2.yieldTonHa} t/ha
+                    {y.s2?.durationDays != null ? `${y.s2.durationDays} days • ` : ''}{y.s2?.waterReqMm != null ? `${y.s2.waterReqMm} mm • ` : ''}Yield {y.s2?.yieldTonHa != null ? `${y.s2.yieldTonHa} t/ha` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
                   </div>
                 </div>
               </div>
@@ -966,7 +996,7 @@ export function SixSeasonRecommendationView({
                 🔬 {lang === 'bn' ? 'নির্বাচিত মৌসুমের গভীর বৈজ্ঞানিক বিশ্লেষণ' : 'SELECTED SEASON SCIENTIFIC INSPECTOR'}
               </span>
               <h3 style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 900, color: 'var(--text)' }}>
-                {activeSeason[lang === 'bn' ? 'nameBn' : 'nameEn']} — {activeSeason.cropMeta.icon} {activeSeason.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn']}
+                {activeSeason[lang === 'bn' ? 'nameBn' : 'nameEn']} — {activeSeason.cropMeta?.icon || '🌱'} {activeSeason.cropMeta ? activeSeason.cropMeta[lang === 'bn' ? 'nameBn' : 'nameEn'] : (activeSeason.cropName || (lang === 'bn' ? 'তথ্য নেই' : 'No data'))}
               </h3>
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -995,15 +1025,18 @@ export function SixSeasonRecommendationView({
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'উদ্ভিদ পরিবার ও জাত' : 'Botanical Family & Traits'}</span>
-              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', marginTop: 2 }}>{activeSeason.cropMeta.family}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', marginTop: 2 }}>{activeSeason.family || activeSeason.cropMeta?.family || (lang === 'bn' ? 'তথ্য নেই' : 'No data')}</div>
               <div style={{ fontSize: 11.5, color: 'var(--leaf)', marginTop: 4 }}>
-                {activeSeason.cropMeta.is_legume ? '✓ Biological Nitrogen Fixer (BNF)' : 'Non-legume rotation partner'}
+                {activeSeason.isLegume ? '✓ Biological Nitrogen Fixer (BNF)' : 'Non-legume rotation partner'}
               </div>
             </div>
 
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'পানি ও বৃদ্ধি কাল' : 'Hydrological Demand & Duration'}</span>
-              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--water)', marginTop: 2 }}>{activeSeason.waterReqMm} mm ({activeSeason.durationDays} days)</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--water)', marginTop: 2 }}>
+                {activeSeason.waterReqMm != null ? `${activeSeason.waterReqMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
+                {activeSeason.durationDays != null ? ` (${activeSeason.durationDays} days)` : ''}
+              </div>
               <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
                 {activeSeason.seasonType === 'dry' ? 'Rabi dry season irrigation managed' : 'Monsoon rainfall supported'}
               </div>
@@ -1012,20 +1045,23 @@ export function SixSeasonRecommendationView({
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'অনুমিত ফলন ও অনিশ্চয়তা' : 'Yield Prediction & RMSE Bound'}</span>
               <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--leaf)', marginTop: 2 }}>
-                {activeSeason.yieldTonHa} t/ha (±{activeSeason.uncertaintyTonHa} t/ha)
+                {activeSeason.yieldTonHa != null ? `${activeSeason.yieldTonHa} t/ha` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
+                {activeSeason.uncertaintyTonHa != null ? ` (±${activeSeason.uncertaintyTonHa} t/ha)` : ''}
               </div>
               <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
-                Range: {activeSeason.minYieldTonHa} — {activeSeason.maxYieldTonHa} t/ha
+                Range: {activeSeason.minYieldTonHa != null && activeSeason.maxYieldTonHa != null ? `${activeSeason.minYieldTonHa} — ${activeSeason.maxYieldTonHa} t/ha` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
               </div>
             </div>
 
             <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang === 'bn' ? 'অর্থনৈতিক নিট মার্জিন' : 'Economic Net Return'}</span>
               <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--sun)', marginTop: 2 }}>
-                {formatCurrency(activeSeason.netProfitBdtHa, lang)} /ha
+                {activeSeason.grossMarginBdtHa != null ? formatCurrency(activeSeason.grossMarginBdtHa, lang) : (lang === 'bn' ? 'তথ্য নেই' : 'No data')} /ha
               </div>
               <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
-                খামারে মোট: {formatCurrency(activeSeason.totalParcelProfitBdt, lang)} ({fieldAreaHa} ha)
+                {hasArea && activeSeason.totalParcelProfitBdt != null
+                  ? `${lang === 'bn' ? 'খামারে মোট: ' : 'Parcel total: '}${formatCurrency(activeSeason.totalParcelProfitBdt, lang)} (${fieldAreaHa} ha)`
+                  : (lang === 'bn' ? 'প্রতি হেক্টর হিসেবে গণনা করা' : 'Calculated per hectare basis')}
               </div>
             </div>
           </div>
