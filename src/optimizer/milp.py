@@ -773,6 +773,8 @@ def optimize_rotation(
         },
         "dynamic_agronomic_matrix": metadata["dynamic_agronomic_matrix"],
         "seasonal_environments": metadata["seasonal_environments"],
+        "environment_basis": metadata["dynamic_agronomic_matrix"].get("environment_basis", "default_no_history"),
+        "environment_basis": metadata["dynamic_agronomic_matrix"].get("environment_basis", "default_no_history"),
         "weights": {
             "requested": metadata["weights"],
             "effective": metadata["effective_weights"],

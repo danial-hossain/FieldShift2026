@@ -495,6 +495,7 @@ def health(db: DbSession = Depends(get_db)):
     }
 
 @app.post("/api/workflow")
+@app.post("/api/planning")
 def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
     data = payload.model_dump()
     user = None
@@ -503,6 +504,21 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             user = require_user(fieldshift_session, db)
         except HTTPException:
             user = None
+
+    district = data.get("district")
+    dist_key = None
+    climate_df = None
+    data_mode = None
+    if district is not None and str(district).strip():
+        dist_key = str(district).strip().lower()
+        from src.compute.advisory_service import load_district_climate_data, DISTRICT_REGISTRY
+        if dist_key not in DISTRICT_REGISTRY:
+            raise HTTPException(400, f"Unsupported district '{district}'. Supported districts: {list(DISTRICT_REGISTRY.keys())}")
+        is_offline = os.environ.get("OFFLINE", "1") == "1"
+        try:
+            climate_df, data_mode = load_district_climate_data(dist_key, offline=is_offline)
+        except ValueError as err:
+            raise HTTPException(400, str(err)) from err
 
     requested_field_id = data.get("field_id")
     if requested_field_id not in (None, "", "demo"):
@@ -518,7 +534,81 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
         data["field_size_ha"] = data["area_ha"]
 
     user_dict = public_user(user) if user else None
-    return workflow_result(data, user=user_dict)
+
+    if dist_key and climate_df is not None:
+        import pandas as pd
+        from src.compute.advisory_service import DISTRICT_REGISTRY
+        from src.data.crops import load_crop_knowledge
+        from src.state.field_state import build_field_state
+        from src.optimizer.milp import optimize_rotation
+
+        ctx = DISTRICT_REGISTRY[dist_key]
+        crops = load_crop_knowledge()
+        lat = float(data.get("latitude") or ctx["lat"])
+        lon = float(data.get("longitude") or ctx["lon"])
+        field_id = str(data.get("field_id") or f"{dist_key}_field")
+
+        f_state = build_field_state(
+            field_id=field_id,
+            latitude=lat,
+            longitude=lon,
+            decision_date=pd.to_datetime(climate_df["date"].max() if "date" in climate_df else "2025-12-31"),
+            nasa_power_data=climate_df.tail(60),
+            crop_knowledge=crops,
+        )
+        if "area_ha" in data:
+            f_state.field_size_ha = float(data["area_ha"])
+            f_state.area_ha = float(data["area_ha"])
+        if "soil_texture" in data and data["soil_texture"] != "unknown":
+            f_state.texture = str(data["soil_texture"])
+        if "soil_ph" in data and data["soil_ph"] is not None:
+            f_state.ph = float(data["soil_ph"])
+
+        priority = str(data.get("priority", "balanced"))
+        p_wt, w_wt, s_wt = 0.34, 0.33, 0.33
+        if priority == "profit":
+            p_wt, w_wt, s_wt = 1.0, 0.0, 0.0
+        elif priority == "water":
+            p_wt, w_wt, s_wt = 0.0, 1.0, 0.0
+        elif priority == "soil":
+            p_wt, w_wt, s_wt = 0.0, 0.0, 1.0
+
+        milp_res = optimize_rotation(
+            field_state=f_state,
+            crops=crops,
+            environmental_history=climate_df,
+            profit_weight=p_wt,
+            water_weight=w_wt,
+            soil_weight=s_wt,
+        )
+        env_basis = milp_res.get("environment_basis", f"nasa_power_climatology_{len(climate_df['date'].dt.year.unique())}_years")
+
+        return {
+            "status": "ok",
+            "mode": data_mode or "offline",
+            "climate_source": {
+                "district": dist_key,
+                "data_mode": data_mode or "offline",
+                "years": "2001-2025",
+                "environment_basis": env_basis,
+            },
+            "environment_basis": env_basis,
+            "summary": {
+                "planning": {
+                    "milp_status": milp_res,
+                    "environment_basis": env_basis,
+                    "selected_strategy_result": milp_res,
+                }
+            }
+        }
+
+    resp = workflow_result(data, user=user_dict)
+    milp_st = resp.get("summary", {}).get("planning", {}).get("milp_status", {})
+    env_basis = milp_st.get("environment_basis", "default_no_history")
+    resp["environment_basis"] = env_basis
+    if "summary" in resp and "planning" in resp["summary"]:
+        resp["summary"]["planning"]["environment_basis"] = env_basis
+    return resp
 
 @app.post("/api/counterfactual/reoptimize")
 def counterfactual_reoptimize(

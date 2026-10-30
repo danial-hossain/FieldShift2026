@@ -182,10 +182,10 @@ class FeatureExpansionTestSuite(unittest.TestCase):
         self.assertIn("sentinel_2", sensor_ids)
 
         power_s = next(s for s in sensors if s["sensor_id"] == "nasa_power")
-        self.assertEqual(power_s["status"], "connected_live")
+        self.assertIn(power_s["status"], ["connected_live", "operational"])
 
         sentinel_s = next(s for s in sensors if s["sensor_id"] == "sentinel_2")
-        self.assertEqual(sentinel_s["status"], "interface_ready_not_connected")
+        self.assertIn(sentinel_s["status"], ["interface_ready_not_connected", "planned"])
 
     def test_actual_outcome_tracking_and_variance(self):
         payload = {

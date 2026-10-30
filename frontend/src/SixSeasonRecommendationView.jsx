@@ -3,12 +3,12 @@
 // Restored first-class feature for FieldShift Research Lab
 //
 // Agronomic Horizon: 3 Years, 6 Distinct Planning Periods:
-// Y1_S1 (Year 1, Dry / Rabi / Aus)
-// Y1_S2 (Year 1, Wet / Kharif / Aman)
-// Y2_S1 (Year 2, Dry / Rabi / Aus)
-// Y2_S2 (Year 2, Wet / Kharif / Aman)
-// Y3_S1 (Year 3, Dry / Rabi / Aus)
-// Y3_S2 (Year 3, Wet / Kharif / Aman)
+// Y1_S1 (Year 1, Rabi (Nov-Apr, dry))
+// Y1_S2 (Year 1, Kharif (May-Oct, wet))
+// Y2_S1 (Year 2, Rabi (Nov-Apr, dry))
+// Y2_S2 (Year 2, Kharif (May-Oct, wet))
+// Y3_S1 (Year 3, Rabi (Nov-Apr, dry))
+// Y3_S2 (Year 3, Kharif (May-Oct, wet))
 
 import React, { useState, useMemo } from 'react';
 import { useTranslation, formatCurrency, toBengaliNumber } from './i18n.js';
@@ -839,7 +839,7 @@ export function SixSeasonRecommendationView({
                 {/* Season 1 */}
                 <div style={{ marginBottom: 10, background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s1.cropMeta.is_legume ? '3px solid var(--leaf)' : '3px solid var(--sun)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
-                    <span>Season 1 (Dry / Rabi)</span>
+                    <span>Season 1 (Rabi (Nov-Apr, dry))</span>
                     {y.s1.cropMeta.is_legume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
                   </div>
                   <strong style={{ fontSize: 14, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -854,7 +854,7 @@ export function SixSeasonRecommendationView({
                 {/* Season 2 */}
                 <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: 10, borderRadius: 8, borderLeft: y.s2.cropMeta.is_legume ? '3px solid var(--leaf)' : '3px solid var(--water)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
-                    <span>Season 2 (Wet / Kharif)</span>
+                    <span>Season 2 (Kharif (May-Oct, wet))</span>
                     {y.s2.cropMeta.is_legume && <span style={{ color: 'var(--leaf)', fontWeight: 800 }}>🌱 BNF Fixer</span>}
                   </div>
                   <strong style={{ fontSize: 14, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>

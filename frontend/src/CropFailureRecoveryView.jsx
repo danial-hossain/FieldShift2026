@@ -40,12 +40,12 @@ export function CropFailureRecoveryView({
   ];
 
   const seasonOptions = [
-    { idx: 0, label: 'Season 1 (Year 1 - Rabi / Dry)' },
-    { idx: 1, label: 'Season 2 (Year 1 - Kharif-1 / Pre-Monsoon)' },
-    { idx: 2, label: 'Season 3 (Year 1 - Kharif-2 / Monsoon)' },
-    { idx: 3, label: 'Season 4 (Year 2 - Rabi / Dry)' },
-    { idx: 4, label: 'Season 5 (Year 2 - Kharif-1 / Pre-Monsoon)' },
-    { idx: 5, label: 'Season 6 (Year 2 - Kharif-2 / Monsoon)' },
+    { idx: 0, label: 'Season 1 (Year 1 - Rabi (Nov-Apr, dry))' },
+    { idx: 1, label: 'Season 2 (Year 1 - Kharif (May-Oct, wet))' },
+    { idx: 2, label: 'Season 3 (Year 2 - Rabi (Nov-Apr, dry))' },
+    { idx: 3, label: 'Season 4 (Year 2 - Kharif (May-Oct, wet))' },
+    { idx: 4, label: 'Season 5 (Year 3 - Rabi (Nov-Apr, dry))' },
+    { idx: 5, label: 'Season 6 (Year 3 - Kharif (May-Oct, wet))' },
   ];
 
   const runSimulation = useCallback(async (type = failureType, season = failureSeason, sev = severity) => {

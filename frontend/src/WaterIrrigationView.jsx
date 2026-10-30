@@ -274,11 +274,11 @@ export function WaterIrrigationView({
               </thead>
               <tbody>
                 {[
-                  { season: 'Y1_S1 (Rabi / Winter)', crop: 'Mustard (সরিষা)', demand: '350 mm', rain: '25 mm', irrig: '325 mm', tech: '2 Border Irrigations (Flower & Pod)' },
-                  { season: 'Y1_S2 (Kharif-1 / Pre-Monsoon)', crop: 'Mungbean (মুগডাল)', demand: '300 mm', rain: '180 mm', irrig: '120 mm', tech: 'Rainfed + 1 Supplemental Soak' },
+                  { season: 'Y1_S1 (Rabi (Nov-Apr, dry))', crop: 'Mustard (সরিষা)', demand: '350 mm', rain: '25 mm', irrig: '325 mm', tech: '2 Border Irrigations (Flower & Pod)' },
+                  { season: 'Y1_S2 (Kharif (May-Oct, wet))', crop: 'Mungbean (মুগডাল)', demand: '300 mm', rain: '180 mm', irrig: '120 mm', tech: 'Rainfed + 1 Supplemental Soak' },
                   { season: 'Y1_S3 (Kharif-2 / Monsoon)', crop: 'BRRI dhan75 (আমন)', demand: '1100 mm', rain: '850 mm', irrig: '250 mm', tech: 'AWD Tube Well (Terminal Drought Escape)' },
-                  { season: 'Y2_S1 (Rabi / Winter)', crop: 'Lentil (মসুর)', demand: '280 mm', rain: '30 mm', irrig: '250 mm', tech: 'Residual Soil Moisture + Sprinkler' },
-                  { season: 'Y2_S2 (Kharif-1 / Pre-Monsoon)', crop: 'Sesame (তিল)', demand: '250 mm', rain: '190 mm', irrig: '60 mm', tech: 'Rainfed Furrow Basin' },
+                  { season: 'Y2_S1 (Rabi (Nov-Apr, dry))', crop: 'Lentil (মসুর)', demand: '280 mm', rain: '30 mm', irrig: '250 mm', tech: 'Residual Soil Moisture + Sprinkler' },
+                  { season: 'Y2_S2 (Kharif (May-Oct, wet))', crop: 'Sesame (তিল)', demand: '250 mm', rain: '190 mm', irrig: '60 mm', tech: 'Rainfed Furrow Basin' },
                   { season: 'Y2_S3 (Kharif-2 / Monsoon)', crop: 'BRRI dhan71 (আমন)', demand: '1150 mm', rain: '880 mm', irrig: '270 mm', tech: 'AWD Pipe System (Drought-tolerant)' },
                 ].map((row, idx) => (
                   <tr key={idx} style={{ borderBottom: '1px solid #1e293b' }}>
