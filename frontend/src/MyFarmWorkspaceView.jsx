@@ -7,7 +7,7 @@ import { FieldParcelManagerView } from './FieldParcelManagerView.jsx';
 import { GoogleFieldMapPicker } from './GoogleFieldMapPicker.jsx';
 import { formatNumber } from './marketUtils.js';
 import { useTranslation } from './i18n.js';
-import { Card, CardHeader, Stat, Pill, Button, Tabs } from './ui/index.js';
+import { Card, CardHeader, Stat, Pill, Button, Tabs, EmptyState } from './ui/index.js';
 
 export function MyFarmWorkspaceView({
   activeField,
@@ -59,7 +59,9 @@ export function MyFarmWorkspaceView({
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
               <span style={{ fontSize: 26 }}>🗺️🌱</span>
               <Pill tone="leaf">FIELD PARCEL &amp; SOIL REGISTRY</Pill>
-              <Pill tone="water">{activeField?.name || (lang === 'bn' ? 'বগুড়া পরীক্ষামূলক খামার' : 'Bogura Demo Field')}</Pill>
+              <Pill tone={activeField ? 'water' : 'neutral'}>
+                {activeField?.name || (lang === 'bn' ? 'কোনো জমি নির্বাচিত নেই' : 'No Field Selected')}
+              </Pill>
             </div>
             <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>
               {lang === 'bn' ? 'আমার জমি, সীমানা ও মাটির তথ্য' : 'My Farm: Parcels, Soil & Boundaries'}
@@ -83,7 +85,48 @@ export function MyFarmWorkspaceView({
       </Card>
 
       {/* SUB-TAB 1: FARM OVERVIEW */}
-      {subTab === 'overview' && (
+      {subTab === 'overview' && !activeField && (
+        <Card variant="glass" style={{ padding: 36, textAlign: 'center' }}>
+          <EmptyState
+            icon="🗺️"
+            title={lang === 'bn' ? 'কোনো জমি নির্বাচিত নেই' : 'No Field Selected'}
+            description={lang === 'bn' ? 'কার্যক্রম শুরু করতে একটি ডেমো খামার লোড করুন অথবা আপনার নতুন জমি যুক্ত করুন।' : 'Load a demo farm or register a new field parcel to begin.'}
+            action={
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 16 }}>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => {
+                    const demo = userFields.find(f => f.id === 'demo' || f.name?.includes('ডেমো') || f.name?.includes('Demo')) || {
+                      id: 'demo',
+                      name: lang === 'bn' ? 'বগুড়া পরীক্ষামূলক খামার' : 'Bogura Demo Field',
+                      district: 'bogura',
+                      area_ha: 10.0,
+                      soil_texture: 'loam',
+                      soil_ph: 6.5,
+                      organic_matter_pct: 1.8,
+                      irrigation_capacity_mm: 450
+                    };
+                    if (onSelectField) onSelectField(demo);
+                  }}
+                >
+                  {lang === 'bn' ? 'ডেমো খামার লোড করুন' : 'Load Demo Farm'}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setSubTab('parcels')}
+                >
+                  {lang === 'bn' ? 'নতুন জমি যোগ করুন' : 'Add New Field'}
+                </Button>
+              </div>
+            }
+          />
+        </Card>
+      )}
+
+      {/* SUB-TAB 1: FARM OVERVIEW (ACTIVE FIELD) */}
+      {subTab === 'overview' && activeField && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
           <Card variant="glass">
             <CardHeader
@@ -185,15 +228,30 @@ export function MyFarmWorkspaceView({
             title={lang === 'bn' ? 'গুগল স্যাটেলাইট ম্যাপ পিকার ও স্থানাঙ্ক নির্বাচন' : 'Google Satellite Field Map & Coordinate Picker'}
             subtitle={lang === 'bn' ? 'মার্কার টেনে স্থানাঙ্ক নির্ধারণ করুন, নাসার টেলিমিতি স্বয়ংক্রিয় আপডেট হবে' : 'Click or drag marker to update field coordinates. Two-way binding updates live NASA telemetry.'}
           />
-          <div style={{ height: 460, borderRadius: 14, overflow: 'hidden', marginTop: 12, border: '1px solid var(--line)' }}>
-            <GoogleFieldMapPicker
-              latitude={activeField?.latitude || 24.8467}
-              longitude={activeField?.longitude || 89.3777}
-              onChange={(lat, lng) => {
-                console.log('Selected coordinates:', lat, lng);
-              }}
-            />
-          </div>
+          {activeField?.latitude != null && activeField?.longitude != null ? (
+            <div style={{ height: 460, borderRadius: 14, overflow: 'hidden', marginTop: 12, border: '1px solid var(--line)' }}>
+              <GoogleFieldMapPicker
+                latitude={Number(activeField.latitude)}
+                longitude={Number(activeField.longitude)}
+                onChange={(lat, lng) => {
+                  console.log('Selected coordinates:', lat, lng);
+                }}
+              />
+            </div>
+          ) : (
+            <div style={{ padding: 36 }}>
+              <EmptyState
+                icon="🗺️"
+                title={lang === 'bn' ? 'কোনো জমি নির্বাচিত নেই' : 'No Field Selected'}
+                description={lang === 'bn' ? 'ম্যাপে স্থানাঙ্ক দেখতে ও পরিবর্তন করতে প্রথমে একটি জমি নির্বাচন করুন।' : 'Select or add a field parcel first to view and edit coordinates on the map.'}
+                action={
+                  <Button variant="secondary" size="sm" onClick={() => setSubTab('parcels')}>
+                    {lang === 'bn' ? 'জমির তালিকা দেখুন' : 'View Parcels'}
+                  </Button>
+                }
+              />
+            </div>
+          )}
         </Card>
       )}
 

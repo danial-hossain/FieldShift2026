@@ -110,3 +110,9 @@ test('FIX 7: styles.css overhaul section does not set opaque background on .app-
   assert.ok(ruleBody.includes('background: transparent;'), '.app-shell must have background: transparent');
   assert.ok(ruleBody.includes('isolation: isolate;'), '.app-shell must have isolation: isolate');
 });
+
+test('FIX 8: MyFarmWorkspaceView.jsx contains neither 24.8467 nor 89.3777', () => {
+  const src = fs.readFileSync(path.join(__dirname, 'MyFarmWorkspaceView.jsx'), 'utf-8');
+  assert.ok(!src.includes('24.8467'), 'MyFarmWorkspaceView.jsx must not contain 24.8467');
+  assert.ok(!src.includes('89.3777'), 'MyFarmWorkspaceView.jsx must not contain 89.3777');
+});
