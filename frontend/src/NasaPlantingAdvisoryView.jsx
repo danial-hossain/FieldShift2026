@@ -711,16 +711,17 @@ export function NasaPlantingAdvisoryView({
             <div style={{ height: 420, width: '100%', borderRadius: 8, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }}>
               <RealFarmCanvas3D
                 fieldProfile={{
-                  name: `${district.toUpperCase()} Demo Farm`,
+                  district: district,
                   crop: crop === 'aman' ? 'rice' : crop,
                   soil_texture: prov?.aez_context?.soil_texture || 'loam',
-                  soil_ph: 6.5,
-                  area_ha: 8.0,
-                  moisture_pct: 68,
-                  water_level_cm: 4.5,
                 }}
                 viewMode={viewMode3d}
-                activeOverlay="moisture"
+                activeOverlay="crop"
+                hasAlert={
+                  rec?.evidence_level === 'insufficient' ||
+                  comp?.evidence_level === 'insufficient' ||
+                  Boolean(comp?.data_warning_en || rec?.data_warning_en)
+                }
                 lang={lang}
               />
               <div
@@ -733,10 +734,10 @@ export function NasaPlantingAdvisoryView({
                   borderRadius: 4,
                   fontSize: 11,
                   color: 'var(--text-muted)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  border: '1px solid var(--border)',
                 }}
               >
-                * খেতের ত্রিমাত্রিক রেন্ডারিং একটি সিমুলেশন প্রদর্শন; জলবায়ু উপাত্ত নাসার বাস্তব পর্যবেক্ষণ।
+                {lang === 'bn' ? 'উদাহরণমূলক খামারের মডেল' : 'Illustrative farm model'}
               </div>
             </div>
           </div>
