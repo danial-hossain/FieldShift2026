@@ -1,3 +1,6 @@
+import os
+import shutil
+import tempfile
 """MILP model for long-term crop-rotation planning with explicit priorities."""
 
 from dataclasses import dataclass
@@ -727,18 +730,29 @@ def optimize_rotation(
         water_weight=water_weight,
         soil_weight=soil_weight,
     )
+    tmp_dir = None
     if solver is None:
-        solver = pulp.PULP_CBC_CMD(msg=False, threads=1)
+        import tempfile
+        tmp_dir = tempfile.mkdtemp(prefix="fs_cbccmd_")
+        solver = pulp.PULP_CBC_CMD(msg=False, threads=1, keepFiles=False)
+        solver.tmpDir = tmp_dir
 
     try:
         solver_status_code = problem.solve(solver)
-    except pulp.PulpSolverError as error:
+    except (pulp.PulpSolverError, Exception) as error:
         return _empty_result(
             "solver_error",
             str(error),
             metadata,
             field_state,
         )
+    finally:
+        if tmp_dir and os.path.exists(tmp_dir):
+            try:
+                import shutil
+                shutil.rmtree(tmp_dir, ignore_errors=True)
+            except Exception:
+                pass
     solver_status = pulp.LpStatus.get(solver_status_code, "Unknown")
     if solver_status != "Optimal":
         status = "infeasible" if solver_status == "Infeasible" else "not_solved"

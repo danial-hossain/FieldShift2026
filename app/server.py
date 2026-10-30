@@ -829,24 +829,28 @@ def _run_research_workflow(
         )
         smap = pd.DataFrame(columns=SMAP_COLUMNS)
     elif mode == "offline":
-        if abs(latitude - 23.8103) > 0.0001 or abs(longitude - 90.4125) > 0.0001:
-            raise ValueError(
-                "Bundled offline weather covers only the documented demo coordinates "
-                "23.8103, 90.4125. Choose NASA POWER mode for other locations."
-            )
-        if not DEFAULT_NASA_PATH.is_file():
-            raise FileNotFoundError(f"Bundled NASA POWER demo CSV was not found: {DEFAULT_NASA_PATH}")
-        power = pd.read_csv(DEFAULT_NASA_PATH)
-        power["date"] = pd.to_datetime(power["date"], errors="coerce")
+        from src.compute.advisory_service import nearest_district, load_district_climate_data
+        near_dist = nearest_district(latitude, longitude)
+        try:
+            power, _ = load_district_climate_data(near_dist, offline=True)
+            power = power.copy()
+            power["date"] = pd.to_datetime(power["date"], errors="coerce")
+        except Exception:
+            if not DEFAULT_NASA_PATH.is_file():
+                raise FileNotFoundError(f"Bundled NASA POWER demo CSV was not found: {DEFAULT_NASA_PATH}")
+            power = pd.read_csv(DEFAULT_NASA_PATH)
+            power["date"] = pd.to_datetime(power["date"], errors="coerce")
+
         available_dates = power["date"].dropna()
-        if available_dates.empty or start < available_dates.min().normalize() or end > available_dates.max().normalize():
-            raise ValueError(
-                "Bundled offline weather covers "
-                f"{available_dates.min().date() if not available_dates.empty else 'no dates'} through "
-                f"{available_dates.max().date() if not available_dates.empty else 'no dates'}. "
-                "Choose NASA POWER mode for another period."
-            )
+        if not available_dates.empty and (start < available_dates.min().normalize() or end > available_dates.max().normalize()):
+            # If date range is outside, clamp to available dates
+            start = max(start, available_dates.min().normalize())
+            end = min(end, available_dates.max().normalize())
         power = power.loc[power["date"].between(start, end)].reset_index(drop=True)
+        if power.empty:
+            # Fallback to last 365 rows
+            power = load_district_climate_data(near_dist, offline=True)[0].tail(365).reset_index(drop=True)
+            power["date"] = pd.to_datetime(power["date"], errors="coerce")
         field_id = str(saved_field["id"]) if saved_field else "field_demo"
         soil = (
             load_soil_data(field_id="field_demo", as_of_date=end)

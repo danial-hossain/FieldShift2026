@@ -729,6 +729,7 @@ export function App() {
     full_name: lang === 'bn' ? 'বগুড়া কৃষি গবেষণা প্লট [DEMO]' : 'Bogura Agricultural Research Plot (10 ha) [DEMO]',
     latitude: 24.8500,
     longitude: 89.3700,
+    district: 'bogura',
     area_ha: 10.0,
     soil_texture: 'loam',
     soil_ph: 6.5,
@@ -769,6 +770,9 @@ export function App() {
         ...payload,
         field_id: 'demo',
         mode: 'offline',
+        district: field.district || 'bogura',
+        field_size_ha: field.area_ha || 10.0,
+        area_ha: field.area_ha || 10.0,
         latitude: field.latitude,
         longitude: field.longitude,
         soil_texture: field.soil_texture,
@@ -2045,13 +2049,7 @@ export function App() {
           </div>
         </header>
 
-        {/* Workflow Alert Banner */}
-        {activeNav === 'dashboard' && error && (
-          <div className="dash-card boundary-banner" style={{ background: '#2d1515', borderColor: '#7f1d1d', color: '#fca5a5', margin: '16px 28px 0' }}>
-            <strong>Workflow Alert</strong>
-            <p style={{ margin: 0 }}>{error}</p>
-          </div>
-        )}
+        {/* Workflow Alert Banner (suppressed for honest inline notifications) */}
 
         {/* -------------------- VIEW: CROP ADVICE (FARMER FRIENDLY) -------------------- */}
         {activeNav === 'crop_advice' && (

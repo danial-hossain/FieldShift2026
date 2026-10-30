@@ -117,6 +117,36 @@ def get_supported_districts() -> List[Dict[str, Any]]:
     return list(DISTRICT_REGISTRY.values())
 
 
+def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calculate the great circle distance in kilometers between two points."""
+    import math
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (
+        math.sin(dlat / 2.0) ** 2
+        + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2.0) ** 2
+    )
+    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
+    return 6371.0 * c
+
+
+def nearest_district(latitude: float, longitude: float) -> str:
+    """Find the nearest district key in DISTRICT_REGISTRY to the given coordinates."""
+    best_key = "bogura"
+    best_dist = float("inf")
+    for key, meta in DISTRICT_REGISTRY.items():
+        d_lat = meta.get("latitude") if meta.get("latitude") is not None else meta.get("lat")
+        d_lon = meta.get("longitude") if meta.get("longitude") is not None else meta.get("lon")
+        if d_lat is None or d_lon is None:
+            continue
+        dist = haversine_distance_km(latitude, longitude, float(d_lat), float(d_lon))
+        if dist < best_dist:
+            best_dist = dist
+            best_key = key
+    return best_key
+
+
+
 def load_district_climate_data(
     district_key: str,
     offline: bool = False,

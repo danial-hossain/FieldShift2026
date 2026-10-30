@@ -94,6 +94,14 @@ class FieldState:
     latitude: float
     longitude: float
     field_size_ha: float = float("nan")
+
+    @property
+    def area_ha(self) -> float:
+        return self.field_size_ha
+
+    @area_ha.setter
+    def area_ha(self, value: float) -> None:
+        self.field_size_ha = float(value)
     temperature: float = float("nan")
     temp_max: float = float("nan")
     temp_min: float = float("nan")

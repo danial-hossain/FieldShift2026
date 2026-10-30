@@ -510,6 +510,17 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
         raise HTTPException(400, f"Invalid priority '{priority}'. Allowed values: ['balanced', 'profit', 'water', 'soil']")
 
     district = data.get("district")
+    lat_val = data.get("latitude")
+    lon_val = data.get("longitude")
+    if (district is None or not str(district).strip()) and lat_val is not None and lon_val is not None:
+        try:
+            from src.compute.advisory_service import nearest_district
+            district = nearest_district(float(lat_val), float(lon_val))
+        except Exception:
+            district = "bogura"
+    elif district is None or not str(district).strip():
+        district = "bogura"
+
     dist_key = None
     climate_df = None
     data_mode = None
@@ -564,9 +575,9 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             nasa_power_data=climate_df.tail(60),
             crop_knowledge=crops,
         )
-        if "area_ha" in data:
-            f_state.field_size_ha = float(data["area_ha"])
-            f_state.area_ha = float(data["area_ha"])
+        area_val = float(data.get("area_ha") or data.get("field_size_ha") or 1.0)
+        f_state.field_size_ha = area_val
+        f_state.area_ha = area_val
         if "soil_texture" in data and data["soil_texture"] != "unknown":
             f_state.texture = str(data["soil_texture"])
         if "soil_ph" in data and data["soil_ph"] is not None:

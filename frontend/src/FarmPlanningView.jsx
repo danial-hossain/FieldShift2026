@@ -71,7 +71,7 @@ export function FarmPlanningView({
       {subTab === 'milp' && (
         <SixSeasonRecommendationView
           activeField={activeField}
-          defaultDistrict={activeField?.district || 'rajshahi'}
+          defaultDistrict={activeField?.district || 'bogura'}
           summary={summary}
           plan={plan}
           ml={ml}
