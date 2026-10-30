@@ -249,7 +249,7 @@ export function NutrientProfile3D({
         </div>
 
         {/* Biological Nitrogen Fixation (BNF) Status */}
-        <div style={{ background: isLegume ? 'rgba(244, 114, 182, 0.15)' : 'rgba(30, 41, 59, 0.5)', border: isLegume ? '1px solid rgba(244, 114, 182, 0.3)' : '1px solid var(--glass-border)', padding: '10px 12px', borderRadius: 8, fontSize: 12 }}>
+        <div style={{ background: isLegume ? 'rgba(244, 114, 182, 0.15)' : 'rgba(30, 41, 59, 0.5)', border: isLegume ? '1px solid rgba(244, 114, 182, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)', padding: '10px 12px', borderRadius: 8, fontSize: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
             <span style={{ fontWeight: 800, color: isLegume ? '#f472b6' : '#cbd5e1' }}>
               {isLegume ? '🌱 রাইজোবিয়াম নোডিউল সক্রিয় (BNF)' : '🌾 অপুষ্টিকারক সিরিয়াল ফসল'}

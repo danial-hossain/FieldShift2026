@@ -260,7 +260,7 @@ export function ClimateStress3D({
         </div>
 
         {/* NASA POWER Gridded Model Notice */}
-        <div style={{ marginTop: 'auto', background: 'rgba(15, 23, 42, 0.6)', padding: 10, borderRadius: 8, border: '1px solid var(--glass-border)', fontSize: 10.5, color: '#94a3b8' }}>
+        <div style={{ marginTop: 'auto', background: 'rgba(15, 23, 42, 0.6)', padding: 10, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: 10.5, color: '#94a3b8' }}>
           🛰️ NASA POWER CERES/MERRA-2 গ্রিডেড ক্লাইমেট মডেল ভিত্তিক তাপমাত্রা পারটারবেশন।
         </div>
       </div>

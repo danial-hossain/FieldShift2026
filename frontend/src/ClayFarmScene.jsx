@@ -694,8 +694,8 @@ export function ClayFarmScene({
                     onSelectPlot?.(plot);
                   }}
                   style={{
-                    background: isSelected ? 'rgba(197, 232, 108, 0.15)' : 'var(--glass, rgba(16, 28, 22, 0.62))',
-                    border: isSelected ? '2px solid var(--accent, #c5e86c)' : '1px solid var(--line, rgba(255, 255, 255, 0.08))',
+                    background: isSelected ? 'rgba(197, 232, 108, 0.15)' : 'rgba(16, 28, 22, 0.62)',
+                    border: isSelected ? '2px solid #c5e86c' : '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: 14,
                     padding: 12,
                     cursor: 'pointer',
@@ -705,10 +705,10 @@ export function ClayFarmScene({
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text, #eef3ee)' }}>{plot.name}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#eef3ee' }}>{plot.name}</span>
                     <span style={{ width: 10, height: 10, borderRadius: '50%', background: info.color }} />
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: info.isAvailable ? 'var(--text, #eef3ee)' : 'var(--text-3, rgba(238, 243, 238, 0.45))' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: info.isAvailable ? '#eef3ee' : 'rgba(238, 243, 238, 0.45)' }}>
                     {info.label}
                   </div>
                 </div>
@@ -731,7 +731,7 @@ export function ClayFarmScene({
           border: `1px solid ${CLAY_PALETTE.hud_border}`,
           borderRadius: 14,
           padding: '12px 16px',
-          color: 'var(--text, #eef3ee)',
+          color: '#eef3ee',
           fontSize: 12,
           pointerEvents: 'none',
           boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
@@ -741,14 +741,14 @@ export function ClayFarmScene({
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
           <span style={{ fontSize: 16 }}>🌾</span>
-          <strong style={{ fontSize: 13, color: 'var(--accent, #c5e86c)' }}>{selectedPlot?.name || 'Plot'}</strong>
+          <strong style={{ fontSize: 13, color: '#c5e86c' }}>{selectedPlot?.name || 'Plot'}</strong>
           {selectedPlot?.hasAlert && (
             <span style={{ color: CLAY_PALETTE.alert, fontWeight: 700, fontSize: 11 }}>
               ● {lang === 'bn' ? 'সতর্কতা' : 'Alert'}
             </span>
           )}
         </div>
-        <div style={{ color: 'var(--text-2, rgba(238, 243, 238, 0.68))', marginTop: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div style={{ color: 'rgba(238, 243, 238, 0.68)', marginTop: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
           <div>
             <strong>{lang === 'bn' ? 'ফসল: ' : 'Crop: '}</strong>
             {selectedPlot?.crop || (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
@@ -776,7 +776,7 @@ export function ClayFarmScene({
           borderRadius: 999,
           padding: '4px 12px',
           fontSize: 11,
-          color: 'var(--text-2, rgba(238, 243, 238, 0.68))',
+          color: 'rgba(238, 243, 238, 0.68)',
           zIndex: 2,
         }}
       >

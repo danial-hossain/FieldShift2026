@@ -40,3 +40,37 @@ test('FIX 4: SixSeasonRecommendationView.jsx does not reference CANONICAL_ROTATI
   assert.ok(!crops.includes('Chickpea'), 'buildSixSeasonRecommendations({}, undefined) must not produce Chickpea');
   assert.ok(!crops.includes('Rice'), 'buildSixSeasonRecommendations({}, undefined) must not produce Rice');
 });
+
+test('FIX 5: Every line containing var(-- in 3D/canvas files must also contain style, className, fill=, or stroke=', () => {
+  const research3dDir = path.join(__dirname, 'research3d');
+  const research3dFiles = fs.readdirSync(research3dDir)
+    .filter(f => f.endsWith('.jsx'))
+    .map(f => path.join(research3dDir, f));
+
+  const targetFiles = [
+    ...research3dFiles,
+    path.join(__dirname, 'ClayFarmScene.jsx'),
+    path.join(__dirname, 'NasaWeatherStation3D.jsx'),
+    path.join(__dirname, 'FarmerFarm3D.jsx'),
+    path.join(__dirname, 'RealFarmCanvas3D.jsx'),
+    path.join(__dirname, 'ExperimentSimulator3DView.jsx'),
+    path.join(__dirname, 'ui', 'RingGauge.jsx'),
+    path.join(__dirname, 'ui', 'Donut.jsx'),
+    path.join(__dirname, 'ui', 'LineChart.jsx')
+  ];
+
+  const allowedTokens = ['style', 'className', 'fill=', 'stroke='];
+  for (const filePath of targetFiles) {
+    if (!fs.existsSync(filePath)) continue;
+    const lines = fs.readFileSync(filePath, 'utf-8').split('\n');
+    lines.forEach((line, idx) => {
+      if (line.includes('var(--')) {
+        const hasAllowed = allowedTokens.some(t => line.includes(t));
+        assert.ok(
+          hasAllowed,
+          `Invalid var(--) usage in ${path.relative(__dirname, filePath)}:${idx + 1}: ${line.trim()}`
+        );
+      }
+    });
+  }
+});

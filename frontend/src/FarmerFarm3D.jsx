@@ -70,17 +70,17 @@ export function FarmerFarm3D({
           flexWrap: 'wrap',
           gap: 12,
           padding: '14px 18px',
-          borderBottom: '1px solid var(--border)',
-          background: 'var(--surface-2)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          background: 'rgba(255, 255, 255, 0.04)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 20 }}>🌾</span>
           <div>
-            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#eef3ee' }}>
               {activeField?.name || (lang === 'bn' ? 'খামারের ত্রিমাত্রিক মডেল' : 'Farm Parcel 3D Model')}
             </h3>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: 11, color: 'rgba(238, 243, 238, 0.68)' }}>
               {lang === 'bn' ? 'উদাহরণমূলক খামারের মডেল' : 'Illustrative farm model'}
             </span>
           </div>
@@ -89,15 +89,15 @@ export function FarmerFarm3D({
         {/* Overlay Switches & 2D/3D Mode */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           {/* Overlays */}
-          <div style={{ display: 'inline-flex', background: 'var(--surface)', padding: 3, borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'inline-flex', background: 'var(--surface)', padding: 3, borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
             <button
               type="button"
               onClick={() => setActiveOverlay('crop')}
               style={{
-                background: activeOverlay === 'crop' ? 'var(--leaf)' : 'transparent',
-                color: activeOverlay === 'crop' ? 'var(--text-inverse)' : 'var(--text-muted)',
+                background: activeOverlay === 'crop' ? '#00df81' : 'transparent',
+                color: activeOverlay === 'crop' ? '#050b10' : 'rgba(238, 243, 238, 0.68)',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
+                borderRadius: '6px',
                 padding: '4px 10px',
                 fontSize: 12,
                 fontWeight: 600,
@@ -110,10 +110,10 @@ export function FarmerFarm3D({
               type="button"
               onClick={() => setActiveOverlay('soil')}
               style={{
-                background: activeOverlay === 'soil' ? 'var(--leaf)' : 'transparent',
-                color: activeOverlay === 'soil' ? 'var(--text-inverse)' : 'var(--text-muted)',
+                background: activeOverlay === 'soil' ? '#00df81' : 'transparent',
+                color: activeOverlay === 'soil' ? '#050b10' : 'rgba(238, 243, 238, 0.68)',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
+                borderRadius: '6px',
                 padding: '4px 10px',
                 fontSize: 12,
                 fontWeight: 600,
@@ -126,10 +126,10 @@ export function FarmerFarm3D({
               type="button"
               onClick={() => setActiveOverlay('rain')}
               style={{
-                background: activeOverlay === 'rain' ? 'var(--leaf)' : 'transparent',
-                color: activeOverlay === 'rain' ? 'var(--text-inverse)' : 'var(--text-muted)',
+                background: activeOverlay === 'rain' ? '#00df81' : 'transparent',
+                color: activeOverlay === 'rain' ? '#050b10' : 'rgba(238, 243, 238, 0.68)',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
+                borderRadius: '6px',
                 padding: '4px 10px',
                 fontSize: 12,
                 fontWeight: 600,
@@ -141,15 +141,15 @@ export function FarmerFarm3D({
           </div>
 
           {/* 3D / 2D View Switch */}
-          <div style={{ display: 'inline-flex', background: 'var(--surface)', padding: 3, borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'inline-flex', background: 'var(--surface)', padding: 3, borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
             <button
               type="button"
               onClick={() => setViewMode('3d')}
               style={{
-                background: viewMode === '3d' ? 'var(--surface-2)' : 'transparent',
-                color: viewMode === '3d' ? 'var(--text)' : 'var(--text-muted)',
+                background: viewMode === '3d' ? 'rgba(255, 255, 255, 0.04)' : 'transparent',
+                color: viewMode === '3d' ? '#eef3ee' : 'rgba(238, 243, 238, 0.68)',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
+                borderRadius: '6px',
                 padding: '4px 10px',
                 fontSize: 12,
                 fontWeight: 600,
@@ -162,10 +162,10 @@ export function FarmerFarm3D({
               type="button"
               onClick={() => setViewMode('2d')}
               style={{
-                background: viewMode === '2d' ? 'var(--surface-2)' : 'transparent',
-                color: viewMode === '2d' ? 'var(--text)' : 'var(--text-muted)',
+                background: viewMode === '2d' ? 'rgba(255, 255, 255, 0.04)' : 'transparent',
+                color: viewMode === '2d' ? '#eef3ee' : 'rgba(238, 243, 238, 0.68)',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
+                borderRadius: '6px',
                 padding: '4px 10px',
                 fontSize: 12,
                 fontWeight: 600,
@@ -194,8 +194,8 @@ export function FarmerFarm3D({
       {/* 3. Honest Selected Plot Telemetry Inspector Bar */}
       <div
         style={{
-          background: 'var(--surface-2)',
-          borderTop: '1px solid var(--border)',
+          background: 'rgba(255, 255, 255, 0.04)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
           padding: '14px 18px',
         }}
       >
@@ -203,8 +203,8 @@ export function FarmerFarm3D({
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span
               style={{
-                background: 'var(--leaf)',
-                color: 'var(--text-inverse)',
+                background: '#00df81',
+                color: '#050b10',
                 padding: '2px 8px',
                 borderRadius: 4,
                 fontWeight: 800,
@@ -213,7 +213,7 @@ export function FarmerFarm3D({
             >
               {activePlot.id}
             </span>
-            <strong style={{ fontSize: 14, color: 'var(--text)' }}>
+            <strong style={{ fontSize: 14, color: '#eef3ee' }}>
               {activePlot.name}
             </strong>
             {activePlot.isMain && (
@@ -222,51 +222,51 @@ export function FarmerFarm3D({
               </GlassBadge>
             )}
             {activePlot.hasAlert && (
-              <span style={{ color: 'var(--alert)', fontSize: 12, fontWeight: 700 }}>
+              <span style={{ color: '#f43f5e', fontSize: 12, fontWeight: 700 }}>
                 ⚠️ {lang === 'bn' ? 'সেচ ঘাটতি সতর্কতা' : 'Water Deficit Alert'}
               </span>
             )}
           </div>
 
-          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: 12, color: 'rgba(238, 243, 238, 0.68)' }}>
             <span>{lang === 'bn' ? 'সক্রিয় ওভারলে: ' : 'Active Overlay: '}</span>
-            <strong style={{ color: overlayInfo.isAvailable ? 'var(--text)' : 'var(--text-muted)' }}>
+            <strong style={{ color: overlayInfo.isAvailable ? '#eef3ee' : 'rgba(238, 243, 238, 0.68)' }}>
               {overlayInfo.label}
             </strong>
           </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
-          <div style={{ background: 'var(--surface)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
+          <div style={{ background: 'var(--surface)', padding: '10px 14px', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'rgba(238, 243, 238, 0.68)', marginBottom: 2 }}>
               {lang === 'bn' ? 'ফসল ও জাত:' : 'Crop:'}
             </span>
-            <strong style={{ fontSize: 13, color: activePlot.crop ? 'var(--text)' : 'var(--text-muted)' }}>
+            <strong style={{ fontSize: 13, color: activePlot.crop ? '#eef3ee' : 'rgba(238, 243, 238, 0.68)' }}>
               {activePlot.crop || (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
 
-          <div style={{ background: 'var(--surface)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
+          <div style={{ background: 'var(--surface)', padding: '10px 14px', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'rgba(238, 243, 238, 0.68)', marginBottom: 2 }}>
               {lang === 'bn' ? 'মাটির ধরণ:' : 'Soil Texture:'}
             </span>
-            <strong style={{ fontSize: 13, color: activePlot.soil_texture ? 'var(--text)' : 'var(--text-muted)' }}>
+            <strong style={{ fontSize: 13, color: activePlot.soil_texture ? '#eef3ee' : 'rgba(238, 243, 238, 0.68)' }}>
               {activePlot.soil_texture || (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
 
-          <div style={{ background: 'var(--surface)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-            <span style={{ display: 'block', fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>
+          <div style={{ background: 'var(--surface)', padding: '10px 14px', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <span style={{ display: 'block', fontSize: 11, color: 'rgba(238, 243, 238, 0.68)', marginBottom: 2 }}>
               {lang === 'bn' ? 'বৃষ্টিপাত (NASA POWER):' : 'Rainfall (NASA POWER):'}
             </span>
-            <strong style={{ fontSize: 13, color: activePlot.rain_mm != null ? 'var(--water)' : 'var(--text-muted)' }}>
+            <strong style={{ fontSize: 13, color: activePlot.rain_mm != null ? '#38bdf8' : 'rgba(238, 243, 238, 0.68)' }}>
               {activePlot.rain_mm != null ? `${activePlot.rain_mm.toFixed(1)} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
         </div>
 
         <div style={{ marginTop: 10 }}>
-          <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>
+          <small style={{ color: 'rgba(238, 243, 238, 0.68)', fontSize: 11 }}>
             ℹ️ {lang === 'bn'
               ? 'উদাহরণমূলক খামারের মডেল। বাস্তব কৃষি উপাত্ত শুধুমাত্র NASA POWER বৃষ্টিপাত এবং নিবন্ধিত মাটির টেক্সচার থেকে প্রদর্শিত হয়।'
               : 'Illustrative farm model. Real agronomic data is strictly sourced from NASA POWER rainfall and registered soil texture.'}

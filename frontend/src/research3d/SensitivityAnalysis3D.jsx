@@ -127,9 +127,9 @@ export function SensitivityAnalysis3D({
                   fontSize: 11.5,
                   fontWeight: targetParam === p.id ? 800 : 600,
                   cursor: 'pointer',
-                  border: targetParam === p.id ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                  border: targetParam === p.id ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                   background: targetParam === p.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(30, 41, 59, 0.5)',
-                  color: targetParam === p.id ? '#38bdf8' : 'var(--text-muted)'
+                  color: targetParam === p.id ? '#38bdf8' : 'rgba(238, 243, 238, 0.68)'
                 }}
               >
                 {p.label}

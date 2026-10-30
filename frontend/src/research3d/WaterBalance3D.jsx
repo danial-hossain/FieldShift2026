@@ -173,45 +173,45 @@ export function WaterBalance3D({
 
   // 2D Accessible Table View
   const accessibleTableView = (
-    <div style={{ background: 'var(--surface)', padding: 14, borderRadius: 8, border: '1px solid var(--border)' }}>
-      <h5 style={{ margin: '0 0 10px', color: 'var(--water)', fontSize: 13, fontWeight: 700 }}>
+    <div style={{ background: 'var(--surface)', padding: 14, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <h5 style={{ margin: '0 0 10px', color: '#38bdf8', fontSize: 13, fontWeight: 700 }}>
         {lang === 'bn' ? 'হাইড্রোলজিক্যাল পানি ভারসাম্য সারণী' : 'Hydrological Mass Balance Table'}
       </h5>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
         <tbody>
-          <tr style={{ borderBottom: '1px solid var(--border)' }}>
-            <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>বৃষ্টিপাত (Rainfall Inflow):</td>
-            <td style={{ padding: '6px 8px', fontWeight: 700, color: 'var(--water)' }}>
+          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <td style={{ padding: '6px 8px', color: 'rgba(238, 243, 238, 0.68)' }}>বৃষ্টিপাত (Rainfall Inflow):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 700, color: '#38bdf8' }}>
               {rainfallMm != null ? `+${rainfallMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </td>
           </tr>
-          <tr style={{ borderBottom: '1px solid var(--border)' }}>
-            <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>সেচ পানি (Irrigation Inflow):</td>
-            <td style={{ padding: '6px 8px', fontWeight: 700, color: 'var(--leaf)' }}>
+          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <td style={{ padding: '6px 8px', color: 'rgba(238, 243, 238, 0.68)' }}>সেচ পানি (Irrigation Inflow):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 700, color: '#00df81' }}>
               {irrigationMm != null ? `+${irrigationMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </td>
           </tr>
-          <tr style={{ borderBottom: '1px solid var(--border)' }}>
-            <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>বাষ্পীভবন (ETa Outflow):</td>
-            <td style={{ padding: '6px 8px', fontWeight: 700, color: 'var(--sun)' }}>
+          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <td style={{ padding: '6px 8px', color: 'rgba(238, 243, 238, 0.68)' }}>বাষ্পীভবন (ETa Outflow):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 700, color: '#facc15' }}>
               {etaMm != null ? `-${etaMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </td>
           </tr>
-          <tr style={{ borderBottom: '1px solid var(--border)' }}>
-            <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>গভীর নিষ্কাশন (Percolation):</td>
+          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <td style={{ padding: '6px 8px', color: 'rgba(238, 243, 238, 0.68)' }}>গভীর নিষ্কাশন (Percolation):</td>
             <td style={{ padding: '6px 8px', fontWeight: 700, color: '#c084fc' }}>
               {deepPercolationMm != null ? `-${deepPercolationMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </td>
           </tr>
-          <tr style={{ borderBottom: '1px solid var(--border)' }}>
-            <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>বর্তমান মজুদ (Storage):</td>
-            <td style={{ padding: '6px 8px', fontWeight: 700, color: 'var(--text)' }}>
+          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <td style={{ padding: '6px 8px', color: 'rgba(238, 243, 238, 0.68)' }}>বর্তমান মজুদ (Storage):</td>
+            <td style={{ padding: '6px 8px', fontWeight: 700, color: '#eef3ee' }}>
               {currentStorage != null && taw != null ? `${currentStorage} mm / ${taw} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </td>
           </tr>
           <tr>
-            <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>ভর সংরক্ষণ অবশিষ্টাংশ:</td>
-            <td style={{ padding: '6px 8px', fontWeight: 700, color: massResidualMm != null ? 'var(--leaf)' : 'var(--text-muted)' }}>
+            <td style={{ padding: '6px 8px', color: 'rgba(238, 243, 238, 0.68)' }}>ভর সংরক্ষণ অবশিষ্টাংশ:</td>
+            <td style={{ padding: '6px 8px', fontWeight: 700, color: massResidualMm != null ? '#00df81' : 'rgba(238, 243, 238, 0.68)' }}>
               {massResidualMm != null ? `${Number(massResidualMm).toFixed(2)} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </td>
           </tr>
@@ -246,44 +246,44 @@ export function WaterBalance3D({
       />
 
       {/* Numerical Hydrological Flux Accounting Panel */}
-      <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#eef3ee' }}>
           💧 {lang === 'bn' ? 'হাইড্রোলজিক্যাল পানি ভারসাম্য ও ভর সংরক্ষণ' : 'Hydrological Mass Balance'}
         </h4>
 
         {/* Mass Balance Conservation Equation */}
-        <div style={{ background: 'rgba(90, 169, 201, 0.1)', padding: '8px 10px', borderRadius: 6, border: '1px solid rgba(90, 169, 201, 0.25)', fontSize: 11, fontFamily: 'monospace', color: 'var(--water)' }}>
+        <div style={{ background: 'rgba(90, 169, 201, 0.1)', padding: '8px 10px', borderRadius: 6, border: '1px solid rgba(90, 169, 201, 0.25)', fontSize: 11, fontFamily: 'monospace', color: '#38bdf8' }}>
           ΔS = Rain + Irrig - ETa - Drainage
         </div>
 
         {/* Inflows Accounting */}
-        <div style={{ background: 'var(--surface-2)', padding: '10px 12px', borderRadius: 6, fontSize: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--water)', marginBottom: 4 }}>⬇️ {lang === 'bn' ? 'ইনপুট (INFLOWS)' : 'INFLOWS'}:</div>
+        <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '10px 12px', borderRadius: 6, fontSize: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#38bdf8', marginBottom: 4 }}>⬇️ {lang === 'bn' ? 'ইনপুট (INFLOWS)' : 'INFLOWS'}:</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>{lang === 'bn' ? 'বৃষ্টিপাত (Rainfall):' : 'Rainfall:'}</span>
-            <strong style={{ color: 'var(--water)' }}>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>{lang === 'bn' ? 'বৃষ্টিপাত (Rainfall):' : 'Rainfall:'}</span>
+            <strong style={{ color: '#38bdf8' }}>
               {rainfallMm != null ? `+${rainfallMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>{lang === 'bn' ? 'সেচ পানি (Irrigation):' : 'Irrigation:'}</span>
-            <strong style={{ color: 'var(--leaf)' }}>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>{lang === 'bn' ? 'সেচ পানি (Irrigation):' : 'Irrigation:'}</span>
+            <strong style={{ color: '#00df81' }}>
               {irrigationMm != null ? `+${irrigationMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
         </div>
 
         {/* Outflows Accounting */}
-        <div style={{ background: 'var(--surface-2)', padding: '10px 12px', borderRadius: 6, fontSize: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sun)', marginBottom: 4 }}>⬆️ {lang === 'bn' ? 'আউটপুট (OUTFLOWS)' : 'OUTFLOWS'}:</div>
+        <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '10px 12px', borderRadius: 6, fontSize: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#facc15', marginBottom: 4 }}>⬆️ {lang === 'bn' ? 'আউটপুট (OUTFLOWS)' : 'OUTFLOWS'}:</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>{lang === 'bn' ? 'বাষ্পীভবন (ETa):' : 'Evapotranspiration:'}</span>
-            <strong style={{ color: 'var(--sun)' }}>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>{lang === 'bn' ? 'বাষ্পীভবন (ETa):' : 'Evapotranspiration:'}</span>
+            <strong style={{ color: '#facc15' }}>
               {etaMm != null ? `-${etaMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>{lang === 'bn' ? 'নির্গমন (Deep Percolation):' : 'Deep Percolation:'}</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>{lang === 'bn' ? 'নির্গমন (Deep Percolation):' : 'Deep Percolation:'}</span>
             <strong style={{ color: '#c084fc' }}>
               {deepPercolationMm != null ? `-${deepPercolationMm} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
@@ -291,22 +291,22 @@ export function WaterBalance3D({
         </div>
 
         {/* Storage State & Residual */}
-        <div style={{ background: 'var(--surface-2)', padding: '10px 12px', borderRadius: 6, fontSize: 12 }}>
+        <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '10px 12px', borderRadius: 6, fontSize: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>{lang === 'bn' ? 'বর্তমান মজুদ (St):' : 'Storage (St):'}</span>
-            <strong style={{ color: 'var(--text)' }}>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>{lang === 'bn' ? 'বর্তমান মজুদ (St):' : 'Storage (St):'}</span>
+            <strong style={{ color: '#eef3ee' }}>
               {currentStorage != null && taw != null ? `${currentStorage} mm / ${taw} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>{lang === 'bn' ? 'ভর সংরক্ষণ অবশিষ্টাংশ:' : 'Mass Conservation Residual:'}</span>
-            <strong style={{ color: massResidualMm != null ? 'var(--leaf)' : 'var(--text-muted)' }}>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>{lang === 'bn' ? 'ভর সংরক্ষণ অবশিষ্টাংশ:' : 'Mass Conservation Residual:'}</span>
+            <strong style={{ color: massResidualMm != null ? '#00df81' : 'rgba(238, 243, 238, 0.68)' }}>
               {massResidualMm != null ? `${Number(massResidualMm).toFixed(2)} mm` : (lang === 'bn' ? 'তথ্য নেই' : 'No data')}
             </strong>
           </div>
         </div>
 
-        <div style={{ marginTop: 'auto', fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.4 }}>
+        <div style={{ marginTop: 'auto', fontSize: 11, color: 'rgba(238, 243, 238, 0.68)', lineHeight: 1.4 }}>
           ℹ️ {lang === 'bn'
             ? 'হলোগ্রাফিক পানি ভারসাম্য ডিজিটাল টুইন। সরাসরি উপাত্ত অনুপস্থিত থাকলে কোনো কৃত্তিম মান তৈরি করা হয় না।'
             : 'Holographic water balance digital twin. When real observation data is missing, no fabricated values are rendered.'}

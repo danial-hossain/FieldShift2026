@@ -123,15 +123,15 @@ export function ScenarioComparison3D({
             ভিন্ন ইনপুট পরিবর্তনসমূহ (Differing Inputs):
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>সেচ বাজেট:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>সেচ বাজেট:</span>
             <span>A: {scenarioA?.irrigationMm || 350}mm ➔ B: {scenarioB?.irrigationMm || 240}mm</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>আবহাওয়া:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>আবহাওয়া:</span>
             <span>{scenarioB?.weatherScenario || 'warming_1_5c'}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>নাইট্রোজেন (N):</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>নাইট্রোজেন (N):</span>
             <span>A: {scenarioA?.nitrogenKgHa || 120}kg ➔ B: {scenarioB?.nitrogenKgHa || 135}kg</span>
           </div>
         </div>
@@ -140,19 +140,19 @@ export function ScenarioComparison3D({
         {comparison && (
           <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '10px 12px', borderRadius: 8, fontSize: 12 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <span style={{ color: 'var(--text-muted)' }}>ফলন প্রভাব (Δ Yield):</span>
+              <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>ফলন প্রভাব (Δ Yield):</span>
               <strong style={{ color: comparison.yieldTonHa.absoluteDiff >= 0 ? '#00df81' : '#f87171' }}>
                 {comparison.yieldTonHa.absoluteDiff >= 0 ? '+' : ''}{comparison.yieldTonHa.absoluteDiff} t/ha ({comparison.yieldTonHa.percentageDiff}%)
               </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <span style={{ color: 'var(--text-muted)' }}>সেচ সাশ্রয় (Δ Water):</span>
+              <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>সেচ সাশ্রয় (Δ Water):</span>
               <strong style={{ color: comparison.waterAppliedMm.absoluteDiff <= 0 ? '#00df81' : '#f87171' }}>
                 {comparison.waterAppliedMm.absoluteDiff} mm ({comparison.waterAppliedMm.percentageDiff}%)
               </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>নিট লাভ (Δ Profit):</span>
+              <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>নিট লাভ (Δ Profit):</span>
               <strong style={{ color: comparison.netReturnBdt.absoluteDiff >= 0 ? '#00df81' : '#f87171' }}>
                 {comparison.netReturnBdt.absoluteDiff >= 0 ? '+' : ''}{comparison.netReturnBdt.absoluteDiff} BDT/ha
               </strong>

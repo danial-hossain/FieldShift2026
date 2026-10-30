@@ -151,19 +151,19 @@ export function StressTest3D({ lang = 'bn' }) {
         {/* Real-time Numeric Outputs */}
         <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '10px 12px', borderRadius: 8, fontSize: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-            <span style={{ color: 'var(--text-muted)' }}>সিমুলেটেড ফলন (Ya):</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>সিমুলেটেড ফলন (Ya):</span>
             <strong style={{ color: '#00df81' }}>{simResult.yieldOutcomes.simulatedYieldTonHa} t/ha</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-            <span style={{ color: 'var(--text-muted)' }}>প্রয়োগকৃত সেচ (Irrig):</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>প্রয়োগকৃত সেচ (Irrig):</span>
             <strong style={{ color: '#38bdf8' }}>{simResult.waterBalance.totalIrrigationMm} mm</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-            <span style={{ color: 'var(--text-muted)' }}>গড় স্ট্রেস ফ্যাক্টর (Ks):</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>গড় স্ট্রেস ফ্যাক্টর (Ks):</span>
             <strong style={{ color: '#facc15' }}>{simResult.stressIndicators.averageKs}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>ভর সংরক্ষণ অবশিষ্টাংশ:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>ভর সংরক্ষণ অবশিষ্টাংশ:</span>
             <strong style={{ color: '#00df81' }}>{simResult.waterBalance.massBalanceResidualMm.toFixed(2)} mm</strong>
           </div>
         </div>

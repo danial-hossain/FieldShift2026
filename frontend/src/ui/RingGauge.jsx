@@ -29,7 +29,7 @@ export function RingGauge({
           border: `${strokeWidth}px solid rgba(255, 255, 255, 0.08)`,
           boxSizing: 'border-box',
           textAlign: 'center',
-          color: 'var(--text-3)',
+          color: 'rgba(238, 243, 238, 0.42)',
           fontSize: 11,
           fontFamily: 'inherit',
           ...style
@@ -46,14 +46,14 @@ export function RingGauge({
   const offset = circumference - ratio * circumference;
 
   const toneColors = {
-    accent: 'var(--accent)',
-    leaf: 'var(--leaf)',
-    water: 'var(--water)',
-    sun: 'var(--sun)',
-    alert: 'var(--alert)',
-    hud: 'var(--hud-cyan, var(--accent))'
+    accent: '#c5e86c',
+    leaf: '#00df81',
+    water: '#38bdf8',
+    sun: '#facc15',
+    alert: '#f43f5e',
+    hud: '#00f0ff'
   };
-  const strokeColor = toneColors[tone] || 'var(--accent)';
+  const strokeColor = toneColors[tone] || '#c5e86c';
 
   return (
     <div
@@ -103,11 +103,11 @@ export function RingGauge({
           pointerEvents: 'none'
         }}
       >
-        <span style={{ fontSize: size >= 100 ? 18 : 14, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
+        <span style={{ fontSize: size >= 100 ? 18 : 14, fontWeight: 700, color: '#eef3ee', lineHeight: 1 }}>
           {value}{unit}
         </span>
         {label && (
-          <span style={{ fontSize: 10, color: 'var(--text-2)', marginTop: 3, textAlign: 'center', maxWidth: size * 0.75 }}>
+          <span style={{ fontSize: 10, color: 'rgba(238, 243, 238, 0.68)', marginTop: 3, textAlign: 'center', maxWidth: size * 0.75 }}>
             {label}
           </span>
         )}

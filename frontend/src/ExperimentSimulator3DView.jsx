@@ -245,7 +245,7 @@ export function ExperimentSimulator3DView({
   return (
     <div className="experiment-simulator-container" style={{ padding: '18px 24px', background: 'radial-gradient(ellipse at 50% 0%, #0d1e2e 0%, #060b13 70%, #04070c 100%)', minHeight: '100vh', color: '#f8fafc' }}>
       {/* Top Scientific Command Header with 3 Core Tabs */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 18, borderBottom: '1px solid var(--glass-border)', paddingBottom: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 18, borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: 16 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
             <span style={{ background: '#0284c7', color: '#ffffff', padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 800 }}>
@@ -311,8 +311,8 @@ export function ExperimentSimulator3DView({
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: '1px solid var(--glass-border)',
-            background: 'var(--glass-bg-primary)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(15, 23, 42, 0.75)',
             color: '#00df81',
             transition: 'all 0.15s ease'
           }}
@@ -328,9 +328,9 @@ export function ExperimentSimulator3DView({
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: activeMainTab === '3d_experiment' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
-            background: activeMainTab === '3d_experiment' ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(2, 132, 199, 0.2) 100%)' : 'var(--glass-bg-primary)',
-            color: activeMainTab === '3d_experiment' ? '#38bdf8' : 'var(--text-muted)',
+            border: activeMainTab === '3d_experiment' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
+            background: activeMainTab === '3d_experiment' ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(2, 132, 199, 0.2) 100%)' : 'rgba(15, 23, 42, 0.75)',
+            color: activeMainTab === '3d_experiment' ? '#38bdf8' : 'rgba(238, 243, 238, 0.68)',
             boxShadow: activeMainTab === '3d_experiment' ? '0 4px 16px rgba(56, 189, 248, 0.3)' : 'none',
             transition: 'all 0.15s ease'
           }}
@@ -346,9 +346,9 @@ export function ExperimentSimulator3DView({
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: activeMainTab === 'scenario_comparison' ? '1px solid #c084fc' : '1px solid var(--glass-border)',
-            background: activeMainTab === 'scenario_comparison' ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(126, 34, 206, 0.2) 100%)' : 'var(--glass-bg-primary)',
-            color: activeMainTab === 'scenario_comparison' ? '#c084fc' : 'var(--text-muted)',
+            border: activeMainTab === 'scenario_comparison' ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
+            background: activeMainTab === 'scenario_comparison' ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(126, 34, 206, 0.2) 100%)' : 'rgba(15, 23, 42, 0.75)',
+            color: activeMainTab === 'scenario_comparison' ? '#c084fc' : 'rgba(238, 243, 238, 0.68)',
             boxShadow: activeMainTab === 'scenario_comparison' ? '0 4px 16px rgba(168, 85, 247, 0.3)' : 'none',
             transition: 'all 0.15s ease'
           }}
@@ -364,9 +364,9 @@ export function ExperimentSimulator3DView({
             fontWeight: 800,
             fontSize: 13,
             cursor: 'pointer',
-            border: activeMainTab === 'stress_tests' ? '1px solid #ef4444' : '1px solid var(--glass-border)',
-            background: activeMainTab === 'stress_tests' ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.2) 100%)' : 'var(--glass-bg-primary)',
-            color: activeMainTab === 'stress_tests' ? '#f87171' : 'var(--text-muted)',
+            border: activeMainTab === 'stress_tests' ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.08)',
+            background: activeMainTab === 'stress_tests' ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.2) 100%)' : 'rgba(15, 23, 42, 0.75)',
+            color: activeMainTab === 'stress_tests' ? '#f87171' : 'rgba(238, 243, 238, 0.68)',
             boxShadow: activeMainTab === 'stress_tests' ? '0 4px 16px rgba(239, 68, 68, 0.3)' : 'none',
             transition: 'all 0.15s ease'
           }}
@@ -381,7 +381,7 @@ export function ExperimentSimulator3DView({
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 340px', gap: 16, alignItems: 'stretch' }}>
             
             {/* LEFT PANEL: Active Field, Soil, Crop, Irrigation, Simulation Inputs */}
-            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 8 }}>
                 <span style={{ fontSize: 13, fontWeight: 800, color: '#f8fafc' }}>
                   ⚙️ {lang === 'bn' ? 'সিমুলেশন ইনপুট' : 'Simulation Inputs'}
@@ -392,8 +392,8 @@ export function ExperimentSimulator3DView({
               </div>
 
               {/* Active Parcel Context Badge */}
-              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--glass-border)', fontSize: 11.5 }}>
-                <div style={{ color: 'var(--text-muted)', marginBottom: 2 }}>
+              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: 11.5 }}>
+                <div style={{ color: 'rgba(238, 243, 238, 0.68)', marginBottom: 2 }}>
                   {lang === 'bn' ? 'নির্দিষ্ট খামার প্লট:' : 'Active Parcel:'}
                 </div>
                 <div style={{ fontWeight: 800, color: '#f8fafc', marginBottom: 4 }}>
@@ -526,31 +526,31 @@ export function ExperimentSimulator3DView({
               })()}
 
               {/* Quick Calculated KPI summary */}
-              <div style={{ marginTop: 'auto', background: 'rgba(15, 23, 42, 0.7)', padding: 10, borderRadius: 8, border: '1px solid var(--glass-border)', fontSize: 11.5 }}>
+              <div style={{ marginTop: 'auto', background: 'rgba(15, 23, 42, 0.7)', padding: 10, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: 11.5 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ color: 'var(--text-muted)' }}>অনুমিত ফলন:</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>অনুমিত ফলন:</span>
                   <strong style={{ color: '#00df81' }}>{currentSim.yieldOutcomes.simulatedYieldTonHa} t/ha</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ color: 'var(--text-muted)' }}>সেচ পানি:</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>সেচ পানি:</span>
                   <strong style={{ color: '#38bdf8' }}>{currentSim.waterBalance.totalWaterAppliedMm} mm</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>নিট লাভ:</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>নিট লাভ:</span>
                   <strong style={{ color: '#facc15' }}>{formatCurrency(currentSim.economics.netReturnPerHaBdt, lang)}/ha</strong>
                 </div>
               </div>
             </div>
 
             {/* CENTER PANEL: Large Interactive 3D Farm Scene */}
-            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               
               {/* 3D Stage Top Toolbar */}
-              <div style={{ padding: '8px 14px', background: 'rgba(15, 23, 42, 0.75)', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <div style={{ padding: '8px 14px', background: 'rgba(15, 23, 42, 0.75)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                 
                 {/* Overlays selector */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>OVERLAY:</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 800, color: 'rgba(238, 243, 238, 0.68)', letterSpacing: '0.05em' }}>OVERLAY:</span>
                   {[
                     { id: 'crop', label: '🌱 Natural / Crop' },
                     { id: 'growth', label: '🌿 Growth Stage' },
@@ -569,9 +569,9 @@ export function ExperimentSimulator3DView({
                         fontSize: 10.5,
                         fontWeight: activeOverlay === l.id ? 800 : 600,
                         cursor: 'pointer',
-                        border: activeOverlay === l.id ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                        border: activeOverlay === l.id ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                         background: activeOverlay === l.id ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(2, 132, 199, 0.2) 100%)' : 'rgba(15, 23, 42, 0.4)',
-                        color: activeOverlay === l.id ? '#38bdf8' : 'var(--text-muted)',
+                        color: activeOverlay === l.id ? '#38bdf8' : 'rgba(238, 243, 238, 0.68)',
                         boxShadow: activeOverlay === l.id ? '0 2px 10px rgba(56, 189, 248, 0.3)' : 'none',
                         transition: 'all 0.15s ease'
                       }}
@@ -596,7 +596,7 @@ export function ExperimentSimulator3DView({
                       fontSize: 10.5,
                       fontWeight: 700,
                       cursor: 'pointer',
-                      border: cameraMode === 'aerial' ? '1px solid #00df81' : '1px solid var(--glass-border)',
+                      border: cameraMode === 'aerial' ? '1px solid #00df81' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: cameraMode === 'aerial' ? 'rgba(0, 223, 129, 0.2)' : 'rgba(30, 41, 59, 0.6)',
                       color: cameraMode === 'aerial' ? '#00df81' : '#f8fafc'
                     }}
@@ -616,7 +616,7 @@ export function ExperimentSimulator3DView({
                       fontSize: 10.5,
                       fontWeight: 700,
                       cursor: 'pointer',
-                      border: cameraMode === 'ground' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                      border: cameraMode === 'ground' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: cameraMode === 'ground' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(30, 41, 59, 0.6)',
                       color: cameraMode === 'ground' ? '#38bdf8' : '#f8fafc'
                     }}
@@ -636,7 +636,7 @@ export function ExperimentSimulator3DView({
                       fontSize: 10.5,
                       fontWeight: 700,
                       cursor: 'pointer',
-                      border: showSoilCrossSection ? '1px solid #facc15' : '1px solid var(--glass-border)',
+                      border: showSoilCrossSection ? '1px solid #facc15' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: showSoilCrossSection ? 'rgba(250, 204, 21, 0.2)' : 'rgba(30, 41, 59, 0.6)',
                       color: showSoilCrossSection ? '#facc15' : '#f8fafc'
                     }}
@@ -653,7 +653,7 @@ export function ExperimentSimulator3DView({
                       fontSize: 10.5,
                       fontWeight: 700,
                       cursor: 'pointer',
-                      border: isAutoRotate ? '1px solid #c084fc' : '1px solid var(--glass-border)',
+                      border: isAutoRotate ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: isAutoRotate ? 'rgba(192, 132, 252, 0.2)' : 'rgba(30, 41, 59, 0.6)',
                       color: isAutoRotate ? '#c084fc' : '#f8fafc'
                     }}
@@ -670,7 +670,7 @@ export function ExperimentSimulator3DView({
                       fontSize: 10.5,
                       fontWeight: 700,
                       cursor: 'pointer',
-                      border: showWireframe ? '1px solid #f43f5e' : '1px solid var(--glass-border)',
+                      border: showWireframe ? '1px solid #f43f5e' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: showWireframe ? 'rgba(244, 63, 94, 0.2)' : 'rgba(30, 41, 59, 0.6)',
                       color: showWireframe ? '#f43f5e' : '#f8fafc'
                     }}
@@ -790,11 +790,11 @@ export function ExperimentSimulator3DView({
             </div>
 
             {/* RIGHT PANEL: Scenario Controls, Playback & Selected Plot Details */}
-            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
               
               {/* Scenario Selector Switch */}
               <div>
-                <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.05em', display: 'block', marginBottom: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 800, color: 'rgba(238, 243, 238, 0.68)', letterSpacing: '0.05em', display: 'block', marginBottom: 6 }}>
                   ACTIVE SCENARIO:
                 </span>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -807,9 +807,9 @@ export function ExperimentSimulator3DView({
                       fontWeight: 800,
                       fontSize: 12,
                       cursor: 'pointer',
-                      border: activeScenarioTab === 'A' ? '1px solid #00df81' : '1px solid var(--glass-border)',
+                      border: activeScenarioTab === 'A' ? '1px solid #00df81' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: activeScenarioTab === 'A' ? 'rgba(0, 223, 129, 0.2)' : 'rgba(15, 23, 42, 0.5)',
-                      color: activeScenarioTab === 'A' ? '#00df81' : 'var(--text-muted)'
+                      color: activeScenarioTab === 'A' ? '#00df81' : 'rgba(238, 243, 238, 0.68)'
                     }}
                   >
                     🌾 Scenario A
@@ -823,9 +823,9 @@ export function ExperimentSimulator3DView({
                       fontWeight: 800,
                       fontSize: 12,
                       cursor: 'pointer',
-                      border: activeScenarioTab === 'B' ? '1px solid #38bdf8' : '1px solid var(--glass-border)',
+                      border: activeScenarioTab === 'B' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                       background: activeScenarioTab === 'B' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.5)',
-                      color: activeScenarioTab === 'B' ? '#38bdf8' : 'var(--text-muted)'
+                      color: activeScenarioTab === 'B' ? '#38bdf8' : 'rgba(238, 243, 238, 0.68)'
                     }}
                   >
                     🔬 Scenario B
@@ -834,7 +834,7 @@ export function ExperimentSimulator3DView({
               </div>
 
               {/* Selected Plot Telemetry Card */}
-              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 14, borderRadius: 12, border: '1px solid var(--glass-border)' }}>
+              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 14, borderRadius: 12, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <span style={{ background: '#0284c7', color: '#ffffff', padding: '2px 8px', borderRadius: 4, fontWeight: 800, fontSize: 11 }}>
                     {activePlot.id}
@@ -849,28 +849,28 @@ export function ExperimentSimulator3DView({
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 11.5 }}>
                   <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
-                    <div style={{ color: 'var(--text-muted)' }}>অনুমিত ফলন:</div>
+                    <div style={{ color: 'rgba(238, 243, 238, 0.68)' }}>অনুমিত ফলন:</div>
                     <strong style={{ color: '#00df81', fontSize: 13 }}>{activePlot.yieldTonHa} t/ha</strong>
                     <div style={{ fontSize: 10, color: '#94a3b8' }}>({activePlot.yieldMaundBigha} মণ/বিঘা)</div>
                   </div>
                   <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
-                    <div style={{ color: 'var(--text-muted)' }}>মাটির আর্দ্রতা:</div>
+                    <div style={{ color: 'rgba(238, 243, 238, 0.68)' }}>মাটির আর্দ্রতা:</div>
                     <strong style={{ color: '#38bdf8', fontSize: 13 }}>{activePlot.moisturePct}%</strong>
                     <div style={{ fontSize: 10, color: '#94a3b8' }}>Ks: {activePlot.ks}</div>
                   </div>
                   <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
-                    <div style={{ color: 'var(--text-muted)' }}>প্রয়োগকৃত পানি:</div>
+                    <div style={{ color: 'rgba(238, 243, 238, 0.68)' }}>প্রয়োগকৃত পানি:</div>
                     <strong style={{ color: '#cbd5e1', fontSize: 13 }}>{activePlot.waterAppliedMm} mm</strong>
                   </div>
                   <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '6px 8px', borderRadius: 6 }}>
-                    <div style={{ color: 'var(--text-muted)' }}>প্রত্যাশিত নিট লাভ:</div>
+                    <div style={{ color: 'rgba(238, 243, 238, 0.68)' }}>প্রত্যাশিত নিট লাভ:</div>
                     <strong style={{ color: '#facc15', fontSize: 12.5 }}>{formatCurrency(activePlot.netReturnBdt, lang)}/ha</strong>
                   </div>
                 </div>
               </div>
 
               {/* Weather & Scientific Data Provenance */}
-              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)', fontSize: 11 }}>
+              <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: 11 }}>
                 <div style={{ fontWeight: 800, color: '#38bdf8', marginBottom: 4 }}>
                   🛰️ DATA PROVENANCE (NASA POWER)
                 </div>
@@ -885,7 +885,7 @@ export function ExperimentSimulator3DView({
           </div>
 
           {/* BOTTOM PANEL: 120-Day Simulation Scrubber & Real-time Comparison Meters */}
-          <div style={{ marginTop: 16, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 20px', boxShadow: 'var(--glass-shadow)' }}>
+          <div style={{ marginTop: 16, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 14, border: '1px solid rgba(255, 255, 255, 0.08)', padding: '14px 20px', boxShadow: 'var(--glass-shadow)' }}>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               <button
@@ -919,7 +919,7 @@ export function ExperimentSimulator3DView({
                   onChange={(e) => setCurrentDayStep(Number(e.target.value))}
                   style={{ flex: 1, cursor: 'pointer', accentColor: '#00df81' }}
                 />
-                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', minWidth: 60 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'rgba(238, 243, 238, 0.68)', minWidth: 60 }}>
                   Harvest 120
                 </span>
               </div>
@@ -928,14 +928,14 @@ export function ExperimentSimulator3DView({
                 <button
                   type="button"
                   onClick={() => setCurrentDayStep(1)}
-                  style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid var(--glass-border)', color: '#f8fafc', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease' }}
+                  style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid rgba(255, 255, 255, 0.08)', color: '#f8fafc', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease' }}
                 >
                   ⏪ Day 1
                 </button>
                 <button
                   type="button"
                   onClick={() => setCurrentDayStep(120)}
-                  style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid var(--glass-border)', color: '#f8fafc', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease' }}
+                  style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid rgba(255, 255, 255, 0.08)', color: '#f8fafc', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease' }}
                 >
                   ⏩ Harvest (120)
                 </button>
@@ -951,25 +951,25 @@ export function ExperimentSimulator3DView({
             {comparison && (
               <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.06)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, fontSize: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>ফলন পার্থক্য (Yield Δ):</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>ফলন পার্থক্য (Yield Δ):</span>
                   <strong style={{ color: comparison.yieldTonHa.absoluteDiff >= 0 ? '#00df81' : '#f87171' }}>
                     {comparison.yieldTonHa.absoluteDiff >= 0 ? '+' : ''}{comparison.yieldTonHa.absoluteDiff} t/ha ({comparison.yieldTonHa.percentageDiff}%)
                   </strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>পানি সাশ্রয় (Water Δ):</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>পানি সাশ্রয় (Water Δ):</span>
                   <strong style={{ color: comparison.waterAppliedMm.absoluteDiff <= 0 ? '#00df81' : '#f87171' }}>
                     {comparison.waterAppliedMm.absoluteDiff} mm ({comparison.waterAppliedMm.percentageDiff}%)
                   </strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>নিট লাভ প্রভাব (Net Δ):</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>নিট লাভ প্রভাব (Net Δ):</span>
                   <strong style={{ color: comparison.netReturnBdt.absoluteDiff >= 0 ? '#00df81' : '#f87171' }}>
                     {formatCurrency(comparison.netReturnBdt.absoluteDiff, lang)} ({comparison.netReturnBdt.percentageDiff}%)
                   </strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>ব্রেক-ইভেন দর (BEP Δ):</span>
+                  <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>ব্রেক-ইভেন দর (BEP Δ):</span>
                   <strong style={{ color: comparison.breakEvenPerKg.absoluteDiff <= 0 ? '#00df81' : '#f87171' }}>
                     {comparison.breakEvenPerKg.absoluteDiff} BDT/kg
                   </strong>
@@ -982,13 +982,13 @@ export function ExperimentSimulator3DView({
 
       {/* SCENARIO COMPARISON TAB CONTENT */}
       {activeMainTab === 'scenario_comparison' && comparison && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
+        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
             <div>
               <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
                 ⚖️ {lang === 'bn' ? 'দৃশ্যকল্প এ বনাম দৃশ্যকল্প বি গাণিতিক তুলনা ম্যাট্রিক্স' : 'Multi-Scenario Quantitative Comparison (Scenario A vs B)'}
               </h3>
-              <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
+              <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'rgba(238, 243, 238, 0.68)' }}>
                 {lang === 'bn'
                   ? 'ফলন, সেচ সাশ্রয়, খরচ ও নিট লাভের গাণিতিক পার্থক্য (Difference & Percentage Impact)'
                   : 'Absolute and percentage differences across productivity, water conservation, costs, and net returns'}
@@ -1015,7 +1015,7 @@ export function ExperimentSimulator3DView({
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12.5 }}>
               <thead>
-                <tr style={{ background: 'rgba(15, 23, 42, 0.7)', borderBottom: '1px solid var(--glass-border)', color: '#cbd5e1' }}>
+                <tr style={{ background: 'rgba(15, 23, 42, 0.7)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#cbd5e1' }}>
                   <th style={{ padding: '12px 16px' }}>অ্যাগ্রোনোমিক সূচক (Indicator)</th>
                   <th style={{ padding: '12px 16px' }}>{scenarioA.name}</th>
                   <th style={{ padding: '12px 16px' }}>{scenarioB.name}</th>
@@ -1074,9 +1074,9 @@ export function ExperimentSimulator3DView({
                     isPositive: comparison.breakEvenPerKg.absoluteDiff <= 0
                   }
                 ].map((row, rIdx) => (
-                  <tr key={rIdx} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <tr key={rIdx} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
                     <td style={{ padding: '12px 16px', fontWeight: 700, color: '#f8fafc' }}>{row.label}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{row.valA}</td>
+                    <td style={{ padding: '12px 16px', color: 'rgba(238, 243, 238, 0.68)' }}>{row.valA}</td>
                     <td style={{ padding: '12px 16px', color: '#38bdf8' }}>{row.valB}</td>
                     <td style={{ padding: '12px 16px', fontWeight: 800, color: row.isPositive ? '#00df81' : '#f87171' }}>
                       {row.diff}
@@ -1094,12 +1094,12 @@ export function ExperimentSimulator3DView({
 
       {/* INTERACTIVE STRESS TESTS TAB CONTENT */}
       {activeMainTab === 'stress_tests' && (
-        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
+        <div style={{ background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.08)', padding: 22, boxShadow: 'var(--glass-shadow)' }}>
           <div style={{ marginBottom: 16 }}>
             <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#f8fafc' }}>
               ⚡ {lang === 'bn' ? 'সায়েন্টিফিক স্ট্রেস টেস্ট ও বাউন্ডারি যাচাই ল্যাব' : 'Scientific Stress Tests & Edge-Case Verification Lab'}
             </h3>
-            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
+            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'rgba(238, 243, 238, 0.68)' }}>
               {lang === 'bn'
                 ? 'চরম জলবায়ু ও মাটি পরিস্থিতি (Zero Water, Deluge > TAW, Ks Threshold, N=0) যাচাই এবং ত্রিমাত্রিক লাইসিমিটার দৃশ্য।'
                 : 'Direct execution of 9 physical edge-case stress benchmarks, live invariant validation, and 3D lysimeter simulation.'}
@@ -1110,7 +1110,7 @@ export function ExperimentSimulator3DView({
       )}
 
       {/* Provenance & Methodology Footnote */}
-      <div style={{ marginTop: 20, padding: 14, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 12, border: '1px solid var(--glass-border)', color: 'var(--text-muted)', fontSize: 11.5 }}>
+      <div style={{ marginTop: 20, padding: 14, background: 'var(--glass-bg-card)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', borderRadius: 12, border: '1px solid rgba(255, 255, 255, 0.08)', color: 'rgba(238, 243, 238, 0.68)', fontSize: 11.5 }}>
         <strong style={{ color: '#38bdf8' }}>🔬 বৈজ্ঞানিক ভিত্তি ও সীমাবদ্ধতা (Scientific Methodology & Provenance):</strong>
         <p style={{ margin: '4px 0 0', lineHeight: 1.5 }}>
           সিমুলেশন মডেলটি জাতিসংঘের খাদ্য ও কৃষি সংস্থা (FAO-33 Stewart Model) এবং পেনম্যান-মন্টেথ ইভাপোট্রান্সপিরেশন (FAO-56) নীতিমালার উপর ভিত্তি করে বাস্তবায়নকৃত।

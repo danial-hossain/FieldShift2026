@@ -134,11 +134,11 @@ export function SixSeasonTrajectory3D({
         {/* Botanical Family & Legume Interval Badge */}
         <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '8px 10px', borderRadius: 6, fontSize: 11.5 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>উদ্ভিদ পরিবার:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>উদ্ভিদ পরিবার:</span>
             <strong style={{ color: '#cbd5e1' }}>{activeRec?.cropFamily}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>লেগিউম BNF স্ট্যাটাস:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>লেগিউম BNF স্ট্যাটাস:</span>
             <strong style={{ color: activeRec?.isLegume ? '#00df81' : '#f59e0b' }}>
               {activeRec?.isLegume ? '✅ ডালজাতীয় নাইট্রোজেন সংবন্ধন' : '🌾 অপুষ্টিকারক সিরিয়াল'}
             </strong>
@@ -148,15 +148,15 @@ export function SixSeasonTrajectory3D({
         {/* Quantified Seasonal Outputs */}
         <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '8px 10px', borderRadius: 6, fontSize: 11.5 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>অনুমিত ফলন:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>অনুমিত ফলন:</span>
             <strong style={{ color: '#00df81' }}>{activeRec?.yieldTonHa} t/ha ({activeRec?.totalHarvestTons} টন)</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <span style={{ color: 'var(--text-muted)' }}>পানি চাহিদা:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>পানি চাহিদা:</span>
             <strong style={{ color: '#38bdf8' }}>{activeRec?.waterMm} mm</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: 'var(--text-muted)' }}>প্রত্যাশিত নিট লাভ:</span>
+            <span style={{ color: 'rgba(238, 243, 238, 0.68)' }}>প্রত্যাশিত নিট লাভ:</span>
             <strong style={{ color: '#facc15' }}>৳{activeRec?.netProfitBdt?.toLocaleString()}</strong>
           </div>
         </div>
@@ -174,7 +174,7 @@ export function SixSeasonTrajectory3D({
                 fontSize: 10,
                 fontWeight: selectedSeasonIndex === idx ? 800 : 600,
                 cursor: 'pointer',
-                border: selectedSeasonIndex === idx ? '1px solid #00df81' : '1px solid var(--glass-border)',
+                border: selectedSeasonIndex === idx ? '1px solid #00df81' : '1px solid rgba(255, 255, 255, 0.08)',
                 background: selectedSeasonIndex === idx ? '#00df81' : 'rgba(30, 41, 59, 0.6)',
                 color: selectedSeasonIndex === idx ? '#04130c' : '#cbd5e1'
               }}

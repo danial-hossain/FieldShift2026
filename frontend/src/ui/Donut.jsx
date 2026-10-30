@@ -30,7 +30,7 @@ export function Donut({
           border: `${strokeWidth}px solid rgba(255, 255, 255, 0.08)`,
           boxSizing: 'border-box',
           textAlign: 'center',
-          color: 'var(--text-3)',
+          color: 'rgba(238, 243, 238, 0.42)',
           fontSize: 11,
           ...style
         }}
@@ -41,12 +41,12 @@ export function Donut({
   }
 
   const toneColors = {
-    accent: 'var(--accent)',
-    leaf: 'var(--leaf)',
-    water: 'var(--water)',
-    sun: 'var(--sun)',
-    alert: 'var(--alert)',
-    hud: 'var(--hud-cyan, var(--accent))'
+    accent: '#c5e86c',
+    leaf: '#00df81',
+    water: '#38bdf8',
+    sun: '#facc15',
+    alert: '#f43f5e',
+    hud: '#00f0ff'
   };
 
   let cumulativeOffset = 0;
@@ -78,7 +78,7 @@ export function Donut({
           const strokeDash = ratio * circumference;
           const offset = circumference - cumulativeOffset;
           cumulativeOffset += strokeDash;
-          const color = toneColors[seg.tone] || seg.color || 'var(--accent)';
+          const color = toneColors[seg.tone] || seg.color || '#c5e86c';
 
           return (
             <circle
@@ -109,12 +109,12 @@ export function Donut({
           }}
         >
           {totalValue != null && (
-            <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
+            <span style={{ fontSize: 16, fontWeight: 700, color: '#eef3ee', lineHeight: 1 }}>
               {totalValue}
             </span>
           )}
           {totalLabel && (
-            <span style={{ fontSize: 10, color: 'var(--text-2)', marginTop: 2 }}>
+            <span style={{ fontSize: 10, color: 'rgba(238, 243, 238, 0.68)', marginTop: 2 }}>
               {totalLabel}
             </span>
           )}

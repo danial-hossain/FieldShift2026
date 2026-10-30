@@ -29,12 +29,12 @@ export function LineChart({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--text-3)',
+          color: 'rgba(238, 243, 238, 0.42)',
           fontSize: 11,
           fontStyle: 'italic',
           background: 'rgba(255, 255, 255, 0.02)',
           borderRadius: 8,
-          border: '1px dashed var(--line)',
+          border: '1px dashed rgba(255, 255, 255, 0.08)',
           ...style
         }}
       >
@@ -66,14 +66,14 @@ export function LineChart({
   const areaD = `${pathD} L ${coords[coords.length - 1].x} ${height - padY} L ${coords[0].x} ${height - padY} Z`;
 
   const toneColors = {
-    accent: 'var(--accent)',
-    leaf: 'var(--leaf)',
-    water: 'var(--water)',
-    sun: 'var(--sun)',
-    alert: 'var(--alert)',
-    hud: 'var(--hud-cyan, var(--accent))'
+    accent: '#c5e86c',
+    leaf: '#00df81',
+    water: '#38bdf8',
+    sun: '#facc15',
+    alert: '#f43f5e',
+    hud: '#00f0ff'
   };
-  const strokeColor = toneColors[tone] || 'var(--accent)';
+  const strokeColor = toneColors[tone] || '#c5e86c';
 
   return (
     <div className={`ui-linechart ${className}`} style={{ width, height, position: 'relative', ...style }}>
