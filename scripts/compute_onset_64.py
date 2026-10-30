@@ -100,20 +100,40 @@ def compute_mann_kendall_theil_sen(years: List[int], values: List[float]) -> Dic
     }
 
 
-def analyze_all_64_districts() -> List[Dict[str, Any]]:
-    """Run dual-onset analysis across all 64 districts with BH multiple-testing correction."""
+def analyze_all_64_districts() -> Dict[str, Any]:
+    """Run dual-onset analysis grouped by unique NASA POWER 0.5° grid cells.
+
+    25 of the 64 districts share an identical NASA POWER 0.5° grid cell (50 unique cells total).
+    The statistical onset tests are evaluated once per unique cell, Benjamini-Hochberg FDR control
+    is applied strictly over unique cells (n=50), and the results are mapped back to all 64 districts.
+    """
+    import hashlib
+    from collections import defaultdict
     from src.compute.agro import detect_rainfall_onset
 
     with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
         manifest = json.load(f)
 
-    dist_records = []
     entries = manifest.get("entries", {})
+
+    # Group districts by identical file content (or POWER 0.5° grid cell)
+    cell_groups = defaultdict(list)
+    cell_files = {}
     for dist, item in entries.items():
         csv_file = CACHE_DIR / f"nasa_power_{dist}_2001_2025.csv"
         if not csv_file.exists():
             continue
+        file_bytes = csv_file.read_bytes()
+        cell_hash = hashlib.sha256(file_bytes).hexdigest()[:12]
+        cell_groups[cell_hash].append(dist)
+        if cell_hash not in cell_files:
+            cell_files[cell_hash] = csv_file
 
+    unique_cells_data = []
+
+    for cell_hash, dist_list in sorted(cell_groups.items()):
+        primary_dist = dist_list[0]
+        csv_file = cell_files[cell_hash]
         df = pd.read_csv(csv_file)
         rain_col = "rainfall" if "rainfall" in df.columns else ("PRECTOTCORR" if "PRECTOTCORR" in df.columns else None)
         df["rainfall"] = pd.to_numeric(df[rain_col], errors="coerce").fillna(0.0).apply(lambda v: 0.0 if v < 0 else v)
@@ -166,9 +186,11 @@ def analyze_all_64_districts() -> List[Dict[str, Any]]:
         aman_trend = compute_mann_kendall_theil_sen([x["year"] for x in aman_series], [x["doy"] for x in aman_series])
         censored_frac = round(censored_count / valid_aman, 3) if valid_aman > 0 else 0.0
 
-        dist_records.append({
-            "district": dist,
-            "district_name": item.get("district_name", dist.capitalize()),
+        unique_cells_data.append({
+            "cell_id": f"power_cell_{cell_hash}",
+            "cell_hash": cell_hash,
+            "districts": dist_list,
+            "primary_district": primary_dist,
             "r_clim_mm_day": round(r_clim, 2),
             "wet_season": {
                 "period_1_median_doy": p1_anom_med,
@@ -187,36 +209,80 @@ def analyze_all_64_districts() -> List[Dict[str, Any]]:
             },
         })
 
-    # Benjamini-Hochberg FDR correction across all 64 districts
-    pvals_wet = [r["wet_season"]["p_value"] for r in dist_records]
+    # Benjamini-Hochberg FDR correction across unique grid cells only (n=50)
+    pvals_wet = [c["wet_season"]["p_value"] for c in unique_cells_data]
     qvals_wet = stats.false_discovery_control(pvals_wet, method="bh")
-    for r, q in zip(dist_records, qvals_wet):
-        r["wet_season"]["q_value_bh"] = round(float(q), 4)
+    for c, q in zip(unique_cells_data, qvals_wet):
+        c["wet_season"]["q_value_bh"] = round(float(q), 4)
 
-    pvals_aman = [r["aman"]["p_value"] for r in dist_records]
+    pvals_aman = [c["aman"]["p_value"] for c in unique_cells_data]
     qvals_aman = stats.false_discovery_control(pvals_aman, method="bh")
-    for r, q in zip(dist_records, qvals_aman):
-        r["aman"]["q_value_bh"] = round(float(q), 4)
+    for c, q in zip(unique_cells_data, qvals_aman):
+        c["aman"]["q_value_bh"] = round(float(q), 4)
 
-    return dist_records
+    # Map cell results back to each individual district
+    cell_lookup = {c["cell_hash"]: c for c in unique_cells_data}
+    dist_records = []
+    for dist, item in sorted(entries.items()):
+        csv_file = CACHE_DIR / f"nasa_power_{dist}_2001_2025.csv"
+        if not csv_file.exists():
+            continue
+        h = hashlib.sha256(csv_file.read_bytes()).hexdigest()[:12]
+        c = cell_lookup[h]
+
+        dist_records.append({
+            "district": dist,
+            "district_name": item.get("district_name", dist.capitalize()),
+            "cell_id": c["cell_id"],
+            "cell_hash": c["cell_hash"],
+            "shared_districts": c["districts"],
+            "r_clim_mm_day": c["r_clim_mm_day"],
+            "wet_season": {
+                "period_1_median_doy": c["wet_season"]["period_1_median_doy"],
+                "period_2_median_doy": c["wet_season"]["period_2_median_doy"],
+                "shift_days": c["wet_season"]["shift_days"],
+                "p_value": c["wet_season"]["p_value"],
+                "q_value_bh": c["wet_season"]["q_value_bh"],
+                "trend": c["wet_season"]["trend"],
+            },
+            "aman": {
+                "period_1_median_doy": c["aman"]["period_1_median_doy"],
+                "period_2_median_doy": c["aman"]["period_2_median_doy"],
+                "shift_days": c["aman"]["shift_days"],
+                "p_value": c["aman"]["p_value"],
+                "q_value_bh": c["aman"]["q_value_bh"],
+                "censored_fraction": c["aman"]["censored_fraction"],
+                "trend": c["aman"]["trend"],
+            },
+        })
+
+    return {
+        "metadata": {
+            "total_districts": len(dist_records),
+            "unique_cells_count": len(unique_cells_data),
+            "shared_cells_count": sum(1 for c in unique_cells_data if len(c["districts"]) > 1),
+            "districts_in_shared_cells_count": sum(len(c["districts"]) for c in unique_cells_data if len(c["districts"]) > 1),
+            "fdr_method": "Benjamini-Hochberg across unique cells (n=50)",
+        },
+        "unique_cells": unique_cells_data,
+        "districts": dist_records,
+    }
 
 
 if __name__ == "__main__":
-    records = analyze_all_64_districts()
+    result = analyze_all_64_districts()
     out_file = ROOT / "data" / "onset_analysis_64.json"
     with open(out_file, "w", encoding="utf-8") as f:
-        json.dump({"districts": records}, f, indent=2)
-    print(f"Saved onset analysis for {len(records)} districts to {out_file}")
+        json.dump(result, f, indent=2)
+    print(f"Saved onset analysis for {len(result['districts'])} districts across {len(result['unique_cells'])} unique cells to {out_file}")
 
     # Summary of findings
-    sig_wet = [r for r in records if r["wet_season"]["q_value_bh"] < 0.05]
-    print(f"\nDistricts with wet_season q_BH < 0.05 ({len(sig_wet)} districts):")
-    for r in sig_wet:
-        w = r["wet_season"]
-        print(f"  {r['district']:<16}: P1={w['period_1_median_doy']} -> P2={w['period_2_median_doy']} (shift={w['shift_days']}d, p={w['p_value']}, q={w['q_value_bh']})")
+    sig_wet_cells = [c for c in result["unique_cells"] if c["wet_season"]["q_value_bh"] < 0.05]
+    print(f"\nUnique cells with wet_season q_BH < 0.05: {len(sig_wet_cells)} of {len(result['unique_cells'])} cells:")
+    for c in sig_wet_cells:
+        w = c["wet_season"]
+        dists = ", ".join(c["districts"])
+        print(f"  {c['cell_id']} ({dists}): P1={w['period_1_median_doy']} -> P2={w['period_2_median_doy']} (shift={w['shift_days']}d, p={w['p_value']}, q={w['q_value_bh']})")
 
-    sig_aman = [r for r in records if r["aman"]["q_value_bh"] < 0.05 and r["aman"]["censored_fraction"] <= 0.30]
-    print(f"\nDistricts with aman q_BH < 0.05 and not censored ({len(sig_aman)} districts):")
-    for r in sig_aman:
-        a = r["aman"]
-        print(f"  {r['district']:<16}: P1={a['period_1_median_doy']} -> P2={a['period_2_median_doy']} (shift={a['shift_days']}d, p={a['p_value']}, q={a['q_value_bh']}, censored={a['censored_fraction']})")
+    sig_aman_cells = [c for c in result["unique_cells"] if c["aman"]["q_value_bh"] < 0.05 and c["aman"]["censored_fraction"] <= 0.30]
+    print(f"\nUnique cells with aman q_BH < 0.05 and not censored: {len(sig_aman_cells)} of {len(result['unique_cells'])} cells")

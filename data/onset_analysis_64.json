@@ -1,764 +1,260 @@
 {
-  "districts": [
+  "metadata": {
+    "total_districts": 64,
+    "unique_cells_count": 50,
+    "shared_cells_count": 11,
+    "districts_in_shared_cells_count": 25,
+    "fdr_method": "Benjamini-Hochberg across unique cells (n=50)"
+  },
+  "unique_cells": [
     {
-      "district": "cumilla",
-      "district_name": "Cumilla",
-      "r_clim_mm_day": 6.72,
+      "cell_id": "power_cell_0099334d125c",
+      "cell_hash": "0099334d125c",
+      "districts": [
+        "netrokona"
+      ],
+      "primary_district": "netrokona",
+      "r_clim_mm_day": 7.95,
       "wet_season": {
-        "period_1_median_doy": 132.0,
-        "period_2_median_doy": 122.0,
-        "shift_days": -10.0,
-        "p_value": 0.0963,
+        "period_1_median_doy": 124.0,
+        "period_2_median_doy": 107.0,
+        "shift_days": -17.0,
+        "p_value": 0.0568,
         "trend": {
-          "theil_sen_slope": -1.0917,
-          "theil_sen_intercept": 2319.525,
-          "theil_sen_low_slope": -2.5714,
-          "theil_sen_high_slope": 0.1739,
-          "kendall_tau": -0.2471,
-          "p_value": 0.0872
+          "theil_sen_slope": -1.0,
+          "theil_sen_intercept": 2130.0,
+          "theil_sen_low_slope": -2.5,
+          "theil_sen_high_slope": 0.3478,
+          "kendall_tau": -0.2074,
+          "p_value": 0.1474
         },
-        "q_value_bh": 0.1081
+        "q_value_bh": 0.071
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
-        "p_value": 0.7972,
+        "p_value": 1.0,
         "censored_fraction": 0.6,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
           "theil_sen_low_slope": -0.0909,
-          "theil_sen_high_slope": 0.0526,
-          "kendall_tau": -0.0379,
-          "p_value": 0.8055
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.0902,
+          "p_value": 0.5576
         },
         "q_value_bh": 1.0
       }
     },
     {
-      "district": "feni",
-      "district_name": "Feni",
-      "r_clim_mm_day": 7.9,
+      "cell_id": "power_cell_02641a801846",
+      "cell_hash": "02641a801846",
+      "districts": [
+        "sylhet"
+      ],
+      "primary_district": "sylhet",
+      "r_clim_mm_day": 10.83,
       "wet_season": {
-        "period_1_median_doy": 141.5,
-        "period_2_median_doy": 128.0,
-        "shift_days": -13.5,
-        "p_value": 0.0315,
+        "period_1_median_doy": 114.5,
+        "period_2_median_doy": 105.0,
+        "shift_days": -9.5,
+        "p_value": 0.1207,
         "trend": {
-          "theil_sen_slope": -1.3604,
-          "theil_sen_intercept": 2871.4643,
-          "theil_sen_low_slope": -2.4286,
-          "theil_sen_high_slope": -0.0909,
-          "kendall_tau": -0.3126,
-          "p_value": 0.0296
+          "theil_sen_slope": -0.7596,
+          "theil_sen_intercept": 1637.1058,
+          "theil_sen_low_slope": -2.0769,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": -0.1916,
+          "p_value": 0.1825
         },
-        "q_value_bh": 0.0411
+        "q_value_bh": 0.1285
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 152.0,
         "shift_days": -1.0,
-        "p_value": 0.5829,
-        "censored_fraction": 0.64,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.125,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1229,
-          "p_value": 0.4252
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "brahmanbaria",
-      "district_name": "Brahmanbaria",
-      "r_clim_mm_day": 6.44,
-      "wet_season": {
-        "period_1_median_doy": 120.0,
-        "period_2_median_doy": 116.0,
-        "shift_days": -4.0,
-        "p_value": 0.2638,
-        "trend": {
-          "theil_sen_slope": -0.3944,
-          "theil_sen_intercept": 911.0167,
-          "theil_sen_low_slope": -1.7333,
-          "theil_sen_high_slope": 0.7143,
-          "kendall_tau": -0.1117,
-          "p_value": 0.4396
-        },
-        "q_value_bh": 0.268
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": 0.0,
-        "p_value": 0.8408,
-        "censored_fraction": 0.64,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.0833,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.0772,
-          "p_value": 0.6205
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "rangamati",
-      "district_name": "Rangamati",
-      "r_clim_mm_day": 8.65,
-      "wet_season": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 133.0,
-        "shift_days": -20.5,
-        "p_value": 0.0192,
-        "trend": {
-          "theil_sen_slope": -1.5941,
-          "theil_sen_intercept": 3347.9588,
-          "theil_sen_low_slope": -2.8947,
-          "theil_sen_high_slope": -0.4,
-          "kendall_tau": -0.3462,
-          "p_value": 0.016
-        },
-        "q_value_bh": 0.0343
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.5,
-        "p_value": 0.1139,
-        "censored_fraction": 0.56,
-        "trend": {
-          "theil_sen_slope": -0.0557,
-          "theil_sen_intercept": 265.1796,
-          "theil_sen_low_slope": -0.3333,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2407,
-          "p_value": 0.1138
-        },
-        "q_value_bh": 0.6075
-      }
-    },
-    {
-      "district": "noakhali",
-      "district_name": "Noakhali",
-      "r_clim_mm_day": 7.9,
-      "wet_season": {
-        "period_1_median_doy": 141.5,
-        "period_2_median_doy": 128.0,
-        "shift_days": -13.5,
-        "p_value": 0.0315,
-        "trend": {
-          "theil_sen_slope": -1.3604,
-          "theil_sen_intercept": 2871.4643,
-          "theil_sen_low_slope": -2.4286,
-          "theil_sen_high_slope": -0.0909,
-          "kendall_tau": -0.3126,
-          "p_value": 0.0296
-        },
-        "q_value_bh": 0.0411
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.0,
-        "p_value": 0.5829,
-        "censored_fraction": 0.64,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.125,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1229,
-          "p_value": 0.4252
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "chandpur",
-      "district_name": "Chandpur",
-      "r_clim_mm_day": 6.96,
-      "wet_season": {
-        "period_1_median_doy": 143.5,
-        "period_2_median_doy": 123.0,
-        "shift_days": -20.5,
-        "p_value": 0.0143,
-        "trend": {
-          "theil_sen_slope": -1.5489,
-          "theil_sen_intercept": 3252.8797,
-          "theil_sen_low_slope": -2.8333,
-          "theil_sen_high_slope": -0.1667,
-          "kendall_tau": -0.3411,
-          "p_value": 0.0171
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -0.5,
-        "p_value": 0.3515,
-        "censored_fraction": 0.56,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.2667,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1222,
-          "p_value": 0.4221
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "lakshmipur",
-      "district_name": "Lakshmipur",
-      "r_clim_mm_day": 6.96,
-      "wet_season": {
-        "period_1_median_doy": 143.5,
-        "period_2_median_doy": 123.0,
-        "shift_days": -20.5,
-        "p_value": 0.0143,
-        "trend": {
-          "theil_sen_slope": -1.5489,
-          "theil_sen_intercept": 3252.8797,
-          "theil_sen_low_slope": -2.8333,
-          "theil_sen_high_slope": -0.1667,
-          "kendall_tau": -0.3411,
-          "p_value": 0.0171
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -0.5,
-        "p_value": 0.3515,
-        "censored_fraction": 0.56,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.2667,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1222,
-          "p_value": 0.4221
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "chattogram",
-      "district_name": "Chattogram",
-      "r_clim_mm_day": 8.65,
-      "wet_season": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 133.0,
-        "shift_days": -20.5,
-        "p_value": 0.0192,
-        "trend": {
-          "theil_sen_slope": -1.5941,
-          "theil_sen_intercept": 3347.9588,
-          "theil_sen_low_slope": -2.8947,
-          "theil_sen_high_slope": -0.4,
-          "kendall_tau": -0.3462,
-          "p_value": 0.016
-        },
-        "q_value_bh": 0.0343
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.5,
-        "p_value": 0.1139,
-        "censored_fraction": 0.56,
-        "trend": {
-          "theil_sen_slope": -0.0557,
-          "theil_sen_intercept": 265.1796,
-          "theil_sen_low_slope": -0.3333,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2407,
-          "p_value": 0.1138
-        },
-        "q_value_bh": 0.6075
-      }
-    },
-    {
-      "district": "coxsbazar",
-      "district_name": "Coxsbazar",
-      "r_clim_mm_day": 14.83,
-      "wet_season": {
-        "period_1_median_doy": 147.0,
-        "period_2_median_doy": 133.0,
-        "shift_days": -14.0,
-        "p_value": 0.0275,
-        "trend": {
-          "theil_sen_slope": -1.3875,
-          "theil_sen_intercept": 2931.0375,
-          "theil_sen_low_slope": -2.7273,
-          "theil_sen_high_slope": -0.1667,
-          "kendall_tau": -0.3049,
-          "p_value": 0.0334
-        },
-        "q_value_bh": 0.0374
-      },
-      "aman": {
-        "period_1_median_doy": 152.5,
-        "period_2_median_doy": 152.0,
-        "shift_days": -0.5,
-        "p_value": 0.953,
-        "censored_fraction": 0.68,
+        "p_value": 0.4794,
+        "censored_fraction": 0.72,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 152.0,
-          "theil_sen_low_slope": -0.0,
+          "theil_sen_low_slope": -0.0769,
           "theil_sen_high_slope": -0.0,
-          "kendall_tau": 0.004,
-          "p_value": 0.9797
+          "kendall_tau": -0.1514,
+          "p_value": 0.3338
         },
-        "q_value_bh": 1.0
+        "q_value_bh": 0.9263
       }
     },
     {
-      "district": "khagrachhari",
-      "district_name": "Khagrachhari",
-      "r_clim_mm_day": 7.91,
+      "cell_id": "power_cell_05d8840c351b",
+      "cell_hash": "05d8840c351b",
+      "districts": [
+        "narsingdi"
+      ],
+      "primary_district": "narsingdi",
+      "r_clim_mm_day": 6.18,
       "wet_season": {
-        "period_1_median_doy": 141.5,
-        "period_2_median_doy": 128.0,
-        "shift_days": -13.5,
-        "p_value": 0.0337,
-        "trend": {
-          "theil_sen_slope": -1.3365,
-          "theil_sen_intercept": 2823.3064,
-          "theil_sen_low_slope": -2.4545,
-          "theil_sen_high_slope": -0.0833,
-          "kendall_tau": -0.3059,
-          "p_value": 0.0333
-        },
-        "q_value_bh": 0.0431
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": 0.0,
-        "p_value": 0.7975,
-        "censored_fraction": 0.6,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.2,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1318,
-          "p_value": 0.3896
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "bandarban",
-      "district_name": "Bandarban",
-      "r_clim_mm_day": 8.21,
-      "wet_season": {
-        "period_1_median_doy": 152.5,
-        "period_2_median_doy": 136.0,
-        "shift_days": -16.5,
-        "p_value": 0.0207,
-        "trend": {
-          "theil_sen_slope": -1.8,
-          "theil_sen_intercept": 3765.4,
-          "theil_sen_low_slope": -3.2,
-          "theil_sen_high_slope": -0.3333,
-          "kendall_tau": -0.3518,
-          "p_value": 0.0141
-        },
-        "q_value_bh": 0.0343
-      },
-      "aman": {
-        "period_1_median_doy": 156.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": -3.0,
-        "p_value": 0.0349,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.2361,
-          "theil_sen_intercept": 629.2917,
-          "theil_sen_low_slope": -0.75,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.3767,
-          "p_value": 0.0121
-        },
-        "q_value_bh": 0.2792
-      }
-    },
-    {
-      "district": "sirajganj",
-      "district_name": "Sirajganj",
-      "r_clim_mm_day": 5.92,
-      "wet_season": {
-        "period_1_median_doy": 140.5,
-        "period_2_median_doy": 123.0,
-        "shift_days": -17.5,
-        "p_value": 0.0023,
-        "trend": {
-          "theil_sen_slope": -1.1847,
-          "theil_sen_intercept": 2509.7188,
-          "theil_sen_low_slope": -2.3125,
-          "theil_sen_high_slope": -0.1667,
-          "kendall_tau": -0.3272,
-          "p_value": 0.0232
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": 0.0,
-        "p_value": 0.9106,
-        "censored_fraction": 0.56,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.1111,
-          "theil_sen_high_slope": 0.0833,
-          "kendall_tau": -0.0331,
-          "p_value": 0.8278
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "pabna",
-      "district_name": "Pabna",
-      "r_clim_mm_day": 4.78,
-      "wet_season": {
-        "period_1_median_doy": 149.0,
-        "period_2_median_doy": 123.0,
-        "shift_days": -26.0,
-        "p_value": 0.0274,
-        "trend": {
-          "theil_sen_slope": -1.4048,
-          "theil_sen_intercept": 2953.7857,
-          "theil_sen_low_slope": -2.75,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.28,
-          "p_value": 0.0521
-        },
-        "q_value_bh": 0.0374
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": -0.5,
-        "p_value": 0.3466,
-        "censored_fraction": 0.36,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": 0.1111,
-          "kendall_tau": -0.0991,
-          "p_value": 0.5047
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "bogura",
-      "district_name": "Bogura",
-      "r_clim_mm_day": 5.11,
-      "wet_season": {
-        "period_1_median_doy": 138.5,
+        "period_1_median_doy": 128.5,
         "period_2_median_doy": 122.0,
-        "shift_days": -16.5,
-        "p_value": 0.0256,
+        "shift_days": -6.5,
+        "p_value": 0.0813,
         "trend": {
-          "theil_sen_slope": -1.0,
-          "theil_sen_intercept": 2136.0,
-          "theil_sen_low_slope": -2.4286,
-          "theil_sen_high_slope": 0.0588,
-          "kendall_tau": -0.2483,
-          "p_value": 0.0836
+          "theil_sen_slope": -0.975,
+          "theil_sen_intercept": 2084.675,
+          "theil_sen_low_slope": -1.9286,
+          "theil_sen_high_slope": 0.1818,
+          "kendall_tau": -0.2462,
+          "p_value": 0.0875
         },
-        "q_value_bh": 0.0374
+        "q_value_bh": 0.0968
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 1.0,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0588,
+          "theil_sen_high_slope": 0.0455,
+          "kendall_tau": -0.0192,
+          "p_value": 0.9016
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_095daf5a2f12",
+      "cell_hash": "095daf5a2f12",
+      "districts": [
+        "chandpur",
+        "shariatpur"
+      ],
+      "primary_district": "chandpur",
+      "r_clim_mm_day": 6.96,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -20.5,
+        "p_value": 0.0143,
+        "trend": {
+          "theil_sen_slope": -1.5489,
+          "theil_sen_intercept": 3252.8797,
+          "theil_sen_low_slope": -2.8333,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3411,
+          "p_value": 0.0171
+        },
+        "q_value_bh": 0.0275
       },
       "aman": {
         "period_1_median_doy": 153.5,
         "period_2_median_doy": 153.0,
         "shift_days": -0.5,
-        "p_value": 0.8463,
+        "p_value": 0.3515,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2667,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1222,
+          "p_value": 0.4221
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_0f01693ba809",
+      "cell_hash": "0f01693ba809",
+      "districts": [
+        "jamalpur"
+      ],
+      "primary_district": "jamalpur",
+      "r_clim_mm_day": 6.23,
+      "wet_season": {
+        "period_1_median_doy": 138.5,
+        "period_2_median_doy": 116.0,
+        "shift_days": -22.5,
+        "p_value": 0.006,
+        "trend": {
+          "theil_sen_slope": -1.1603,
+          "theil_sen_intercept": 2459.5962,
+          "theil_sen_low_slope": -2.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2781,
+          "p_value": 0.0524
+        },
+        "q_value_bh": 0.0187
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.9556,
         "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.1875,
-          "theil_sen_high_slope": 0.1,
-          "kendall_tau": -0.0713,
-          "p_value": 0.6334
+          "theil_sen_low_slope": -0.1429,
+          "theil_sen_high_slope": 0.0909,
+          "kendall_tau": -0.0652,
+          "p_value": 0.6661
         },
         "q_value_bh": 1.0
       }
     },
     {
-      "district": "rajshahi",
-      "district_name": "Rajshahi",
-      "r_clim_mm_day": 3.97,
-      "wet_season": {
-        "period_1_median_doy": 143.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -21.5,
-        "p_value": 0.0038,
-        "trend": {
-          "theil_sen_slope": -1.0871,
-          "theil_sen_intercept": 2318.375,
-          "theil_sen_low_slope": -2.4,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2983,
-          "p_value": 0.0392
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 158.0,
-        "shift_days": 3.5,
-        "p_value": 0.9344,
-        "censored_fraction": 0.24,
-        "trend": {
-          "theil_sen_slope": 0.125,
-          "theil_sen_intercept": -94.625,
-          "theil_sen_low_slope": -0.2143,
-          "theil_sen_high_slope": 0.5,
-          "kendall_tau": 0.1279,
-          "p_value": 0.3829
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "natore",
-      "district_name": "Natore",
-      "r_clim_mm_day": 3.97,
-      "wet_season": {
-        "period_1_median_doy": 143.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -21.5,
-        "p_value": 0.0038,
-        "trend": {
-          "theil_sen_slope": -1.0871,
-          "theil_sen_intercept": 2318.375,
-          "theil_sen_low_slope": -2.4,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2983,
-          "p_value": 0.0392
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 158.0,
-        "shift_days": 3.5,
-        "p_value": 0.9344,
-        "censored_fraction": 0.24,
-        "trend": {
-          "theil_sen_slope": 0.125,
-          "theil_sen_intercept": -94.625,
-          "theil_sen_low_slope": -0.2143,
-          "theil_sen_high_slope": 0.5,
-          "kendall_tau": 0.1279,
-          "p_value": 0.3829
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "joypurhat",
-      "district_name": "Joypurhat",
-      "r_clim_mm_day": 4.14,
-      "wet_season": {
-        "period_1_median_doy": 141.0,
-        "period_2_median_doy": 127.0,
-        "shift_days": -14.0,
-        "p_value": 0.0133,
-        "trend": {
-          "theil_sen_slope": -0.9057,
-          "theil_sen_intercept": 1953.1776,
-          "theil_sen_low_slope": -2.2143,
-          "theil_sen_high_slope": 0.1667,
-          "kendall_tau": -0.2513,
-          "p_value": 0.0796
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 155.5,
-        "period_2_median_doy": 156.0,
-        "shift_days": 0.5,
-        "p_value": 0.642,
-        "censored_fraction": 0.28,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 156.0,
-          "theil_sen_low_slope": -0.375,
-          "theil_sen_high_slope": 0.3846,
-          "kendall_tau": 0.0172,
-          "p_value": 0.9064
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "chapainawabganj",
-      "district_name": "Chapainawabganj",
-      "r_clim_mm_day": 3.52,
-      "wet_season": {
-        "period_1_median_doy": 134.5,
-        "period_2_median_doy": 128.0,
-        "shift_days": -6.5,
-        "p_value": 0.0863,
-        "trend": {
-          "theil_sen_slope": -0.4643,
-          "theil_sen_intercept": 1063.6071,
-          "theil_sen_low_slope": -1.3333,
-          "theil_sen_high_slope": 0.4,
-          "kendall_tau": -0.1916,
-          "p_value": 0.1824
-        },
-        "q_value_bh": 0.0986
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 166.0,
-        "shift_days": 11.5,
-        "p_value": 0.1557,
-        "censored_fraction": 0.16,
-        "trend": {
-          "theil_sen_slope": 0.5,
-          "theil_sen_intercept": -842.5,
-          "theil_sen_low_slope": -0.0,
-          "theil_sen_high_slope": 1.1,
-          "kendall_tau": 0.2458,
-          "p_value": 0.0911
-        },
-        "q_value_bh": 0.7665
-      }
-    },
-    {
-      "district": "naogaon",
-      "district_name": "Naogaon",
-      "r_clim_mm_day": 4.14,
-      "wet_season": {
-        "period_1_median_doy": 141.0,
-        "period_2_median_doy": 127.0,
-        "shift_days": -14.0,
-        "p_value": 0.0133,
-        "trend": {
-          "theil_sen_slope": -0.9057,
-          "theil_sen_intercept": 1953.1776,
-          "theil_sen_low_slope": -2.2143,
-          "theil_sen_high_slope": 0.1667,
-          "kendall_tau": -0.2513,
-          "p_value": 0.0796
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 155.5,
-        "period_2_median_doy": 156.0,
-        "shift_days": 0.5,
-        "p_value": 0.642,
-        "censored_fraction": 0.28,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 156.0,
-          "theil_sen_low_slope": -0.375,
-          "theil_sen_high_slope": 0.3846,
-          "kendall_tau": 0.0172,
-          "p_value": 0.9064
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "jashore",
-      "district_name": "Jashore",
-      "r_clim_mm_day": 5.06,
-      "wet_season": {
-        "period_1_median_doy": 144.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -22.5,
-        "p_value": 0.0089,
-        "trend": {
-          "theil_sen_slope": -1.6471,
-          "theil_sen_intercept": 3441.5294,
-          "theil_sen_low_slope": -2.6667,
-          "theil_sen_high_slope": -0.4167,
-          "kendall_tau": -0.4136,
-          "p_value": 0.0043
-        },
-        "q_value_bh": 0.0237
-      },
-      "aman": {
-        "period_1_median_doy": 157.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -4.5,
-        "p_value": 0.2592,
-        "censored_fraction": 0.4,
-        "trend": {
-          "theil_sen_slope": -0.0909,
-          "theil_sen_intercept": 339.0,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": 0.1667,
-          "kendall_tau": -0.1219,
-          "p_value": 0.4073
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "satkhira",
-      "district_name": "Satkhira",
+      "cell_id": "power_cell_12ca6ec5bf56",
+      "cell_hash": "12ca6ec5bf56",
+      "districts": [
+        "manikganj"
+      ],
+      "primary_district": "manikganj",
       "r_clim_mm_day": 5.56,
       "wet_season": {
-        "period_1_median_doy": 160.5,
-        "period_2_median_doy": 126.0,
-        "shift_days": -34.5,
-        "p_value": 0.0042,
+        "period_1_median_doy": 139.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -17.5,
+        "p_value": 0.0132,
         "trend": {
-          "theil_sen_slope": -1.6375,
-          "theil_sen_intercept": 3439.2875,
-          "theil_sen_low_slope": -2.9375,
-          "theil_sen_high_slope": -0.1429,
-          "kendall_tau": -0.3474,
-          "p_value": 0.0159
+          "theil_sen_slope": -1.1429,
+          "theil_sen_intercept": 2427.5714,
+          "theil_sen_low_slope": -2.125,
+          "theil_sen_high_slope": -0.2,
+          "kendall_tau": -0.3328,
+          "p_value": 0.0206
         },
-        "q_value_bh": 0.0149
+        "q_value_bh": 0.0275
       },
       "aman": {
-        "period_1_median_doy": 157.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -4.5,
-        "p_value": 0.2474,
-        "censored_fraction": 0.4,
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.5,
+        "p_value": 0.4817,
+        "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 156.0,
-          "theil_sen_low_slope": -0.4615,
-          "theil_sen_high_slope": 0.375,
-          "kendall_tau": -0.091,
-          "p_value": 0.5379
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.2222,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0842,
+          "p_value": 0.5771
         },
-        "q_value_bh": 0.7965
+        "q_value_bh": 0.9263
       }
     },
     {
-      "district": "meherpur",
-      "district_name": "Meherpur",
+      "cell_id": "power_cell_1336c131fbe4",
+      "cell_hash": "1336c131fbe4",
+      "districts": [
+        "meherpur"
+      ],
+      "primary_district": "meherpur",
       "r_clim_mm_day": 3.99,
       "wet_season": {
         "period_1_median_doy": 143.5,
@@ -773,7 +269,7 @@
           "kendall_tau": -0.3069,
           "p_value": 0.0332
         },
-        "q_value_bh": 0.0277
+        "q_value_bh": 0.0275
       },
       "aman": {
         "period_1_median_doy": 154.5,
@@ -793,8 +289,52 @@
       }
     },
     {
-      "district": "narail",
-      "district_name": "Narail",
+      "cell_id": "power_cell_1aec56c7b1c7",
+      "cell_hash": "1aec56c7b1c7",
+      "districts": [
+        "noakhali"
+      ],
+      "primary_district": "noakhali",
+      "r_clim_mm_day": 7.9,
+      "wet_season": {
+        "period_1_median_doy": 141.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -13.5,
+        "p_value": 0.0315,
+        "trend": {
+          "theil_sen_slope": -1.3604,
+          "theil_sen_intercept": 2871.4643,
+          "theil_sen_low_slope": -2.4286,
+          "theil_sen_high_slope": -0.0909,
+          "kendall_tau": -0.3126,
+          "p_value": 0.0296
+        },
+        "q_value_bh": 0.0426
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.5829,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.125,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1229,
+          "p_value": 0.4252
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_1d49b6b595d2",
+      "cell_hash": "1d49b6b595d2",
+      "districts": [
+        "khulna"
+      ],
+      "primary_district": "khulna",
       "r_clim_mm_day": 5.06,
       "wet_season": {
         "period_1_median_doy": 144.5,
@@ -809,7 +349,7 @@
           "kendall_tau": -0.4136,
           "p_value": 0.0043
         },
-        "q_value_bh": 0.0237
+        "q_value_bh": 0.0234
       },
       "aman": {
         "period_1_median_doy": 157.5,
@@ -825,12 +365,1307 @@
           "kendall_tau": -0.1219,
           "p_value": 0.4073
         },
-        "q_value_bh": 0.7965
+        "q_value_bh": 0.8593
       }
     },
     {
-      "district": "chuadanga",
-      "district_name": "Chuadanga",
+      "cell_id": "power_cell_1d6a3c4a287a",
+      "cell_hash": "1d6a3c4a287a",
+      "districts": [
+        "bagerhat",
+        "pirojpur"
+      ],
+      "primary_district": "bagerhat",
+      "r_clim_mm_day": 6.66,
+      "wet_season": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -34.0,
+        "p_value": 0.0008,
+        "trend": {
+          "theil_sen_slope": -1.8918,
+          "theil_sen_intercept": 3951.2193,
+          "theil_sen_low_slope": -3.0833,
+          "theil_sen_high_slope": -0.5882,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        },
+        "q_value_bh": 0.0112
+      },
+      "aman": {
+        "period_1_median_doy": 158.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -5.0,
+        "p_value": 0.0217,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1909,
+          "theil_sen_intercept": 539.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2854,
+          "p_value": 0.0567
+        },
+        "q_value_bh": 0.3425
+      }
+    },
+    {
+      "cell_id": "power_cell_1d9fcf2d33aa",
+      "cell_hash": "1d9fcf2d33aa",
+      "districts": [
+        "pabna",
+        "kushtia",
+        "rajbari"
+      ],
+      "primary_district": "pabna",
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 149.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -26.0,
+        "p_value": 0.0274,
+        "trend": {
+          "theil_sen_slope": -1.4048,
+          "theil_sen_intercept": 2953.7857,
+          "theil_sen_low_slope": -2.75,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.28,
+          "p_value": 0.0521
+        },
+        "q_value_bh": 0.0393
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -0.5,
+        "p_value": 0.3466,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1111,
+          "kendall_tau": -0.0991,
+          "p_value": 0.5047
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_2314edbfaf36",
+      "cell_hash": "2314edbfaf36",
+      "districts": [
+        "narayanganj",
+        "dhaka",
+        "munshiganj"
+      ],
+      "primary_district": "narayanganj",
+      "r_clim_mm_day": 6.27,
+      "wet_season": {
+        "period_1_median_doy": 137.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -15.0,
+        "p_value": 0.022,
+        "trend": {
+          "theil_sen_slope": -1.068,
+          "theil_sen_intercept": 2274.8487,
+          "theil_sen_low_slope": -2.4706,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2741,
+          "p_value": 0.0577
+        },
+        "q_value_bh": 0.0355
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.5,
+        "p_value": 0.9774,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.0909,
+          "theil_sen_high_slope": 0.1,
+          "kendall_tau": 0.015,
+          "p_value": 0.9222
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_28cac3b963f4",
+      "cell_hash": "28cac3b963f4",
+      "districts": [
+        "khagrachhari"
+      ],
+      "primary_district": "khagrachhari",
+      "r_clim_mm_day": 7.91,
+      "wet_season": {
+        "period_1_median_doy": 141.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -13.5,
+        "p_value": 0.0337,
+        "trend": {
+          "theil_sen_slope": -1.3365,
+          "theil_sen_intercept": 2823.3064,
+          "theil_sen_low_slope": -2.4545,
+          "theil_sen_high_slope": -0.0833,
+          "kendall_tau": -0.3059,
+          "p_value": 0.0333
+        },
+        "q_value_bh": 0.0443
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.7975,
+        "censored_fraction": 0.6,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1318,
+          "p_value": 0.3896
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_2e8a2549a063",
+      "cell_hash": "2e8a2549a063",
+      "districts": [
+        "gazipur"
+      ],
+      "primary_district": "gazipur",
+      "r_clim_mm_day": 6.18,
+      "wet_season": {
+        "period_1_median_doy": 128.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -6.5,
+        "p_value": 0.0813,
+        "trend": {
+          "theil_sen_slope": -0.975,
+          "theil_sen_intercept": 2084.675,
+          "theil_sen_low_slope": -1.9286,
+          "theil_sen_high_slope": 0.1818,
+          "kendall_tau": -0.2462,
+          "p_value": 0.0875
+        },
+        "q_value_bh": 0.0968
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 1.0,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0588,
+          "theil_sen_high_slope": 0.0455,
+          "kendall_tau": -0.0192,
+          "p_value": 0.9016
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_361cdcf4b7e0",
+      "cell_hash": "361cdcf4b7e0",
+      "districts": [
+        "coxsbazar"
+      ],
+      "primary_district": "coxsbazar",
+      "r_clim_mm_day": 14.83,
+      "wet_season": {
+        "period_1_median_doy": 147.0,
+        "period_2_median_doy": 133.0,
+        "shift_days": -14.0,
+        "p_value": 0.0275,
+        "trend": {
+          "theil_sen_slope": -1.3875,
+          "theil_sen_intercept": 2931.0375,
+          "theil_sen_low_slope": -2.7273,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3049,
+          "p_value": 0.0334
+        },
+        "q_value_bh": 0.0393
+      },
+      "aman": {
+        "period_1_median_doy": 152.5,
+        "period_2_median_doy": 152.0,
+        "shift_days": -0.5,
+        "p_value": 0.953,
+        "censored_fraction": 0.68,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.0,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": 0.004,
+          "p_value": 0.9797
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_39ddec31d08f",
+      "cell_hash": "39ddec31d08f",
+      "districts": [
+        "chapainawabganj"
+      ],
+      "primary_district": "chapainawabganj",
+      "r_clim_mm_day": 3.52,
+      "wet_season": {
+        "period_1_median_doy": 134.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -6.5,
+        "p_value": 0.0863,
+        "trend": {
+          "theil_sen_slope": -0.4643,
+          "theil_sen_intercept": 1063.6071,
+          "theil_sen_low_slope": -1.3333,
+          "theil_sen_high_slope": 0.4,
+          "kendall_tau": -0.1916,
+          "p_value": 0.1824
+        },
+        "q_value_bh": 0.1003
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 166.0,
+        "shift_days": 11.5,
+        "p_value": 0.1557,
+        "censored_fraction": 0.16,
+        "trend": {
+          "theil_sen_slope": 0.5,
+          "theil_sen_intercept": -842.5,
+          "theil_sen_low_slope": -0.0,
+          "theil_sen_high_slope": 1.1,
+          "kendall_tau": 0.2458,
+          "p_value": 0.0911
+        },
+        "q_value_bh": 0.7785
+      }
+    },
+    {
+      "cell_id": "power_cell_402efe017c2b",
+      "cell_hash": "402efe017c2b",
+      "districts": [
+        "sirajganj",
+        "tangail"
+      ],
+      "primary_district": "sirajganj",
+      "r_clim_mm_day": 5.92,
+      "wet_season": {
+        "period_1_median_doy": 140.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -17.5,
+        "p_value": 0.0023,
+        "trend": {
+          "theil_sen_slope": -1.1847,
+          "theil_sen_intercept": 2509.7188,
+          "theil_sen_low_slope": -2.3125,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3272,
+          "p_value": 0.0232
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.9106,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1111,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0331,
+          "p_value": 0.8278
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_43b04887b564",
+      "cell_hash": "43b04887b564",
+      "districts": [
+        "bogura"
+      ],
+      "primary_district": "bogura",
+      "r_clim_mm_day": 5.11,
+      "wet_season": {
+        "period_1_median_doy": 138.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -16.5,
+        "p_value": 0.0256,
+        "trend": {
+          "theil_sen_slope": -1.0,
+          "theil_sen_intercept": 2136.0,
+          "theil_sen_low_slope": -2.4286,
+          "theil_sen_high_slope": 0.0588,
+          "kendall_tau": -0.2483,
+          "p_value": 0.0836
+        },
+        "q_value_bh": 0.0388
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.8463,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1875,
+          "theil_sen_high_slope": 0.1,
+          "kendall_tau": -0.0713,
+          "p_value": 0.6334
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_556c55cb209a",
+      "cell_hash": "556c55cb209a",
+      "districts": [
+        "feni"
+      ],
+      "primary_district": "feni",
+      "r_clim_mm_day": 7.9,
+      "wet_season": {
+        "period_1_median_doy": 141.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -13.5,
+        "p_value": 0.0315,
+        "trend": {
+          "theil_sen_slope": -1.3604,
+          "theil_sen_intercept": 2871.4643,
+          "theil_sen_low_slope": -2.4286,
+          "theil_sen_high_slope": -0.0909,
+          "kendall_tau": -0.3126,
+          "p_value": 0.0296
+        },
+        "q_value_bh": 0.0426
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.5829,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.125,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1229,
+          "p_value": 0.4252
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_59cca020e08e",
+      "cell_hash": "59cca020e08e",
+      "districts": [
+        "cumilla"
+      ],
+      "primary_district": "cumilla",
+      "r_clim_mm_day": 6.72,
+      "wet_season": {
+        "period_1_median_doy": 132.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -10.0,
+        "p_value": 0.0963,
+        "trend": {
+          "theil_sen_slope": -1.0917,
+          "theil_sen_intercept": 2319.525,
+          "theil_sen_low_slope": -2.5714,
+          "theil_sen_high_slope": 0.1739,
+          "kendall_tau": -0.2471,
+          "p_value": 0.0872
+        },
+        "q_value_bh": 0.1094
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.7972,
+        "censored_fraction": 0.6,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0909,
+          "theil_sen_high_slope": 0.0526,
+          "kendall_tau": -0.0379,
+          "p_value": 0.8055
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_60c4dddce18e",
+      "cell_hash": "60c4dddce18e",
+      "districts": [
+        "barguna"
+      ],
+      "primary_district": "barguna",
+      "r_clim_mm_day": 8.14,
+      "wet_season": {
+        "period_1_median_doy": 164.0,
+        "period_2_median_doy": 133.0,
+        "shift_days": -31.0,
+        "p_value": 0.0027,
+        "trend": {
+          "theil_sen_slope": -1.5524,
+          "theil_sen_intercept": 3267.9429,
+          "theil_sen_low_slope": -2.625,
+          "theil_sen_high_slope": -0.2222,
+          "kendall_tau": -0.3474,
+          "p_value": 0.0159
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -5.0,
+        "p_value": 0.0155,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.2,
+          "theil_sen_intercept": 557.6,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.329,
+          "p_value": 0.0292
+        },
+        "q_value_bh": 0.3425
+      }
+    },
+    {
+      "cell_id": "power_cell_6f7816b92dec",
+      "cell_hash": "6f7816b92dec",
+      "districts": [
+        "satkhira"
+      ],
+      "primary_district": "satkhira",
+      "r_clim_mm_day": 5.56,
+      "wet_season": {
+        "period_1_median_doy": 160.5,
+        "period_2_median_doy": 126.0,
+        "shift_days": -34.5,
+        "p_value": 0.0042,
+        "trend": {
+          "theil_sen_slope": -1.6375,
+          "theil_sen_intercept": 3439.2875,
+          "theil_sen_low_slope": -2.9375,
+          "theil_sen_high_slope": -0.1429,
+          "kendall_tau": -0.3474,
+          "p_value": 0.0159
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 157.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -4.5,
+        "p_value": 0.2474,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.4615,
+          "theil_sen_high_slope": 0.375,
+          "kendall_tau": -0.091,
+          "p_value": 0.5379
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_75c6828649b1",
+      "cell_hash": "75c6828649b1",
+      "districts": [
+        "rangamati"
+      ],
+      "primary_district": "rangamati",
+      "r_clim_mm_day": 8.65,
+      "wet_season": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 133.0,
+        "shift_days": -20.5,
+        "p_value": 0.0192,
+        "trend": {
+          "theil_sen_slope": -1.5941,
+          "theil_sen_intercept": 3347.9588,
+          "theil_sen_low_slope": -2.8947,
+          "theil_sen_high_slope": -0.4,
+          "kendall_tau": -0.3462,
+          "p_value": 0.016
+        },
+        "q_value_bh": 0.0343
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.5,
+        "p_value": 0.1139,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0557,
+          "theil_sen_intercept": 265.1796,
+          "theil_sen_low_slope": -0.3333,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2407,
+          "p_value": 0.1138
+        },
+        "q_value_bh": 0.6328
+      }
+    },
+    {
+      "cell_id": "power_cell_7a1c3ca39222",
+      "cell_hash": "7a1c3ca39222",
+      "districts": [
+        "jashore",
+        "narail"
+      ],
+      "primary_district": "jashore",
+      "r_clim_mm_day": 5.06,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.0089,
+        "trend": {
+          "theil_sen_slope": -1.6471,
+          "theil_sen_intercept": 3441.5294,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.4167,
+          "kendall_tau": -0.4136,
+          "p_value": 0.0043
+        },
+        "q_value_bh": 0.0234
+      },
+      "aman": {
+        "period_1_median_doy": 157.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -4.5,
+        "p_value": 0.2592,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0909,
+          "theil_sen_intercept": 339.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.1219,
+          "p_value": 0.4073
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_85f9ac7e8a73",
+      "cell_hash": "85f9ac7e8a73",
+      "districts": [
+        "lakshmipur"
+      ],
+      "primary_district": "lakshmipur",
+      "r_clim_mm_day": 6.96,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -20.5,
+        "p_value": 0.0143,
+        "trend": {
+          "theil_sen_slope": -1.5489,
+          "theil_sen_intercept": 3252.8797,
+          "theil_sen_low_slope": -2.8333,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3411,
+          "p_value": 0.0171
+        },
+        "q_value_bh": 0.0275
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3515,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2667,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1222,
+          "p_value": 0.4221
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_8c92a0675c92",
+      "cell_hash": "8c92a0675c92",
+      "districts": [
+        "kishoreganj",
+        "mymensingh"
+      ],
+      "primary_district": "kishoreganj",
+      "r_clim_mm_day": 7.15,
+      "wet_season": {
+        "period_1_median_doy": 125.0,
+        "period_2_median_doy": 116.0,
+        "shift_days": -9.0,
+        "p_value": 0.1208,
+        "trend": {
+          "theil_sen_slope": -0.5,
+          "theil_sen_intercept": 1123.5,
+          "theil_sen_low_slope": -1.8,
+          "theil_sen_high_slope": 1.0,
+          "kendall_tau": -0.094,
+          "p_value": 0.5127
+        },
+        "q_value_bh": 0.1285
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.862,
+        "censored_fraction": 0.68,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0667,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.0542,
+          "p_value": 0.7265
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_93124bc588da",
+      "cell_hash": "93124bc588da",
+      "districts": [
+        "habiganj"
+      ],
+      "primary_district": "habiganj",
+      "r_clim_mm_day": 8.46,
+      "wet_season": {
+        "period_1_median_doy": 119.0,
+        "period_2_median_doy": 105.0,
+        "shift_days": -14.0,
+        "p_value": 0.1083,
+        "trend": {
+          "theil_sen_slope": -1.0,
+          "theil_sen_intercept": 2129.0,
+          "theil_sen_low_slope": -2.1818,
+          "theil_sen_high_slope": 0.1818,
+          "kendall_tau": -0.2245,
+          "p_value": 0.1173
+        },
+        "q_value_bh": 0.1203
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.3925,
+        "censored_fraction": 0.72,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.1,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1797,
+          "p_value": 0.2522
+        },
+        "q_value_bh": 0.892
+      }
+    },
+    {
+      "cell_id": "power_cell_9895f24cae87",
+      "cell_hash": "9895f24cae87",
+      "districts": [
+        "lalmonirhat",
+        "kurigram"
+      ],
+      "primary_district": "lalmonirhat",
+      "r_clim_mm_day": 6.12,
+      "wet_season": {
+        "period_1_median_doy": 135.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -13.0,
+        "p_value": 0.05,
+        "trend": {
+          "theil_sen_slope": -1.4495,
+          "theil_sen_intercept": 3041.8333,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.0556,
+          "kendall_tau": -0.302,
+          "p_value": 0.0353
+        },
+        "q_value_bh": 0.0641
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 155.0,
+        "shift_days": 2.0,
+        "p_value": 0.8678,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2941,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0972,
+          "p_value": 0.5189
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_9a117ca2d8f9",
+      "cell_hash": "9a117ca2d8f9",
+      "districts": [
+        "brahmanbaria"
+      ],
+      "primary_district": "brahmanbaria",
+      "r_clim_mm_day": 6.44,
+      "wet_season": {
+        "period_1_median_doy": 120.0,
+        "period_2_median_doy": 116.0,
+        "shift_days": -4.0,
+        "p_value": 0.2638,
+        "trend": {
+          "theil_sen_slope": -0.3944,
+          "theil_sen_intercept": 911.0167,
+          "theil_sen_low_slope": -1.7333,
+          "theil_sen_high_slope": 0.7143,
+          "kendall_tau": -0.1117,
+          "p_value": 0.4396
+        },
+        "q_value_bh": 0.2692
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.8408,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0833,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.0772,
+          "p_value": 0.6205
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_9dbf3033f2ec",
+      "cell_hash": "9dbf3033f2ec",
+      "districts": [
+        "panchagarh"
+      ],
+      "primary_district": "panchagarh",
+      "r_clim_mm_day": 6.08,
+      "wet_season": {
+        "period_1_median_doy": 149.0,
+        "period_2_median_doy": 124.0,
+        "shift_days": -25.0,
+        "p_value": 0.0008,
+        "trend": {
+          "theil_sen_slope": -2.4965,
+          "theil_sen_intercept": 5163.4368,
+          "theil_sen_low_slope": -3.4545,
+          "theil_sen_high_slope": -1.2941,
+          "kendall_tau": -0.5819,
+          "p_value": 0.0
+        },
+        "q_value_bh": 0.0112
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 155.0,
+        "shift_days": 0.5,
+        "p_value": 0.4557,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1111,
+          "theil_sen_intercept": 378.6667,
+          "theil_sen_low_slope": -0.5333,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2376,
+          "p_value": 0.111
+        },
+        "q_value_bh": 0.9263
+      }
+    },
+    {
+      "cell_id": "power_cell_9ecc7e671c46",
+      "cell_hash": "9ecc7e671c46",
+      "districts": [
+        "sherpur"
+      ],
+      "primary_district": "sherpur",
+      "r_clim_mm_day": 6.23,
+      "wet_season": {
+        "period_1_median_doy": 138.5,
+        "period_2_median_doy": 116.0,
+        "shift_days": -22.5,
+        "p_value": 0.006,
+        "trend": {
+          "theil_sen_slope": -1.1603,
+          "theil_sen_intercept": 2459.5962,
+          "theil_sen_low_slope": -2.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2781,
+          "p_value": 0.0524
+        },
+        "q_value_bh": 0.0187
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.9556,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1429,
+          "theil_sen_high_slope": 0.0909,
+          "kendall_tau": -0.0652,
+          "p_value": 0.6661
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_afdf353b0768",
+      "cell_hash": "afdf353b0768",
+      "districts": [
+        "rajshahi"
+      ],
+      "primary_district": "rajshahi",
+      "r_clim_mm_day": 3.97,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -21.5,
+        "p_value": 0.0038,
+        "trend": {
+          "theil_sen_slope": -1.0871,
+          "theil_sen_intercept": 2318.375,
+          "theil_sen_low_slope": -2.4,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2983,
+          "p_value": 0.0392
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 158.0,
+        "shift_days": 3.5,
+        "p_value": 0.9344,
+        "censored_fraction": 0.24,
+        "trend": {
+          "theil_sen_slope": 0.125,
+          "theil_sen_intercept": -94.625,
+          "theil_sen_low_slope": -0.2143,
+          "theil_sen_high_slope": 0.5,
+          "kendall_tau": 0.1279,
+          "p_value": 0.3829
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_b6d56f7d1c70",
+      "cell_hash": "b6d56f7d1c70",
+      "districts": [
+        "patuakhali",
+        "barisal",
+        "bhola"
+      ],
+      "primary_district": "patuakhali",
+      "r_clim_mm_day": 8.15,
+      "wet_season": {
+        "period_1_median_doy": 151.0,
+        "period_2_median_doy": 128.0,
+        "shift_days": -23.0,
+        "p_value": 0.0039,
+        "trend": {
+          "theil_sen_slope": -1.5774,
+          "theil_sen_intercept": 3317.2679,
+          "theil_sen_low_slope": -2.8571,
+          "theil_sen_high_slope": -0.5556,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -5.0,
+        "p_value": 0.0274,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.1938,
+          "theil_sen_intercept": 544.0187,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3145,
+          "p_value": 0.0365
+        },
+        "q_value_bh": 0.3425
+      }
+    },
+    {
+      "cell_id": "power_cell_b98ee05d09ba",
+      "cell_hash": "b98ee05d09ba",
+      "districts": [
+        "jhalakathi"
+      ],
+      "primary_district": "jhalakathi",
+      "r_clim_mm_day": 6.66,
+      "wet_season": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -34.0,
+        "p_value": 0.0008,
+        "trend": {
+          "theil_sen_slope": -1.8918,
+          "theil_sen_intercept": 3951.2193,
+          "theil_sen_low_slope": -3.0833,
+          "theil_sen_high_slope": -0.5882,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        },
+        "q_value_bh": 0.0112
+      },
+      "aman": {
+        "period_1_median_doy": 158.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -5.0,
+        "p_value": 0.0217,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1909,
+          "theil_sen_intercept": 539.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2854,
+          "p_value": 0.0567
+        },
+        "q_value_bh": 0.3425
+      }
+    },
+    {
+      "cell_id": "power_cell_ba550a6185d6",
+      "cell_hash": "ba550a6185d6",
+      "districts": [
+        "naogaon"
+      ],
+      "primary_district": "naogaon",
+      "r_clim_mm_day": 4.14,
+      "wet_season": {
+        "period_1_median_doy": 141.0,
+        "period_2_median_doy": 127.0,
+        "shift_days": -14.0,
+        "p_value": 0.0133,
+        "trend": {
+          "theil_sen_slope": -0.9057,
+          "theil_sen_intercept": 1953.1776,
+          "theil_sen_low_slope": -2.2143,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.2513,
+          "p_value": 0.0796
+        },
+        "q_value_bh": 0.0275
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 156.0,
+        "shift_days": 0.5,
+        "p_value": 0.642,
+        "censored_fraction": 0.28,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.375,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": 0.0172,
+          "p_value": 0.9064
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_bd3a9de1f9c8",
+      "cell_hash": "bd3a9de1f9c8",
+      "districts": [
+        "natore"
+      ],
+      "primary_district": "natore",
+      "r_clim_mm_day": 3.97,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -21.5,
+        "p_value": 0.0038,
+        "trend": {
+          "theil_sen_slope": -1.0871,
+          "theil_sen_intercept": 2318.375,
+          "theil_sen_low_slope": -2.4,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2983,
+          "p_value": 0.0392
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 158.0,
+        "shift_days": 3.5,
+        "p_value": 0.9344,
+        "censored_fraction": 0.24,
+        "trend": {
+          "theil_sen_slope": 0.125,
+          "theil_sen_intercept": -94.625,
+          "theil_sen_low_slope": -0.2143,
+          "theil_sen_high_slope": 0.5,
+          "kendall_tau": 0.1279,
+          "p_value": 0.3829
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_c1cd63c47160",
+      "cell_hash": "c1cd63c47160",
+      "districts": [
+        "gopalganj"
+      ],
+      "primary_district": "gopalganj",
+      "r_clim_mm_day": 5.88,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.003,
+        "trend": {
+          "theil_sen_slope": -1.7321,
+          "theil_sen_intercept": 3621.6316,
+          "theil_sen_low_slope": -2.8095,
+          "theil_sen_high_slope": -0.6667,
+          "kendall_tau": -0.4486,
+          "p_value": 0.0019
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 156.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -3.5,
+        "p_value": 0.0633,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.0839,
+          "theil_sen_intercept": 323.9231,
+          "theil_sen_low_slope": -0.4286,
+          "theil_sen_high_slope": 0.0526,
+          "kendall_tau": -0.1602,
+          "p_value": 0.2829
+        },
+        "q_value_bh": 0.4521
+      }
+    },
+    {
+      "cell_id": "power_cell_c72de76997e2",
+      "cell_hash": "c72de76997e2",
+      "districts": [
+        "dinajpur"
+      ],
+      "primary_district": "dinajpur",
+      "r_clim_mm_day": 4.77,
+      "wet_season": {
+        "period_1_median_doy": 143.0,
+        "period_2_median_doy": 124.0,
+        "shift_days": -19.0,
+        "p_value": 0.0009,
+        "trend": {
+          "theil_sen_slope": -1.6235,
+          "theil_sen_intercept": 3406.0688,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.5,
+          "kendall_tau": -0.4553,
+          "p_value": 0.0016
+        },
+        "q_value_bh": 0.0112
+      },
+      "aman": {
+        "period_1_median_doy": 155.0,
+        "period_2_median_doy": 156.0,
+        "shift_days": 1.0,
+        "p_value": 0.9561,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.2632,
+          "theil_sen_high_slope": 0.25,
+          "kendall_tau": 0.0105,
+          "p_value": 0.9434
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_c76942a529ec",
+      "cell_hash": "c76942a529ec",
+      "districts": [
+        "sunamganj"
+      ],
+      "primary_district": "sunamganj",
+      "r_clim_mm_day": 10.48,
+      "wet_season": {
+        "period_1_median_doy": 114.5,
+        "period_2_median_doy": 105.0,
+        "shift_days": -9.5,
+        "p_value": 0.1417,
+        "trend": {
+          "theil_sen_slope": -0.7947,
+          "theil_sen_intercept": 1712.8053,
+          "theil_sen_low_slope": -2.0625,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": -0.1709,
+          "p_value": 0.2332
+        },
+        "q_value_bh": 0.1476
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.4794,
+        "censored_fraction": 0.72,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.0769,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1514,
+          "p_value": 0.3338
+        },
+        "q_value_bh": 0.9263
+      }
+    },
+    {
+      "cell_id": "power_cell_c90f0b18adac",
+      "cell_hash": "c90f0b18adac",
+      "districts": [
+        "thakurgaon"
+      ],
+      "primary_district": "thakurgaon",
+      "r_clim_mm_day": 5.68,
+      "wet_season": {
+        "period_1_median_doy": 145.0,
+        "period_2_median_doy": 130.0,
+        "shift_days": -15.0,
+        "p_value": 0.0036,
+        "trend": {
+          "theil_sen_slope": -1.5,
+          "theil_sen_intercept": 3157.5,
+          "theil_sen_low_slope": -2.6,
+          "theil_sen_high_slope": -0.6154,
+          "kendall_tau": -0.4538,
+          "p_value": 0.0016
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3055,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1,
+          "theil_sen_intercept": 354.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2568,
+          "p_value": 0.086
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_cd7c0a13c605",
+      "cell_hash": "cd7c0a13c605",
+      "districts": [
+        "joypurhat"
+      ],
+      "primary_district": "joypurhat",
+      "r_clim_mm_day": 4.14,
+      "wet_season": {
+        "period_1_median_doy": 141.0,
+        "period_2_median_doy": 127.0,
+        "shift_days": -14.0,
+        "p_value": 0.0133,
+        "trend": {
+          "theil_sen_slope": -0.9057,
+          "theil_sen_intercept": 1953.1776,
+          "theil_sen_low_slope": -2.2143,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.2513,
+          "p_value": 0.0796
+        },
+        "q_value_bh": 0.0275
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 156.0,
+        "shift_days": 0.5,
+        "p_value": 0.642,
+        "censored_fraction": 0.28,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.375,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": 0.0172,
+          "p_value": 0.9064
+        },
+        "q_value_bh": 1.0
+      }
+    },
+    {
+      "cell_id": "power_cell_cf7ff90946da",
+      "cell_hash": "cf7ff90946da",
+      "districts": [
+        "chuadanga"
+      ],
+      "primary_district": "chuadanga",
       "r_clim_mm_day": 4.13,
       "wet_season": {
         "period_1_median_doy": 144.0,
@@ -845,7 +1680,7 @@
           "kendall_tau": -0.4798,
           "p_value": 0.0009
         },
-        "q_value_bh": 0.0195
+        "q_value_bh": 0.0188
       },
       "aman": {
         "period_1_median_doy": 164.0,
@@ -865,440 +1700,214 @@
       }
     },
     {
-      "district": "kushtia",
-      "district_name": "Kushtia",
-      "r_clim_mm_day": 4.78,
+      "cell_id": "power_cell_d737219606d6",
+      "cell_hash": "d737219606d6",
+      "districts": [
+        "gaibandha",
+        "rangpur"
+      ],
+      "primary_district": "gaibandha",
+      "r_clim_mm_day": 5.59,
       "wet_season": {
-        "period_1_median_doy": 149.0,
-        "period_2_median_doy": 123.0,
-        "shift_days": -26.0,
-        "p_value": 0.0274,
+        "period_1_median_doy": 135.5,
+        "period_2_median_doy": 116.0,
+        "shift_days": -19.5,
+        "p_value": 0.0207,
         "trend": {
-          "theil_sen_slope": -1.4048,
-          "theil_sen_intercept": 2953.7857,
-          "theil_sen_low_slope": -2.75,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.28,
-          "p_value": 0.0521
+          "theil_sen_slope": -1.3333,
+          "theil_sen_intercept": 2807.0,
+          "theil_sen_low_slope": -2.6471,
+          "theil_sen_high_slope": -0.0556,
+          "kendall_tau": -0.2982,
+          "p_value": 0.0375
         },
-        "q_value_bh": 0.0374
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": -0.5,
-        "p_value": 0.3466,
-        "censored_fraction": 0.36,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": 0.1111,
-          "kendall_tau": -0.0991,
-          "p_value": 0.5047
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "magura",
-      "district_name": "Magura",
-      "r_clim_mm_day": 4.78,
-      "wet_season": {
-        "period_1_median_doy": 144.0,
-        "period_2_median_doy": 122.0,
-        "shift_days": -22.0,
-        "p_value": 0.0122,
-        "trend": {
-          "theil_sen_slope": -2.0,
-          "theil_sen_intercept": 4152.0,
-          "theil_sen_low_slope": -3.0588,
-          "theil_sen_high_slope": -0.8,
-          "kendall_tau": -0.4135,
-          "p_value": 0.004
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 155.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": -1.5,
-        "p_value": 0.2155,
-        "censored_fraction": 0.36,
-        "trend": {
-          "theil_sen_slope": -0.0718,
-          "theil_sen_intercept": 299.5231,
-          "theil_sen_low_slope": -0.4167,
-          "theil_sen_high_slope": 0.1429,
-          "kendall_tau": -0.1116,
-          "p_value": 0.4486
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "khulna",
-      "district_name": "Khulna",
-      "r_clim_mm_day": 5.06,
-      "wet_season": {
-        "period_1_median_doy": 144.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -22.5,
-        "p_value": 0.0089,
-        "trend": {
-          "theil_sen_slope": -1.6471,
-          "theil_sen_intercept": 3441.5294,
-          "theil_sen_low_slope": -2.6667,
-          "theil_sen_high_slope": -0.4167,
-          "kendall_tau": -0.4136,
-          "p_value": 0.0043
-        },
-        "q_value_bh": 0.0237
-      },
-      "aman": {
-        "period_1_median_doy": 157.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -4.5,
-        "p_value": 0.2592,
-        "censored_fraction": 0.4,
-        "trend": {
-          "theil_sen_slope": -0.0909,
-          "theil_sen_intercept": 339.0,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": 0.1667,
-          "kendall_tau": -0.1219,
-          "p_value": 0.4073
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "bagerhat",
-      "district_name": "Bagerhat",
-      "r_clim_mm_day": 6.66,
-      "wet_season": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 123.0,
-        "shift_days": -34.0,
-        "p_value": 0.0008,
-        "trend": {
-          "theil_sen_slope": -1.8918,
-          "theil_sen_intercept": 3951.2193,
-          "theil_sen_low_slope": -3.0833,
-          "theil_sen_high_slope": -0.5882,
-          "kendall_tau": -0.3933,
-          "p_value": 0.0062
-        },
-        "q_value_bh": 0.0115
-      },
-      "aman": {
-        "period_1_median_doy": 158.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": -5.0,
-        "p_value": 0.0217,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.1909,
-          "theil_sen_intercept": 539.3,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2854,
-          "p_value": 0.0567
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "jhenaidah",
-      "district_name": "Jhenaidah",
-      "r_clim_mm_day": 4.78,
-      "wet_season": {
-        "period_1_median_doy": 144.0,
-        "period_2_median_doy": 122.0,
-        "shift_days": -22.0,
-        "p_value": 0.0122,
-        "trend": {
-          "theil_sen_slope": -2.0,
-          "theil_sen_intercept": 4152.0,
-          "theil_sen_low_slope": -3.0588,
-          "theil_sen_high_slope": -0.8,
-          "kendall_tau": -0.4135,
-          "p_value": 0.004
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 155.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": -1.5,
-        "p_value": 0.2155,
-        "censored_fraction": 0.36,
-        "trend": {
-          "theil_sen_slope": -0.0718,
-          "theil_sen_intercept": 299.5231,
-          "theil_sen_low_slope": -0.4167,
-          "theil_sen_high_slope": 0.1429,
-          "kendall_tau": -0.1116,
-          "p_value": 0.4486
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "jhalakathi",
-      "district_name": "Jhalakathi",
-      "r_clim_mm_day": 6.66,
-      "wet_season": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 123.0,
-        "shift_days": -34.0,
-        "p_value": 0.0008,
-        "trend": {
-          "theil_sen_slope": -1.8918,
-          "theil_sen_intercept": 3951.2193,
-          "theil_sen_low_slope": -3.0833,
-          "theil_sen_high_slope": -0.5882,
-          "kendall_tau": -0.3933,
-          "p_value": 0.0062
-        },
-        "q_value_bh": 0.0115
-      },
-      "aman": {
-        "period_1_median_doy": 158.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": -5.0,
-        "p_value": 0.0217,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.1909,
-          "theil_sen_intercept": 539.3,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2854,
-          "p_value": 0.0567
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "patuakhali",
-      "district_name": "Patuakhali",
-      "r_clim_mm_day": 8.15,
-      "wet_season": {
-        "period_1_median_doy": 151.0,
-        "period_2_median_doy": 128.0,
-        "shift_days": -23.0,
-        "p_value": 0.0039,
-        "trend": {
-          "theil_sen_slope": -1.5774,
-          "theil_sen_intercept": 3317.2679,
-          "theil_sen_low_slope": -2.8571,
-          "theil_sen_high_slope": -0.5556,
-          "kendall_tau": -0.3933,
-          "p_value": 0.0062
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -5.0,
-        "p_value": 0.0274,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.1938,
-          "theil_sen_intercept": 544.0187,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.3145,
-          "p_value": 0.0365
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "pirojpur",
-      "district_name": "Pirojpur",
-      "r_clim_mm_day": 6.66,
-      "wet_season": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 123.0,
-        "shift_days": -34.0,
-        "p_value": 0.0008,
-        "trend": {
-          "theil_sen_slope": -1.8918,
-          "theil_sen_intercept": 3951.2193,
-          "theil_sen_low_slope": -3.0833,
-          "theil_sen_high_slope": -0.5882,
-          "kendall_tau": -0.3933,
-          "p_value": 0.0062
-        },
-        "q_value_bh": 0.0115
-      },
-      "aman": {
-        "period_1_median_doy": 158.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": -5.0,
-        "p_value": 0.0217,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.1909,
-          "theil_sen_intercept": 539.3,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2854,
-          "p_value": 0.0567
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "barisal",
-      "district_name": "Barisal",
-      "r_clim_mm_day": 8.15,
-      "wet_season": {
-        "period_1_median_doy": 151.0,
-        "period_2_median_doy": 128.0,
-        "shift_days": -23.0,
-        "p_value": 0.0039,
-        "trend": {
-          "theil_sen_slope": -1.5774,
-          "theil_sen_intercept": 3317.2679,
-          "theil_sen_low_slope": -2.8571,
-          "theil_sen_high_slope": -0.5556,
-          "kendall_tau": -0.3933,
-          "p_value": 0.0062
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -5.0,
-        "p_value": 0.0274,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.1938,
-          "theil_sen_intercept": 544.0187,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.3145,
-          "p_value": 0.0365
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "bhola",
-      "district_name": "Bhola",
-      "r_clim_mm_day": 8.15,
-      "wet_season": {
-        "period_1_median_doy": 151.0,
-        "period_2_median_doy": 128.0,
-        "shift_days": -23.0,
-        "p_value": 0.0039,
-        "trend": {
-          "theil_sen_slope": -1.5774,
-          "theil_sen_intercept": 3317.2679,
-          "theil_sen_low_slope": -2.8571,
-          "theil_sen_high_slope": -0.5556,
-          "kendall_tau": -0.3933,
-          "p_value": 0.0062
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -5.0,
-        "p_value": 0.0274,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.1938,
-          "theil_sen_intercept": 544.0187,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.3145,
-          "p_value": 0.0365
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "barguna",
-      "district_name": "Barguna",
-      "r_clim_mm_day": 8.14,
-      "wet_season": {
-        "period_1_median_doy": 164.0,
-        "period_2_median_doy": 133.0,
-        "shift_days": -31.0,
-        "p_value": 0.0027,
-        "trend": {
-          "theil_sen_slope": -1.5524,
-          "theil_sen_intercept": 3267.9429,
-          "theil_sen_low_slope": -2.625,
-          "theil_sen_high_slope": -0.2222,
-          "kendall_tau": -0.3474,
-          "p_value": 0.0159
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 157.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -5.0,
-        "p_value": 0.0155,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.2,
-          "theil_sen_intercept": 557.6,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.329,
-          "p_value": 0.0292
-        },
-        "q_value_bh": 0.2505
-      }
-    },
-    {
-      "district": "sylhet",
-      "district_name": "Sylhet",
-      "r_clim_mm_day": 10.83,
-      "wet_season": {
-        "period_1_median_doy": 114.5,
-        "period_2_median_doy": 105.0,
-        "shift_days": -9.5,
-        "p_value": 0.1207,
-        "trend": {
-          "theil_sen_slope": -0.7596,
-          "theil_sen_intercept": 1637.1058,
-          "theil_sen_low_slope": -2.0769,
-          "theil_sen_high_slope": 0.3846,
-          "kendall_tau": -0.1916,
-          "p_value": 0.1825
-        },
-        "q_value_bh": 0.1267
+        "q_value_bh": 0.0345
       },
       "aman": {
         "period_1_median_doy": 153.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.0,
-        "p_value": 0.4794,
-        "censored_fraction": 0.72,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.8018,
+        "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 152.0,
-          "theil_sen_low_slope": -0.0769,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1514,
-          "p_value": 0.3338
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1875,
+          "theil_sen_high_slope": 0.0556,
+          "kendall_tau": -0.088,
+          "p_value": 0.5641
         },
-        "q_value_bh": 0.9067
+        "q_value_bh": 1.0
       }
     },
     {
-      "district": "moulvibazar",
-      "district_name": "Moulvibazar",
+      "cell_id": "power_cell_d9d61b725cba",
+      "cell_hash": "d9d61b725cba",
+      "districts": [
+        "faridpur"
+      ],
+      "primary_district": "faridpur",
+      "r_clim_mm_day": 5.53,
+      "wet_season": {
+        "period_1_median_doy": 142.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -20.5,
+        "p_value": 0.0254,
+        "trend": {
+          "theil_sen_slope": -1.25,
+          "theil_sen_intercept": 2643.25,
+          "theil_sen_low_slope": -2.4737,
+          "theil_sen_high_slope": -0.0625,
+          "kendall_tau": -0.3176,
+          "p_value": 0.0277
+        },
+        "q_value_bh": 0.0388
+      },
+      "aman": {
+        "period_1_median_doy": 154.0,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.0,
+        "p_value": 0.2299,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.3333,
+          "theil_sen_high_slope": 0.1111,
+          "kendall_tau": -0.0832,
+          "p_value": 0.5802
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_e443d37eec6f",
+      "cell_hash": "e443d37eec6f",
+      "districts": [
+        "magura",
+        "jhenaidah"
+      ],
+      "primary_district": "magura",
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 144.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.0,
+        "p_value": 0.0122,
+        "trend": {
+          "theil_sen_slope": -2.0,
+          "theil_sen_intercept": 4152.0,
+          "theil_sen_low_slope": -3.0588,
+          "theil_sen_high_slope": -0.8,
+          "kendall_tau": -0.4135,
+          "p_value": 0.004
+        },
+        "q_value_bh": 0.0275
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -1.5,
+        "p_value": 0.2155,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0718,
+          "theil_sen_intercept": 299.5231,
+          "theil_sen_low_slope": -0.4167,
+          "theil_sen_high_slope": 0.1429,
+          "kendall_tau": -0.1116,
+          "p_value": 0.4486
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_e88a8a0ab3ff",
+      "cell_hash": "e88a8a0ab3ff",
+      "districts": [
+        "bandarban"
+      ],
+      "primary_district": "bandarban",
+      "r_clim_mm_day": 8.21,
+      "wet_season": {
+        "period_1_median_doy": 152.5,
+        "period_2_median_doy": 136.0,
+        "shift_days": -16.5,
+        "p_value": 0.0207,
+        "trend": {
+          "theil_sen_slope": -1.8,
+          "theil_sen_intercept": 3765.4,
+          "theil_sen_low_slope": -3.2,
+          "theil_sen_high_slope": -0.3333,
+          "kendall_tau": -0.3518,
+          "p_value": 0.0141
+        },
+        "q_value_bh": 0.0345
+      },
+      "aman": {
+        "period_1_median_doy": 156.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -3.0,
+        "p_value": 0.0349,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.2361,
+          "theil_sen_intercept": 629.2917,
+          "theil_sen_low_slope": -0.75,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3767,
+          "p_value": 0.0121
+        },
+        "q_value_bh": 0.349
+      }
+    },
+    {
+      "cell_id": "power_cell_e8903a1b3dd1",
+      "cell_hash": "e8903a1b3dd1",
+      "districts": [
+        "nilphamari"
+      ],
+      "primary_district": "nilphamari",
+      "r_clim_mm_day": 5.68,
+      "wet_season": {
+        "period_1_median_doy": 145.0,
+        "period_2_median_doy": 130.0,
+        "shift_days": -15.0,
+        "p_value": 0.0036,
+        "trend": {
+          "theil_sen_slope": -1.5,
+          "theil_sen_intercept": 3157.5,
+          "theil_sen_low_slope": -2.6,
+          "theil_sen_high_slope": -0.6154,
+          "kendall_tau": -0.4538,
+          "p_value": 0.0016
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3055,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1,
+          "theil_sen_intercept": 354.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2568,
+          "p_value": 0.086
+        },
+        "q_value_bh": 0.8593
+      }
+    },
+    {
+      "cell_id": "power_cell_ea2cbef0efdb",
+      "cell_hash": "ea2cbef0efdb",
+      "districts": [
+        "moulvibazar"
+      ],
+      "primary_district": "moulvibazar",
       "r_clim_mm_day": 8.66,
       "wet_season": {
         "period_1_median_doy": 113.0,
@@ -1329,162 +1938,399 @@
           "kendall_tau": -0.1833,
           "p_value": 0.242
         },
-        "q_value_bh": 0.7965
+        "q_value_bh": 0.8593
       }
     },
     {
-      "district": "habiganj",
-      "district_name": "Habiganj",
-      "r_clim_mm_day": 8.46,
+      "cell_id": "power_cell_efdb05e78276",
+      "cell_hash": "efdb05e78276",
+      "districts": [
+        "madaripur"
+      ],
+      "primary_district": "madaripur",
+      "r_clim_mm_day": 5.88,
       "wet_season": {
-        "period_1_median_doy": 119.0,
-        "period_2_median_doy": 105.0,
-        "shift_days": -14.0,
-        "p_value": 0.1083,
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.003,
+        "trend": {
+          "theil_sen_slope": -1.7321,
+          "theil_sen_intercept": 3621.6316,
+          "theil_sen_low_slope": -2.8095,
+          "theil_sen_high_slope": -0.6667,
+          "kendall_tau": -0.4486,
+          "p_value": 0.0019
+        },
+        "q_value_bh": 0.015
+      },
+      "aman": {
+        "period_1_median_doy": 156.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -3.5,
+        "p_value": 0.0633,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.0839,
+          "theil_sen_intercept": 323.9231,
+          "theil_sen_low_slope": -0.4286,
+          "theil_sen_high_slope": 0.0526,
+          "kendall_tau": -0.1602,
+          "p_value": 0.2829
+        },
+        "q_value_bh": 0.4521
+      }
+    },
+    {
+      "cell_id": "power_cell_f1a15c3a0925",
+      "cell_hash": "f1a15c3a0925",
+      "districts": [
+        "chattogram"
+      ],
+      "primary_district": "chattogram",
+      "r_clim_mm_day": 8.65,
+      "wet_season": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 133.0,
+        "shift_days": -20.5,
+        "p_value": 0.0192,
+        "trend": {
+          "theil_sen_slope": -1.5941,
+          "theil_sen_intercept": 3347.9588,
+          "theil_sen_low_slope": -2.8947,
+          "theil_sen_high_slope": -0.4,
+          "kendall_tau": -0.3462,
+          "p_value": 0.016
+        },
+        "q_value_bh": 0.0343
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.5,
+        "p_value": 0.1139,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0557,
+          "theil_sen_intercept": 265.1796,
+          "theil_sen_low_slope": -0.3333,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2407,
+          "p_value": 0.1138
+        },
+        "q_value_bh": 0.6328
+      }
+    }
+  ],
+  "districts": [
+    {
+      "district": "bagerhat",
+      "district_name": "Bagerhat",
+      "cell_id": "power_cell_1d6a3c4a287a",
+      "cell_hash": "1d6a3c4a287a",
+      "shared_districts": [
+        "bagerhat",
+        "pirojpur"
+      ],
+      "r_clim_mm_day": 6.66,
+      "wet_season": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -34.0,
+        "p_value": 0.0008,
+        "q_value_bh": 0.0112,
+        "trend": {
+          "theil_sen_slope": -1.8918,
+          "theil_sen_intercept": 3951.2193,
+          "theil_sen_low_slope": -3.0833,
+          "theil_sen_high_slope": -0.5882,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 158.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -5.0,
+        "p_value": 0.0217,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1909,
+          "theil_sen_intercept": 539.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2854,
+          "p_value": 0.0567
+        }
+      }
+    },
+    {
+      "district": "bandarban",
+      "district_name": "Bandarban",
+      "cell_id": "power_cell_e88a8a0ab3ff",
+      "cell_hash": "e88a8a0ab3ff",
+      "shared_districts": [
+        "bandarban"
+      ],
+      "r_clim_mm_day": 8.21,
+      "wet_season": {
+        "period_1_median_doy": 152.5,
+        "period_2_median_doy": 136.0,
+        "shift_days": -16.5,
+        "p_value": 0.0207,
+        "q_value_bh": 0.0345,
+        "trend": {
+          "theil_sen_slope": -1.8,
+          "theil_sen_intercept": 3765.4,
+          "theil_sen_low_slope": -3.2,
+          "theil_sen_high_slope": -0.3333,
+          "kendall_tau": -0.3518,
+          "p_value": 0.0141
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 156.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -3.0,
+        "p_value": 0.0349,
+        "q_value_bh": 0.349,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.2361,
+          "theil_sen_intercept": 629.2917,
+          "theil_sen_low_slope": -0.75,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3767,
+          "p_value": 0.0121
+        }
+      }
+    },
+    {
+      "district": "barguna",
+      "district_name": "Barguna",
+      "cell_id": "power_cell_60c4dddce18e",
+      "cell_hash": "60c4dddce18e",
+      "shared_districts": [
+        "barguna"
+      ],
+      "r_clim_mm_day": 8.14,
+      "wet_season": {
+        "period_1_median_doy": 164.0,
+        "period_2_median_doy": 133.0,
+        "shift_days": -31.0,
+        "p_value": 0.0027,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.5524,
+          "theil_sen_intercept": 3267.9429,
+          "theil_sen_low_slope": -2.625,
+          "theil_sen_high_slope": -0.2222,
+          "kendall_tau": -0.3474,
+          "p_value": 0.0159
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -5.0,
+        "p_value": 0.0155,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.2,
+          "theil_sen_intercept": 557.6,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.329,
+          "p_value": 0.0292
+        }
+      }
+    },
+    {
+      "district": "barisal",
+      "district_name": "Barisal",
+      "cell_id": "power_cell_b6d56f7d1c70",
+      "cell_hash": "b6d56f7d1c70",
+      "shared_districts": [
+        "patuakhali",
+        "barisal",
+        "bhola"
+      ],
+      "r_clim_mm_day": 8.15,
+      "wet_season": {
+        "period_1_median_doy": 151.0,
+        "period_2_median_doy": 128.0,
+        "shift_days": -23.0,
+        "p_value": 0.0039,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.5774,
+          "theil_sen_intercept": 3317.2679,
+          "theil_sen_low_slope": -2.8571,
+          "theil_sen_high_slope": -0.5556,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -5.0,
+        "p_value": 0.0274,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.1938,
+          "theil_sen_intercept": 544.0187,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3145,
+          "p_value": 0.0365
+        }
+      }
+    },
+    {
+      "district": "bhola",
+      "district_name": "Bhola",
+      "cell_id": "power_cell_b6d56f7d1c70",
+      "cell_hash": "b6d56f7d1c70",
+      "shared_districts": [
+        "patuakhali",
+        "barisal",
+        "bhola"
+      ],
+      "r_clim_mm_day": 8.15,
+      "wet_season": {
+        "period_1_median_doy": 151.0,
+        "period_2_median_doy": 128.0,
+        "shift_days": -23.0,
+        "p_value": 0.0039,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.5774,
+          "theil_sen_intercept": 3317.2679,
+          "theil_sen_low_slope": -2.8571,
+          "theil_sen_high_slope": -0.5556,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -5.0,
+        "p_value": 0.0274,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.1938,
+          "theil_sen_intercept": 544.0187,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3145,
+          "p_value": 0.0365
+        }
+      }
+    },
+    {
+      "district": "bogura",
+      "district_name": "Bogura",
+      "cell_id": "power_cell_43b04887b564",
+      "cell_hash": "43b04887b564",
+      "shared_districts": [
+        "bogura"
+      ],
+      "r_clim_mm_day": 5.11,
+      "wet_season": {
+        "period_1_median_doy": 138.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -16.5,
+        "p_value": 0.0256,
+        "q_value_bh": 0.0388,
         "trend": {
           "theil_sen_slope": -1.0,
-          "theil_sen_intercept": 2129.0,
-          "theil_sen_low_slope": -2.1818,
-          "theil_sen_high_slope": 0.1818,
-          "kendall_tau": -0.2245,
-          "p_value": 0.1173
-        },
-        "q_value_bh": 0.1195
+          "theil_sen_intercept": 2136.0,
+          "theil_sen_low_slope": -2.4286,
+          "theil_sen_high_slope": 0.0588,
+          "kendall_tau": -0.2483,
+          "p_value": 0.0836
+        }
       },
       "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.0,
-        "p_value": 0.3925,
-        "censored_fraction": 0.72,
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.8463,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 152.0,
-          "theil_sen_low_slope": -0.1,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1797,
-          "p_value": 0.2522
-        },
-        "q_value_bh": 0.8373
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1875,
+          "theil_sen_high_slope": 0.1,
+          "kendall_tau": -0.0713,
+          "p_value": 0.6334
+        }
       }
     },
     {
-      "district": "sunamganj",
-      "district_name": "Sunamganj",
-      "r_clim_mm_day": 10.48,
+      "district": "brahmanbaria",
+      "district_name": "Brahmanbaria",
+      "cell_id": "power_cell_9a117ca2d8f9",
+      "cell_hash": "9a117ca2d8f9",
+      "shared_districts": [
+        "brahmanbaria"
+      ],
+      "r_clim_mm_day": 6.44,
       "wet_season": {
-        "period_1_median_doy": 114.5,
-        "period_2_median_doy": 105.0,
-        "shift_days": -9.5,
-        "p_value": 0.1417,
+        "period_1_median_doy": 120.0,
+        "period_2_median_doy": 116.0,
+        "shift_days": -4.0,
+        "p_value": 0.2638,
+        "q_value_bh": 0.2692,
         "trend": {
-          "theil_sen_slope": -0.7947,
-          "theil_sen_intercept": 1712.8053,
-          "theil_sen_low_slope": -2.0625,
-          "theil_sen_high_slope": 0.3846,
-          "kendall_tau": -0.1709,
-          "p_value": 0.2332
-        },
-        "q_value_bh": 0.1463
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.0,
-        "p_value": 0.4794,
-        "censored_fraction": 0.72,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 152.0,
-          "theil_sen_low_slope": -0.0769,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.1514,
-          "p_value": 0.3338
-        },
-        "q_value_bh": 0.9067
-      }
-    },
-    {
-      "district": "narsingdi",
-      "district_name": "Narsingdi",
-      "r_clim_mm_day": 6.18,
-      "wet_season": {
-        "period_1_median_doy": 128.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -6.5,
-        "p_value": 0.0813,
-        "trend": {
-          "theil_sen_slope": -0.975,
-          "theil_sen_intercept": 2084.675,
-          "theil_sen_low_slope": -1.9286,
-          "theil_sen_high_slope": 0.1818,
-          "kendall_tau": -0.2462,
-          "p_value": 0.0875
-        },
-        "q_value_bh": 0.0946
+          "theil_sen_slope": -0.3944,
+          "theil_sen_intercept": 911.0167,
+          "theil_sen_low_slope": -1.7333,
+          "theil_sen_high_slope": 0.7143,
+          "kendall_tau": -0.1117,
+          "p_value": 0.4396
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
-        "p_value": 1.0,
+        "p_value": 0.8408,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.64,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.0588,
-          "theil_sen_high_slope": 0.0455,
-          "kendall_tau": -0.0192,
-          "p_value": 0.9016
-        },
-        "q_value_bh": 1.0
+          "theil_sen_low_slope": -0.0833,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.0772,
+          "p_value": 0.6205
+        }
       }
     },
     {
-      "district": "gazipur",
-      "district_name": "Gazipur",
-      "r_clim_mm_day": 6.18,
-      "wet_season": {
-        "period_1_median_doy": 128.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -6.5,
-        "p_value": 0.0813,
-        "trend": {
-          "theil_sen_slope": -0.975,
-          "theil_sen_intercept": 2084.675,
-          "theil_sen_low_slope": -1.9286,
-          "theil_sen_high_slope": 0.1818,
-          "kendall_tau": -0.2462,
-          "p_value": 0.0875
-        },
-        "q_value_bh": 0.0946
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": 0.0,
-        "p_value": 1.0,
-        "censored_fraction": 0.64,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.0588,
-          "theil_sen_high_slope": 0.0455,
-          "kendall_tau": -0.0192,
-          "p_value": 0.9016
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "shariatpur",
-      "district_name": "Shariatpur",
+      "district": "chandpur",
+      "district_name": "Chandpur",
+      "cell_id": "power_cell_095daf5a2f12",
+      "cell_hash": "095daf5a2f12",
+      "shared_districts": [
+        "chandpur",
+        "shariatpur"
+      ],
       "r_clim_mm_day": 6.96,
       "wet_season": {
         "period_1_median_doy": 143.5,
         "period_2_median_doy": 123.0,
         "shift_days": -20.5,
         "p_value": 0.0143,
+        "q_value_bh": 0.0275,
         "trend": {
           "theil_sen_slope": -1.5489,
           "theil_sen_intercept": 3252.8797,
@@ -1492,14 +2338,14 @@
           "theil_sen_high_slope": -0.1667,
           "kendall_tau": -0.3411,
           "p_value": 0.0171
-        },
-        "q_value_bh": 0.0277
+        }
       },
       "aman": {
         "period_1_median_doy": 153.5,
         "period_2_median_doy": 153.0,
         "shift_days": -0.5,
         "p_value": 0.3515,
+        "q_value_bh": 0.8593,
         "censored_fraction": 0.56,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -1508,163 +2354,231 @@
           "theil_sen_high_slope": -0.0,
           "kendall_tau": -0.1222,
           "p_value": 0.4221
-        },
-        "q_value_bh": 0.7965
+        }
       }
     },
     {
-      "district": "narayanganj",
-      "district_name": "Narayanganj",
-      "r_clim_mm_day": 6.27,
+      "district": "chapainawabganj",
+      "district_name": "Chapainawabganj",
+      "cell_id": "power_cell_39ddec31d08f",
+      "cell_hash": "39ddec31d08f",
+      "shared_districts": [
+        "chapainawabganj"
+      ],
+      "r_clim_mm_day": 3.52,
       "wet_season": {
-        "period_1_median_doy": 137.0,
-        "period_2_median_doy": 122.0,
-        "shift_days": -15.0,
-        "p_value": 0.022,
+        "period_1_median_doy": 134.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -6.5,
+        "p_value": 0.0863,
+        "q_value_bh": 0.1003,
         "trend": {
-          "theil_sen_slope": -1.068,
-          "theil_sen_intercept": 2274.8487,
-          "theil_sen_low_slope": -2.4706,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2741,
-          "p_value": 0.0577
-        },
-        "q_value_bh": 0.0343
+          "theil_sen_slope": -0.4643,
+          "theil_sen_intercept": 1063.6071,
+          "theil_sen_low_slope": -1.3333,
+          "theil_sen_high_slope": 0.4,
+          "kendall_tau": -0.1916,
+          "p_value": 0.1824
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 166.0,
+        "shift_days": 11.5,
+        "p_value": 0.1557,
+        "q_value_bh": 0.7785,
+        "censored_fraction": 0.16,
+        "trend": {
+          "theil_sen_slope": 0.5,
+          "theil_sen_intercept": -842.5,
+          "theil_sen_low_slope": -0.0,
+          "theil_sen_high_slope": 1.1,
+          "kendall_tau": 0.2458,
+          "p_value": 0.0911
+        }
+      }
+    },
+    {
+      "district": "chattogram",
+      "district_name": "Chattogram",
+      "cell_id": "power_cell_f1a15c3a0925",
+      "cell_hash": "f1a15c3a0925",
+      "shared_districts": [
+        "chattogram"
+      ],
+      "r_clim_mm_day": 8.65,
+      "wet_season": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 133.0,
+        "shift_days": -20.5,
+        "p_value": 0.0192,
+        "q_value_bh": 0.0343,
+        "trend": {
+          "theil_sen_slope": -1.5941,
+          "theil_sen_intercept": 3347.9588,
+          "theil_sen_low_slope": -2.8947,
+          "theil_sen_high_slope": -0.4,
+          "kendall_tau": -0.3462,
+          "p_value": 0.016
+        }
       },
       "aman": {
         "period_1_median_doy": 153.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": 0.5,
-        "p_value": 0.9774,
-        "censored_fraction": 0.48,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.5,
+        "p_value": 0.1139,
+        "q_value_bh": 0.6328,
+        "censored_fraction": 0.56,
         "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.0909,
-          "theil_sen_high_slope": 0.1,
-          "kendall_tau": 0.015,
-          "p_value": 0.9222
-        },
-        "q_value_bh": 1.0
+          "theil_sen_slope": -0.0557,
+          "theil_sen_intercept": 265.1796,
+          "theil_sen_low_slope": -0.3333,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2407,
+          "p_value": 0.1138
+        }
       }
     },
     {
-      "district": "tangail",
-      "district_name": "Tangail",
-      "r_clim_mm_day": 5.92,
+      "district": "chuadanga",
+      "district_name": "Chuadanga",
+      "cell_id": "power_cell_cf7ff90946da",
+      "cell_hash": "cf7ff90946da",
+      "shared_districts": [
+        "chuadanga"
+      ],
+      "r_clim_mm_day": 4.13,
       "wet_season": {
-        "period_1_median_doy": 140.5,
-        "period_2_median_doy": 123.0,
-        "shift_days": -17.5,
-        "p_value": 0.0023,
+        "period_1_median_doy": 144.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.0,
+        "p_value": 0.0064,
+        "q_value_bh": 0.0188,
         "trend": {
-          "theil_sen_slope": -1.1847,
-          "theil_sen_intercept": 2509.7188,
-          "theil_sen_low_slope": -2.3125,
+          "theil_sen_slope": -2.0,
+          "theil_sen_intercept": 4153.0,
+          "theil_sen_low_slope": -3.2,
+          "theil_sen_high_slope": -0.8571,
+          "kendall_tau": -0.4798,
+          "p_value": 0.0009
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 164.0,
+        "period_2_median_doy": 161.0,
+        "shift_days": -3.0,
+        "p_value": 0.5661,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.2,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 163.0,
+          "theil_sen_low_slope": -0.6667,
+          "theil_sen_high_slope": 0.4375,
+          "kendall_tau": -0.041,
+          "p_value": 0.7781
+        }
+      }
+    },
+    {
+      "district": "coxsbazar",
+      "district_name": "Coxsbazar",
+      "cell_id": "power_cell_361cdcf4b7e0",
+      "cell_hash": "361cdcf4b7e0",
+      "shared_districts": [
+        "coxsbazar"
+      ],
+      "r_clim_mm_day": 14.83,
+      "wet_season": {
+        "period_1_median_doy": 147.0,
+        "period_2_median_doy": 133.0,
+        "shift_days": -14.0,
+        "p_value": 0.0275,
+        "q_value_bh": 0.0393,
+        "trend": {
+          "theil_sen_slope": -1.3875,
+          "theil_sen_intercept": 2931.0375,
+          "theil_sen_low_slope": -2.7273,
           "theil_sen_high_slope": -0.1667,
-          "kendall_tau": -0.3272,
-          "p_value": 0.0232
-        },
-        "q_value_bh": 0.0147
+          "kendall_tau": -0.3049,
+          "p_value": 0.0334
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 152.5,
+        "period_2_median_doy": 152.0,
+        "shift_days": -0.5,
+        "p_value": 0.953,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.68,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.0,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": 0.004,
+          "p_value": 0.9797
+        }
+      }
+    },
+    {
+      "district": "cumilla",
+      "district_name": "Cumilla",
+      "cell_id": "power_cell_59cca020e08e",
+      "cell_hash": "59cca020e08e",
+      "shared_districts": [
+        "cumilla"
+      ],
+      "r_clim_mm_day": 6.72,
+      "wet_season": {
+        "period_1_median_doy": 132.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -10.0,
+        "p_value": 0.0963,
+        "q_value_bh": 0.1094,
+        "trend": {
+          "theil_sen_slope": -1.0917,
+          "theil_sen_intercept": 2319.525,
+          "theil_sen_low_slope": -2.5714,
+          "theil_sen_high_slope": 0.1739,
+          "kendall_tau": -0.2471,
+          "p_value": 0.0872
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
-        "p_value": 0.9106,
-        "censored_fraction": 0.56,
+        "p_value": 0.7972,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.6,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.1111,
-          "theil_sen_high_slope": 0.0833,
-          "kendall_tau": -0.0331,
-          "p_value": 0.8278
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "kishoreganj",
-      "district_name": "Kishoreganj",
-      "r_clim_mm_day": 7.15,
-      "wet_season": {
-        "period_1_median_doy": 125.0,
-        "period_2_median_doy": 116.0,
-        "shift_days": -9.0,
-        "p_value": 0.1208,
-        "trend": {
-          "theil_sen_slope": -0.5,
-          "theil_sen_intercept": 1123.5,
-          "theil_sen_low_slope": -1.8,
-          "theil_sen_high_slope": 1.0,
-          "kendall_tau": -0.094,
-          "p_value": 0.5127
-        },
-        "q_value_bh": 0.1267
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 152.0,
-        "shift_days": -1.0,
-        "p_value": 0.862,
-        "censored_fraction": 0.68,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.0667,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.0542,
-          "p_value": 0.7265
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "manikganj",
-      "district_name": "Manikganj",
-      "r_clim_mm_day": 5.56,
-      "wet_season": {
-        "period_1_median_doy": 139.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -17.5,
-        "p_value": 0.0132,
-        "trend": {
-          "theil_sen_slope": -1.1429,
-          "theil_sen_intercept": 2427.5714,
-          "theil_sen_low_slope": -2.125,
-          "theil_sen_high_slope": -0.2,
-          "kendall_tau": -0.3328,
-          "p_value": 0.0206
-        },
-        "q_value_bh": 0.0277
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": 0.5,
-        "p_value": 0.4817,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.2222,
-          "theil_sen_high_slope": 0.0833,
-          "kendall_tau": -0.0842,
-          "p_value": 0.5771
-        },
-        "q_value_bh": 0.9067
+          "theil_sen_low_slope": -0.0909,
+          "theil_sen_high_slope": 0.0526,
+          "kendall_tau": -0.0379,
+          "p_value": 0.8055
+        }
       }
     },
     {
       "district": "dhaka",
       "district_name": "Dhaka",
+      "cell_id": "power_cell_2314edbfaf36",
+      "cell_hash": "2314edbfaf36",
+      "shared_districts": [
+        "narayanganj",
+        "dhaka",
+        "munshiganj"
+      ],
       "r_clim_mm_day": 6.27,
       "wet_season": {
         "period_1_median_doy": 137.0,
         "period_2_median_doy": 122.0,
         "shift_days": -15.0,
         "p_value": 0.022,
+        "q_value_bh": 0.0355,
         "trend": {
           "theil_sen_slope": -1.068,
           "theil_sen_intercept": 2274.8487,
@@ -1672,14 +2586,14 @@
           "theil_sen_high_slope": -0.0,
           "kendall_tau": -0.2741,
           "p_value": 0.0577
-        },
-        "q_value_bh": 0.0343
+        }
       },
       "aman": {
         "period_1_median_doy": 153.5,
         "period_2_median_doy": 154.0,
         "shift_days": 0.5,
         "p_value": 0.9774,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -1688,235 +2602,24 @@
           "theil_sen_high_slope": 0.1,
           "kendall_tau": 0.015,
           "p_value": 0.9222
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "munshiganj",
-      "district_name": "Munshiganj",
-      "r_clim_mm_day": 6.27,
-      "wet_season": {
-        "period_1_median_doy": 137.0,
-        "period_2_median_doy": 122.0,
-        "shift_days": -15.0,
-        "p_value": 0.022,
-        "trend": {
-          "theil_sen_slope": -1.068,
-          "theil_sen_intercept": 2274.8487,
-          "theil_sen_low_slope": -2.4706,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2741,
-          "p_value": 0.0577
-        },
-        "q_value_bh": 0.0343
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": 0.5,
-        "p_value": 0.9774,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.0909,
-          "theil_sen_high_slope": 0.1,
-          "kendall_tau": 0.015,
-          "p_value": 0.9222
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "rajbari",
-      "district_name": "Rajbari",
-      "r_clim_mm_day": 4.78,
-      "wet_season": {
-        "period_1_median_doy": 149.0,
-        "period_2_median_doy": 123.0,
-        "shift_days": -26.0,
-        "p_value": 0.0274,
-        "trend": {
-          "theil_sen_slope": -1.4048,
-          "theil_sen_intercept": 2953.7857,
-          "theil_sen_low_slope": -2.75,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.28,
-          "p_value": 0.0521
-        },
-        "q_value_bh": 0.0374
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 154.0,
-        "shift_days": -0.5,
-        "p_value": 0.3466,
-        "censored_fraction": 0.36,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.5,
-          "theil_sen_high_slope": 0.1111,
-          "kendall_tau": -0.0991,
-          "p_value": 0.5047
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "madaripur",
-      "district_name": "Madaripur",
-      "r_clim_mm_day": 5.88,
-      "wet_season": {
-        "period_1_median_doy": 144.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -22.5,
-        "p_value": 0.003,
-        "trend": {
-          "theil_sen_slope": -1.7321,
-          "theil_sen_intercept": 3621.6316,
-          "theil_sen_low_slope": -2.8095,
-          "theil_sen_high_slope": -0.6667,
-          "kendall_tau": -0.4486,
-          "p_value": 0.0019
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 156.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -3.5,
-        "p_value": 0.0633,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.0839,
-          "theil_sen_intercept": 323.9231,
-          "theil_sen_low_slope": -0.4286,
-          "theil_sen_high_slope": 0.0526,
-          "kendall_tau": -0.1602,
-          "p_value": 0.2829
-        },
-        "q_value_bh": 0.4051
-      }
-    },
-    {
-      "district": "gopalganj",
-      "district_name": "Gopalganj",
-      "r_clim_mm_day": 5.88,
-      "wet_season": {
-        "period_1_median_doy": 144.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -22.5,
-        "p_value": 0.003,
-        "trend": {
-          "theil_sen_slope": -1.7321,
-          "theil_sen_intercept": 3621.6316,
-          "theil_sen_low_slope": -2.8095,
-          "theil_sen_high_slope": -0.6667,
-          "kendall_tau": -0.4486,
-          "p_value": 0.0019
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 156.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -3.5,
-        "p_value": 0.0633,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.0839,
-          "theil_sen_intercept": 323.9231,
-          "theil_sen_low_slope": -0.4286,
-          "theil_sen_high_slope": 0.0526,
-          "kendall_tau": -0.1602,
-          "p_value": 0.2829
-        },
-        "q_value_bh": 0.4051
-      }
-    },
-    {
-      "district": "faridpur",
-      "district_name": "Faridpur",
-      "r_clim_mm_day": 5.53,
-      "wet_season": {
-        "period_1_median_doy": 142.5,
-        "period_2_median_doy": 122.0,
-        "shift_days": -20.5,
-        "p_value": 0.0254,
-        "trend": {
-          "theil_sen_slope": -1.25,
-          "theil_sen_intercept": 2643.25,
-          "theil_sen_low_slope": -2.4737,
-          "theil_sen_high_slope": -0.0625,
-          "kendall_tau": -0.3176,
-          "p_value": 0.0277
-        },
-        "q_value_bh": 0.0374
-      },
-      "aman": {
-        "period_1_median_doy": 154.0,
-        "period_2_median_doy": 154.0,
-        "shift_days": 0.0,
-        "p_value": 0.2299,
-        "censored_fraction": 0.4,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 154.0,
-          "theil_sen_low_slope": -0.3333,
-          "theil_sen_high_slope": 0.1111,
-          "kendall_tau": -0.0832,
-          "p_value": 0.5802
-        },
-        "q_value_bh": 0.7965
-      }
-    },
-    {
-      "district": "panchagarh",
-      "district_name": "Panchagarh",
-      "r_clim_mm_day": 6.08,
-      "wet_season": {
-        "period_1_median_doy": 149.0,
-        "period_2_median_doy": 124.0,
-        "shift_days": -25.0,
-        "p_value": 0.0008,
-        "trend": {
-          "theil_sen_slope": -2.4965,
-          "theil_sen_intercept": 5163.4368,
-          "theil_sen_low_slope": -3.4545,
-          "theil_sen_high_slope": -1.2941,
-          "kendall_tau": -0.5819,
-          "p_value": 0.0
-        },
-        "q_value_bh": 0.0115
-      },
-      "aman": {
-        "period_1_median_doy": 154.5,
-        "period_2_median_doy": 155.0,
-        "shift_days": 0.5,
-        "p_value": 0.4557,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.1111,
-          "theil_sen_intercept": 378.6667,
-          "theil_sen_low_slope": -0.5333,
-          "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2376,
-          "p_value": 0.111
-        },
-        "q_value_bh": 0.9067
+        }
       }
     },
     {
       "district": "dinajpur",
       "district_name": "Dinajpur",
+      "cell_id": "power_cell_c72de76997e2",
+      "cell_hash": "c72de76997e2",
+      "shared_districts": [
+        "dinajpur"
+      ],
       "r_clim_mm_day": 4.77,
       "wet_season": {
         "period_1_median_doy": 143.0,
         "period_2_median_doy": 124.0,
         "shift_days": -19.0,
         "p_value": 0.0009,
+        "q_value_bh": 0.0112,
         "trend": {
           "theil_sen_slope": -1.6235,
           "theil_sen_intercept": 3406.0688,
@@ -1924,14 +2627,14 @@
           "theil_sen_high_slope": -0.5,
           "kendall_tau": -0.4553,
           "p_value": 0.0016
-        },
-        "q_value_bh": 0.0115
+        }
       },
       "aman": {
         "period_1_median_doy": 155.0,
         "period_2_median_doy": 156.0,
         "shift_days": 1.0,
         "p_value": 0.9561,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.36,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -1940,91 +2643,107 @@
           "theil_sen_high_slope": 0.25,
           "kendall_tau": 0.0105,
           "p_value": 0.9434
-        },
-        "q_value_bh": 1.0
+        }
       }
     },
     {
-      "district": "lalmonirhat",
-      "district_name": "Lalmonirhat",
-      "r_clim_mm_day": 6.12,
+      "district": "faridpur",
+      "district_name": "Faridpur",
+      "cell_id": "power_cell_d9d61b725cba",
+      "cell_hash": "d9d61b725cba",
+      "shared_districts": [
+        "faridpur"
+      ],
+      "r_clim_mm_day": 5.53,
       "wet_season": {
-        "period_1_median_doy": 135.0,
+        "period_1_median_doy": 142.5,
         "period_2_median_doy": 122.0,
-        "shift_days": -13.0,
-        "p_value": 0.05,
+        "shift_days": -20.5,
+        "p_value": 0.0254,
+        "q_value_bh": 0.0388,
         "trend": {
-          "theil_sen_slope": -1.4495,
-          "theil_sen_intercept": 3041.8333,
-          "theil_sen_low_slope": -2.6667,
-          "theil_sen_high_slope": -0.0556,
-          "kendall_tau": -0.302,
-          "p_value": 0.0353
-        },
-        "q_value_bh": 0.0615
+          "theil_sen_slope": -1.25,
+          "theil_sen_intercept": 2643.25,
+          "theil_sen_low_slope": -2.4737,
+          "theil_sen_high_slope": -0.0625,
+          "kendall_tau": -0.3176,
+          "p_value": 0.0277
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.0,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.0,
+        "p_value": 0.2299,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.3333,
+          "theil_sen_high_slope": 0.1111,
+          "kendall_tau": -0.0832,
+          "p_value": 0.5802
+        }
+      }
+    },
+    {
+      "district": "feni",
+      "district_name": "Feni",
+      "cell_id": "power_cell_556c55cb209a",
+      "cell_hash": "556c55cb209a",
+      "shared_districts": [
+        "feni"
+      ],
+      "r_clim_mm_day": 7.9,
+      "wet_season": {
+        "period_1_median_doy": 141.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -13.5,
+        "p_value": 0.0315,
+        "q_value_bh": 0.0426,
+        "trend": {
+          "theil_sen_slope": -1.3604,
+          "theil_sen_intercept": 2871.4643,
+          "theil_sen_low_slope": -2.4286,
+          "theil_sen_high_slope": -0.0909,
+          "kendall_tau": -0.3126,
+          "p_value": 0.0296
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
-        "period_2_median_doy": 155.0,
-        "shift_days": 2.0,
-        "p_value": 0.8678,
-        "censored_fraction": 0.48,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.5829,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.64,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.2941,
-          "theil_sen_high_slope": 0.0833,
-          "kendall_tau": -0.0972,
-          "p_value": 0.5189
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "nilphamari",
-      "district_name": "Nilphamari",
-      "r_clim_mm_day": 5.68,
-      "wet_season": {
-        "period_1_median_doy": 145.0,
-        "period_2_median_doy": 130.0,
-        "shift_days": -15.0,
-        "p_value": 0.0036,
-        "trend": {
-          "theil_sen_slope": -1.5,
-          "theil_sen_intercept": 3157.5,
-          "theil_sen_low_slope": -2.6,
-          "theil_sen_high_slope": -0.6154,
-          "kendall_tau": -0.4538,
-          "p_value": 0.0016
-        },
-        "q_value_bh": 0.0147
-      },
-      "aman": {
-        "period_1_median_doy": 153.5,
-        "period_2_median_doy": 153.0,
-        "shift_days": -0.5,
-        "p_value": 0.3055,
-        "censored_fraction": 0.44,
-        "trend": {
-          "theil_sen_slope": -0.1,
-          "theil_sen_intercept": 354.3,
-          "theil_sen_low_slope": -0.5,
+          "theil_sen_low_slope": -0.125,
           "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2568,
-          "p_value": 0.086
-        },
-        "q_value_bh": 0.7965
+          "kendall_tau": -0.1229,
+          "p_value": 0.4252
+        }
       }
     },
     {
       "district": "gaibandha",
       "district_name": "Gaibandha",
+      "cell_id": "power_cell_d737219606d6",
+      "cell_hash": "d737219606d6",
+      "shared_districts": [
+        "gaibandha",
+        "rangpur"
+      ],
       "r_clim_mm_day": 5.59,
       "wet_season": {
         "period_1_median_doy": 135.5,
         "period_2_median_doy": 116.0,
         "shift_days": -19.5,
         "p_value": 0.0207,
+        "q_value_bh": 0.0345,
         "trend": {
           "theil_sen_slope": -1.3333,
           "theil_sen_intercept": 2807.0,
@@ -2032,14 +2751,14 @@
           "theil_sen_high_slope": -0.0556,
           "kendall_tau": -0.2982,
           "p_value": 0.0375
-        },
-        "q_value_bh": 0.0343
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
         "p_value": 0.8018,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -2048,127 +2767,147 @@
           "theil_sen_high_slope": 0.0556,
           "kendall_tau": -0.088,
           "p_value": 0.5641
-        },
-        "q_value_bh": 1.0
+        }
       }
     },
     {
-      "district": "thakurgaon",
-      "district_name": "Thakurgaon",
-      "r_clim_mm_day": 5.68,
+      "district": "gazipur",
+      "district_name": "Gazipur",
+      "cell_id": "power_cell_2e8a2549a063",
+      "cell_hash": "2e8a2549a063",
+      "shared_districts": [
+        "gazipur"
+      ],
+      "r_clim_mm_day": 6.18,
       "wet_season": {
-        "period_1_median_doy": 145.0,
-        "period_2_median_doy": 130.0,
-        "shift_days": -15.0,
-        "p_value": 0.0036,
+        "period_1_median_doy": 128.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -6.5,
+        "p_value": 0.0813,
+        "q_value_bh": 0.0968,
         "trend": {
-          "theil_sen_slope": -1.5,
-          "theil_sen_intercept": 3157.5,
-          "theil_sen_low_slope": -2.6,
-          "theil_sen_high_slope": -0.6154,
-          "kendall_tau": -0.4538,
-          "p_value": 0.0016
-        },
-        "q_value_bh": 0.0147
+          "theil_sen_slope": -0.975,
+          "theil_sen_intercept": 2084.675,
+          "theil_sen_low_slope": -1.9286,
+          "theil_sen_high_slope": 0.1818,
+          "kendall_tau": -0.2462,
+          "p_value": 0.0875
+        }
       },
       "aman": {
-        "period_1_median_doy": 153.5,
+        "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
-        "shift_days": -0.5,
-        "p_value": 0.3055,
+        "shift_days": 0.0,
+        "p_value": 1.0,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0588,
+          "theil_sen_high_slope": 0.0455,
+          "kendall_tau": -0.0192,
+          "p_value": 0.9016
+        }
+      }
+    },
+    {
+      "district": "gopalganj",
+      "district_name": "Gopalganj",
+      "cell_id": "power_cell_c1cd63c47160",
+      "cell_hash": "c1cd63c47160",
+      "shared_districts": [
+        "gopalganj"
+      ],
+      "r_clim_mm_day": 5.88,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.003,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.7321,
+          "theil_sen_intercept": 3621.6316,
+          "theil_sen_low_slope": -2.8095,
+          "theil_sen_high_slope": -0.6667,
+          "kendall_tau": -0.4486,
+          "p_value": 0.0019
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 156.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -3.5,
+        "p_value": 0.0633,
+        "q_value_bh": 0.4521,
         "censored_fraction": 0.44,
         "trend": {
-          "theil_sen_slope": -0.1,
-          "theil_sen_intercept": 354.3,
-          "theil_sen_low_slope": -0.5,
+          "theil_sen_slope": -0.0839,
+          "theil_sen_intercept": 323.9231,
+          "theil_sen_low_slope": -0.4286,
+          "theil_sen_high_slope": 0.0526,
+          "kendall_tau": -0.1602,
+          "p_value": 0.2829
+        }
+      }
+    },
+    {
+      "district": "habiganj",
+      "district_name": "Habiganj",
+      "cell_id": "power_cell_93124bc588da",
+      "cell_hash": "93124bc588da",
+      "shared_districts": [
+        "habiganj"
+      ],
+      "r_clim_mm_day": 8.46,
+      "wet_season": {
+        "period_1_median_doy": 119.0,
+        "period_2_median_doy": 105.0,
+        "shift_days": -14.0,
+        "p_value": 0.1083,
+        "q_value_bh": 0.1203,
+        "trend": {
+          "theil_sen_slope": -1.0,
+          "theil_sen_intercept": 2129.0,
+          "theil_sen_low_slope": -2.1818,
+          "theil_sen_high_slope": 0.1818,
+          "kendall_tau": -0.2245,
+          "p_value": 0.1173
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.3925,
+        "q_value_bh": 0.892,
+        "censored_fraction": 0.72,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.1,
           "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2568,
-          "p_value": 0.086
-        },
-        "q_value_bh": 0.7965
+          "kendall_tau": -0.1797,
+          "p_value": 0.2522
+        }
       }
     },
     {
-      "district": "rangpur",
-      "district_name": "Rangpur",
-      "r_clim_mm_day": 5.59,
-      "wet_season": {
-        "period_1_median_doy": 135.5,
-        "period_2_median_doy": 116.0,
-        "shift_days": -19.5,
-        "p_value": 0.0207,
-        "trend": {
-          "theil_sen_slope": -1.3333,
-          "theil_sen_intercept": 2807.0,
-          "theil_sen_low_slope": -2.6471,
-          "theil_sen_high_slope": -0.0556,
-          "kendall_tau": -0.2982,
-          "p_value": 0.0375
-        },
-        "q_value_bh": 0.0343
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 153.0,
-        "shift_days": 0.0,
-        "p_value": 0.8018,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.1875,
-          "theil_sen_high_slope": 0.0556,
-          "kendall_tau": -0.088,
-          "p_value": 0.5641
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "kurigram",
-      "district_name": "Kurigram",
-      "r_clim_mm_day": 6.12,
-      "wet_season": {
-        "period_1_median_doy": 135.0,
-        "period_2_median_doy": 122.0,
-        "shift_days": -13.0,
-        "p_value": 0.05,
-        "trend": {
-          "theil_sen_slope": -1.4495,
-          "theil_sen_intercept": 3041.8333,
-          "theil_sen_low_slope": -2.6667,
-          "theil_sen_high_slope": -0.0556,
-          "kendall_tau": -0.302,
-          "p_value": 0.0353
-        },
-        "q_value_bh": 0.0615
-      },
-      "aman": {
-        "period_1_median_doy": 153.0,
-        "period_2_median_doy": 155.0,
-        "shift_days": 2.0,
-        "p_value": 0.8678,
-        "censored_fraction": 0.48,
-        "trend": {
-          "theil_sen_slope": -0.0,
-          "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.2941,
-          "theil_sen_high_slope": 0.0833,
-          "kendall_tau": -0.0972,
-          "p_value": 0.5189
-        },
-        "q_value_bh": 1.0
-      }
-    },
-    {
-      "district": "sherpur",
-      "district_name": "Sherpur",
+      "district": "jamalpur",
+      "district_name": "Jamalpur",
+      "cell_id": "power_cell_0f01693ba809",
+      "cell_hash": "0f01693ba809",
+      "shared_districts": [
+        "jamalpur"
+      ],
       "r_clim_mm_day": 6.23,
       "wet_season": {
         "period_1_median_doy": 138.5,
         "period_2_median_doy": 116.0,
         "shift_days": -22.5,
         "p_value": 0.006,
+        "q_value_bh": 0.0187,
         "trend": {
           "theil_sen_slope": -1.1603,
           "theil_sen_intercept": 2459.5962,
@@ -2176,14 +2915,14 @@
           "theil_sen_high_slope": -0.0,
           "kendall_tau": -0.2781,
           "p_value": 0.0524
-        },
-        "q_value_bh": 0.0192
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
         "p_value": 0.9556,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.48,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -2192,19 +2931,273 @@
           "theil_sen_high_slope": 0.0909,
           "kendall_tau": -0.0652,
           "p_value": 0.6661
-        },
-        "q_value_bh": 1.0
+        }
       }
     },
     {
-      "district": "mymensingh",
-      "district_name": "Mymensingh",
+      "district": "jashore",
+      "district_name": "Jashore",
+      "cell_id": "power_cell_7a1c3ca39222",
+      "cell_hash": "7a1c3ca39222",
+      "shared_districts": [
+        "jashore",
+        "narail"
+      ],
+      "r_clim_mm_day": 5.06,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.0089,
+        "q_value_bh": 0.0234,
+        "trend": {
+          "theil_sen_slope": -1.6471,
+          "theil_sen_intercept": 3441.5294,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.4167,
+          "kendall_tau": -0.4136,
+          "p_value": 0.0043
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -4.5,
+        "p_value": 0.2592,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0909,
+          "theil_sen_intercept": 339.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.1219,
+          "p_value": 0.4073
+        }
+      }
+    },
+    {
+      "district": "jhalakathi",
+      "district_name": "Jhalakathi",
+      "cell_id": "power_cell_b98ee05d09ba",
+      "cell_hash": "b98ee05d09ba",
+      "shared_districts": [
+        "jhalakathi"
+      ],
+      "r_clim_mm_day": 6.66,
+      "wet_season": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -34.0,
+        "p_value": 0.0008,
+        "q_value_bh": 0.0112,
+        "trend": {
+          "theil_sen_slope": -1.8918,
+          "theil_sen_intercept": 3951.2193,
+          "theil_sen_low_slope": -3.0833,
+          "theil_sen_high_slope": -0.5882,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 158.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -5.0,
+        "p_value": 0.0217,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1909,
+          "theil_sen_intercept": 539.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2854,
+          "p_value": 0.0567
+        }
+      }
+    },
+    {
+      "district": "jhenaidah",
+      "district_name": "Jhenaidah",
+      "cell_id": "power_cell_e443d37eec6f",
+      "cell_hash": "e443d37eec6f",
+      "shared_districts": [
+        "magura",
+        "jhenaidah"
+      ],
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 144.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.0,
+        "p_value": 0.0122,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -2.0,
+          "theil_sen_intercept": 4152.0,
+          "theil_sen_low_slope": -3.0588,
+          "theil_sen_high_slope": -0.8,
+          "kendall_tau": -0.4135,
+          "p_value": 0.004
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -1.5,
+        "p_value": 0.2155,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0718,
+          "theil_sen_intercept": 299.5231,
+          "theil_sen_low_slope": -0.4167,
+          "theil_sen_high_slope": 0.1429,
+          "kendall_tau": -0.1116,
+          "p_value": 0.4486
+        }
+      }
+    },
+    {
+      "district": "joypurhat",
+      "district_name": "Joypurhat",
+      "cell_id": "power_cell_cd7c0a13c605",
+      "cell_hash": "cd7c0a13c605",
+      "shared_districts": [
+        "joypurhat"
+      ],
+      "r_clim_mm_day": 4.14,
+      "wet_season": {
+        "period_1_median_doy": 141.0,
+        "period_2_median_doy": 127.0,
+        "shift_days": -14.0,
+        "p_value": 0.0133,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -0.9057,
+          "theil_sen_intercept": 1953.1776,
+          "theil_sen_low_slope": -2.2143,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.2513,
+          "p_value": 0.0796
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 156.0,
+        "shift_days": 0.5,
+        "p_value": 0.642,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.28,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.375,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": 0.0172,
+          "p_value": 0.9064
+        }
+      }
+    },
+    {
+      "district": "khagrachhari",
+      "district_name": "Khagrachhari",
+      "cell_id": "power_cell_28cac3b963f4",
+      "cell_hash": "28cac3b963f4",
+      "shared_districts": [
+        "khagrachhari"
+      ],
+      "r_clim_mm_day": 7.91,
+      "wet_season": {
+        "period_1_median_doy": 141.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -13.5,
+        "p_value": 0.0337,
+        "q_value_bh": 0.0443,
+        "trend": {
+          "theil_sen_slope": -1.3365,
+          "theil_sen_intercept": 2823.3064,
+          "theil_sen_low_slope": -2.4545,
+          "theil_sen_high_slope": -0.0833,
+          "kendall_tau": -0.3059,
+          "p_value": 0.0333
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.7975,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.6,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1318,
+          "p_value": 0.3896
+        }
+      }
+    },
+    {
+      "district": "khulna",
+      "district_name": "Khulna",
+      "cell_id": "power_cell_1d49b6b595d2",
+      "cell_hash": "1d49b6b595d2",
+      "shared_districts": [
+        "khulna"
+      ],
+      "r_clim_mm_day": 5.06,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.0089,
+        "q_value_bh": 0.0234,
+        "trend": {
+          "theil_sen_slope": -1.6471,
+          "theil_sen_intercept": 3441.5294,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.4167,
+          "kendall_tau": -0.4136,
+          "p_value": 0.0043
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -4.5,
+        "p_value": 0.2592,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0909,
+          "theil_sen_intercept": 339.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.1219,
+          "p_value": 0.4073
+        }
+      }
+    },
+    {
+      "district": "kishoreganj",
+      "district_name": "Kishoreganj",
+      "cell_id": "power_cell_8c92a0675c92",
+      "cell_hash": "8c92a0675c92",
+      "shared_districts": [
+        "kishoreganj",
+        "mymensingh"
+      ],
       "r_clim_mm_day": 7.15,
       "wet_season": {
         "period_1_median_doy": 125.0,
         "period_2_median_doy": 116.0,
         "shift_days": -9.0,
         "p_value": 0.1208,
+        "q_value_bh": 0.1285,
         "trend": {
           "theil_sen_slope": -0.5,
           "theil_sen_intercept": 1123.5,
@@ -2212,14 +3205,14 @@
           "theil_sen_high_slope": 1.0,
           "kendall_tau": -0.094,
           "p_value": 0.5127
-        },
-        "q_value_bh": 0.1267
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 152.0,
         "shift_days": -1.0,
         "p_value": 0.862,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.68,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -2228,55 +3221,691 @@
           "theil_sen_high_slope": -0.0,
           "kendall_tau": -0.0542,
           "p_value": 0.7265
-        },
-        "q_value_bh": 1.0
+        }
       }
     },
     {
-      "district": "jamalpur",
-      "district_name": "Jamalpur",
-      "r_clim_mm_day": 6.23,
+      "district": "kurigram",
+      "district_name": "Kurigram",
+      "cell_id": "power_cell_9895f24cae87",
+      "cell_hash": "9895f24cae87",
+      "shared_districts": [
+        "lalmonirhat",
+        "kurigram"
+      ],
+      "r_clim_mm_day": 6.12,
       "wet_season": {
-        "period_1_median_doy": 138.5,
-        "period_2_median_doy": 116.0,
-        "shift_days": -22.5,
-        "p_value": 0.006,
+        "period_1_median_doy": 135.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -13.0,
+        "p_value": 0.05,
+        "q_value_bh": 0.0641,
         "trend": {
-          "theil_sen_slope": -1.1603,
-          "theil_sen_intercept": 2459.5962,
-          "theil_sen_low_slope": -2.5,
+          "theil_sen_slope": -1.4495,
+          "theil_sen_intercept": 3041.8333,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.0556,
+          "kendall_tau": -0.302,
+          "p_value": 0.0353
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 155.0,
+        "shift_days": 2.0,
+        "p_value": 0.8678,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2941,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0972,
+          "p_value": 0.5189
+        }
+      }
+    },
+    {
+      "district": "kushtia",
+      "district_name": "Kushtia",
+      "cell_id": "power_cell_1d9fcf2d33aa",
+      "cell_hash": "1d9fcf2d33aa",
+      "shared_districts": [
+        "pabna",
+        "kushtia",
+        "rajbari"
+      ],
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 149.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -26.0,
+        "p_value": 0.0274,
+        "q_value_bh": 0.0393,
+        "trend": {
+          "theil_sen_slope": -1.4048,
+          "theil_sen_intercept": 2953.7857,
+          "theil_sen_low_slope": -2.75,
           "theil_sen_high_slope": -0.0,
-          "kendall_tau": -0.2781,
-          "p_value": 0.0524
-        },
-        "q_value_bh": 0.0192
+          "kendall_tau": -0.28,
+          "p_value": 0.0521
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -0.5,
+        "p_value": 0.3466,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1111,
+          "kendall_tau": -0.0991,
+          "p_value": 0.5047
+        }
+      }
+    },
+    {
+      "district": "lakshmipur",
+      "district_name": "Lakshmipur",
+      "cell_id": "power_cell_85f9ac7e8a73",
+      "cell_hash": "85f9ac7e8a73",
+      "shared_districts": [
+        "lakshmipur"
+      ],
+      "r_clim_mm_day": 6.96,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -20.5,
+        "p_value": 0.0143,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -1.5489,
+          "theil_sen_intercept": 3252.8797,
+          "theil_sen_low_slope": -2.8333,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3411,
+          "p_value": 0.0171
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3515,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2667,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1222,
+          "p_value": 0.4221
+        }
+      }
+    },
+    {
+      "district": "lalmonirhat",
+      "district_name": "Lalmonirhat",
+      "cell_id": "power_cell_9895f24cae87",
+      "cell_hash": "9895f24cae87",
+      "shared_districts": [
+        "lalmonirhat",
+        "kurigram"
+      ],
+      "r_clim_mm_day": 6.12,
+      "wet_season": {
+        "period_1_median_doy": 135.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -13.0,
+        "p_value": 0.05,
+        "q_value_bh": 0.0641,
+        "trend": {
+          "theil_sen_slope": -1.4495,
+          "theil_sen_intercept": 3041.8333,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.0556,
+          "kendall_tau": -0.302,
+          "p_value": 0.0353
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 155.0,
+        "shift_days": 2.0,
+        "p_value": 0.8678,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2941,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0972,
+          "p_value": 0.5189
+        }
+      }
+    },
+    {
+      "district": "madaripur",
+      "district_name": "Madaripur",
+      "cell_id": "power_cell_efdb05e78276",
+      "cell_hash": "efdb05e78276",
+      "shared_districts": [
+        "madaripur"
+      ],
+      "r_clim_mm_day": 5.88,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.003,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.7321,
+          "theil_sen_intercept": 3621.6316,
+          "theil_sen_low_slope": -2.8095,
+          "theil_sen_high_slope": -0.6667,
+          "kendall_tau": -0.4486,
+          "p_value": 0.0019
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 156.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -3.5,
+        "p_value": 0.0633,
+        "q_value_bh": 0.4521,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.0839,
+          "theil_sen_intercept": 323.9231,
+          "theil_sen_low_slope": -0.4286,
+          "theil_sen_high_slope": 0.0526,
+          "kendall_tau": -0.1602,
+          "p_value": 0.2829
+        }
+      }
+    },
+    {
+      "district": "magura",
+      "district_name": "Magura",
+      "cell_id": "power_cell_e443d37eec6f",
+      "cell_hash": "e443d37eec6f",
+      "shared_districts": [
+        "magura",
+        "jhenaidah"
+      ],
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 144.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.0,
+        "p_value": 0.0122,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -2.0,
+          "theil_sen_intercept": 4152.0,
+          "theil_sen_low_slope": -3.0588,
+          "theil_sen_high_slope": -0.8,
+          "kendall_tau": -0.4135,
+          "p_value": 0.004
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -1.5,
+        "p_value": 0.2155,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0718,
+          "theil_sen_intercept": 299.5231,
+          "theil_sen_low_slope": -0.4167,
+          "theil_sen_high_slope": 0.1429,
+          "kendall_tau": -0.1116,
+          "p_value": 0.4486
+        }
+      }
+    },
+    {
+      "district": "manikganj",
+      "district_name": "Manikganj",
+      "cell_id": "power_cell_12ca6ec5bf56",
+      "cell_hash": "12ca6ec5bf56",
+      "shared_districts": [
+        "manikganj"
+      ],
+      "r_clim_mm_day": 5.56,
+      "wet_season": {
+        "period_1_median_doy": 139.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -17.5,
+        "p_value": 0.0132,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -1.1429,
+          "theil_sen_intercept": 2427.5714,
+          "theil_sen_low_slope": -2.125,
+          "theil_sen_high_slope": -0.2,
+          "kendall_tau": -0.3328,
+          "p_value": 0.0206
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.5,
+        "p_value": 0.4817,
+        "q_value_bh": 0.9263,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.2222,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0842,
+          "p_value": 0.5771
+        }
+      }
+    },
+    {
+      "district": "meherpur",
+      "district_name": "Meherpur",
+      "cell_id": "power_cell_1336c131fbe4",
+      "cell_hash": "1336c131fbe4",
+      "shared_districts": [
+        "meherpur"
+      ],
+      "r_clim_mm_day": 3.99,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -21.5,
+        "p_value": 0.0122,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -1.2843,
+          "theil_sen_intercept": 2711.3235,
+          "theil_sen_low_slope": -2.5789,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3069,
+          "p_value": 0.0332
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 159.0,
+        "shift_days": 4.5,
+        "p_value": 0.7416,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.24,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 157.0,
+          "theil_sen_low_slope": -0.4118,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": 0.0734,
+          "p_value": 0.6196
+        }
+      }
+    },
+    {
+      "district": "moulvibazar",
+      "district_name": "Moulvibazar",
+      "cell_id": "power_cell_ea2cbef0efdb",
+      "cell_hash": "ea2cbef0efdb",
+      "shared_districts": [
+        "moulvibazar"
+      ],
+      "r_clim_mm_day": 8.66,
+      "wet_season": {
+        "period_1_median_doy": 113.0,
+        "period_2_median_doy": 105.0,
+        "shift_days": -8.0,
+        "p_value": 0.2884,
+        "q_value_bh": 0.2884,
+        "trend": {
+          "theil_sen_slope": -0.6583,
+          "theil_sen_intercept": 1438.225,
+          "theil_sen_low_slope": -1.9048,
+          "theil_sen_high_slope": 0.375,
+          "kendall_tau": -0.1678,
+          "p_value": 0.2423
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.3609,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.72,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.1,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1833,
+          "p_value": 0.242
+        }
+      }
+    },
+    {
+      "district": "munshiganj",
+      "district_name": "Munshiganj",
+      "cell_id": "power_cell_2314edbfaf36",
+      "cell_hash": "2314edbfaf36",
+      "shared_districts": [
+        "narayanganj",
+        "dhaka",
+        "munshiganj"
+      ],
+      "r_clim_mm_day": 6.27,
+      "wet_season": {
+        "period_1_median_doy": 137.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -15.0,
+        "p_value": 0.022,
+        "q_value_bh": 0.0355,
+        "trend": {
+          "theil_sen_slope": -1.068,
+          "theil_sen_intercept": 2274.8487,
+          "theil_sen_low_slope": -2.4706,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2741,
+          "p_value": 0.0577
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.5,
+        "p_value": 0.9774,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.0909,
+          "theil_sen_high_slope": 0.1,
+          "kendall_tau": 0.015,
+          "p_value": 0.9222
+        }
+      }
+    },
+    {
+      "district": "mymensingh",
+      "district_name": "Mymensingh",
+      "cell_id": "power_cell_8c92a0675c92",
+      "cell_hash": "8c92a0675c92",
+      "shared_districts": [
+        "kishoreganj",
+        "mymensingh"
+      ],
+      "r_clim_mm_day": 7.15,
+      "wet_season": {
+        "period_1_median_doy": 125.0,
+        "period_2_median_doy": 116.0,
+        "shift_days": -9.0,
+        "p_value": 0.1208,
+        "q_value_bh": 0.1285,
+        "trend": {
+          "theil_sen_slope": -0.5,
+          "theil_sen_intercept": 1123.5,
+          "theil_sen_low_slope": -1.8,
+          "theil_sen_high_slope": 1.0,
+          "kendall_tau": -0.094,
+          "p_value": 0.5127
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.862,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.68,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.0667,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.0542,
+          "p_value": 0.7265
+        }
+      }
+    },
+    {
+      "district": "naogaon",
+      "district_name": "Naogaon",
+      "cell_id": "power_cell_ba550a6185d6",
+      "cell_hash": "ba550a6185d6",
+      "shared_districts": [
+        "naogaon"
+      ],
+      "r_clim_mm_day": 4.14,
+      "wet_season": {
+        "period_1_median_doy": 141.0,
+        "period_2_median_doy": 127.0,
+        "shift_days": -14.0,
+        "p_value": 0.0133,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -0.9057,
+          "theil_sen_intercept": 1953.1776,
+          "theil_sen_low_slope": -2.2143,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.2513,
+          "p_value": 0.0796
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 155.5,
+        "period_2_median_doy": 156.0,
+        "shift_days": 0.5,
+        "p_value": 0.642,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.28,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.375,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": 0.0172,
+          "p_value": 0.9064
+        }
+      }
+    },
+    {
+      "district": "narail",
+      "district_name": "Narail",
+      "cell_id": "power_cell_7a1c3ca39222",
+      "cell_hash": "7a1c3ca39222",
+      "shared_districts": [
+        "jashore",
+        "narail"
+      ],
+      "r_clim_mm_day": 5.06,
+      "wet_season": {
+        "period_1_median_doy": 144.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -22.5,
+        "p_value": 0.0089,
+        "q_value_bh": 0.0234,
+        "trend": {
+          "theil_sen_slope": -1.6471,
+          "theil_sen_intercept": 3441.5294,
+          "theil_sen_low_slope": -2.6667,
+          "theil_sen_high_slope": -0.4167,
+          "kendall_tau": -0.4136,
+          "p_value": 0.0043
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -4.5,
+        "p_value": 0.2592,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0909,
+          "theil_sen_intercept": 339.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1667,
+          "kendall_tau": -0.1219,
+          "p_value": 0.4073
+        }
+      }
+    },
+    {
+      "district": "narayanganj",
+      "district_name": "Narayanganj",
+      "cell_id": "power_cell_2314edbfaf36",
+      "cell_hash": "2314edbfaf36",
+      "shared_districts": [
+        "narayanganj",
+        "dhaka",
+        "munshiganj"
+      ],
+      "r_clim_mm_day": 6.27,
+      "wet_season": {
+        "period_1_median_doy": 137.0,
+        "period_2_median_doy": 122.0,
+        "shift_days": -15.0,
+        "p_value": 0.022,
+        "q_value_bh": 0.0355,
+        "trend": {
+          "theil_sen_slope": -1.068,
+          "theil_sen_intercept": 2274.8487,
+          "theil_sen_low_slope": -2.4706,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2741,
+          "p_value": 0.0577
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": 0.5,
+        "p_value": 0.9774,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.0909,
+          "theil_sen_high_slope": 0.1,
+          "kendall_tau": 0.015,
+          "p_value": 0.9222
+        }
+      }
+    },
+    {
+      "district": "narsingdi",
+      "district_name": "Narsingdi",
+      "cell_id": "power_cell_05d8840c351b",
+      "cell_hash": "05d8840c351b",
+      "shared_districts": [
+        "narsingdi"
+      ],
+      "r_clim_mm_day": 6.18,
+      "wet_season": {
+        "period_1_median_doy": 128.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -6.5,
+        "p_value": 0.0813,
+        "q_value_bh": 0.0968,
+        "trend": {
+          "theil_sen_slope": -0.975,
+          "theil_sen_intercept": 2084.675,
+          "theil_sen_low_slope": -1.9286,
+          "theil_sen_high_slope": 0.1818,
+          "kendall_tau": -0.2462,
+          "p_value": 0.0875
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
-        "p_value": 0.9556,
-        "censored_fraction": 0.48,
+        "p_value": 1.0,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.64,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
-          "theil_sen_low_slope": -0.1429,
-          "theil_sen_high_slope": 0.0909,
-          "kendall_tau": -0.0652,
-          "p_value": 0.6661
-        },
-        "q_value_bh": 1.0
+          "theil_sen_low_slope": -0.0588,
+          "theil_sen_high_slope": 0.0455,
+          "kendall_tau": -0.0192,
+          "p_value": 0.9016
+        }
+      }
+    },
+    {
+      "district": "natore",
+      "district_name": "Natore",
+      "cell_id": "power_cell_bd3a9de1f9c8",
+      "cell_hash": "bd3a9de1f9c8",
+      "shared_districts": [
+        "natore"
+      ],
+      "r_clim_mm_day": 3.97,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -21.5,
+        "p_value": 0.0038,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.0871,
+          "theil_sen_intercept": 2318.375,
+          "theil_sen_low_slope": -2.4,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2983,
+          "p_value": 0.0392
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 158.0,
+        "shift_days": 3.5,
+        "p_value": 0.9344,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.24,
+        "trend": {
+          "theil_sen_slope": 0.125,
+          "theil_sen_intercept": -94.625,
+          "theil_sen_low_slope": -0.2143,
+          "theil_sen_high_slope": 0.5,
+          "kendall_tau": 0.1279,
+          "p_value": 0.3829
+        }
       }
     },
     {
       "district": "netrokona",
       "district_name": "Netrokona",
+      "cell_id": "power_cell_0099334d125c",
+      "cell_hash": "0099334d125c",
+      "shared_districts": [
+        "netrokona"
+      ],
       "r_clim_mm_day": 7.95,
       "wet_season": {
         "period_1_median_doy": 124.0,
         "period_2_median_doy": 107.0,
         "shift_days": -17.0,
         "p_value": 0.0568,
+        "q_value_bh": 0.071,
         "trend": {
           "theil_sen_slope": -1.0,
           "theil_sen_intercept": 2130.0,
@@ -2284,14 +3913,14 @@
           "theil_sen_high_slope": 0.3478,
           "kendall_tau": -0.2074,
           "p_value": 0.1474
-        },
-        "q_value_bh": 0.0686
+        }
       },
       "aman": {
         "period_1_median_doy": 153.0,
         "period_2_median_doy": 153.0,
         "shift_days": 0.0,
         "p_value": 1.0,
+        "q_value_bh": 1.0,
         "censored_fraction": 0.6,
         "trend": {
           "theil_sen_slope": -0.0,
@@ -2300,8 +3929,756 @@
           "theil_sen_high_slope": -0.0,
           "kendall_tau": -0.0902,
           "p_value": 0.5576
-        },
-        "q_value_bh": 1.0
+        }
+      }
+    },
+    {
+      "district": "nilphamari",
+      "district_name": "Nilphamari",
+      "cell_id": "power_cell_e8903a1b3dd1",
+      "cell_hash": "e8903a1b3dd1",
+      "shared_districts": [
+        "nilphamari"
+      ],
+      "r_clim_mm_day": 5.68,
+      "wet_season": {
+        "period_1_median_doy": 145.0,
+        "period_2_median_doy": 130.0,
+        "shift_days": -15.0,
+        "p_value": 0.0036,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.5,
+          "theil_sen_intercept": 3157.5,
+          "theil_sen_low_slope": -2.6,
+          "theil_sen_high_slope": -0.6154,
+          "kendall_tau": -0.4538,
+          "p_value": 0.0016
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3055,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1,
+          "theil_sen_intercept": 354.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2568,
+          "p_value": 0.086
+        }
+      }
+    },
+    {
+      "district": "noakhali",
+      "district_name": "Noakhali",
+      "cell_id": "power_cell_1aec56c7b1c7",
+      "cell_hash": "1aec56c7b1c7",
+      "shared_districts": [
+        "noakhali"
+      ],
+      "r_clim_mm_day": 7.9,
+      "wet_season": {
+        "period_1_median_doy": 141.5,
+        "period_2_median_doy": 128.0,
+        "shift_days": -13.5,
+        "p_value": 0.0315,
+        "q_value_bh": 0.0426,
+        "trend": {
+          "theil_sen_slope": -1.3604,
+          "theil_sen_intercept": 2871.4643,
+          "theil_sen_low_slope": -2.4286,
+          "theil_sen_high_slope": -0.0909,
+          "kendall_tau": -0.3126,
+          "p_value": 0.0296
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.5829,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.64,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.125,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1229,
+          "p_value": 0.4252
+        }
+      }
+    },
+    {
+      "district": "pabna",
+      "district_name": "Pabna",
+      "cell_id": "power_cell_1d9fcf2d33aa",
+      "cell_hash": "1d9fcf2d33aa",
+      "shared_districts": [
+        "pabna",
+        "kushtia",
+        "rajbari"
+      ],
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 149.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -26.0,
+        "p_value": 0.0274,
+        "q_value_bh": 0.0393,
+        "trend": {
+          "theil_sen_slope": -1.4048,
+          "theil_sen_intercept": 2953.7857,
+          "theil_sen_low_slope": -2.75,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.28,
+          "p_value": 0.0521
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -0.5,
+        "p_value": 0.3466,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1111,
+          "kendall_tau": -0.0991,
+          "p_value": 0.5047
+        }
+      }
+    },
+    {
+      "district": "panchagarh",
+      "district_name": "Panchagarh",
+      "cell_id": "power_cell_9dbf3033f2ec",
+      "cell_hash": "9dbf3033f2ec",
+      "shared_districts": [
+        "panchagarh"
+      ],
+      "r_clim_mm_day": 6.08,
+      "wet_season": {
+        "period_1_median_doy": 149.0,
+        "period_2_median_doy": 124.0,
+        "shift_days": -25.0,
+        "p_value": 0.0008,
+        "q_value_bh": 0.0112,
+        "trend": {
+          "theil_sen_slope": -2.4965,
+          "theil_sen_intercept": 5163.4368,
+          "theil_sen_low_slope": -3.4545,
+          "theil_sen_high_slope": -1.2941,
+          "kendall_tau": -0.5819,
+          "p_value": 0.0
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 155.0,
+        "shift_days": 0.5,
+        "p_value": 0.4557,
+        "q_value_bh": 0.9263,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1111,
+          "theil_sen_intercept": 378.6667,
+          "theil_sen_low_slope": -0.5333,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2376,
+          "p_value": 0.111
+        }
+      }
+    },
+    {
+      "district": "patuakhali",
+      "district_name": "Patuakhali",
+      "cell_id": "power_cell_b6d56f7d1c70",
+      "cell_hash": "b6d56f7d1c70",
+      "shared_districts": [
+        "patuakhali",
+        "barisal",
+        "bhola"
+      ],
+      "r_clim_mm_day": 8.15,
+      "wet_season": {
+        "period_1_median_doy": 151.0,
+        "period_2_median_doy": 128.0,
+        "shift_days": -23.0,
+        "p_value": 0.0039,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.5774,
+          "theil_sen_intercept": 3317.2679,
+          "theil_sen_low_slope": -2.8571,
+          "theil_sen_high_slope": -0.5556,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -5.0,
+        "p_value": 0.0274,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.1938,
+          "theil_sen_intercept": 544.0187,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.3145,
+          "p_value": 0.0365
+        }
+      }
+    },
+    {
+      "district": "pirojpur",
+      "district_name": "Pirojpur",
+      "cell_id": "power_cell_1d6a3c4a287a",
+      "cell_hash": "1d6a3c4a287a",
+      "shared_districts": [
+        "bagerhat",
+        "pirojpur"
+      ],
+      "r_clim_mm_day": 6.66,
+      "wet_season": {
+        "period_1_median_doy": 157.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -34.0,
+        "p_value": 0.0008,
+        "q_value_bh": 0.0112,
+        "trend": {
+          "theil_sen_slope": -1.8918,
+          "theil_sen_intercept": 3951.2193,
+          "theil_sen_low_slope": -3.0833,
+          "theil_sen_high_slope": -0.5882,
+          "kendall_tau": -0.3933,
+          "p_value": 0.0062
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 158.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": -5.0,
+        "p_value": 0.0217,
+        "q_value_bh": 0.3425,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1909,
+          "theil_sen_intercept": 539.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2854,
+          "p_value": 0.0567
+        }
+      }
+    },
+    {
+      "district": "rajbari",
+      "district_name": "Rajbari",
+      "cell_id": "power_cell_1d9fcf2d33aa",
+      "cell_hash": "1d9fcf2d33aa",
+      "shared_districts": [
+        "pabna",
+        "kushtia",
+        "rajbari"
+      ],
+      "r_clim_mm_day": 4.78,
+      "wet_season": {
+        "period_1_median_doy": 149.0,
+        "period_2_median_doy": 123.0,
+        "shift_days": -26.0,
+        "p_value": 0.0274,
+        "q_value_bh": 0.0393,
+        "trend": {
+          "theil_sen_slope": -1.4048,
+          "theil_sen_intercept": 2953.7857,
+          "theil_sen_low_slope": -2.75,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.28,
+          "p_value": 0.0521
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 154.0,
+        "shift_days": -0.5,
+        "p_value": 0.3466,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.36,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 154.0,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": 0.1111,
+          "kendall_tau": -0.0991,
+          "p_value": 0.5047
+        }
+      }
+    },
+    {
+      "district": "rajshahi",
+      "district_name": "Rajshahi",
+      "cell_id": "power_cell_afdf353b0768",
+      "cell_hash": "afdf353b0768",
+      "shared_districts": [
+        "rajshahi"
+      ],
+      "r_clim_mm_day": 3.97,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 122.0,
+        "shift_days": -21.5,
+        "p_value": 0.0038,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.0871,
+          "theil_sen_intercept": 2318.375,
+          "theil_sen_low_slope": -2.4,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2983,
+          "p_value": 0.0392
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 154.5,
+        "period_2_median_doy": 158.0,
+        "shift_days": 3.5,
+        "p_value": 0.9344,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.24,
+        "trend": {
+          "theil_sen_slope": 0.125,
+          "theil_sen_intercept": -94.625,
+          "theil_sen_low_slope": -0.2143,
+          "theil_sen_high_slope": 0.5,
+          "kendall_tau": 0.1279,
+          "p_value": 0.3829
+        }
+      }
+    },
+    {
+      "district": "rangamati",
+      "district_name": "Rangamati",
+      "cell_id": "power_cell_75c6828649b1",
+      "cell_hash": "75c6828649b1",
+      "shared_districts": [
+        "rangamati"
+      ],
+      "r_clim_mm_day": 8.65,
+      "wet_season": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 133.0,
+        "shift_days": -20.5,
+        "p_value": 0.0192,
+        "q_value_bh": 0.0343,
+        "trend": {
+          "theil_sen_slope": -1.5941,
+          "theil_sen_intercept": 3347.9588,
+          "theil_sen_low_slope": -2.8947,
+          "theil_sen_high_slope": -0.4,
+          "kendall_tau": -0.3462,
+          "p_value": 0.016
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.5,
+        "p_value": 0.1139,
+        "q_value_bh": 0.6328,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0557,
+          "theil_sen_intercept": 265.1796,
+          "theil_sen_low_slope": -0.3333,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2407,
+          "p_value": 0.1138
+        }
+      }
+    },
+    {
+      "district": "rangpur",
+      "district_name": "Rangpur",
+      "cell_id": "power_cell_d737219606d6",
+      "cell_hash": "d737219606d6",
+      "shared_districts": [
+        "gaibandha",
+        "rangpur"
+      ],
+      "r_clim_mm_day": 5.59,
+      "wet_season": {
+        "period_1_median_doy": 135.5,
+        "period_2_median_doy": 116.0,
+        "shift_days": -19.5,
+        "p_value": 0.0207,
+        "q_value_bh": 0.0345,
+        "trend": {
+          "theil_sen_slope": -1.3333,
+          "theil_sen_intercept": 2807.0,
+          "theil_sen_low_slope": -2.6471,
+          "theil_sen_high_slope": -0.0556,
+          "kendall_tau": -0.2982,
+          "p_value": 0.0375
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.8018,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1875,
+          "theil_sen_high_slope": 0.0556,
+          "kendall_tau": -0.088,
+          "p_value": 0.5641
+        }
+      }
+    },
+    {
+      "district": "satkhira",
+      "district_name": "Satkhira",
+      "cell_id": "power_cell_6f7816b92dec",
+      "cell_hash": "6f7816b92dec",
+      "shared_districts": [
+        "satkhira"
+      ],
+      "r_clim_mm_day": 5.56,
+      "wet_season": {
+        "period_1_median_doy": 160.5,
+        "period_2_median_doy": 126.0,
+        "shift_days": -34.5,
+        "p_value": 0.0042,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.6375,
+          "theil_sen_intercept": 3439.2875,
+          "theil_sen_low_slope": -2.9375,
+          "theil_sen_high_slope": -0.1429,
+          "kendall_tau": -0.3474,
+          "p_value": 0.0159
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 157.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -4.5,
+        "p_value": 0.2474,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.4,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 156.0,
+          "theil_sen_low_slope": -0.4615,
+          "theil_sen_high_slope": 0.375,
+          "kendall_tau": -0.091,
+          "p_value": 0.5379
+        }
+      }
+    },
+    {
+      "district": "shariatpur",
+      "district_name": "Shariatpur",
+      "cell_id": "power_cell_095daf5a2f12",
+      "cell_hash": "095daf5a2f12",
+      "shared_districts": [
+        "chandpur",
+        "shariatpur"
+      ],
+      "r_clim_mm_day": 6.96,
+      "wet_season": {
+        "period_1_median_doy": 143.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -20.5,
+        "p_value": 0.0143,
+        "q_value_bh": 0.0275,
+        "trend": {
+          "theil_sen_slope": -1.5489,
+          "theil_sen_intercept": 3252.8797,
+          "theil_sen_low_slope": -2.8333,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3411,
+          "p_value": 0.0171
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3515,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.2667,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1222,
+          "p_value": 0.4221
+        }
+      }
+    },
+    {
+      "district": "sherpur",
+      "district_name": "Sherpur",
+      "cell_id": "power_cell_9ecc7e671c46",
+      "cell_hash": "9ecc7e671c46",
+      "shared_districts": [
+        "sherpur"
+      ],
+      "r_clim_mm_day": 6.23,
+      "wet_season": {
+        "period_1_median_doy": 138.5,
+        "period_2_median_doy": 116.0,
+        "shift_days": -22.5,
+        "p_value": 0.006,
+        "q_value_bh": 0.0187,
+        "trend": {
+          "theil_sen_slope": -1.1603,
+          "theil_sen_intercept": 2459.5962,
+          "theil_sen_low_slope": -2.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2781,
+          "p_value": 0.0524
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.9556,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.48,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1429,
+          "theil_sen_high_slope": 0.0909,
+          "kendall_tau": -0.0652,
+          "p_value": 0.6661
+        }
+      }
+    },
+    {
+      "district": "sirajganj",
+      "district_name": "Sirajganj",
+      "cell_id": "power_cell_402efe017c2b",
+      "cell_hash": "402efe017c2b",
+      "shared_districts": [
+        "sirajganj",
+        "tangail"
+      ],
+      "r_clim_mm_day": 5.92,
+      "wet_season": {
+        "period_1_median_doy": 140.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -17.5,
+        "p_value": 0.0023,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.1847,
+          "theil_sen_intercept": 2509.7188,
+          "theil_sen_low_slope": -2.3125,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3272,
+          "p_value": 0.0232
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.9106,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1111,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0331,
+          "p_value": 0.8278
+        }
+      }
+    },
+    {
+      "district": "sunamganj",
+      "district_name": "Sunamganj",
+      "cell_id": "power_cell_c76942a529ec",
+      "cell_hash": "c76942a529ec",
+      "shared_districts": [
+        "sunamganj"
+      ],
+      "r_clim_mm_day": 10.48,
+      "wet_season": {
+        "period_1_median_doy": 114.5,
+        "period_2_median_doy": 105.0,
+        "shift_days": -9.5,
+        "p_value": 0.1417,
+        "q_value_bh": 0.1476,
+        "trend": {
+          "theil_sen_slope": -0.7947,
+          "theil_sen_intercept": 1712.8053,
+          "theil_sen_low_slope": -2.0625,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": -0.1709,
+          "p_value": 0.2332
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.4794,
+        "q_value_bh": 0.9263,
+        "censored_fraction": 0.72,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.0769,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1514,
+          "p_value": 0.3338
+        }
+      }
+    },
+    {
+      "district": "sylhet",
+      "district_name": "Sylhet",
+      "cell_id": "power_cell_02641a801846",
+      "cell_hash": "02641a801846",
+      "shared_districts": [
+        "sylhet"
+      ],
+      "r_clim_mm_day": 10.83,
+      "wet_season": {
+        "period_1_median_doy": 114.5,
+        "period_2_median_doy": 105.0,
+        "shift_days": -9.5,
+        "p_value": 0.1207,
+        "q_value_bh": 0.1285,
+        "trend": {
+          "theil_sen_slope": -0.7596,
+          "theil_sen_intercept": 1637.1058,
+          "theil_sen_low_slope": -2.0769,
+          "theil_sen_high_slope": 0.3846,
+          "kendall_tau": -0.1916,
+          "p_value": 0.1825
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 152.0,
+        "shift_days": -1.0,
+        "p_value": 0.4794,
+        "q_value_bh": 0.9263,
+        "censored_fraction": 0.72,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 152.0,
+          "theil_sen_low_slope": -0.0769,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.1514,
+          "p_value": 0.3338
+        }
+      }
+    },
+    {
+      "district": "tangail",
+      "district_name": "Tangail",
+      "cell_id": "power_cell_402efe017c2b",
+      "cell_hash": "402efe017c2b",
+      "shared_districts": [
+        "sirajganj",
+        "tangail"
+      ],
+      "r_clim_mm_day": 5.92,
+      "wet_season": {
+        "period_1_median_doy": 140.5,
+        "period_2_median_doy": 123.0,
+        "shift_days": -17.5,
+        "p_value": 0.0023,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.1847,
+          "theil_sen_intercept": 2509.7188,
+          "theil_sen_low_slope": -2.3125,
+          "theil_sen_high_slope": -0.1667,
+          "kendall_tau": -0.3272,
+          "p_value": 0.0232
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.0,
+        "period_2_median_doy": 153.0,
+        "shift_days": 0.0,
+        "p_value": 0.9106,
+        "q_value_bh": 1.0,
+        "censored_fraction": 0.56,
+        "trend": {
+          "theil_sen_slope": -0.0,
+          "theil_sen_intercept": 153.0,
+          "theil_sen_low_slope": -0.1111,
+          "theil_sen_high_slope": 0.0833,
+          "kendall_tau": -0.0331,
+          "p_value": 0.8278
+        }
+      }
+    },
+    {
+      "district": "thakurgaon",
+      "district_name": "Thakurgaon",
+      "cell_id": "power_cell_c90f0b18adac",
+      "cell_hash": "c90f0b18adac",
+      "shared_districts": [
+        "thakurgaon"
+      ],
+      "r_clim_mm_day": 5.68,
+      "wet_season": {
+        "period_1_median_doy": 145.0,
+        "period_2_median_doy": 130.0,
+        "shift_days": -15.0,
+        "p_value": 0.0036,
+        "q_value_bh": 0.015,
+        "trend": {
+          "theil_sen_slope": -1.5,
+          "theil_sen_intercept": 3157.5,
+          "theil_sen_low_slope": -2.6,
+          "theil_sen_high_slope": -0.6154,
+          "kendall_tau": -0.4538,
+          "p_value": 0.0016
+        }
+      },
+      "aman": {
+        "period_1_median_doy": 153.5,
+        "period_2_median_doy": 153.0,
+        "shift_days": -0.5,
+        "p_value": 0.3055,
+        "q_value_bh": 0.8593,
+        "censored_fraction": 0.44,
+        "trend": {
+          "theil_sen_slope": -0.1,
+          "theil_sen_intercept": 354.3,
+          "theil_sen_low_slope": -0.5,
+          "theil_sen_high_slope": -0.0,
+          "kendall_tau": -0.2568,
+          "p_value": 0.086
+        }
       }
     }
   ]

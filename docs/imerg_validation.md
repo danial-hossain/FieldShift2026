@@ -21,6 +21,6 @@ When an Earthdata environment with credentials is provided, the cross-validation
 3. Both onset definitions:
    - Objective Anomalous Accumulation: $A(d) = \sum_{1\text{ Mar}}^d (R(t) - R_{\text{clim}})$, DOY of minimum $A$.
    - Agronomic Aman 3-day $\ge 25$ mm starting June 1 with 21-day dry spell lookahead.
-4. Primary Findings from NASA POWER (64 Districts, 2001–2025):
-   - 50 of 64 districts show statistically significant pre-monsoon advances ($q < 0.05$ under Benjamini-Hochberg FDR control).
-   - Conventional June 1 fixed-window Aman onset shows no statistically significant change across any district ($q \ge 0.05$ or censored).
+4. Primary Findings from NASA POWER (50 Unique Grid Cells across 64 Districts, 2001–2025):
+   - 38 of 50 unique grid cells (covering 50 of 64 districts) show statistically significant pre-monsoon advances ($q < 0.05$ under Benjamini-Hochberg FDR control).
+   - Conventional June 1 fixed-window Aman onset shows no statistically significant change across any unique cell or district ($q \ge 0.05$ or censored).
