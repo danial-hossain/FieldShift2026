@@ -3218,7 +3218,7 @@ export function App() {
                 <footer className="dashboard-footer-note" style={{ gridColumn: 'span 12', color: 'var(--text-dim)' }}>
                   <p>FieldShift Autonomous Agronomy Suite — MILP Allocations, NASA POWER Satellite Feeds & Scientific Decision Support.</p>
                   <p style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: 4 }}>
-                    Background: NASA GIBS / Worldview, VIIRS NOAA-20 true colour, Bangladesh, 2024-01-20
+                    Background: NASA GIBS / Worldview, VIIRS NOAA-20 Corrected Reflectance True Color, Rajshahi Farmland Grid, 2024-01-20
                   </p>
                 </footer>
               </div>

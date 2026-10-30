@@ -13926,7 +13926,7 @@ h1, h2, h3, h4, h5, h6 {
   --surface-card: rgba(16, 28, 22, 0.86);
   --glass: rgba(16, 28, 22, 0.86);
   --glass-strong: rgba(20, 36, 28, 0.92);
-  --nasa-bg: url('/bg/bangladesh_viirs_2024-01-20_bg.webp');
+  --nasa-bg: url('/bg/nasa_rajshahi_aerial_bg.webp');
   --line: rgba(255, 255, 255, 0.08);
   --text: #eef3ee;
   --text-2: rgba(238, 243, 238, 0.68);
@@ -13999,7 +13999,7 @@ h1, h2, h3, h4, h5, h6 {
 .nasa-bg-image {
   position: absolute;
   inset: -30px;
-  background-image: var(--nasa-bg, url('/bg/bangladesh_viirs_2024-01-20_bg.webp'));
+  background-image: linear-gradient(180deg, rgba(7, 18, 13, 0.55), rgba(7, 18, 13, 0.85)), var(--nasa-bg, url('/bg/nasa_rajshahi_aerial_bg.webp'));
   background-size: cover;
   background-position: center;
   filter: none;
