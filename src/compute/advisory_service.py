@@ -426,6 +426,9 @@ def build_planting_advisory(
         "comparison": comparison,
         "trend": aman_trend,
         "censored_fraction": censored_fraction,
+        "data_warning_en": comparison.get("data_warning_en"),
+        "data_warning_bn": comparison.get("data_warning_bn"),
+        "data_warning": comparison.get("data_warning_bn") if lang == "bn" else comparison.get("data_warning_en"),
         "q_value_bh": comparison.get("q_value_bh"),
     }
 
@@ -547,6 +550,9 @@ def build_planting_advisory(
             "series": p2_data["onsets"],
         },
         "comparison": comparison,
+        "data_warning_bn": comparison.get("data_warning_bn"),
+        "data_warning_en": comparison.get("data_warning_en"),
+        "data_warning": comparison.get("data_warning_bn") if lang == "bn" else comparison.get("data_warning_en"),
         "aman_onset": aman_onset,
         "wet_season_onset": wet_season_onset,
         "gdd_context": gdd_context,

@@ -108,3 +108,31 @@ def test_9_all_districts_crops_sms_length_and_name_bn():
             assert len(sms) <= 160, f"SMS too long ({len(sms)} chars) for {dist_id} {crop_id}: {sms}"
             assert name_bn in sms, f"Bengali district name '{name_bn}' not found in SMS for {dist_id} {crop_id}: {sms}"
 
+
+def test_10_dinajpur_and_satkhira_aman_censored_data_warning():
+    """10 When Aman censored_fraction > 0.30, data_warning must appear (Dinajpur 36%, Satkhira 40%)."""
+    for dist_id, min_frac in [("dinajpur", 0.35), ("satkhira", 0.38)]:
+        advisory = build_planting_advisory(dist_id, "aman", offline=True)
+        comp = advisory["comparison"]
+        rec = advisory["recommendation"]
+
+        assert comp["censored_fraction"] > 0.30
+        assert comp["censored_fraction"] >= min_frac
+        assert comp["status"] == "unreliable_window_censored"
+
+        assert "data_warning_bn" in comp and comp["data_warning_bn"]
+        assert "data_warning_en" in comp and comp["data_warning_en"]
+
+        assert "data_warning_bn" in rec and rec["data_warning_bn"]
+        assert "data_warning_en" in rec and rec["data_warning_en"]
+
+        assert "data_warning_bn" in advisory and advisory["data_warning_bn"]
+        assert "data_warning_en" in advisory and advisory["data_warning_en"]
+
+        # Also verify API endpoint surfaces data_warning
+        resp = client.get(f"/api/advisory?district={dist_id}&crop=aman&offline=true").json()
+        assert resp["comparison"]["data_warning_bn"]
+        assert resp["recommendation"]["data_warning_bn"]
+        assert resp["data_warning_bn"]
+
+

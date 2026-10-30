@@ -186,6 +186,18 @@ def analyze_all_64_districts() -> Dict[str, Any]:
         aman_trend = compute_mann_kendall_theil_sen([x["year"] for x in aman_series], [x["doy"] for x in aman_series])
         censored_frac = round(censored_count / valid_aman, 3) if valid_aman > 0 else 0.0
 
+        aman_cell = {
+            "period_1_median_doy": p1_aman_med,
+            "period_2_median_doy": p2_aman_med,
+            "shift_days": shift_aman,
+            "p_value": round(p_aman, 4),
+            "censored_fraction": censored_frac,
+            "trend": aman_trend,
+        }
+        if censored_frac > 0.30:
+            aman_cell["data_warning_en"] = f"Onset detection is unreliable here: in {censored_count} of {valid_aman} years the detected onset fell on the first day of the search window."
+            aman_cell["data_warning_bn"] = f"সতর্কতা: {valid_aman} বছরের মধ্যে {censored_count} বছরে বর্ষা শুরুর তারিখ অনুসন্ধানের প্রথম দিনেই পড়েছে, তাই এই ফলাফল নির্ভরযোগ্য নয়।"
+
         unique_cells_data.append({
             "cell_id": f"power_cell_{cell_hash}",
             "cell_hash": cell_hash,
@@ -199,14 +211,7 @@ def analyze_all_64_districts() -> Dict[str, Any]:
                 "p_value": round(p_anom, 4),
                 "trend": anom_trend,
             },
-            "aman": {
-                "period_1_median_doy": p1_aman_med,
-                "period_2_median_doy": p2_aman_med,
-                "shift_days": shift_aman,
-                "p_value": round(p_aman, 4),
-                "censored_fraction": censored_frac,
-                "trend": aman_trend,
-            },
+            "aman": aman_cell,
         })
 
     # Benjamini-Hochberg FDR correction across unique grid cells only (n=50)
@@ -252,6 +257,8 @@ def analyze_all_64_districts() -> Dict[str, Any]:
                 "p_value": c["aman"]["p_value"],
                 "q_value_bh": c["aman"]["q_value_bh"],
                 "censored_fraction": c["aman"]["censored_fraction"],
+                "data_warning_en": c["aman"].get("data_warning_en"),
+                "data_warning_bn": c["aman"].get("data_warning_bn"),
                 "trend": c["aman"]["trend"],
             },
         })

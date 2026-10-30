@@ -44,6 +44,8 @@
           "kendall_tau": -0.0902,
           "p_value": 0.5576
         },
+        "data_warning_en": "Onset detection is unreliable here: in 15 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 15 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -84,6 +86,8 @@
           "kendall_tau": -0.1514,
           "p_value": 0.3338
         },
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.9263
       }
     },
@@ -124,6 +128,8 @@
           "kendall_tau": -0.0192,
           "p_value": 0.9016
         },
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -165,6 +171,8 @@
           "kendall_tau": -0.1222,
           "p_value": 0.4221
         },
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -205,6 +213,8 @@
           "kendall_tau": -0.0652,
           "p_value": 0.6661
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -245,6 +255,8 @@
           "kendall_tau": -0.0842,
           "p_value": 0.5771
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.9263
       }
     },
@@ -325,6 +337,8 @@
           "kendall_tau": -0.1229,
           "p_value": 0.4252
         },
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -365,6 +379,8 @@
           "kendall_tau": -0.1219,
           "p_value": 0.4073
         },
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -406,6 +422,8 @@
           "kendall_tau": -0.2854,
           "p_value": 0.0567
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.3425
       }
     },
@@ -448,6 +466,8 @@
           "kendall_tau": -0.0991,
           "p_value": 0.5047
         },
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -490,6 +510,8 @@
           "kendall_tau": 0.015,
           "p_value": 0.9222
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -530,6 +552,8 @@
           "kendall_tau": -0.1318,
           "p_value": 0.3896
         },
+        "data_warning_en": "Onset detection is unreliable here: in 15 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 15 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -570,6 +594,8 @@
           "kendall_tau": -0.0192,
           "p_value": 0.9016
         },
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -610,6 +636,8 @@
           "kendall_tau": 0.004,
           "p_value": 0.9797
         },
+        "data_warning_en": "Onset detection is unreliable here: in 17 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 17 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -691,6 +719,8 @@
           "kendall_tau": -0.0331,
           "p_value": 0.8278
         },
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -731,6 +761,8 @@
           "kendall_tau": -0.0713,
           "p_value": 0.6334
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -771,6 +803,8 @@
           "kendall_tau": -0.1229,
           "p_value": 0.4252
         },
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -811,6 +845,8 @@
           "kendall_tau": -0.0379,
           "p_value": 0.8055
         },
+        "data_warning_en": "Onset detection is unreliable here: in 15 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 15 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -851,6 +887,8 @@
           "kendall_tau": -0.329,
           "p_value": 0.0292
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.3425
       }
     },
@@ -891,6 +929,8 @@
           "kendall_tau": -0.091,
           "p_value": 0.5379
         },
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -931,6 +971,8 @@
           "kendall_tau": -0.2407,
           "p_value": 0.1138
         },
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.6328
       }
     },
@@ -972,6 +1014,8 @@
           "kendall_tau": -0.1219,
           "p_value": 0.4073
         },
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1012,6 +1056,8 @@
           "kendall_tau": -0.1222,
           "p_value": 0.4221
         },
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1053,6 +1099,8 @@
           "kendall_tau": -0.0542,
           "p_value": 0.7265
         },
+        "data_warning_en": "Onset detection is unreliable here: in 17 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 17 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -1093,6 +1141,8 @@
           "kendall_tau": -0.1797,
           "p_value": 0.2522
         },
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.892
       }
     },
@@ -1134,6 +1184,8 @@
           "kendall_tau": -0.0972,
           "p_value": 0.5189
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -1174,6 +1226,8 @@
           "kendall_tau": -0.0772,
           "p_value": 0.6205
         },
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -1214,6 +1268,8 @@
           "kendall_tau": -0.2376,
           "p_value": 0.111
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.9263
       }
     },
@@ -1254,6 +1310,8 @@
           "kendall_tau": -0.0652,
           "p_value": 0.6661
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -1336,6 +1394,8 @@
           "kendall_tau": -0.3145,
           "p_value": 0.0365
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.3425
       }
     },
@@ -1376,6 +1436,8 @@
           "kendall_tau": -0.2854,
           "p_value": 0.0567
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.3425
       }
     },
@@ -1496,6 +1558,8 @@
           "kendall_tau": -0.1602,
           "p_value": 0.2829
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.4521
       }
     },
@@ -1536,6 +1600,8 @@
           "kendall_tau": 0.0105,
           "p_value": 0.9434
         },
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -1576,6 +1642,8 @@
           "kendall_tau": -0.1514,
           "p_value": 0.3338
         },
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.9263
       }
     },
@@ -1616,6 +1684,8 @@
           "kendall_tau": -0.2568,
           "p_value": 0.086
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1737,6 +1807,8 @@
           "kendall_tau": -0.088,
           "p_value": 0.5641
         },
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 1.0
       }
     },
@@ -1777,6 +1849,8 @@
           "kendall_tau": -0.0832,
           "p_value": 0.5802
         },
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1818,6 +1892,8 @@
           "kendall_tau": -0.1116,
           "p_value": 0.4486
         },
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1858,6 +1934,8 @@
           "kendall_tau": -0.3767,
           "p_value": 0.0121
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.349
       }
     },
@@ -1898,6 +1976,8 @@
           "kendall_tau": -0.2568,
           "p_value": 0.086
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1938,6 +2018,8 @@
           "kendall_tau": -0.1833,
           "p_value": 0.242
         },
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.8593
       }
     },
@@ -1978,6 +2060,8 @@
           "kendall_tau": -0.1602,
           "p_value": 0.2829
         },
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.4521
       }
     },
@@ -2018,6 +2102,8 @@
           "kendall_tau": -0.2407,
           "p_value": 0.1138
         },
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "q_value_bh": 0.6328
       }
     }
@@ -2055,6 +2141,8 @@
         "p_value": 0.0217,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1909,
           "theil_sen_intercept": 539.3,
@@ -2096,6 +2184,8 @@
         "p_value": 0.0349,
         "q_value_bh": 0.349,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.2361,
           "theil_sen_intercept": 629.2917,
@@ -2137,6 +2227,8 @@
         "p_value": 0.0155,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.2,
           "theil_sen_intercept": 557.6,
@@ -2180,6 +2272,8 @@
         "p_value": 0.0274,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1938,
           "theil_sen_intercept": 544.0187,
@@ -2223,6 +2317,8 @@
         "p_value": 0.0274,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1938,
           "theil_sen_intercept": 544.0187,
@@ -2264,6 +2360,8 @@
         "p_value": 0.8463,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2305,6 +2403,8 @@
         "p_value": 0.8408,
         "q_value_bh": 1.0,
         "censored_fraction": 0.64,
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2347,6 +2447,8 @@
         "p_value": 0.3515,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2388,6 +2490,8 @@
         "p_value": 0.1557,
         "q_value_bh": 0.7785,
         "censored_fraction": 0.16,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": 0.5,
           "theil_sen_intercept": -842.5,
@@ -2429,6 +2533,8 @@
         "p_value": 0.1139,
         "q_value_bh": 0.6328,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0557,
           "theil_sen_intercept": 265.1796,
@@ -2470,6 +2576,8 @@
         "p_value": 0.5661,
         "q_value_bh": 1.0,
         "censored_fraction": 0.2,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 163.0,
@@ -2511,6 +2619,8 @@
         "p_value": 0.953,
         "q_value_bh": 1.0,
         "censored_fraction": 0.68,
+        "data_warning_en": "Onset detection is unreliable here: in 17 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 17 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 152.0,
@@ -2552,6 +2662,8 @@
         "p_value": 0.7972,
         "q_value_bh": 1.0,
         "censored_fraction": 0.6,
+        "data_warning_en": "Onset detection is unreliable here: in 15 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 15 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2595,6 +2707,8 @@
         "p_value": 0.9774,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -2636,6 +2750,8 @@
         "p_value": 0.9561,
         "q_value_bh": 1.0,
         "censored_fraction": 0.36,
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 156.0,
@@ -2677,6 +2793,8 @@
         "p_value": 0.2299,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.4,
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -2718,6 +2836,8 @@
         "p_value": 0.5829,
         "q_value_bh": 1.0,
         "censored_fraction": 0.64,
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2760,6 +2880,8 @@
         "p_value": 0.8018,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2801,6 +2923,8 @@
         "p_value": 1.0,
         "q_value_bh": 1.0,
         "censored_fraction": 0.64,
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2842,6 +2966,8 @@
         "p_value": 0.0633,
         "q_value_bh": 0.4521,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0839,
           "theil_sen_intercept": 323.9231,
@@ -2883,6 +3009,8 @@
         "p_value": 0.3925,
         "q_value_bh": 0.892,
         "censored_fraction": 0.72,
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 152.0,
@@ -2924,6 +3052,8 @@
         "p_value": 0.9556,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -2966,6 +3096,8 @@
         "p_value": 0.2592,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.4,
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0909,
           "theil_sen_intercept": 339.0,
@@ -3007,6 +3139,8 @@
         "p_value": 0.0217,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1909,
           "theil_sen_intercept": 539.3,
@@ -3049,6 +3183,8 @@
         "p_value": 0.2155,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.36,
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0718,
           "theil_sen_intercept": 299.5231,
@@ -3090,6 +3226,8 @@
         "p_value": 0.642,
         "q_value_bh": 1.0,
         "censored_fraction": 0.28,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 156.0,
@@ -3131,6 +3269,8 @@
         "p_value": 0.7975,
         "q_value_bh": 1.0,
         "censored_fraction": 0.6,
+        "data_warning_en": "Onset detection is unreliable here: in 15 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 15 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3172,6 +3312,8 @@
         "p_value": 0.2592,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.4,
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0909,
           "theil_sen_intercept": 339.0,
@@ -3214,6 +3356,8 @@
         "p_value": 0.862,
         "q_value_bh": 1.0,
         "censored_fraction": 0.68,
+        "data_warning_en": "Onset detection is unreliable here: in 17 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 17 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3256,6 +3400,8 @@
         "p_value": 0.8678,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3299,6 +3445,8 @@
         "p_value": 0.3466,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.36,
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -3340,6 +3488,8 @@
         "p_value": 0.3515,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3382,6 +3532,8 @@
         "p_value": 0.8678,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3423,6 +3575,8 @@
         "p_value": 0.0633,
         "q_value_bh": 0.4521,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0839,
           "theil_sen_intercept": 323.9231,
@@ -3465,6 +3619,8 @@
         "p_value": 0.2155,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.36,
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0718,
           "theil_sen_intercept": 299.5231,
@@ -3506,6 +3662,8 @@
         "p_value": 0.4817,
         "q_value_bh": 0.9263,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -3547,6 +3705,8 @@
         "p_value": 0.7416,
         "q_value_bh": 1.0,
         "censored_fraction": 0.24,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 157.0,
@@ -3588,6 +3748,8 @@
         "p_value": 0.3609,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.72,
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 152.0,
@@ -3631,6 +3793,8 @@
         "p_value": 0.9774,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -3673,6 +3837,8 @@
         "p_value": 0.862,
         "q_value_bh": 1.0,
         "censored_fraction": 0.68,
+        "data_warning_en": "Onset detection is unreliable here: in 17 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 17 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3714,6 +3880,8 @@
         "p_value": 0.642,
         "q_value_bh": 1.0,
         "censored_fraction": 0.28,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 156.0,
@@ -3756,6 +3924,8 @@
         "p_value": 0.2592,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.4,
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0909,
           "theil_sen_intercept": 339.0,
@@ -3799,6 +3969,8 @@
         "p_value": 0.9774,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -3840,6 +4012,8 @@
         "p_value": 1.0,
         "q_value_bh": 1.0,
         "censored_fraction": 0.64,
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3881,6 +4055,8 @@
         "p_value": 0.9344,
         "q_value_bh": 1.0,
         "censored_fraction": 0.24,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": 0.125,
           "theil_sen_intercept": -94.625,
@@ -3922,6 +4098,8 @@
         "p_value": 1.0,
         "q_value_bh": 1.0,
         "censored_fraction": 0.6,
+        "data_warning_en": "Onset detection is unreliable here: in 15 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 15 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -3963,6 +4141,8 @@
         "p_value": 0.3055,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1,
           "theil_sen_intercept": 354.3,
@@ -4004,6 +4184,8 @@
         "p_value": 0.5829,
         "q_value_bh": 1.0,
         "censored_fraction": 0.64,
+        "data_warning_en": "Onset detection is unreliable here: in 16 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 16 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -4047,6 +4229,8 @@
         "p_value": 0.3466,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.36,
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -4088,6 +4272,8 @@
         "p_value": 0.4557,
         "q_value_bh": 0.9263,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1111,
           "theil_sen_intercept": 378.6667,
@@ -4131,6 +4317,8 @@
         "p_value": 0.0274,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1938,
           "theil_sen_intercept": 544.0187,
@@ -4173,6 +4361,8 @@
         "p_value": 0.0217,
         "q_value_bh": 0.3425,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1909,
           "theil_sen_intercept": 539.3,
@@ -4216,6 +4406,8 @@
         "p_value": 0.3466,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.36,
+        "data_warning_en": "Onset detection is unreliable here: in 9 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 9 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 154.0,
@@ -4257,6 +4449,8 @@
         "p_value": 0.9344,
         "q_value_bh": 1.0,
         "censored_fraction": 0.24,
+        "data_warning_en": null,
+        "data_warning_bn": null,
         "trend": {
           "theil_sen_slope": 0.125,
           "theil_sen_intercept": -94.625,
@@ -4298,6 +4492,8 @@
         "p_value": 0.1139,
         "q_value_bh": 0.6328,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0557,
           "theil_sen_intercept": 265.1796,
@@ -4340,6 +4536,8 @@
         "p_value": 0.8018,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -4381,6 +4579,8 @@
         "p_value": 0.2474,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.4,
+        "data_warning_en": "Onset detection is unreliable here: in 10 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 10 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 156.0,
@@ -4423,6 +4623,8 @@
         "p_value": 0.3515,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -4464,6 +4666,8 @@
         "p_value": 0.9556,
         "q_value_bh": 1.0,
         "censored_fraction": 0.48,
+        "data_warning_en": "Onset detection is unreliable here: in 12 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 12 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -4506,6 +4710,8 @@
         "p_value": 0.9106,
         "q_value_bh": 1.0,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -4547,6 +4753,8 @@
         "p_value": 0.4794,
         "q_value_bh": 0.9263,
         "censored_fraction": 0.72,
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 152.0,
@@ -4588,6 +4796,8 @@
         "p_value": 0.4794,
         "q_value_bh": 0.9263,
         "censored_fraction": 0.72,
+        "data_warning_en": "Onset detection is unreliable here: in 18 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 18 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 152.0,
@@ -4630,6 +4840,8 @@
         "p_value": 0.9106,
         "q_value_bh": 1.0,
         "censored_fraction": 0.56,
+        "data_warning_en": "Onset detection is unreliable here: in 14 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 14 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.0,
           "theil_sen_intercept": 153.0,
@@ -4671,6 +4883,8 @@
         "p_value": 0.3055,
         "q_value_bh": 0.8593,
         "censored_fraction": 0.44,
+        "data_warning_en": "Onset detection is unreliable here: in 11 of 25 years the detected onset fell on the first day of the search window.",
+        "data_warning_bn": "\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be: 25 \u09ac\u099b\u09b0\u09c7\u09b0 \u09ae\u09a7\u09cd\u09af\u09c7 11 \u09ac\u099b\u09b0\u09c7 \u09ac\u09b0\u09cd\u09b7\u09be \u09b6\u09c1\u09b0\u09c1\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 \u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09a6\u09bf\u09a8\u09c7\u0987 \u09aa\u09a1\u09bc\u09c7\u099b\u09c7, \u09a4\u09be\u0987 \u098f\u0987 \u09ab\u09b2\u09be\u09ab\u09b2 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0\u09af\u09cb\u0997\u09cd\u09af \u09a8\u09af\u09bc\u0964",
         "trend": {
           "theil_sen_slope": -0.1,
           "theil_sen_intercept": 354.3,

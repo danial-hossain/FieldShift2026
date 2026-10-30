@@ -750,12 +750,21 @@ def generate_recommendation(
             f"স্বল্পমেয়াদী জাত (ব্রি ধান৭৫) বিবেচনা করুন।"
         )
 
+    warning_en = comparison.get("data_warning_en")
+    warning_bn = comparison.get("data_warning_bn")
+    if is_censored and not warning_en:
+        warning_en = "Onset detection is unreliable here due to search window censoring."
+        warning_bn = "সতর্কতা: বর্ষা শুরুর তারিখ অনুসন্ধানের সীমানায় আবদ্ধ হওয়ায় এই ফলাফল নির্ভরযোগ্য নয়।"
+
     return {
         "evidence_level": evidence_level,
         "bangla_headline": headline_bn,
         "english_headline": headline_en,
         "bangla_sms": sms_bn,
         "sms_character_count": len(sms_bn),
+        "data_warning_en": warning_en,
+        "data_warning_bn": warning_bn,
+        "data_warning": warning_bn if lang == "bn" else warning_en,
         "suggested_nursery_window_bn": sowing_window_bn,
         "suggested_transplant_window_bn": transplant_window_bn,
         "suggested_nursery_window_en": sowing_window_en,
