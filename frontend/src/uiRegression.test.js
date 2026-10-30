@@ -152,3 +152,22 @@ test('FIX 9: Marketing badges are absent and sidebar has responsive CSS rules', 
   assert.ok(css.includes('min-width: 768px') && css.includes('1099.98px'), 'styles.css must include 768px - 1099px rail rule');
   assert.ok(css.includes('max-width: 767.98px'), 'styles.css must include < 768px mobile drawer rule');
 });
+
+test('FIX 10: ClayFarmScene exports bedAppearance returning { kind: "soil" } for empty plots, and DigitalTwin overlays are honest', () => {
+  const claySrc = fs.readFileSync(path.join(__dirname, 'ClayFarmScene.jsx'), 'utf-8');
+  assert.ok(claySrc.includes('export function bedAppearance'), 'ClayFarmScene.jsx must export bedAppearance');
+
+  const fnMatch = claySrc.match(/export function bedAppearance\s*\([^)]*\)\s*\{[\s\S]*?\n\}/);
+  assert.ok(fnMatch, 'bedAppearance function body must be matchable');
+  const fnCode = fnMatch[0].replace('export function bedAppearance', 'function bedAppearance') + '; return bedAppearance;';
+  const bedAppearance = new Function(fnCode)();
+
+  assert.deepEqual(bedAppearance({}), { kind: 'soil' });
+  assert.deepEqual(bedAppearance(null), { kind: 'soil' });
+  assert.deepEqual(bedAppearance({ crop: null }), { kind: 'soil' });
+  assert.equal(bedAppearance({ crop: 'Rice' }).kind, 'crop');
+
+  const twinSrc = fs.readFileSync(path.join(__dirname, 'DigitalTwin3DView.jsx'), 'utf-8');
+  assert.ok(twinSrc.includes('disabled={!ov.live}'), 'DigitalTwin3DView must disable overlays without live telemetry');
+  assert.ok(!twinSrc.includes('* খেতের ত্রিমাত্রিক রেন্ডারিং একটি বিজ্ঞানভিত্তিক সিমুলেশন'), 'DigitalTwin3DView must not render duplicate overlapping caption banner');
+});

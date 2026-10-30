@@ -13,7 +13,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 // Color Palette — Matte Pastels & Soil Strata (UI 4 & Phase 4 compliant)
 export const CLAY_PALETTE = {
   bg: '#0f1412',
-  grass: '#7fae4f',
+  grass: '#8fb760',
   crop_rice: '#7fa860',
   crop_wheat: '#d8c27a',
   crop_pulse: '#8fae6a',
@@ -39,6 +39,20 @@ export const CLAY_PALETTE = {
   hud_bg: 'rgba(16, 28, 22, 0.85)',
   hud_border: 'rgba(255, 255, 255, 0.1)',
 };
+
+/**
+ * Pure helper to classify a bed's visual appearance.
+ * When plot or plot.crop is missing/null, returns { kind: 'soil' }.
+ */
+export function bedAppearance(plot) {
+  if (!plot || !plot.crop) {
+    return { kind: 'soil' };
+  }
+  return {
+    kind: 'crop',
+    crop: plot.crop,
+  };
+}
 
 /**
  * Determine the honest overlay color and label for a plot.
@@ -365,10 +379,25 @@ export function ClayFarmScene({
       sceneGroup.add(topLayerMesh);
       disposables.push(topLayerGeo);
 
+      // Thin darker edge band around the top slab
+      const matGrassEdge = new THREE.MeshStandardMaterial({
+        color: '#6e8f48',
+        roughness: 0.95,
+        metalness: 0,
+      });
+      disposables.push(matGrassEdge);
+
+      const grassEdgeGeo = new RoundedBoxGeometry(slabWidth - 0.05, 0.20, slabDepth - 0.05, 3, 0.12);
+      const grassEdgeMesh = new THREE.Mesh(grassEdgeGeo, matGrassEdge);
+      grassEdgeMesh.position.y = 1.18;
+      grassEdgeMesh.receiveShadow = true;
+      sceneGroup.add(grassEdgeMesh);
+      disposables.push(grassEdgeGeo);
+
       // Grass surface
-      const grassGeo = new RoundedBoxGeometry(slabWidth - 0.15, 0.18, slabDepth - 0.15, 3, 0.1);
+      const grassGeo = new RoundedBoxGeometry(slabWidth - 0.18, 0.18, slabDepth - 0.18, 3, 0.1);
       const grassMesh = new THREE.Mesh(grassGeo, matGrassTop);
-      grassMesh.position.y = 1.22;
+      grassMesh.position.y = 1.24;
       grassMesh.receiveShadow = true;
       sceneGroup.add(grassMesh);
       disposables.push(grassGeo);
@@ -519,7 +548,7 @@ export function ClayFarmScene({
         sceneGroup.add(tg);
       });
 
-      // 12. 4-6 Interactive Crop Beds with InstancedMesh Plants
+      // 12. 4-6 Interactive Crop Beds with InstancedMesh Plants & Tilled Soil
       const plotMeshes = [];
       const plantConGeo = new THREE.ConeGeometry(0.12, 0.35, 6);
       const plantMat = new THREE.MeshStandardMaterial({
@@ -528,6 +557,20 @@ export function ClayFarmScene({
         metalness: 0,
       });
       disposables.push(plantConGeo, plantMat);
+
+      // Materials for neutral tilled soil beds (#8a5a3a top, darker furrows, sparse sprouts #7fae4f)
+      const matFurrowLine = new THREE.MeshStandardMaterial({
+        color: '#5c3a24',
+        roughness: 0.98,
+        metalness: 0,
+      });
+      const matSprout = new THREE.MeshStandardMaterial({
+        color: '#7fae4f',
+        roughness: 0.88,
+        metalness: 0,
+      });
+      const sproutGeo = new THREE.ConeGeometry(0.05, 0.15, 5);
+      disposables.push(matFurrowLine, matSprout, sproutGeo);
 
       // Bed placements: 3 rows along Z, 2 columns along X
       const bedWidth = 2.6;
@@ -541,9 +584,13 @@ export function ClayFarmScene({
         const posX = bedCols[colIdx];
         const posZ = bedRows[rowIdx];
 
+        const appearance = bedAppearance(plot);
         const overlay = getPlotOverlayInfo(plot, activeOverlay, lang);
+        const isNeutralSoil = appearance.kind === 'soil';
+
+        const bedColor = isNeutralSoil ? '#8a5a3a' : overlay.color;
         const bedMat = new THREE.MeshStandardMaterial({
-          color: overlay.color,
+          color: bedColor,
           roughness: 0.9,
           metalness: 0,
         });
@@ -560,8 +607,36 @@ export function ClayFarmScene({
         plotMeshes.push(bedMesh);
         disposables.push(bedGeo);
 
-        // Instanced crop plants inside bed (deterministic pseudo-random placement)
-        if (plot.crop) {
+        if (isNeutralSoil) {
+          // Darker furrow lines via thin raised strips
+          const furrowGeo = new THREE.BoxGeometry(0.07, 0.02, bedDepth - 0.3);
+          disposables.push(furrowGeo);
+          const furrowOffsetsX = [-0.75, -0.25, 0.25, 0.75];
+          furrowOffsetsX.forEach((ox) => {
+            const furrowMesh = new THREE.Mesh(furrowGeo, matFurrowLine);
+            furrowMesh.position.set(posX + ox, 1.43, posZ);
+            furrowMesh.receiveShadow = true;
+            sceneGroup.add(furrowMesh);
+          });
+
+          // Sparse small sprouts (#7fae4f) along the furrows
+          const sproutPositions = [
+            { ox: -0.75, oz: -0.5 },
+            { ox: -0.25, oz: 0.3 },
+            { ox: 0.25, oz: -0.2 },
+            { ox: 0.75, oz: 0.6 },
+            { ox: 0.25, oz: 0.5 },
+          ];
+          sproutPositions.forEach((sp, sIdx) => {
+            const sprout = new THREE.Mesh(sproutGeo, matSprout);
+            sprout.position.set(posX + sp.ox, 1.48, posZ + sp.oz);
+            sprout.castShadow = true;
+            sprout.receiveShadow = true;
+            sprout.rotation.y = (sIdx * 1.3);
+            sceneGroup.add(sprout);
+          });
+        } else if (plot.crop) {
+          // Instanced crop plants inside bed (deterministic pseudo-random placement)
           const rows = 4;
           const cols = 5;
           const totalInstances = rows * cols;

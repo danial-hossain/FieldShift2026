@@ -26,7 +26,7 @@ export function DigitalTwin3DView({
   const { t } = useTranslation(lang);
   const [subTab, setSubTab] = useState(initialSubTab); // 'farm' | 'growth' | 'hydrology' | 'climate' | 'compare'
   const [viewMode, setViewMode] = useState('3d'); // '3d' | '2d'
-  const [activeOverlay, setActiveOverlay] = useState('moisture'); // 'moisture' | 'crop' | 'irrigation'
+  const [activeOverlay, setActiveOverlay] = useState('crop'); // 'moisture' | 'crop' | 'irrigation'
 
   const areaHa = activeField?.area_ha != null ? Number(activeField.area_ha) : 10.0;
   const soilTexture = activeField?.soil_texture || 'loam';
@@ -157,26 +157,35 @@ export function DigitalTwin3DView({
             </div>
 
             <div style={{ display: 'flex', gap: 6 }}>
-              {['moisture', 'crop', 'irrigation'].map(ov => (
-                <button
-                  key={ov}
-                  type="button"
-                  onClick={() => setActiveOverlay(ov)}
-                  style={{
-                    background: activeOverlay === ov ? 'rgba(0, 223, 129, 0.2)' : 'var(--glass)',
-                    color: activeOverlay === ov ? 'var(--hud-teal)' : 'var(--text-2)',
-                    border: activeOverlay === ov ? '1px solid var(--hud-teal)' : '1px solid var(--line)',
-                    borderRadius: 6,
-                    padding: '4px 10px',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {ov} Overlay
-                </button>
-              ))}
+              {[
+                { id: 'crop', labelBn: 'ফসল ওভারলে', labelEn: 'Crop Overlay', live: true },
+                { id: 'moisture', labelBn: 'আর্দ্রতা ওভারলে', labelEn: 'Moisture Overlay', live: false },
+                { id: 'irrigation', labelBn: 'সেচ ওভারলে', labelEn: 'Irrigation Overlay', live: false },
+              ].map(ov => {
+                const isSelected = activeOverlay === ov.id;
+                return (
+                  <button
+                    key={ov.id}
+                    type="button"
+                    disabled={!ov.live}
+                    onClick={() => ov.live && setActiveOverlay(ov.id)}
+                    title={ov.live ? (lang === 'bn' ? ov.labelBn : ov.labelEn) : (lang === 'bn' ? 'উপাত্ত নেই' : 'No live telemetry')}
+                    style={{
+                      background: isSelected ? 'rgba(0, 223, 129, 0.2)' : 'var(--glass)',
+                      color: isSelected ? 'var(--hud-teal)' : 'var(--text-3)',
+                      border: isSelected ? '1px solid var(--hud-teal)' : '1px solid var(--line)',
+                      borderRadius: 6,
+                      padding: '4px 10px',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      cursor: ov.live ? 'pointer' : 'not-allowed',
+                      opacity: ov.live ? 1 : 0.45,
+                    }}
+                  >
+                    {lang === 'bn' ? ov.labelBn : ov.labelEn} {!ov.live ? (lang === 'bn' ? '(উপাত্ত নেই)' : '(No data)') : ''}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -195,21 +204,7 @@ export function DigitalTwin3DView({
               activeOverlay={activeOverlay}
               lang={lang}
             />
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 8,
-                left: 8,
-                background: 'rgba(14, 19, 24, 0.85)',
-                padding: '4px 8px',
-                borderRadius: 4,
-                fontSize: 11,
-                color: 'var(--text-2)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-              }}
-            >
-              * খেতের ত্রিমাত্রিক রেন্ডারিং একটি বিজ্ঞানভিত্তিক সিমুলেশন প্রদর্শন; আবহাওয়া উপাত্ত বাস্তব নাসা পর্যবেক্ষণ।
-            </div>
+
           </div>
         </div>
       )}
