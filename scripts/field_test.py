@@ -217,8 +217,8 @@ def run_field_test(name: str, lat: float, lon: float, area_ha: float) -> Path:
         "",
         "## 4. Market & Economics Overview",
         "",
-        f"- **Available Crops Catalogued**: {len(market_data.get('crops', []))} crops with authentic DAM reference pricing.",
-        "- **Single Source of Truth**: Market costs, prices, and yields align identically with the MILP agronomic model parameters.",
+        f"- **Available Crops Catalogued**: {len(market_data.get('crops', []))} crops with illustrative demo crop economics.",
+        "- **Single Source of Truth**: Market costs, prices, and yields align identically with the MILP agronomic model parameters (labelled as illustrative demo values).",
         "",
     ])
 

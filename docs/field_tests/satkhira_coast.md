@@ -36,9 +36,9 @@
 - **Censored Fraction**: 40.0%
 - **Suggested Sowing Window**: ১৫ জুন – ৩০ জুন
 - **Suggested Transplanting Window**: ১৫ জুলাই – ৫ আগস্ট
-- **Bangla Headline**: সাতক্ষীরা অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।
-- **English Headline**: Pre-monsoon rains in Satkhira now start earlier: Aus sowing and land preparation can advance, while Aman planting window remains unchanged.
-- **Bangla SMS (<160 chars)**: `সাতক্ষীরা আমন: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।`
+- **Bangla Headline**: সাতক্ষীরা অঞ্চলে আমন রোপণ সময় অপরিবর্তিত (জুলাইয়ের মাঝামাঝি থেকে আগস্টের প্রথম সপ্তাহ); প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।
+- **English Headline**: Aman planting window for Satkhira remains unchanged (mid-July to early August); follow standard BRRI crop calendar.
+- **Bangla SMS (<160 chars)**: `সাতক্ষীরা আমন: রোপণের সময় অপরিবর্তিত। বীজতলা জুনের শেষ সপ্তাহে ও রোপণ জুলাইতে করুন। বিআরআরআই নির্দেশিকা মেনে চলুন।`
 
 ### Aus Rice Season Advisory:
 - **Status**: `ok`
@@ -126,5 +126,5 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ## 4. Market & Economics Overview
 
-- **Available Crops Catalogued**: 15 crops with authentic DAM reference pricing.
-- **Single Source of Truth**: Market costs, prices, and yields align identically with the MILP agronomic model parameters.
+- **Available Crops Catalogued**: 15 crops with illustrative demo crop economics.
+- **Single Source of Truth**: Market costs, prices, and yields align identically with the MILP agronomic model parameters (labelled as illustrative demo values).
