@@ -9,3 +9,4 @@ export { Tabs } from './Tabs.jsx';
 export { EmptyState } from './EmptyState.jsx';
 export { DataSourceTag } from './DataSourceTag.jsx';
 export { PageHeader } from './PageHeader.jsx';
+export { Skeleton, CardSkeleton } from './Skeleton.jsx';

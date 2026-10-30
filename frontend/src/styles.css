@@ -14686,3 +14686,70 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(10px);
   border-radius: 14px;
 }
+
+/* === UI 6: MOTION & POLISH === */
+
+/* 6.1 Page enter: cards fade+rise 8px, 180ms, staggered 30ms (max 8 items) */
+@keyframes ui-card-fade-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ui-card,
+.dash-card,
+.ui-card-hud {
+  animation: ui-card-fade-rise 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger up to 8 cards */
+.ui-card:nth-child(1), .dash-card:nth-child(1) { animation-delay: 0ms; }
+.ui-card:nth-child(2), .dash-card:nth-child(2) { animation-delay: 30ms; }
+.ui-card:nth-child(3), .dash-card:nth-child(3) { animation-delay: 60ms; }
+.ui-card:nth-child(4), .dash-card:nth-child(4) { animation-delay: 90ms; }
+.ui-card:nth-child(5), .dash-card:nth-child(5) { animation-delay: 120ms; }
+.ui-card:nth-child(6), .dash-card:nth-child(6) { animation-delay: 150ms; }
+.ui-card:nth-child(7), .dash-card:nth-child(7) { animation-delay: 180ms; }
+.ui-card:nth-child(8), .dash-card:nth-child(8) { animation-delay: 210ms; }
+
+/* 6.3 Skeleton loaders: shimmer on glass */
+.ui-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.10) 37%,
+    rgba(255, 255, 255, 0.03) 63%
+  );
+  background-size: 400% 100%;
+  animation: ui-skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes ui-skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 6.4 All motion disabled under prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ui-skeleton {
+    animation: none !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+}
