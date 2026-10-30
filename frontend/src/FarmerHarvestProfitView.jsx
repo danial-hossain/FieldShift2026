@@ -339,8 +339,8 @@ export function FarmerHarvestProfitView({
           </div>
 
           {/* Scientific & Benchmark Provenance Footnote */}
-          <div style={{ marginTop: 14, padding: '10px 14px', borderRadius: 8, background: 'var(--bg-subtle, #f8fafc)', border: '1px solid var(--border-light, #e2e8f0)', fontSize: 11.5, color: 'var(--text-muted, #64748b)', lineHeight: 1.45 }}>
-            <strong>ℹ️ {lang === 'bn' ? 'উপাত্ত সূত্র ও হিসাবের ভিত্তি:' : 'Data Source & Methodology:'}</strong>{' '}
+          <div style={{ marginTop: 14, padding: '10px 14px', borderRadius: 8, background: 'var(--glass)', border: '1px solid var(--line)', fontSize: 11.5, color: 'var(--text-2)', lineHeight: 1.45 }}>
+            <strong>ℹ️ {lang === 'bn' ? 'রেফারেন্স মূল্য (স্থির তালিকা, লাইভ নয়) ও ভিত্তি:' : 'Reference prices (static benchmark, not live) & Methodology:'}</strong>{' '}
             {lang === 'bn'
               ? 'কৃষি বিপণন অধিদপ্তর (DAM) ও বিএআরআই ২০২৪-২০২৫ মৌসুমী নির্দেশিকা ভিত্তিক বেঞ্চমার্ক। নিট লাভ = সম্ভাব্য মোট বিক্রয় - সর্বমোট উপাদান ও সেচ/শ্রমিক খরচ। ব্রেক-ইভেন দর = মোট খরচ ÷ মোট ফলন (কেজি)। এটি আর্থিক নিশ্চয়তা নয়, নির্দেশনামূলক প্রাক্কলন।'
               : 'DAM & BARI 2024-2025 regional benchmark parameters. Net Profit = Gross Revenue - Total Operating & Input Costs. Break-even Price = Total Costs ÷ Total Yield (kg). Benchmark estimate for decision guidance; not a financial guarantee.'}

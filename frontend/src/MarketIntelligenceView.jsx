@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { formatNumber } from './main.jsx';
 import { request, API_BASE } from './apiClient.js';
+import { Card, CardHeader, Stat, Pill, Button } from './ui/index.js';
 
-export function MarketIntelligenceView({ activeField, onNavigateTab }) {
+export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn' }) {
   const [marketData, setMarketData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,7 +38,6 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
         const json = await request('/api/market/overview');
         if (!ignore) {
           setMarketData(json);
-          // Set initial crop if present
           if (json.crops && json.crops.length > 0) {
             const initial = json.crops.find(c => c.crop === 'Rice') || json.crops[0];
             setSelectedCropName(initial.crop);
@@ -108,8 +108,6 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
     return marketData?.crops?.find(c => c.crop === selectedCropName) || null;
   }, [marketData, selectedCropName]);
 
-  const unitLabel = priceUnit === 'bdt_kg' ? 'BDT / kg' : priceUnit === 'bdt_maund' ? 'BDT / maund (মন)' : 'BDT / ton (টন)';
-
   const getPriceVal = (crop, type) => {
     if (priceUnit === 'bdt_kg') return crop[`${type}_bdt_kg`];
     if (priceUnit === 'bdt_maund') return crop[`${type}_bdt_maund`];
@@ -117,143 +115,150 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
   };
 
   return (
-    <div className="market-intelligence-container" style={{ padding: '24px 32px', maxWidth: 1400, margin: '0 auto' }}>
+    <div className="market-intelligence-container" style={{ padding: '8px 0 32px 0', maxWidth: 1400, margin: '0 auto' }}>
       {/* Header Banner */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 28 }}>💰</span>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--text-main, #0f172a)' }}>
-              Market Intelligence &amp; Profitability
+      <Card variant="glass" style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <span style={{ fontSize: 26 }}>💰</span>
+              <Pill tone="sun">MARKET BENCHMARKS</Pill>
+              <Pill tone="neutral">Reference prices (static benchmark, not live)</Pill>
+            </div>
+            <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>
+              {lang === 'bn' ? 'বাজার দর ও সম্ভাব্য মুনাফা বিশ্লেষণ' : 'Market Intelligence & Profitability'}
             </h1>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 840 }}>
+              {lang === 'bn'
+                ? 'রেফারেন্স মূল্য (স্থির তালিকা, লাইভ নয়) — সরকারি কৃষি বিপণন অধিদপ্তর (DAM) ও বিএআরআই বেঞ্চমার্ক ভিত্তিক প্রাক্কলন।'
+                : 'Reference prices (static benchmark, not live) / রেফারেন্স মূল্য (স্থির তালিকা, লাইভ নয়) — Transparent price benchmarks, authentic source citations, and conditional gross margin projections.'}
+            </p>
           </div>
-          <p style={{ margin: '6px 0 0', fontSize: 14, color: 'var(--text-muted, #64748b)' }}>
-            Reference prices (static benchmark, not live) / রেফারেন্স মূল্য (স্থির তালিকা, লাইভ নয়) — Transparent price benchmarks, authentic source citations, and conditional gross margin projections.
-          </p>
+
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            <a
+              href={`${API_BASE}/api/market/export`}
+              download
+              style={{ textDecoration: 'none' }}
+            >
+              <Button variant="secondary" size="sm">
+                <span>📥</span> {lang === 'bn' ? 'দর তালিকা ডাউনলোড (CSV)' : 'Export CSV'}
+              </Button>
+            </a>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => onNavigateTab && onNavigateTab('optimization')}
+            >
+              <span>🌱</span> {lang === 'bn' ? 'পরিকল্পনায় প্রয়োগ করুন' : 'Apply Prices in Optimizer'}
+            </Button>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a
-            href={`${API_BASE}/api/market/export`}
-            download
-            className="btn btn-outline"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', fontSize: 13, textDecoration: 'none' }}
-          >
-            <span>📥</span> Export Price Catalog (CSV)
-          </a>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => onNavigateTab && onNavigateTab('optimization')}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: 13 }}
-          >
-            <span>🌱</span> Apply Prices in Optimizer
-          </button>
-        </div>
-      </div>
-
-      {/* Honest Demand Signal Banner (Scientific transparency) */}
-      <div style={{
-        background: 'var(--bg-card-subtle, #f8fafc)',
-        border: '1px solid #cbd5e1',
-        borderRadius: 12,
-        padding: '16px 20px',
-        marginBottom: 24,
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: 14
-      }}>
-        <span style={{ fontSize: 24, marginTop: 2 }}>ℹ️</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-            <strong style={{ fontSize: 14, color: 'var(--text-main, #0f172a)' }}>
-              Market Demand Signal Status:
-            </strong>
-            <span style={{
-              background: '#f1f5f9',
-              color: '#475569',
-              fontSize: 12,
-              fontWeight: 700,
-              padding: '2px 8px',
-              borderRadius: 6,
-              border: '1px solid #cbd5e1'
-            }}>
-              Demand data unavailable (চাহিদা সম্পর্কিত তথ্য উন্মুক্ত নয়)
-            </span>
+        {/* Honest Demand Signal Banner (Scientific transparency) */}
+        <div style={{
+          background: 'rgba(242, 193, 78, 0.08)',
+          border: '1px solid var(--line)',
+          borderRadius: 12,
+          padding: '12px 16px',
+          marginTop: 16,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 12
+        }}>
+          <span style={{ fontSize: 20 }}>ℹ️</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+              <strong style={{ fontSize: 13, color: 'var(--text)' }}>
+                {lang === 'bn' ? 'বাজার চাহিদা অবস্থা:' : 'Market Demand Signal Status:'}
+              </strong>
+              <Pill tone="neutral">
+                {lang === 'bn' ? 'চাহিদা সম্পর্কিত তথ্য উন্মুক্ত নয়' : 'Demand data unavailable'}
+              </Pill>
+            </div>
+            <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.5 }}>
+              {lang === 'bn'
+                ? 'কৃষি বিপণন অধিদপ্তর (DAM) স্থানীয় হাটের লেনদেন দর সংগ্রহ করে, কিন্তু দৈনিক শোষণ বা স্থিতিস্থাপকতার উন্মুক্ত এপিআই নেই। ফিল্ডশিফ্ট কোনো কাল্পনিক ক্রেতা সংখ্যা বা অনুমাননির্ভর স্কোর তৈরি করে না।'
+                : 'Official agricultural agencies in Bangladesh (DAM, TCB, BBS) collect spot transaction prices at terminal and district haats, but do not provide an open public API for daily volume absorption. FieldShift strictly avoids fabricating speculative demand scores.'}
+            </p>
           </div>
-          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-muted, #64748b)', lineHeight: 1.5 }}>
-            Official agricultural agencies in Bangladesh (DAM, TCB, BBS) collect spot transaction prices at terminal and district haats, but do not provide an open public API for daily volume absorption or consumer elasticity.
-            <strong> FieldShift strictly avoids fabricating speculative demand scores or fictitious buyer counts.</strong>
-          </p>
         </div>
-      </div>
+      </Card>
 
       {/* Main Grid: Left Catalog, Right Profitability Calculator */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 24, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 20, alignItems: 'start' }}>
         
         {/* Left Column: Crop Price Catalog */}
-        <div className="card" style={{ padding: 20, borderRadius: 14 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
-              🇧🇩 Bangladesh Crop Price Catalog — Reference prices (static benchmark, not live)
-            </h2>
-            {/* Unit selector pills */}
-            <div style={{ display: 'flex', background: 'var(--bg-subtle, #f1f5f9)', padding: 3, borderRadius: 8 }}>
-              {['bdt_kg', 'bdt_maund', 'bdt_ton'].map(u => (
-                <button
-                  key={u}
-                  type="button"
-                  onClick={() => setPriceUnit(u)}
-                  style={{
-                    padding: '4px 10px',
-                    fontSize: 12,
-                    fontWeight: priceUnit === u ? 700 : 500,
-                    background: priceUnit === u ? 'var(--bg-card, #ffffff)' : 'transparent',
-                    color: priceUnit === u ? 'var(--text-main, #0f172a)' : 'var(--text-muted, #64748b)',
-                    border: 'none',
-                    borderRadius: 6,
-                    cursor: 'pointer',
-                    boxShadow: priceUnit === u ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                  }}
-                >
-                  {u === 'bdt_kg' ? 'BDT/kg' : u === 'bdt_maund' ? 'মন (40kg)' : 'টন (1000kg)'}
-                </button>
-              ))}
-            </div>
-          </div>
+        <Card variant="glass">
+          <CardHeader
+            icon="🇧🇩"
+            title={lang === 'bn' ? 'ফসলের রেফারেন্স দর তালিকা' : 'Crop Price Catalog'}
+            subtitle={lang === 'bn' ? 'রেফারেন্স মূল্য (স্থির তালিকা, লাইভ নয়)' : 'Reference prices (static benchmark, not live)'}
+            action={
+              <div style={{ display: 'flex', background: 'rgba(255, 255, 255, 0.06)', padding: 3, borderRadius: 8 }}>
+                {['bdt_kg', 'bdt_maund', 'bdt_ton'].map(u => (
+                  <button
+                    key={u}
+                    type="button"
+                    onClick={() => setPriceUnit(u)}
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: 12,
+                      fontWeight: priceUnit === u ? 600 : 400,
+                      background: priceUnit === u ? 'var(--accent)' : 'transparent',
+                      color: priceUnit === u ? 'var(--bg-deep)' : 'var(--text-2)',
+                      border: 'none',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {u === 'bdt_kg' ? 'BDT/kg' : u === 'bdt_maund' ? (lang === 'bn' ? 'মন (৪০কেজি)' : 'Maund (40kg)') : (lang === 'bn' ? 'টন (১০০০কেজি)' : 'Ton (1000kg)')}
+                  </button>
+                ))}
+              </div>
+            }
+          />
 
           {/* Search bar */}
-          <div style={{ marginBottom: 14 }}>
+          <div style={{ margin: '14px 0' }}>
             <input
               type="text"
-              placeholder="Search crop by name (e.g. Rice, ধান, Lentil, আলু)..."
+              placeholder={lang === 'bn' ? 'ফসলের নাম দিয়ে খুঁজুন (যেমন ধান, আলু, গম, সরিষা)...' : 'Search crop by name (e.g. Rice, Lentil, Potato)...'}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               style={{
                 width: '100%',
-                padding: '9px 12px',
-                borderRadius: 8,
-                border: '1px solid var(--border-color, #cbd5e1)',
+                padding: '9px 14px',
+                borderRadius: 10,
+                border: '1px solid var(--line)',
+                background: 'rgba(255, 255, 255, 0.05)',
+                color: 'var(--text)',
                 fontSize: 13,
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                outline: 'none'
               }}
             />
           </div>
 
           {loading ? (
-            <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading market prices...</div>
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-3)' }}>
+              {lang === 'bn' ? 'বাজার দর লোড হচ্ছে...' : 'Loading market prices...'}
+            </div>
           ) : error ? (
-            <div style={{ padding: 20, color: '#dc2626', background: '#fee2e2', borderRadius: 8 }}>{error}</div>
+            <div style={{ padding: 16, color: 'var(--alert)', background: 'rgba(239, 122, 90, 0.12)', borderRadius: 10 }}>
+              {error}
+            </div>
           ) : (
             <div style={{ overflowX: 'auto', maxHeight: 520, overflowY: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
-                  <tr style={{ borderBottom: '2px solid var(--border-color, #e2e8f0)', textAlign: 'left', color: 'var(--text-muted, #64748b)' }}>
-                    <th style={{ padding: '8px 10px' }}>Crop</th>
-                    <th style={{ padding: '8px 10px' }}>Farmgate</th>
-                    <th style={{ padding: '8px 10px' }}>Wholesale</th>
-                    <th style={{ padding: '8px 10px' }}>Retail</th>
-                    <th style={{ padding: '8px 10px', textAlign: 'center' }}>Action</th>
+                  <tr style={{ borderBottom: '1px solid var(--line)', textAlign: 'left', color: 'var(--text-3)' }}>
+                    <th style={{ padding: '8px 10px' }}>{lang === 'bn' ? 'ফসল' : 'Crop'}</th>
+                    <th style={{ padding: '8px 10px' }}>{lang === 'bn' ? 'খামার প্রান্ত' : 'Farmgate'}</th>
+                    <th style={{ padding: '8px 10px' }}>{lang === 'bn' ? 'পাইকারি' : 'Wholesale'}</th>
+                    <th style={{ padding: '8px 10px' }}>{lang === 'bn' ? 'খুচরা' : 'Retail'}</th>
+                    <th style={{ padding: '8px 10px', textAlign: 'center' }}>{lang === 'bn' ? 'পদক্ষেপ' : 'Action'}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -264,42 +269,33 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                         key={c.crop}
                         onClick={() => handleSelectCrop(c)}
                         style={{
-                          borderBottom: '1px solid var(--border-color, #e2e8f0)',
-                          background: isSelected ? 'rgba(34, 197, 94, 0.08)' : 'transparent',
+                          borderBottom: '1px solid var(--line)',
+                          background: isSelected ? 'rgba(197, 232, 108, 0.08)' : 'transparent',
                           cursor: 'pointer',
                           transition: 'background 0.15s ease',
                         }}
                       >
                         <td style={{ padding: '10px 10px' }}>
-                          <div style={{ fontWeight: 600, color: 'var(--text-main, #0f172a)' }}>{c.crop}</div>
-                          <div style={{ fontSize: 11, color: '#64748b' }}>{c.name_bn}</div>
+                          <div style={{ fontWeight: 600, color: 'var(--text)' }}>{c.crop}</div>
+                          <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{c.name_bn}</div>
                         </td>
-                        <td style={{ padding: '10px 10px', color: '#16a34a', fontWeight: 600 }}>
+                        <td style={{ padding: '10px 10px', color: 'var(--leaf)', fontWeight: 600 }}>
                           {formatNumber(getPriceVal(c, 'farmgate'), 1)}
                         </td>
-                        <td style={{ padding: '10px 10px', color: '#0284c7' }}>
+                        <td style={{ padding: '10px 10px', color: 'var(--water)' }}>
                           {formatNumber(getPriceVal(c, 'wholesale'), 1)}
                         </td>
-                        <td style={{ padding: '10px 10px', color: '#64748b' }}>
+                        <td style={{ padding: '10px 10px', color: 'var(--text-2)' }}>
                           {formatNumber(getPriceVal(c, 'retail'), 1)}
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
-                          <button
-                            type="button"
+                          <Button
+                            variant={isSelected ? 'primary' : 'secondary'}
+                            size="sm"
                             onClick={(e) => { e.stopPropagation(); handleSelectCrop(c); }}
-                            style={{
-                              padding: '4px 8px',
-                              fontSize: 11,
-                              borderRadius: 4,
-                              border: isSelected ? '1px solid #16a34a' : '1px solid #cbd5e1',
-                              background: isSelected ? '#16a34a' : '#ffffff',
-                              color: isSelected ? '#ffffff' : '#334155',
-                              cursor: 'pointer',
-                              fontWeight: 600
-                            }}
                           >
-                            {isSelected ? 'Selected' : 'Analyze'}
-                          </button>
+                            {isSelected ? (lang === 'bn' ? 'নির্বাচিত' : 'Selected') : (lang === 'bn' ? 'হিসাব' : 'Analyze')}
+                          </Button>
                         </td>
                       </tr>
                     );
@@ -311,35 +307,39 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
 
           {/* Citation Footer */}
           {currentCropObj && (
-            <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--bg-subtle, #f8fafc)', borderRadius: 8, fontSize: 12, border: '1px solid var(--border-color, #e2e8f0)' }}>
+            <Card variant="glass-strong" style={{ marginTop: 16, padding: '12px 14px', fontSize: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                <strong>Source Authority:</strong>
-                <a href={currentCropObj.source_url} target="_blank" rel="noopener noreferrer" style={{ color: '#0284c7' }}>
+                <strong style={{ color: 'var(--text)' }}>Source Authority:</strong>
+                <a href={currentCropObj.source_url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--water)', textDecoration: 'none' }}>
                   {currentCropObj.primary_source} ↗
                 </a>
               </div>
-              <div><strong>Report Date:</strong> {currentCropObj.report_date} | <strong>Classification:</strong> {currentCropObj.provenance_classification}</div>
-              <div style={{ marginTop: 4, color: '#64748b' }}><em>{currentCropObj.notes}</em></div>
-            </div>
+              <div style={{ color: 'var(--text-2)' }}>
+                <strong>Report Date:</strong> {currentCropObj.report_date} | <strong>Classification:</strong> {currentCropObj.provenance_classification}
+              </div>
+              <div style={{ marginTop: 4, color: 'var(--text-3)' }}><em>{currentCropObj.notes}</em></div>
+            </Card>
           )}
-        </div>
+        </Card>
 
         {/* Right Column: Crop Profitability Calculator */}
-        <div className="card" style={{ padding: 20, borderRadius: 14 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
-              📊 Crop Profitability Calculator ({selectedCropName})
-            </h2>
-            <span style={{ fontSize: 11, background: '#e0f2fe', color: '#0369a1', padding: '3px 8px', borderRadius: 6, fontWeight: 700 }}>
-              Active Parcel: {activeField?.name || 'Standard 1 ha'}
-            </span>
-          </div>
+        <Card variant="glass">
+          <CardHeader
+            icon="📊"
+            title={`${lang === 'bn' ? 'মুনাফা ক্যালকুলেটর' : 'Crop Profitability Calculator'} (${selectedCropName})`}
+            subtitle={lang === 'bn' ? 'আনুমানিক উৎপাদন খরচ ও সম্ভাব্য লাভ' : 'Estimated production costs and potential returns'}
+            action={
+              <Pill tone="water">
+                {activeField?.name || (lang === 'bn' ? 'বগুড়া পরীক্ষামূলক খামার' : 'Bogura Demo Field')}
+              </Pill>
+            }
+          />
 
           {/* Inputs Section */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, margin: '14px 0' }}>
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #475569)', marginBottom: 4 }}>
-                Cultivated Area (Hectares)
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? 'জমির পরিমাণ (হেক্টর)' : 'Cultivated Area (Hectares)'}
               </label>
               <input
                 type="number"
@@ -347,13 +347,13 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                 min="0.1"
                 value={calcAreaHa}
                 onChange={e => setCalcAreaHa(Number(e.target.value))}
-                style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #475569)', marginBottom: 4 }}>
-                Expected Yield (t / ha)
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? 'সম্ভাব্য ফলন (টন/হেক্টর)' : 'Expected Yield (t / ha)'}
               </label>
               <input
                 type="number"
@@ -361,13 +361,13 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                 min="0.1"
                 value={calcYield}
                 onChange={e => setCalcYield(Number(e.target.value))}
-                style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #475569)', marginBottom: 4 }}>
-                Farmgate Price (BDT / ton)
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? 'খামার প্রান্ত দর (টাকা/টন)' : 'Farmgate Price (BDT / ton)'}
               </label>
               <input
                 type="number"
@@ -375,13 +375,13 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                 min="1000"
                 value={calcPrice}
                 onChange={e => setCalcPrice(Number(e.target.value))}
-                style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #475569)', marginBottom: 4 }}>
-                Production Cost (BDT / ha)
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? 'উপাদান খরচ (টাকা/হেক্টর)' : 'Production Cost (BDT / ha)'}
               </label>
               <input
                 type="number"
@@ -389,13 +389,13 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                 min="0"
                 value={calcProdCost}
                 onChange={e => setCalcProdCost(Number(e.target.value))}
-                style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #475569)', marginBottom: 4 }}>
-                Irrigation Cost (BDT / ha)
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? 'সেচ খরচ (টাকা/হেক্টর)' : 'Irrigation Cost (BDT / ha)'}
               </label>
               <input
                 type="number"
@@ -403,13 +403,13 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                 min="0"
                 value={calcIrrigCost}
                 onChange={e => setCalcIrrigCost(Number(e.target.value))}
-                style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #475569)', marginBottom: 4 }}>
-                Harvest/Transport (BDT / ha)
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? 'পরিবহন/শ্রমিক (টাকা/হেক্টর)' : 'Harvest/Transport (BDT / ha)'}
               </label>
               <input
                 type="number"
@@ -417,7 +417,7 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
                 min="0"
                 value={calcMktgCost}
                 onChange={e => setCalcMktgCost(Number(e.target.value))}
-                style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
           </div>
@@ -426,91 +426,80 @@ export function MarketIntelligenceView({ activeField, onNavigateTab }) {
           {profitResult && (
             <div style={{ marginBottom: 20 }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 14 }}>
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: 12 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#166534' }}>GROSS REVENUE</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: '#15803d', marginTop: 4 }}>
-                    {formatNumber(profitResult.results.gross_revenue_bdt, 0)} BDT
-                  </div>
-                  <div style={{ fontSize: 11, color: '#166534', marginTop: 2 }}>
-                    ({formatNumber(profitResult.results.gross_revenue_per_ha, 0)} BDT/ha)
-                  </div>
-                </div>
+                <Stat
+                  label={lang === 'bn' ? 'মোট বিক্রয়মূল্য' : 'Gross Revenue'}
+                  value={`${formatNumber(profitResult.results.gross_revenue_bdt, 0)} BDT`}
+                  sub={`(${formatNumber(profitResult.results.gross_revenue_per_ha, 0)} BDT/ha)`}
+                  tone="leaf"
+                />
 
-                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: 12 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#991b1b' }}>TOTAL COSTS</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: '#b91c1c', marginTop: 4 }}>
-                    {formatNumber(profitResult.results.cost_breakdown.total_cost_bdt, 0)} BDT
-                  </div>
-                  <div style={{ fontSize: 11, color: '#991b1b', marginTop: 2 }}>
-                    ({formatNumber(profitResult.results.cost_breakdown.total_cost_per_ha, 0)} BDT/ha)
-                  </div>
-                </div>
+                <Stat
+                  label={lang === 'bn' ? 'সর্বমোট খরচ' : 'Total Costs'}
+                  value={`${formatNumber(profitResult.results.cost_breakdown.total_cost_bdt, 0)} BDT`}
+                  sub={`(${formatNumber(profitResult.results.cost_breakdown.total_cost_per_ha, 0)} BDT/ha)`}
+                  tone="alert"
+                />
 
-                <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: 12 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#1e40af' }}>NET RETURN</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: '#1d4ed8', marginTop: 4 }}>
-                    {formatNumber(profitResult.results.estimated_net_return_bdt, 0)} BDT
-                  </div>
-                  <div style={{ fontSize: 11, color: '#1e40af', marginTop: 2 }}>
-                    Break-even: {formatNumber(profitResult.results.breakeven_selling_price_bdt_kg, 1)} BDT/kg
-                  </div>
-                </div>
+                <Stat
+                  label={lang === 'bn' ? 'সম্ভাব্য নিট লাভ' : 'Net Return'}
+                  value={`${formatNumber(profitResult.results.estimated_net_return_bdt, 0)} BDT`}
+                  sub={`Break-even: ${formatNumber(profitResult.results.breakeven_selling_price_bdt_kg, 1)} BDT/kg`}
+                  tone={profitResult.results.estimated_net_return_bdt >= 0 ? 'accent' : 'alert'}
+                />
               </div>
 
               {/* Three-Point Scenario Projections */}
-              <div style={{ border: '1px solid var(--border-color, #e2e8f0)', borderRadius: 10, padding: 14, background: 'var(--bg-subtle, #f8fafc)' }}>
-                <strong style={{ display: 'block', fontSize: 13, marginBottom: 8, color: 'var(--text-main, #0f172a)' }}>
-                  📈 Three-Point Conditional Scenarios (শর্তসাপেক্ষ দৃশ্যপট)
+              <Card variant="glass-strong" style={{ padding: 14 }}>
+                <strong style={{ display: 'block', fontSize: 13, marginBottom: 10, color: 'var(--text)' }}>
+                  📈 {lang === 'bn' ? 'শর্তসাপেক্ষ দৃশ্যপট (Three-Point Scenarios)' : 'Three-Point Conditional Scenarios'}
                 </strong>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, fontSize: 12 }}>
-                  <div style={{ padding: 10, background: '#ffffff', borderRadius: 6, border: '1px solid #cbd5e1' }}>
-                    <div style={{ fontWeight: 700, color: '#475569' }}>Downside (-20% Price, -15% Yield)</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: profitResult.scenarios.downside.net_return_bdt >= 0 ? '#15803d' : '#b91c1c', marginTop: 4 }}>
+                  <div style={{ padding: 10, background: 'rgba(239, 122, 90, 0.08)', borderRadius: 8, border: '1px solid var(--line)' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--text-2)' }}>{lang === 'bn' ? 'মন্দা (-২০% দর, -১৫% ফলন)' : 'Downside (-20% Price, -15% Yield)'}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: profitResult.scenarios.downside.net_return_bdt >= 0 ? 'var(--leaf)' : 'var(--alert)', marginTop: 4 }}>
                       {formatNumber(profitResult.scenarios.downside.net_return_bdt, 0)} BDT
                     </div>
-                    <div style={{ fontSize: 11, color: '#64748b' }}>{formatNumber(profitResult.scenarios.downside.net_return_per_ha, 0)} BDT/ha</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{formatNumber(profitResult.scenarios.downside.net_return_per_ha, 0)} BDT/ha</div>
                   </div>
 
-                  <div style={{ padding: 10, background: '#ffffff', borderRadius: 6, border: '1px solid #93c5fd' }}>
-                    <div style={{ fontWeight: 700, color: '#1e40af' }}>Baseline (Expected)</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1d4ed8', marginTop: 4 }}>
+                  <div style={{ padding: 10, background: 'rgba(108, 196, 224, 0.08)', borderRadius: 8, border: '1px solid var(--line)' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--text-2)' }}>{lang === 'bn' ? 'স্বাভাবিক (প্রত্যাশিত)' : 'Baseline (Expected)'}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--water)', marginTop: 4 }}>
                       {formatNumber(profitResult.scenarios.baseline.net_return_bdt, 0)} BDT
                     </div>
-                    <div style={{ fontSize: 11, color: '#64748b' }}>{formatNumber(profitResult.scenarios.baseline.net_return_per_ha, 0)} BDT/ha</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{formatNumber(profitResult.scenarios.baseline.net_return_per_ha, 0)} BDT/ha</div>
                   </div>
 
-                  <div style={{ padding: 10, background: '#ffffff', borderRadius: 6, border: '1px solid #86efac' }}>
-                    <div style={{ fontWeight: 700, color: '#166534' }}>Optimistic (+15% Price, +10% Yield)</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d', marginTop: 4 }}>
+                  <div style={{ padding: 10, background: 'rgba(197, 232, 108, 0.08)', borderRadius: 8, border: '1px solid var(--line)' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--text-2)' }}>{lang === 'bn' ? 'উচ্চ ফলন (+১৫% দর, +১০% ফলন)' : 'Optimistic (+15% Price, +10% Yield)'}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--leaf)', marginTop: 4 }}>
                       {formatNumber(profitResult.scenarios.optimistic.net_return_bdt, 0)} BDT
                     </div>
-                    <div style={{ fontSize: 11, color: '#64748b' }}>{formatNumber(profitResult.scenarios.optimistic.net_return_per_ha, 0)} BDT/ha</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{formatNumber(profitResult.scenarios.optimistic.net_return_per_ha, 0)} BDT/ha</div>
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
           )}
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <Button
+              variant="secondary"
               onClick={() => {
                 if (currentCropObj) handleSelectCrop(currentCropObj);
               }}
             >
-              Reset to Benchmark Defaults
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
+              {lang === 'bn' ? 'ডিফল্ট মান পুনরুদ্ধার' : 'Reset to Benchmark Defaults'}
+            </Button>
+            <Button
+              variant="primary"
               onClick={() => onNavigateTab && onNavigateTab('optimization')}
             >
-              Run Rotation Optimizer with this Crop
-            </button>
+              {lang === 'bn' ? 'এই ফসল দিয়ে আবর্তন অপ্টিমাইজ করুন' : 'Run Rotation Optimizer with this Crop'}
+            </Button>
           </div>
-        </div>
+        </Card>
 
       </div>
     </div>

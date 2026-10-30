@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { DataSourceTag } from './ui/index.js';
 import sampleSeries from './nasa_30day_series.json';
 
 export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, onBack }) {
@@ -75,14 +76,16 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
       {/* Top Header Command Bar */}
       <div className="nasa-view-header">
         <div className="nasa-header-left">
-          <div className="nasa-badge-row">
+          <div className="nasa-badge-row" style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
             <span className="nasa-satellite-pill">
-              <span className="nasa-pulse-dot" /> NASA POWER AGROMETEOROLOGICAL REANALYSIS
+              <span className="nasa-pulse-dot" /> NASA POWER AGROMETEOROLOGICAL
             </span>
             <span className="nasa-res-tag">SPATIAL RESOLUTION: 0.5° × 0.5° (~50 KM)</span>
-            <span className={`nasa-status-tag ${isObserved ? '' : 'nasa-status-demo'}`}>
-              {isObserved ? 'SYNCHRONIZED EMPIRICAL POINT API' : (isDemo ? 'OFFLINE DEMO SERIES (BOGURA BENCHMARK)' : 'CACHED HISTORICAL BENCHMARK')}
-            </span>
+            <DataSourceTag
+              source="NASA POWER"
+              cache="30-day cached demo window"
+              period={observationDate ? `30 days ending ${observationDate}` : "30-day demo window"}
+            />
           </div>
           <h1 className="nasa-title">Environmental Observations &amp; 3D Climate Station</h1>
           <p className="nasa-subtitle">
@@ -200,9 +203,9 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                 <svg className="globe-svg" viewBox="0 0 540 380" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     <radialGradient id="globeGlow" cx="40%" cy="40%" r="60%">
-                      <stop offset="0%" stopColor="#1e3a8a" stopOpacity="0.9" />
-                      <stop offset="65%" stopColor="#0f172a" stopOpacity="0.95" />
-                      <stop offset="100%" stopColor="#020617" stopOpacity="1" />
+                      <stop offset="0%" stopColor="var(--water)" stopOpacity="0.9" />
+                      <stop offset="65%" stopColor="var(--bg-deep)" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="var(--bg-deep)" stopOpacity="1" />
                     </radialGradient>
                     <radialGradient id="atmoGlow" cx="50%" cy="50%" r="50%">
                       <stop offset="70%" stopColor="rgba(56, 189, 248, 0)" />
@@ -210,8 +213,8 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                       <stop offset="100%" stopColor="rgba(56, 189, 248, 0.85)" />
                     </radialGradient>
                     <linearGradient id="sunbeam" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+                      <stop offset="0%" stopColor="var(--sun)" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="var(--sun)" stopOpacity="0" />
                     </linearGradient>
                     <filter id="neonBlur">
                       <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -223,95 +226,95 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                   </defs>
 
                   {/* Deep Space Background Stars */}
-                  <rect width="540" height="380" fill="#030712" rx="16" />
+                  <rect width="540" height="380" fill="var(--bg-deep)" rx="16" />
                   <g opacity="0.6">
                     <circle cx="45" cy="40" r="1" fill="#fff" />
-                    <circle cx="120" cy="85" r="1.5" fill="#93c5fd" />
+                    <circle cx="120" cy="85" r="1.5" fill="var(--water)" />
                     <circle cx="210" cy="30" r="0.8" fill="#fff" />
                     <circle cx="480" cy="65" r="1.2" fill="#fff" />
-                    <circle cx="510" cy="190" r="1" fill="#fde047" />
+                    <circle cx="510" cy="190" r="1" fill="var(--sun)" />
                     <circle cx="80" cy="310" r="1.2" fill="#fff" />
-                    <circle cx="450" cy="330" r="0.9" fill="#93c5fd" />
+                    <circle cx="450" cy="330" r="0.9" fill="var(--water)" />
                   </g>
 
                   {/* Atmospheric Glow Ring */}
                   <circle cx="270" cy="190" r="152" fill="url(#atmoGlow)" />
 
                   {/* Planetary Sphere Body */}
-                  <circle cx="270" cy="190" r="140" fill="url(#globeGlow)" stroke="#38bdf8" strokeWidth="1.5" strokeOpacity="0.4" />
+                  <circle cx="270" cy="190" r="140" fill="url(#globeGlow)" stroke="var(--water)" strokeWidth="1.5" strokeOpacity="0.4" />
 
                   {/* 3D Latitude Rings */}
-                  <g opacity="0.35" stroke="#38bdf8" strokeWidth="0.75" fill="none">
+                  <g opacity="0.35" stroke="var(--water)" strokeWidth="0.75" fill="none">
                     <ellipse cx="270" cy="190" rx="140" ry="140" />
                     <ellipse cx="270" cy="140" rx="120" ry="24" />
                     <ellipse cx="270" cy="190" rx="140" ry="32" strokeDasharray="3 3" />
                     <ellipse cx="270" cy="240" rx="120" ry="24" />
-                    <line x1="270" y1="50" x2="270" y2="330" stroke="#38bdf8" strokeWidth="1" strokeDasharray="4 2" />
+                    <line x1="270" y1="50" x2="270" y2="330" stroke="var(--water)" strokeWidth="1" strokeDasharray="4 2" />
                   </g>
 
                   {/* 3D Longitude Meridians (Rotating according to rotationAngle) */}
-                  <g opacity="0.3" stroke="#38bdf8" strokeWidth="0.8" fill="none">
+                  <g opacity="0.3" stroke="var(--water)" strokeWidth="0.8" fill="none">
                     <ellipse cx="270" cy="190" rx={Math.abs(Math.sin((rotationAngle * Math.PI) / 180) * 140)} ry="140" />
                     <ellipse cx="270" cy="190" rx={Math.abs(Math.sin(((rotationAngle + 45) * Math.PI) / 180) * 140)} ry="140" />
                     <ellipse cx="270" cy="190" rx={Math.abs(Math.sin(((rotationAngle + 90) * Math.PI) / 180) * 140)} ry="140" />
                   </g>
 
                   {/* Dynamic Continents / Landmass Shading (Isometric Bangladesh / South Asia placement) */}
-                  <g fill="#166534" opacity="0.85" filter="url(#neonBlur)">
-                    <path d="M250,150 Q280,140 310,155 Q330,175 320,195 Q290,210 265,190 Q240,170 250,150 Z" fill="#15803d" />
-                    <path d="M220,130 Q250,115 280,125 Q270,145 240,145 Z" fill="#166534" opacity="0.6" />
-                    <path d="M290,165 Q315,160 325,180 Q305,190 285,175 Z" fill="#22c55e" />
+                  <g fill="var(--leaf)" opacity="0.85" filter="url(#neonBlur)">
+                    <path d="M250,150 Q280,140 310,155 Q330,175 320,195 Q290,210 265,190 Q240,170 250,150 Z" fill="var(--leaf)" />
+                    <path d="M220,130 Q250,115 280,125 Q270,145 240,145 Z" fill="var(--leaf)" opacity="0.6" />
+                    <path d="M290,165 Q315,160 325,180 Q305,190 285,175 Z" fill="var(--leaf)" />
                   </g>
 
                   {/* Atmospheric Cloud Swirls */}
-                  <g fill="#f8fafc" opacity="0.35">
+                  <g fill="var(--text)" opacity="0.35">
                     <path d="M200,160 Q240,145 290,165 Q330,155 370,170 Q320,185 270,175 Z" />
                     <path d="M180,210 Q230,195 280,215 Q340,205 380,225 Q320,235 250,225 Z" />
                   </g>
 
                   {/* Active Coordinate Radar Beacon (Targeting Lat/Lon) */}
                   <g transform="translate(295, 172)">
-                    <circle cx="0" cy="0" r="24" fill="none" stroke="#22c55e" strokeWidth="1" opacity="0.4">
+                    <circle cx="0" cy="0" r="24" fill="none" stroke="var(--leaf)" strokeWidth="1" opacity="0.4">
                       <animate attributeName="r" values="8;32" dur="2.5s" repeatCount="indefinite" />
                       <animate attributeName="opacity" values="0.8;0" dur="2.5s" repeatCount="indefinite" />
                     </circle>
-                    <circle cx="0" cy="0" r="14" fill="none" stroke="#4ade80" strokeWidth="1.5" opacity="0.7">
+                    <circle cx="0" cy="0" r="14" fill="none" stroke="var(--leaf)" strokeWidth="1.5" opacity="0.7">
                       <animate attributeName="r" values="4;20" dur="2.5s" begin="0.8s" repeatCount="indefinite" />
                       <animate attributeName="opacity" values="0.9;0" dur="2.5s" begin="0.8s" repeatCount="indefinite" />
                     </circle>
-                    <circle cx="0" cy="0" r="5" fill="#22c55e" />
-                    <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+                    <circle cx="0" cy="0" r="5" fill="var(--leaf)" />
+                    <circle cx="0" cy="0" r="2.5" fill="var(--text)" />
 
                     {/* Laser Target Reticle */}
-                    <line x1="-12" y1="0" x2="-6" y2="0" stroke="#4ade80" strokeWidth="2" />
-                    <line x1="6" y1="0" x2="12" y2="0" stroke="#4ade80" strokeWidth="2" />
-                    <line x1="0" y1="-12" x2="0" y2="-6" stroke="#4ade80" strokeWidth="2" />
-                    <line x1="0" y1="6" x2="0" y2="12" stroke="#4ade80" strokeWidth="2" />
+                    <line x1="-12" y1="0" x2="-6" y2="0" stroke="var(--leaf)" strokeWidth="2" />
+                    <line x1="6" y1="0" x2="12" y2="0" stroke="var(--leaf)" strokeWidth="2" />
+                    <line x1="0" y1="-12" x2="0" y2="-6" stroke="var(--leaf)" strokeWidth="2" />
+                    <line x1="0" y1="6" x2="0" y2="12" stroke="var(--leaf)" strokeWidth="2" />
 
                     {/* Target Callout Box */}
                     <g transform="translate(20, -22)">
-                      <rect x="0" y="0" width="145" height="42" rx="6" fill="rgba(15, 23, 42, 0.92)" stroke="#38bdf8" strokeWidth="1" />
-                      <text x="8" y="15" fill="#38bdf8" fontSize="9.5" fontWeight="800" fontFamily="monospace">NASA POINT TELEMETRY</text>
-                      <text x="8" y="27" fill="#f8fafc" fontSize="10.5" fontWeight="700">{locationName.slice(0, 18)}</text>
-                      <text x="8" y="37" fill="#4ade80" fontSize="9" fontWeight="600">{tempVal}°C • {humidVal}% RH • {rainVal} mm</text>
+                      <rect x="0" y="0" width="145" height="42" rx="6" fill="rgba(15, 23, 42, 0.92)" stroke="var(--water)" strokeWidth="1" />
+                      <text x="8" y="15" fill="var(--water)" fontSize="9.5" fontWeight="800" fontFamily="monospace">NASA POINT TELEMETRY</text>
+                      <text x="8" y="27" fill="var(--text)" fontSize="10.5" fontWeight="700">{locationName.slice(0, 18)}</text>
+                      <text x="8" y="37" fill="var(--leaf)" fontSize="9" fontWeight="600">{tempVal}°C • {humidVal}% RH • {rainVal} mm</text>
                     </g>
                   </g>
 
                   {/* Satellite In Orbit passing overhead */}
                   <g transform="translate(420, 90)">
-                    <line x1="-150" y1="40" x2="30" y2="-10" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
-                    <rect x="-8" y="-4" width="16" height="8" rx="2" fill="#e2e8f0" stroke="#64748b" strokeWidth="1" />
-                    <rect x="-24" y="-2" width="12" height="4" fill="#0284c7" />
-                    <rect x="12" y="-2" width="12" height="4" fill="#0284c7" />
-                    <circle cx="0" cy="0" r="2" fill="#ef4444" />
-                    <text x="-20" y="-10" fill="#94a3b8" fontSize="8.5" fontWeight="700">CERES SAT-2</text>
+                    <line x1="-150" y1="40" x2="30" y2="-10" stroke="var(--water)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
+                    <rect x="-8" y="-4" width="16" height="8" rx="2" fill="var(--text)" stroke="var(--text-3)" strokeWidth="1" />
+                    <rect x="-24" y="-2" width="12" height="4" fill="var(--water)" />
+                    <rect x="12" y="-2" width="12" height="4" fill="var(--water)" />
+                    <circle cx="0" cy="0" r="2" fill="var(--alert)" />
+                    <text x="-20" y="-10" fill="var(--text-2)" fontSize="8.5" fontWeight="700">CERES SAT-2</text>
                   </g>
 
                   {/* Solar Irradiance Angle Vector */}
                   <path d="M70,70 L200,140" stroke="url(#sunbeam)" strokeWidth="3" opacity="0.8" />
-                  <circle cx="60" cy="60" r="14" fill="#f59e0b" filter="url(#neonBlur)" />
-                  <circle cx="60" cy="60" r="10" fill="#fef08a" />
-                  <text x="84" y="58" fill="#fbbf24" fontSize="9.5" fontWeight="800">SOLAR FLUX: 14.2 MJ/m²</text>
+                  <circle cx="60" cy="60" r="14" fill="var(--sun)" filter="url(#neonBlur)" />
+                  <circle cx="60" cy="60" r="10" fill="var(--sun)" />
+                  <text x="84" y="58" fill="var(--sun)" fontSize="9.5" fontWeight="800">SOLAR FLUX: 14.2 MJ/m²</text>
                 </svg>
               </div>
             )}
@@ -319,43 +322,43 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
             {viewMode === 'column' && (
               <div className="column-3d-wrapper">
                 <svg className="column-svg" viewBox="0 0 540 380" preserveAspectRatio="xMidYMid meet">
-                  <rect width="540" height="380" fill="#050b14" rx="16" />
+                  <rect width="540" height="380" fill="var(--bg-deep)" rx="16" />
 
                   {/* Layer 4: Upper Stratosphere / Solar Boundary (12km) */}
                   <g transform="translate(40, 35)">
-                    <polygon points="40,20 420,20 460,70 80,70" fill="rgba(30, 58, 138, 0.35)" stroke="#3b82f6" strokeWidth="1" />
-                    <text x="90" y="48" fill="#93c5fd" fontSize="11" fontWeight="800">LAYER 4: STRATOSPHERE / SOLAR BOUNDARY (10–15 KM)</text>
-                    <text x="90" y="62" fill="#bfdbfe" fontSize="9.5">Direct Solar Irradiance: 14.2 MJ/m²/day • Top-of-Atmosphere Radiance</text>
+                    <polygon points="40,20 420,20 460,70 80,70" fill="rgba(30, 58, 138, 0.35)" stroke="var(--water)" strokeWidth="1" />
+                    <text x="90" y="48" fill="var(--water)" fontSize="11" fontWeight="800">LAYER 4: STRATOSPHERE / SOLAR BOUNDARY (10–15 KM)</text>
+                    <text x="90" y="62" fill="var(--water)" fontSize="9.5">Direct Solar Irradiance: 14.2 MJ/m²/day • Top-of-Atmosphere Radiance</text>
                   </g>
 
                   {/* Layer 3: Tropospheric Cloud Condensation Deck (2-4km) */}
                   <g transform="translate(40, 110)">
-                    <polygon points="40,20 420,20 460,70 80,70" fill="rgba(14, 116, 144, 0.3)" stroke="#06b6d4" strokeWidth="1" />
-                    <text x="90" y="48" fill="#67e8f9" fontSize="11" fontWeight="800">LAYER 3: CLOUD &amp; HUMIDITY DECK (2–4 KM)</text>
-                    <text x="90" y="62" fill="#a5f3fc" fontSize="9.5">Relative Humidity: {humidVal}% • Condensation Level: ~1,200m • Dew Point: {dewPoint}°C</text>
+                    <polygon points="40,20 420,20 460,70 80,70" fill="rgba(14, 116, 144, 0.3)" stroke="var(--water)" strokeWidth="1" />
+                    <text x="90" y="48" fill="var(--water)" fontSize="11" fontWeight="800">LAYER 3: CLOUD &amp; HUMIDITY DECK (2–4 KM)</text>
+                    <text x="90" y="62" fill="var(--water)" fontSize="9.5">Relative Humidity: {humidVal}% • Condensation Level: ~1,200m • Dew Point: {dewPoint}°C</text>
                   </g>
 
                   {/* Layer 2: Planetary Boundary Layer & Wind Velocity (0-1km) */}
                   <g transform="translate(40, 185)">
-                    <polygon points="40,20 420,20 460,70 80,70" fill="rgba(15, 118, 110, 0.35)" stroke="#14b8a6" strokeWidth="1" />
-                    <text x="90" y="48" fill="#5eead4" fontSize="11" fontWeight="800">LAYER 2: BOUNDARY LAYER &amp; WIND FIELD (0–1,000 M)</text>
-                    <text x="90" y="62" fill="#99f6e4" fontSize="9.5">Wind Speed: {windVal} m/s ({((windVal * 3.6)).toFixed(1)} km/h) • Turbulent Momentum Flux: Low Drift</text>
+                    <polygon points="40,20 420,20 460,70 80,70" fill="rgba(15, 118, 110, 0.35)" stroke="var(--water)" strokeWidth="1" />
+                    <text x="90" y="48" fill="var(--water)" fontSize="11" fontWeight="800">LAYER 2: BOUNDARY LAYER &amp; WIND FIELD (0–1,000 M)</text>
+                    <text x="90" y="62" fill="var(--water)" fontSize="9.5">Wind Speed: {windVal} m/s ({((windVal * 3.6)).toFixed(1)} km/h) • Turbulent Momentum Flux: Low Drift</text>
                   </g>
 
                   {/* Layer 1: Canopy & Ground Surface Interaction (0m) */}
                   <g transform="translate(40, 260)">
-                    <polygon points="40,20 420,20 460,85 80,85" fill="rgba(22, 101, 52, 0.45)" stroke="#22c55e" strokeWidth="1.5" />
-                    <text x="90" y="48" fill="#4ade80" fontSize="11.5" fontWeight="800">LAYER 1: CROP CANOPY &amp; SOIL HORIZON (SURFACE)</text>
-                    <text x="90" y="62" fill="#86efac" fontSize="9.5">Surface Temp: {tempVal}°C ({tempMin}°C to {tempMax}°C) • Rainfall Flux: {rainVal} mm/day</text>
-                    <text x="90" y="76" fill="#bbf7d0" fontSize="9">Reference Evapotranspiration ET₀: {et0} mm/day • Diurnal Range: {diurnalRange}°C</text>
+                    <polygon points="40,20 420,20 460,85 80,85" fill="rgba(22, 101, 52, 0.45)" stroke="var(--leaf)" strokeWidth="1.5" />
+                    <text x="90" y="48" fill="var(--leaf)" fontSize="11.5" fontWeight="800">LAYER 1: CROP CANOPY &amp; SOIL HORIZON (SURFACE)</text>
+                    <text x="90" y="62" fill="var(--leaf)" fontSize="9.5">Surface Temp: {tempVal}°C ({tempMin}°C to {tempMax}°C) • Rainfall Flux: {rainVal} mm/day</text>
+                    <text x="90" y="76" fill="var(--leaf)" fontSize="9">Reference Evapotranspiration ET₀: {et0} mm/day • Diurnal Range: {diurnalRange}°C</text>
                   </g>
 
                   {/* Vertical Elevation Altitude Axis */}
-                  <line x1="60" y1="50" x2="60" y2="340" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <text x="18" y="60" fill="#94a3b8" fontSize="9" fontWeight="700">15 KM</text>
-                  <text x="22" y="135" fill="#94a3b8" fontSize="9" fontWeight="700">4 KM</text>
-                  <text x="22" y="210" fill="#94a3b8" fontSize="9" fontWeight="700">1 KM</text>
-                  <text x="26" y="295" fill="#4ade80" fontSize="9" fontWeight="800">0 M</text>
+                  <line x1="60" y1="50" x2="60" y2="340" stroke="var(--text-3)" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <text x="18" y="60" fill="var(--text-2)" fontSize="9" fontWeight="700">15 KM</text>
+                  <text x="22" y="135" fill="var(--text-2)" fontSize="9" fontWeight="700">4 KM</text>
+                  <text x="22" y="210" fill="var(--text-2)" fontSize="9" fontWeight="700">1 KM</text>
+                  <text x="26" y="295" fill="var(--leaf)" fontSize="9" fontWeight="800">0 M</text>
                 </svg>
               </div>
             )}
@@ -363,40 +366,40 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
             {viewMode === 'satellite' && (
               <div className="satellite-3d-wrapper">
                 <svg className="satellite-svg" viewBox="0 0 540 380" preserveAspectRatio="xMidYMid meet">
-                  <rect width="540" height="380" fill="#030712" rx="16" />
+                  <rect width="540" height="380" fill="var(--bg-deep)" rx="16" />
 
                   {/* Earth Curvature Arc */}
-                  <path d="M-40,360 Q270,220 580,360" fill="#0f172a" stroke="#0284c7" strokeWidth="2" />
-                  <path d="M-40,360 Q270,220 580,360 L580,420 L-40,420 Z" fill="#064e3b" opacity="0.6" />
+                  <path d="M-40,360 Q270,220 580,360" fill="var(--bg-deep)" stroke="var(--water)" strokeWidth="2" />
+                  <path d="M-40,360 Q270,220 580,360 L580,420 L-40,420 Z" fill="var(--bg-deep)" opacity="0.6" />
 
                   {/* Grid Footprint Cells (0.5 deg resolution) */}
-                  <g stroke="#38bdf8" strokeWidth="1" strokeDasharray="3 3" fill="rgba(56, 189, 248, 0.08)">
+                  <g stroke="var(--water)" strokeWidth="1" strokeDasharray="3 3" fill="rgba(56, 189, 248, 0.08)">
                     <polygon points="170,270 270,240 370,270 270,305" />
                     <polygon points="270,240 370,215 460,240 370,270" />
                     <polygon points="80,300 170,270 270,305 180,340" />
                   </g>
 
                   {/* Active Target Ground Pin */}
-                  <circle cx="270" cy="275" r="7" fill="#ef4444" />
-                  <circle cx="270" cy="275" r="18" fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.5" />
-                  <text x="282" y="278" fill="#ffffff" fontSize="11" fontWeight="800">{locationName}</text>
-                  <text x="282" y="292" fill="#38bdf8" fontSize="9.5" fontWeight="600">{latitude.toFixed(2)}° N, {longitude.toFixed(2)}° E</text>
+                  <circle cx="270" cy="275" r="7" fill="var(--alert)" />
+                  <circle cx="270" cy="275" r="18" fill="none" stroke="var(--alert)" strokeWidth="1.5" opacity="0.5" />
+                  <text x="282" y="278" fill="var(--text)" fontSize="11" fontWeight="800">{locationName}</text>
+                  <text x="282" y="292" fill="var(--water)" fontSize="9.5" fontWeight="600">{latitude.toFixed(2)}° N, {longitude.toFixed(2)}° E</text>
 
                   {/* Sensor Swath Field of View cone */}
-                  <polygon points="270,60 170,270 370,270" fill="rgba(14, 165, 233, 0.12)" stroke="#38bdf8" strokeWidth="1" strokeDasharray="4 2" />
+                  <polygon points="270,60 170,270 370,270" fill="rgba(14, 165, 233, 0.12)" stroke="var(--water)" strokeWidth="1" strokeDasharray="4 2" />
 
                   {/* Detailed 3D Satellite Rendering */}
                   <g transform="translate(270, 60)">
-                    <rect x="-16" y="-10" width="32" height="20" rx="3" fill="#cbd5e1" stroke="#334155" strokeWidth="1.5" />
-                    <line x1="0" y1="10" x2="0" y2="24" stroke="#94a3b8" strokeWidth="2" />
-                    <circle cx="0" cy="26" r="4" fill="#0ea5e9" />
+                    <rect x="-16" y="-10" width="32" height="20" rx="3" fill="var(--text-2)" stroke="var(--line)" strokeWidth="1.5" />
+                    <line x1="0" y1="10" x2="0" y2="24" stroke="var(--text-2)" strokeWidth="2" />
+                    <circle cx="0" cy="26" r="4" fill="var(--water)" />
                     {/* Left Solar Panel */}
-                    <rect x="-56" y="-6" width="38" height="12" fill="#0284c7" stroke="#0369a1" strokeWidth="1" />
-                    <line x1="-37" y1="-6" x2="-37" y2="6" stroke="#bae6fd" strokeWidth="1" />
+                    <rect x="-56" y="-6" width="38" height="12" fill="var(--water)" stroke="var(--water)" strokeWidth="1" />
+                    <line x1="-37" y1="-6" x2="-37" y2="6" stroke="var(--water)" strokeWidth="1" />
                     {/* Right Solar Panel */}
-                    <rect x="18" y="-6" width="38" height="12" fill="#0284c7" stroke="#0369a1" strokeWidth="1" />
-                    <line x1="37" y1="-6" x2="37" y2="6" stroke="#bae6fd" strokeWidth="1" />
-                    <text x="-48" y="-16" fill="#f8fafc" fontSize="10" fontWeight="800">NASA TERRA / AQUA AGROCLIMATOLOGY SWATH</text>
+                    <rect x="18" y="-6" width="38" height="12" fill="var(--water)" stroke="var(--water)" strokeWidth="1" />
+                    <line x1="37" y1="-6" x2="37" y2="6" stroke="var(--water)" strokeWidth="1" />
+                    <text x="-48" y="-16" fill="var(--text)" fontSize="10" fontWeight="800">NASA TERRA / AQUA AGROCLIMATOLOGY SWATH</text>
                   </g>
                 </svg>
               </div>
@@ -437,7 +440,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                   <div><span>Max:</span> <strong>{tempMax}°C</strong></div>
                   <div><span>Min:</span> <strong>{tempMin}°C</strong></div>
                 </div>
-                <span className="readout-status-tag tag-green">Photosynthesis Optimal</span>
+                <span className="readout-status-tag tag-green">{tempVal >= 20 && tempVal <= 32 ? "Optimal temp (rule-based hint)" : "Suboptimal temp (rule-based hint)"}</span>
               </div>
             </div>
           </div>
@@ -469,7 +472,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                   <div><span>30-Day Sum:</span> <strong>148.6 mm</strong></div>
                   <div><span>Intensity:</span> <strong>{rainVal > 5 ? 'Moderate' : 'Light Trace'}</strong></div>
                 </div>
-                <span className="readout-status-tag tag-blue">Sufficient Field Moisture</span>
+                <span className="readout-status-tag tag-blue">{rainVal > 2 ? "Precipitation observed (rule-based hint)" : "Low precipitation (rule-based hint)"}</span>
               </div>
             </div>
           </div>
@@ -494,9 +497,9 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                 </div>
                 <div className="readout-limits">
                   <div><span>Vapor Pressure:</span> <strong>High</strong></div>
-                  <div><span>Risk Index:</span> <strong style={{ color: humidVal > 80 ? '#f59e0b' : '#22c55e' }}>{humidVal > 80 ? 'Mildew Alert' : 'Normal'}</strong></div>
+                  <div><span>Risk Index:</span> <strong style={{ color: humidVal > 80 ? 'var(--sun)' : 'var(--leaf)' }}>{humidVal > 80 ? 'High humidity (rule-based hint)' : 'Normal (rule-based hint)'}</strong></div>
                 </div>
-                <span className="readout-status-tag tag-amber">Canopy Moisture High</span>
+                <span className="readout-status-tag tag-amber">{humidVal > 80 ? "High humidity (rule-based hint)" : "Moderate humidity (rule-based hint)"}</span>
               </div>
             </div>
           </div>
@@ -528,7 +531,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                   <div><span>Speed:</span> <strong>{((windVal * 3.6)).toFixed(1)} km/h</strong></div>
                   <div><span>Direction:</span> <strong>NE (55°)</strong></div>
                 </div>
-                <span className="readout-status-tag tag-green">Ideal Spray Window</span>
+                <span className="readout-status-tag tag-green">{windVal >= 1 && windVal <= 4 ? "Low wind (rule-based hint)" : "High wind (rule-based hint)"}</span>
               </div>
             </div>
           </div>
@@ -604,29 +607,29 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
           <svg className="nasa-timeseries-svg" viewBox="0 0 960 260" preserveAspectRatio="none">
             <defs>
               <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ef4444" stopOpacity="0.4" />
-                <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="var(--alert)" stopOpacity="0.4" />
+                <stop offset="50%" stopColor="var(--sun)" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="var(--water)" stopOpacity="0.05" />
               </linearGradient>
               <linearGradient id="rainGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#0284c7" stopOpacity="0.3" />
+                <stop offset="0%" stopColor="var(--water)" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="var(--water)" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="humidityGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#0891b2" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="var(--water)" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="var(--water)" stopOpacity="0.05" />
               </linearGradient>
               <linearGradient id="solarGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#eab308" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#ca8a04" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="var(--sun)" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="var(--sun)" stopOpacity="0.05" />
               </linearGradient>
             </defs>
 
             {/* Grid horizontal lines */}
-            <line x1="60" y1="40" x2="940" y2="40" stroke="#e2e8f0" strokeDasharray="3 3" />
-            <line x1="60" y1="95" x2="940" y2="95" stroke="#e2e8f0" strokeDasharray="3 3" />
-            <line x1="60" y1="150" x2="940" y2="150" stroke="#e2e8f0" strokeDasharray="3 3" />
-            <line x1="60" y1="205" x2="940" y2="205" stroke="#cbd5e1" />
+            <line x1="60" y1="40" x2="940" y2="40" stroke="var(--text)" strokeDasharray="3 3" />
+            <line x1="60" y1="95" x2="940" y2="95" stroke="var(--text)" strokeDasharray="3 3" />
+            <line x1="60" y1="150" x2="940" y2="150" stroke="var(--text)" strokeDasharray="3 3" />
+            <line x1="60" y1="205" x2="940" y2="205" stroke="var(--text-2)" />
 
             {/* Metric Chart Lines */}
             {activeChartMetric === 'temp' && (
@@ -639,7 +642,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                     return i === 0 ? `M${x},${y}` : `${acc} L${x},${y}`;
                   }, '')}
                   fill="none"
-                  stroke="#ef4444"
+                  stroke="var(--alert)"
                   strokeWidth="2.5"
                 />
                 {/* Mean Temp Line with Area Fill */}
@@ -658,7 +661,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                     return i === 0 ? `M${x},${y}` : `${acc} L${x},${y}`;
                   }, '')}
                   fill="none"
-                  stroke="#f59e0b"
+                  stroke="var(--sun)"
                   strokeWidth="3"
                 />
                 {/* Min Temp Line (Blue) */}
@@ -669,7 +672,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                     return i === 0 ? `M${x},${y}` : `${acc} L${x},${y}`;
                   }, '')}
                   fill="none"
-                  stroke="#3b82f6"
+                  stroke="var(--water)"
                   strokeWidth="2.5"
                   strokeDasharray="4 2"
                 />
@@ -691,7 +694,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                       height={barH}
                       rx="3"
                       fill="url(#rainGradient)"
-                      stroke="#0284c7"
+                      stroke="var(--water)"
                       strokeWidth="1"
                     />
                   );
@@ -716,7 +719,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                     return i === 0 ? `M${x},${y}` : `${acc} L${x},${y}`;
                   }, '')}
                   fill="none"
-                  stroke="#0891b2"
+                  stroke="var(--water)"
                   strokeWidth="3"
                 />
               </>
@@ -739,7 +742,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
                     return i === 0 ? `M${x},${y}` : `${acc} L${x},${y}`;
                   }, '')}
                   fill="none"
-                  stroke="#eab308"
+                  stroke="var(--sun)"
                   strokeWidth="3"
                 />
               </>
@@ -756,7 +759,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
 
               return (
                 <g key={d.date} onMouseEnter={() => setHoveredDataPoint(d)} onMouseLeave={() => setHoveredDataPoint(null)}>
-                  <circle cx={x} cy={y} r="5" fill="#ffffff" stroke="#16a34a" strokeWidth="2.5" style={{ cursor: 'pointer' }} />
+                  <circle cx={x} cy={y} r="5" fill="var(--text)" stroke="var(--leaf)" strokeWidth="2.5" style={{ cursor: 'pointer' }} />
                 </g>
               );
             })}
@@ -764,41 +767,41 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
             {/* Axis Y Labels */}
             {activeChartMetric === 'temp' && (
               <>
-                <text x="20" y="44" fill="#94a3b8" fontSize="10.5" fontWeight="700">40°C</text>
-                <text x="20" y="99" fill="#94a3b8" fontSize="10.5" fontWeight="700">33°C</text>
-                <text x="20" y="154" fill="#94a3b8" fontSize="10.5" fontWeight="700">26°C</text>
-                <text x="20" y="209" fill="#94a3b8" fontSize="10.5" fontWeight="700">20°C</text>
+                <text x="20" y="44" fill="var(--text-2)" fontSize="10.5" fontWeight="700">40°C</text>
+                <text x="20" y="99" fill="var(--text-2)" fontSize="10.5" fontWeight="700">33°C</text>
+                <text x="20" y="154" fill="var(--text-2)" fontSize="10.5" fontWeight="700">26°C</text>
+                <text x="20" y="209" fill="var(--text-2)" fontSize="10.5" fontWeight="700">20°C</text>
               </>
             )}
             {activeChartMetric === 'rain' && (
               <>
-                <text x="15" y="44" fill="#94a3b8" fontSize="10.5" fontWeight="700">25 mm</text>
-                <text x="15" y="99" fill="#94a3b8" fontSize="10.5" fontWeight="700">18 mm</text>
-                <text x="15" y="154" fill="#94a3b8" fontSize="10.5" fontWeight="700">10 mm</text>
-                <text x="20" y="209" fill="#94a3b8" fontSize="10.5" fontWeight="700">0 mm</text>
+                <text x="15" y="44" fill="var(--text-2)" fontSize="10.5" fontWeight="700">25 mm</text>
+                <text x="15" y="99" fill="var(--text-2)" fontSize="10.5" fontWeight="700">18 mm</text>
+                <text x="15" y="154" fill="var(--text-2)" fontSize="10.5" fontWeight="700">10 mm</text>
+                <text x="20" y="209" fill="var(--text-2)" fontSize="10.5" fontWeight="700">0 mm</text>
               </>
             )}
             {activeChartMetric === 'humidity' && (
               <>
-                <text x="15" y="44" fill="#94a3b8" fontSize="10.5" fontWeight="700">100%</text>
-                <text x="20" y="99" fill="#94a3b8" fontSize="10.5" fontWeight="700">85%</text>
-                <text x="20" y="154" fill="#94a3b8" fontSize="10.5" fontWeight="700">70%</text>
-                <text x="20" y="209" fill="#94a3b8" fontSize="10.5" fontWeight="700">50%</text>
+                <text x="15" y="44" fill="var(--text-2)" fontSize="10.5" fontWeight="700">100%</text>
+                <text x="20" y="99" fill="var(--text-2)" fontSize="10.5" fontWeight="700">85%</text>
+                <text x="20" y="154" fill="var(--text-2)" fontSize="10.5" fontWeight="700">70%</text>
+                <text x="20" y="209" fill="var(--text-2)" fontSize="10.5" fontWeight="700">50%</text>
               </>
             )}
             {activeChartMetric === 'solar' && (
               <>
-                <text x="10" y="44" fill="#94a3b8" fontSize="10.5" fontWeight="700">25 MJ</text>
-                <text x="10" y="99" fill="#94a3b8" fontSize="10.5" fontWeight="700">18 MJ</text>
-                <text x="10" y="154" fill="#94a3b8" fontSize="10.5" fontWeight="700">12 MJ</text>
-                <text x="15" y="209" fill="#94a3b8" fontSize="10.5" fontWeight="700">5 MJ</text>
+                <text x="10" y="44" fill="var(--text-2)" fontSize="10.5" fontWeight="700">25 MJ</text>
+                <text x="10" y="99" fill="var(--text-2)" fontSize="10.5" fontWeight="700">18 MJ</text>
+                <text x="10" y="154" fill="var(--text-2)" fontSize="10.5" fontWeight="700">12 MJ</text>
+                <text x="15" y="209" fill="var(--text-2)" fontSize="10.5" fontWeight="700">5 MJ</text>
               </>
             )}
 
             {/* X Axis Date Labels */}
-            <text x="60" y="235" fill="#64748b" fontSize="10.5" fontWeight="700">{chartData[0]?.date}</text>
-            <text x="480" y="235" fill="#64748b" fontSize="10.5" fontWeight="700">{chartData[Math.floor(chartData.length / 2)]?.date}</text>
-            <text x="880" y="235" fill="#64748b" fontSize="10.5" fontWeight="700">{chartData[chartData.length - 1]?.date}</text>
+            <text x="60" y="235" fill="var(--text-3)" fontSize="10.5" fontWeight="700">{chartData[0]?.date}</text>
+            <text x="480" y="235" fill="var(--text-3)" fontSize="10.5" fontWeight="700">{chartData[Math.floor(chartData.length / 2)]?.date}</text>
+            <text x="880" y="235" fill="var(--text-3)" fontSize="10.5" fontWeight="700">{chartData[chartData.length - 1]?.date}</text>
           </svg>
 
           {/* Interactive Tooltip Card on Hover */}
@@ -817,7 +820,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
       {/* Agro-Climatic Intelligence Cards */}
       <div className="nasa-agro-grid">
         <div className="agro-card">
-          <div className="agro-icon-wrap" style={{ background: '#e0f2fe', color: '#0284c7' }}>
+          <div className="agro-icon-wrap" style={{ background: 'rgba(108, 196, 224, 0.15)', color: 'var(--water)' }}>
             🌾
           </div>
           <div className="agro-content">
@@ -828,7 +831,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
         </div>
 
         <div className="agro-card">
-          <div className="agro-icon-wrap" style={{ background: '#fef3c7', color: '#d97706' }}>
+          <div className="agro-icon-wrap" style={{ background: 'rgba(242, 193, 78, 0.15)', color: 'var(--sun)' }}>
             🌿
           </div>
           <div className="agro-content">
@@ -839,7 +842,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
         </div>
 
         <div className="agro-card">
-          <div className="agro-icon-wrap" style={{ background: '#dcfce7', color: '#16a34a' }}>
+          <div className="agro-icon-wrap" style={{ background: 'rgba(95, 191, 119, 0.15)', color: 'var(--leaf)' }}>
             🚜
           </div>
           <div className="agro-content">
@@ -850,7 +853,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
         </div>
 
         <div className="agro-card">
-          <div className="agro-icon-wrap" style={{ background: '#fee2e2', color: '#dc2626' }}>
+          <div className="agro-icon-wrap" style={{ background: 'rgba(239, 122, 90, 0.15)', color: 'var(--alert)' }}>
             🛡️
           </div>
           <div className="agro-content">
@@ -865,7 +868,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
       <div className="nasa-safety-card">
         <div className="safety-header">
           <div className="safety-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--leaf)" strokeWidth="2.5">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
             <h3>Scientific Safety Boundaries &amp; NASA POWER Provenance</h3>

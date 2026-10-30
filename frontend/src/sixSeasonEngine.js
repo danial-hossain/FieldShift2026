@@ -3,12 +3,12 @@
 // Agronomic Horizon: 3 Years, 6 Distinct Planning Periods (Y1_S1 through Y3_S2)
 
 export const CANONICAL_PERIODS = [
-  { key: 'Y1_S1', year: 1, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 1, Season 1 (Dry / Rabi / Aus)', nameBn: '১ম বছর, ১ম মৌসুম (রবি / খরা / আউশ)' },
-  { key: 'Y1_S2', year: 1, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 1, Season 2 (Wet / Kharif / Aman)', nameBn: '১ম বছর, ২য় মৌসুম (খরিপ / বর্ষা / আমন)' },
-  { key: 'Y2_S1', year: 2, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 2, Season 1 (Dry / Rabi / Aus)', nameBn: '২য় বছর, ১ম মৌসুম (রবি / খরা / আউশ)' },
-  { key: 'Y2_S2', year: 2, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 2, Season 2 (Wet / Kharif / Aman)', nameBn: '২য় বছর, ২য় মৌসুম (খরিপ / বর্ষা / আমন)' },
-  { key: 'Y3_S1', year: 3, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 3, Season 1 (Dry / Rabi / Aus)', nameBn: '৩য় বছর, ১ম মৌসুম (রবি / খরা / আউশ)' },
-  { key: 'Y3_S2', year: 3, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 3, Season 2 (Wet / Kharif / Aman)', nameBn: '৩য় বছর, ২য় মৌসুম (খরিপ / বর্ষা / আমন)' }
+  { key: 'Y1_S1', year: 1, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 1, Season 1 (Rabi: Nov-Apr, dry)', nameBn: '১ম বছর, ১ম মৌসুম (রবি: নভেম্বর-এপ্রিল, শুষ্ক)' },
+  { key: 'Y1_S2', year: 1, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 1, Season 2 (Kharif: May-Oct, wet)', nameBn: '১ম বছর, ২য় মৌসুম (খরিফ: মে-অক্টোবর, বর্ষা)' },
+  { key: 'Y2_S1', year: 2, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 2, Season 1 (Rabi: Nov-Apr, dry)', nameBn: '২য় বছর, ১ম মৌসুম (রবি: নভেম্বর-এপ্রিল, শুষ্ক)' },
+  { key: 'Y2_S2', year: 2, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 2, Season 2 (Kharif: May-Oct, wet)', nameBn: '২য় বছর, ২য় মৌসুম (খরিফ: মে-অক্টোবর, বর্ষা)' },
+  { key: 'Y3_S1', year: 3, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 3, Season 1 (Rabi: Nov-Apr, dry)', nameBn: '৩য় বছর, ১ম মৌসুম (রবি: নভেম্বর-এপ্রিল, শুষ্ক)' },
+  { key: 'Y3_S2', year: 3, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 3, Season 2 (Kharif: May-Oct, wet)', nameBn: '৩য় বছর, ২য় মৌসুম (খরিফ: মে-অক্টোবর, বর্ষা)' }
 ];
 
 export const CROP_DATABASE = {
@@ -35,7 +35,7 @@ export const STRATEGY_DEFINITIONS = {
     titleEn: 'Balanced Multi-Objective',
     titleBn: 'ভারসাম্যপূর্ণ বহু-উদ্দেশ্যমূলক আবর্তন',
     icon: '⚖️',
-    color: '#38bdf8',
+    color: 'var(--water)',
     weights: { profit: 0.34, water: 0.33, soil: 0.33 },
     summaryEn: 'Equal trade-off between economic gross margin, water conservation, and soil biological regeneration.',
     summaryBn: 'অর্থনৈতিক লাভ, ভূগর্ভস্থ পানি সাশ্রয় এবং মাটির উর্বরতার সমন্বিত সমতা রক্ষা করে।'
@@ -45,7 +45,7 @@ export const STRATEGY_DEFINITIONS = {
     titleEn: 'Profit Focused',
     titleBn: 'সর্বোচ্চ মুনাফা কেন্দ্রিক আবর্তন',
     icon: '💰',
-    color: '#00df81',
+    color: 'var(--leaf)',
     weights: { profit: 0.70, water: 0.20, soil: 0.10 },
     summaryEn: 'Maximizes cumulative gross margin across 6 seasons while strictly enforcing the 3-season legume constraint.',
     summaryBn: '৬ মৌসুমে সর্বোচ্চ মোট মুনাফা অর্জন করে এবং প্রতি ৩ মৌসুমে কমপক্ষে একটি ডাল ফসলের শর্ত পূরণ করে।'
@@ -55,7 +55,7 @@ export const STRATEGY_DEFINITIONS = {
     titleEn: 'Water Efficiency',
     titleBn: 'পানি সাশ্রয়ী ও খরা সহনশীল আবর্তন',
     icon: '💧',
-    color: '#0284c7',
+    color: 'var(--water)',
     weights: { profit: 0.20, water: 0.60, soil: 0.20 },
     summaryEn: 'Minimizes seasonal irrigation demand and protects groundwater tables in moisture-stressed regions.',
     summaryBn: 'সেচের পানির চাহিদা সর্বনিম্ন রাখে এবং খরা প্রবণ অঞ্চলে ভূগর্ভস্থ পানির স্তর রক্ষা করে।'
@@ -65,7 +65,7 @@ export const STRATEGY_DEFINITIONS = {
     titleEn: 'Soil Health & Regeneration',
     titleBn: 'মাটির স্বাস্থ্য ও জৈব উর্বরতা কেন্দ্রিক আবর্তন',
     icon: '🌱',
-    color: '#fbbf24',
+    color: 'var(--sun)',
     weights: { profit: 0.20, water: 0.20, soil: 0.60 },
     summaryEn: 'Maximizes biological nitrogen fixation (BNF), organic carbon addition, and botanical family diversity.',
     summaryBn: 'জৈব নাইট্রোজেন সংবন্ধন, মাটির জৈব কার্বন বৃদ্ধি এবং জাতের বৈচিত্র্য নিশ্চিত করে।'

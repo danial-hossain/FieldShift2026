@@ -10,9 +10,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 32,
     silt: 34,
     clay: 34,
-    colorHex: '#78350f',
-    bgBadge: '#fef3c7',
-    textBadge: '#92400e',
+    colorHex: 'var(--accent)',
+    bgBadge: 'rgba(242, 193, 78, 0.12)',
+    textBadge: 'var(--sun)',
     hydraulicCond: '0.8 cm/hr'
   },
   loam: {
@@ -22,9 +22,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 40,
     silt: 40,
     clay: 20,
-    colorHex: '#854d0e',
-    bgBadge: '#fef9c3',
-    textBadge: '#854d0e',
+    colorHex: 'var(--sun)',
+    bgBadge: 'rgba(242, 193, 78, 0.12)',
+    textBadge: 'var(--sun)',
     hydraulicCond: '1.5 cm/hr'
   },
   silty_loam: {
@@ -34,9 +34,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 20,
     silt: 65,
     clay: 15,
-    colorHex: '#a16207',
-    bgBadge: '#fef3c7',
-    textBadge: '#78350f',
+    colorHex: 'var(--sun)',
+    bgBadge: 'rgba(242, 193, 78, 0.12)',
+    textBadge: 'var(--sun)',
     hydraulicCond: '1.2 cm/hr'
   },
   sandy_loam: {
@@ -46,9 +46,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 65,
     silt: 25,
     clay: 10,
-    colorHex: '#ca8a04',
-    bgBadge: '#fef08a',
-    textBadge: '#713f12',
+    colorHex: 'var(--sun)',
+    bgBadge: 'rgba(242, 193, 78, 0.12)',
+    textBadge: 'var(--sun)',
     hydraulicCond: '3.2 cm/hr'
   },
   silty_clay: {
@@ -58,9 +58,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 10,
     silt: 45,
     clay: 45,
-    colorHex: '#581c87',
-    bgBadge: '#f3e8ff',
-    textBadge: '#6b21a8',
+    colorHex: 'var(--accent)',
+    bgBadge: 'rgba(197, 232, 108, 0.12)',
+    textBadge: 'var(--accent)',
     hydraulicCond: '0.3 cm/hr'
   },
   clay: {
@@ -70,9 +70,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 15,
     silt: 25,
     clay: 60,
-    colorHex: '#450a0a',
-    bgBadge: '#fee2e2',
-    textBadge: '#991b1b',
+    colorHex: 'var(--alert)',
+    bgBadge: 'rgba(239, 122, 90, 0.12)',
+    textBadge: 'var(--alert)',
     hydraulicCond: '0.2 cm/hr'
   },
   unknown: {
@@ -82,9 +82,9 @@ const SOIL_TEXTURE_DATA = {
     sand: 40,
     silt: 40,
     clay: 20,
-    colorHex: '#713f12',
-    bgBadge: '#f5f5f4',
-    textBadge: '#44403c',
+    colorHex: 'var(--text-2)',
+    bgBadge: 'rgba(255, 255, 255, 0.08)',
+    textBadge: 'var(--text-2)',
     hydraulicCond: '1.4 cm/hr'
   }
 };
@@ -212,10 +212,10 @@ export function FieldParcelManagerView({
       </div>
 
       {/* 2. Active Parcel Hero Summary Card */}
-      <div className="parcel-hero-banner" style={{ borderLeft: hasActiveField ? (isDemo ? '4px solid #0284c7' : '4px solid #16a34a') : '4px solid #f59e0b' }}>
+      <div className="parcel-hero-banner" style={{ borderLeft: hasActiveField ? (isDemo ? '4px solid var(--water)' : '4px solid var(--leaf)') : '4px solid var(--sun)' }}>
         <div className="hero-banner-main">
-          <div className="hero-status-tag" style={{ background: hasActiveField ? (isDemo ? '#e0f2fe' : '#dcfce7') : '#fef3c7', color: hasActiveField ? (isDemo ? '#0369a1' : '#15803d') : '#b45309' }}>
-            <span className={hasActiveField ? "pulse-dot" : ""} style={hasActiveField ? undefined : { width: 8, height: 8, borderRadius: '50%', background: '#b45309', display: 'inline-block' }} />
+          <div className="hero-status-tag" style={{ background: hasActiveField ? (isDemo ? 'rgba(108, 196, 224, 0.15)' : 'rgba(95, 191, 119, 0.15)') : 'rgba(242, 193, 78, 0.15)', color: hasActiveField ? (isDemo ? 'var(--water)' : 'var(--leaf)') : 'var(--sun)' }}>
+            <span className={hasActiveField ? "pulse-dot" : ""} style={hasActiveField ? undefined : { width: 8, height: 8, borderRadius: '50%', background: 'var(--sun)', display: 'inline-block' }} />
             {hasActiveField ? (isDemo ? 'DEMO BENCHMARK PARCEL' : 'CURRENT ACTIVE PARCEL') : 'NO ACTIVE PARCEL REGISTERED'}
           </div>
           <h1 className="hero-parcel-name">
@@ -300,7 +300,7 @@ export function FieldParcelManagerView({
                   <button
                     type="button"
                     className="stage-mode-btn"
-                    style={{ background: '#fef2f2', borderColor: '#ef4444', color: '#b91c1c' }}
+                    style={{ background: 'rgba(239, 122, 90, 0.15)', borderColor: 'var(--alert)', color: 'var(--alert)' }}
                     onClick={handleCancelPinning}
                   >
                     ✕ Cancel Pin
@@ -309,7 +309,7 @@ export function FieldParcelManagerView({
                   <button
                     type="button"
                     className="stage-mode-btn"
-                    style={{ background: '#eff6ff', borderColor: '#3b82f6', color: '#1d4ed8' }}
+                    style={{ background: 'rgba(108, 196, 224, 0.15)', borderColor: 'var(--water)', color: 'var(--water)' }}
                     onClick={handleStartPinning}
                     title="Click anywhere on the map to pin a new location for a new field"
                   >
@@ -326,8 +326,8 @@ export function FieldParcelManagerView({
           {/* Pin Mode Alert Strip */}
           {mapMode === 'satellite' && pinMode && (
             <div style={{
-              background: '#ecfdf5',
-              borderBottom: '1px solid #a7f3d0',
+              background: 'rgba(95, 191, 119, 0.15)',
+              borderBottom: '1px solid var(--line)',
               padding: '10px 18px',
               display: 'flex',
               alignItems: 'center',
@@ -377,29 +377,29 @@ export function FieldParcelManagerView({
                   <defs>
                     <linearGradient id="topsoilGrad" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stopColor={soilInfo.colorHex} />
-                      <stop offset="100%" stopColor="#3f2305" />
+                      <stop offset="100%" stopColor="var(--bg-deep)" />
                     </linearGradient>
                     <linearGradient id="subsoilGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#451a03" />
-                      <stop offset="100%" stopColor="#1c1917" />
+                      <stop offset="0%" stopColor="var(--bg-deep)" />
+                      <stop offset="100%" stopColor="var(--bg-deep)" />
                     </linearGradient>
                     <linearGradient id="canopyGreen" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#22c55e" />
-                      <stop offset="100%" stopColor="#15803d" />
+                      <stop offset="0%" stopColor="var(--leaf)" />
+                      <stop offset="100%" stopColor="var(--leaf)" />
                     </linearGradient>
                   </defs>
 
                   {/* Dark Grid Background */}
-                  <rect width="600" height="380" fill="#09140e" rx="16" />
+                  <rect width="600" height="380" fill="var(--bg-deep)" rx="16" />
 
                   {/* 3D Isometric Extruded Block Base */}
                   {/* Right Face (Depth Layer) */}
-                  <polygon points="480,180 480,260 300,340 300,260" fill="url(#subsoilGrad)" stroke="#78350f" strokeWidth="1.5" />
+                  <polygon points="480,180 480,260 300,340 300,260" fill="url(#subsoilGrad)" stroke="var(--line)" strokeWidth="1.5" />
                   {/* Left Face (Depth Layer) */}
-                  <polygon points="120,180 120,260 300,340 300,260" fill="#291807" stroke="#78350f" strokeWidth="1.5" />
+                  <polygon points="120,180 120,260 300,340 300,260" fill="var(--bg-deep)" stroke="var(--line)" strokeWidth="1.5" />
 
                   {/* Top Face (Surface Crop Canopy / Furrow field) */}
-                  <polygon points="300,80 480,180 300,260 120,180" fill="url(#topsoilGrad)" stroke="#22c55e" strokeWidth="2" />
+                  <polygon points="300,80 480,180 300,260 120,180" fill="url(#topsoilGrad)" stroke="var(--leaf)" strokeWidth="2" />
 
                   {/* Crop Furrow Lines in 3D perspective */}
                   <g stroke="rgba(34, 197, 94, 0.5)" strokeWidth="2" fill="none">
@@ -425,28 +425,28 @@ export function FieldParcelManagerView({
 
                   {/* Center Radar Beacon */}
                   <g transform="translate(300, 170)">
-                    <circle cx="0" cy="0" r="28" fill="none" stroke="#4ade80" strokeWidth="1.5" opacity="0.6">
+                    <circle cx="0" cy="0" r="28" fill="none" stroke="var(--leaf)" strokeWidth="1.5" opacity="0.6">
                       <animate attributeName="r" values="10;45" dur="2.5s" repeatCount="indefinite" />
                       <animate attributeName="opacity" values="0.8;0" dur="2.5s" repeatCount="indefinite" />
                     </circle>
-                    <circle cx="0" cy="0" r="6" fill="#22c55e" />
-                    <circle cx="0" cy="0" r="3" fill="#ffffff" />
+                    <circle cx="0" cy="0" r="6" fill="var(--leaf)" />
+                    <circle cx="0" cy="0" r="3" fill="var(--text)" />
                   </g>
 
                   {/* Dimension Annotations */}
-                  <g fill="#f8fafc" fontSize="11" fontWeight="700">
-                    <text x="495" y="200" fill="#4ade80">Topsoil: 0–15 cm (OM {organicMatter}%)</text>
-                    <text x="495" y="235" fill="#f59e0b">Subsoil: 15–40 cm ({soilInfo.label})</text>
-                    <text x="495" y="270" fill="#94a3b8">Bedrock Drainage Horizon</text>
-                    <line x1="485" y1="185" x2="490" y2="185" stroke="#4ade80" strokeWidth="2" />
-                    <line x1="485" y1="220" x2="490" y2="220" stroke="#f59e0b" strokeWidth="2" />
-                    <line x1="485" y1="260" x2="490" y2="260" stroke="#94a3b8" strokeWidth="2" />
+                  <g fill="var(--text)" fontSize="11" fontWeight="700">
+                    <text x="495" y="200" fill="var(--leaf)">Topsoil: 0–15 cm (OM {organicMatter}%)</text>
+                    <text x="495" y="235" fill="var(--sun)">Subsoil: 15–40 cm ({soilInfo.label})</text>
+                    <text x="495" y="270" fill="var(--text-2)">Bedrock Drainage Horizon</text>
+                    <line x1="485" y1="185" x2="490" y2="185" stroke="var(--leaf)" strokeWidth="2" />
+                    <line x1="485" y1="220" x2="490" y2="220" stroke="var(--sun)" strokeWidth="2" />
+                    <line x1="485" y1="260" x2="490" y2="260" stroke="var(--line)" strokeWidth="2" />
                   </g>
 
                   {/* Irrigation Inflow Pipe Line */}
-                  <path d="M70,220 L120,240 L300,260" stroke="#38bdf8" strokeWidth="3" fill="none" strokeDasharray="8 4" />
-                  <circle cx="70" cy="220" r="5" fill="#38bdf8" />
-                  <text x="40" y="210" fill="#38bdf8" fontSize="10.5" fontWeight="800">IRRIGATION CAPACITY: {irrigationMm} MM</text>
+                  <path d="M70,220 L120,240 L300,260" stroke="var(--water)" strokeWidth="3" fill="none" strokeDasharray="8 4" />
+                  <circle cx="70" cy="220" r="5" fill="var(--water)" />
+                  <text x="40" y="210" fill="var(--water)" fontSize="10.5" fontWeight="800">IRRIGATION CAPACITY: {irrigationMm} MM</text>
                 </svg>
               </div>
             )}
@@ -454,30 +454,30 @@ export function FieldParcelManagerView({
             {mapMode === 'ndvi' && (
               <div className="ndvi-simulation-holder">
                 <svg className="ndvi-svg" viewBox="0 0 600 380" preserveAspectRatio="xMidYMid meet">
-                  <rect width="600" height="380" fill="#04120a" rx="16" />
+                  <rect width="600" height="380" fill="var(--bg-deep)" rx="16" />
 
                   <g opacity="0.9">
-                    <rect x="80" y="50" width="440" height="260" rx="12" fill="#14532d" stroke="#22c55e" strokeWidth="1.5" />
-                    <circle cx="220" cy="150" r="80" fill="#16a34a" opacity="0.8" />
-                    <circle cx="360" cy="190" r="95" fill="#22c55e" opacity="0.85" />
-                    <circle cx="410" cy="130" r="65" fill="#4ade80" opacity="0.9" />
-                    <ellipse cx="280" cy="220" rx="90" ry="45" fill="#15803d" opacity="0.75" />
-                    <ellipse cx="140" cy="240" rx="50" ry="30" fill="#84cc16" opacity="0.7" />
+                    <rect x="80" y="50" width="440" height="260" rx="12" fill="var(--leaf)" stroke="var(--leaf)" strokeWidth="1.5" />
+                    <circle cx="220" cy="150" r="80" fill="var(--leaf)" opacity="0.8" />
+                    <circle cx="360" cy="190" r="95" fill="var(--leaf)" opacity="0.85" />
+                    <circle cx="410" cy="130" r="65" fill="var(--leaf)" opacity="0.9" />
+                    <ellipse cx="280" cy="220" rx="90" ry="45" fill="var(--leaf)" opacity="0.75" />
+                    <ellipse cx="140" cy="240" rx="50" ry="30" fill="var(--accent)" opacity="0.7" />
                   </g>
 
                   {/* False Color Heatmap Scale Legend */}
                   <g transform="translate(100, 335)">
-                    <text x="0" y="14" fill="#94a3b8" fontSize="11" fontWeight="700">NDVI VIGOR:</text>
-                    <rect x="90" y="2" width="50" height="15" fill="#ca8a04" rx="3" />
-                    <text x="95" y="13" fill="#ffffff" fontSize="9.5" fontWeight="700">0.25 (Low)</text>
+                    <text x="0" y="14" fill="var(--text-2)" fontSize="11" fontWeight="700">NDVI VIGOR:</text>
+                    <rect x="90" y="2" width="50" height="15" fill="var(--sun)" rx="3" />
+                    <text x="95" y="13" fill="var(--text)" fontSize="9.5" fontWeight="700">0.25 (Low)</text>
 
-                    <rect x="145" y="2" width="60" height="15" fill="#16a34a" rx="3" />
-                    <text x="150" y="13" fill="#ffffff" fontSize="9.5" fontWeight="700">0.55 (Med)</text>
+                    <rect x="145" y="2" width="60" height="15" fill="var(--leaf)" rx="3" />
+                    <text x="150" y="13" fill="var(--text)" fontSize="9.5" fontWeight="700">0.55 (Med)</text>
 
-                    <rect x="210" y="2" width="65" height="15" fill="#4ade80" rx="3" />
-                    <text x="215" y="13" fill="#052e16" fontSize="9.5" fontWeight="800">0.82 (High)</text>
+                    <rect x="210" y="2" width="65" height="15" fill="var(--leaf)" rx="3" />
+                    <text x="215" y="13" fill="var(--bg-deep)" fontSize="9.5" fontWeight="800">0.82 (High)</text>
 
-                    <text x="300" y="14" fill="#4ade80" fontSize="11.5" fontWeight="800">
+                    <text x="300" y="14" fill="var(--leaf)" fontSize="11.5" fontWeight="800">
                       Mean Field Canopy Index: 0.68 (Robust Biomass)
                     </text>
                   </g>
@@ -505,7 +505,7 @@ export function FieldParcelManagerView({
             <div className="soil-strata-container">
               {/* Left Depth Column Indicator */}
               <div className="soil-depth-column" title="Soil Horizon Depth Profile">
-                <div className="strata-block strata-a" style={{ background: `linear-gradient(180deg, #166534 0%, ${soilInfo.colorHex} 100%)` }}>
+                <div className="strata-block strata-a" style={{ background: `linear-gradient(180deg, var(--leaf) 0%, ${soilInfo.colorHex} 100%)` }}>
                   <span className="strata-id">A</span>
                 </div>
                 <div className="strata-block strata-b">
