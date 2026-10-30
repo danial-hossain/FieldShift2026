@@ -719,9 +719,9 @@ def generate_recommendation(
         # Phase C3: Pre-monsoon / wet-season onset earlier, but conventional Aman onset unchanged
         if crop_key == "aman":
             evidence_level = "not_significant"
-            headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।"
-            headline_en = f"Pre-monsoon rains in {district_en} now start earlier: Aus sowing and land preparation can advance, while Aman planting window remains unchanged."
-            sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ/জমি প্রস্তুতি আগে করা যায়; আমনের রোপণ সময় অপরিবর্তিত।"
+            headline_bn = f"{district_bn} অঞ্চলে আমন রোপণ সময় অপরিবর্তিত (জুলাইয়ের মাঝামাঝি থেকে আগস্টের প্রথম সপ্তাহ); প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
+            headline_en = f"Aman planting window for {district_en} remains unchanged (mid-July to early August); follow standard BRRI crop calendar."
+            sms_bn = f"{district_bn} আমন: রোপণের সময় অপরিবর্তিত। বীজতলা জুনের শেষ সপ্তাহে ও রোপণ জুলাইতে করুন। বিআরআরআই নির্দেশিকা মেনে চলুন।"
         elif crop_key == "aus":
             evidence_level = "significant"
             headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।"
