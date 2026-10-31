@@ -22,6 +22,7 @@ import {
   buildSixSeasonRecommendations
 } from './sixSeasonEngine.js';
 import { SixSeasonTrajectory3D } from './research3d/SixSeasonTrajectory3D.jsx';
+import { BangladeshClimateMap } from './BangladeshClimateMap.jsx';
 
 
 const PRIORITIES = ['balanced', 'profit', 'water', 'soil'];
@@ -1065,6 +1066,9 @@ export function SixSeasonRecommendationView({
           </div>
         </div>
       </div>
+
+      {/* A6: Bangladesh 64-District Climate Map & Scenario Perturbation Sliders */}
+      <BangladeshClimateMap activeField={activeField} lang={lang} />
 
       {/* 4. Navigation View Toggle (Recommendations vs Strategy Comparison Matrix vs Timeline) */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
