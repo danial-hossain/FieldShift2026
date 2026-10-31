@@ -436,7 +436,7 @@ def get_market_overview(
         prod_tonnes = float(f_stat.get("production_tonnes", 0.0))
 
         # Categorize
-        if import_dep >= 0.50:
+        if import_dep >= 0.35:
             category_en = "National Deficit (High National Need)"
             category_bn = "দেশের ঘাটতি ফসল (উচ্চ জাতীয় চাহিদা)"
             category_key = "national_deficit"

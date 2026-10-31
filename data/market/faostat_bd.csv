@@ -1,16 +1,15 @@
-crop,production_tonnes,import_tonnes,export_tonnes,domestic_supply_tonnes,self_sufficiency_ratio,import_dependency_ratio,national_priority_rank,source
-Chickpea,8200,185000,0,193200,0.0424,0.9576,1,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Soybean,98000,2150000,0,2248000,0.0436,0.9564,2,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Wheat,1085000,6720000,0,7805000,0.1390,0.8610,3,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Mustard,452000,2480000,0,2932000,0.1542,0.8458,4,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Sunflower,14500,48000,0,62500,0.2320,0.7680,5,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Lentil,182000,545000,0,727000,0.2503,0.7497,6,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Garlic,512000,245000,0,757000,0.6764,0.3236,7,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Maize,4650000,1780000,0,6430000,0.7232,0.2768,8,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Mungbean,218000,78000,0,296000,0.7365,0.2635,9,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Onion,2540000,890000,0,3430000,0.7405,0.2595,10,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Sesame,39500,12000,3500,48000,0.8229,0.1771,11,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Tomato,425000,28000,0,453000,0.9382,0.0618,12,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Rice,38400000,1150000,12000,39538000,0.9712,0.0288,13,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Potato,10450000,18000,75000,10393000,1.0055,0.0000,14,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
-Jute,1520000,8000,685000,843000,1.8031,0.0000,15,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+crop,faostat_item_code,faostat_item_name,year,production_tonnes,import_tonnes,export_tonnes,domestic_supply_tonnes,self_sufficiency_ratio,import_dependency_ratio,national_deficit_rank,source,download_date
+Sunflower,267,Sunflower seed,2023,0,603,0,603,0.0,1.0,1,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Sorghum,83,Sorghum,2023,60,5755,0,5815,0.0103,0.9897,2,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Chickpea,191,"Chick peas, dry",2023,7707,340752,9,348450,0.0221,0.9779,3,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Soybean,236,Soya beans,2023,107307,1773078,0,1880385,0.0571,0.9429,4,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Wheat,15,Wheat,2023,1107195,2969597,1,4076791,0.2716,0.7284,5,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Lentil,201,"Lentils, dry",2023,196829,365237,177,561889,0.3503,0.65,6,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Mustard,270,Rape or colza seed,2023,547425,338057,0,885482,0.6182,0.3818,7,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Maize,56,Maize (corn),2023,4592507,873728,15,5466220,0.8402,0.1598,8,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Tomato,388,Tomatoes,2023,469204,48157,280,517081,0.9074,0.0931,9,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Sesame,289,Sesame seed,2023,30714,1018,15091,16641,1.8457,0.0612,10,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Groundnut,242,"Groundnuts, excluding shelled",2023,67173,3455,0,70628,0.9511,0.0489,11,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Potato,116,Potatoes,2023,10431736,71762,25542,10477957,0.9956,0.0068,12,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Rice,27,Rice,2023,60601181,328675,9324,60920531,0.9948,0.0054,13,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z
+Jute,780,"Jute, raw or retted",2023,1881441,30,224739,1656733,1.1356,0.0,14,FAOSTAT Bangladesh (Area 16) QCL & TCL 2023,2026-10-31 09:01:52Z

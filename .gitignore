@@ -60,3 +60,7 @@ frontend/.env.*
 # OS
 .DS_Store
 Thumbs.db
+
+# Database & Large Raw Archives
+data/fieldshift.db
+data/market/raw/*.zip
