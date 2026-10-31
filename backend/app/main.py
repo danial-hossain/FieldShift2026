@@ -672,6 +672,36 @@ def planning_robustness(payload: Payload):
     except Exception as exc:
         raise HTTPException(500, f"Failed to compute robustness distribution: {str(exc)}") from exc
 
+@app.get("/api/water/plan")
+def api_water_plan(
+    district: str | None = None,
+    crop: str | None = "Rice",
+    area_ha: float | None = 1.0,
+    lat: float | None = None,
+    lon: float | None = None,
+    latitude: float | None = None,
+    longitude: float | None = None,
+    field_id: str | None = None,
+):
+    from src.compute.water_service import compute_water_plan
+
+    actual_lat = lat if lat is not None else latitude
+    actual_lon = lon if lon is not None else longitude
+    target_crop = crop or "Rice"
+    area = float(area_ha or 1.0)
+
+    try:
+        result = compute_water_plan(
+            district=district or "bogura",
+            crop=target_crop,
+            area_ha=area,
+            latitude=actual_lat,
+            longitude=actual_lon,
+        )
+        return finite_json_value(jsonable_encoder(result))
+    except Exception as exc:
+        raise HTTPException(500, f"Water plan computation failed: {str(exc)}") from exc
+
 @app.post("/api/counterfactual/reoptimize")
 def counterfactual_reoptimize(
     payload: Payload,
