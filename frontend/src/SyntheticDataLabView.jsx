@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { formatNumber as defaultFormatNumber } from './marketUtils.js';
 import { request as defaultRequest, API_BASE } from './apiClient.js';
 import { SyntheticLab3D } from './research3d/SyntheticLab3D.jsx';
+import { DataSourceTag } from './ui/index.js';
 
 export function SyntheticDataLabView({
   activeField,
@@ -178,22 +179,22 @@ export function SyntheticDataLabView({
         </div>
       </div>
 
-      {/* Mandatory Scientific Disclaimer Banner */}
       <div style={{
-        background: '#fffbeb',
-        border: '1px solid #fde68a',
-        borderRadius: 10,
-        padding: '12px 16px',
-        marginBottom: 20,
         display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 12
+        background: 'var(--glass, rgba(15, 23, 42, 0.6))',
+        border: '1px solid var(--line, rgba(255, 255, 255, 0.08))',
+        borderRadius: 10,
+        padding: '10px 16px',
+        marginBottom: 16,
       }}>
-        <span style={{ fontSize: 20 }}>⚠️</span>
-        <div style={{ fontSize: 13, color: '#92400e', lineHeight: 1.4 }}>
-          <strong>Scientific Validity Boundary:</strong> Synthetic holdout scenarios are generated using documented physical consistency constraints and fixed seeds to test algorithm robustness.
-          <em> They DO NOT represent measured real-world farm outcomes and cannot be used to prove agronomic accuracy.</em>
+        <div style={{ fontSize: 12, color: 'var(--text-2, #94a3b8)' }}>
+          {lang === 'bn'
+            ? 'অ্যালগরিদম স্ট্রেস-টেস্টিং ও অ্যালগরিদমের দৃঢ়তা যাচাইয়ের জন্য নির্ধারিত সিন্থেটিক দৃশ্যকল্প।'
+            : 'Deterministic synthetic evaluation scenarios for algorithm stress-testing and robustness verification.'}
         </div>
+        <DataSourceTag source="Synthetic Benchmark" mode="stress_testing" period="holdout" />
       </div>
 
       {/* 3D SYNTHETIC FARM PARCEL & PROVENANCE WORKBENCH */}

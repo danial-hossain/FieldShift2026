@@ -95,9 +95,12 @@ npm run smoke
 
 ## Scientific Limitations & Honesty Contract
 
-- **Gridded Reanalysis Resolution:** NASA POWER meteorology is 0.5° × 0.5° (~50 km) gridded reanalysis (GEOS-5 / MERRA-2), not localized microclimate sensor truth. While exceptional for multi-decadal climatological baselines and regional synoptic trends, microclimate variations, localized bund water storage, and tubewell availability must mediate on-farm decisions.
-- **Soil Salinity Dynamics:** Soil salinity is not dynamically modelled; coastal fields (such as Satkhira) require localized salinity management and tidal sluice gate monitoring not captured in atmospheric and reanalysis models.
-- **Data Honesty:** FieldShift strictly rejects data fabrication. Telemetry metrics that cannot be verified from satellite or user inputs (such as single-bed NDVI or real-time sensor moisture) are never synthesized; they are honestly displayed as "তথ্য নেই" / "No data".
+1. **Gridded Reanalysis Resolution:** NASA POWER meteorology is 0.5° × 0.5° (~55 km) gridded reanalysis (GEOS-5 / MERRA-2), not localized microclimate sensor truth. While exceptional for multi-decadal climatological baselines and regional synoptic trends, microclimate variations, localized bund water storage, and tubewell availability must mediate on-farm decisions.
+2. **Remote Sensing vs In-Situ Lysimetry:** Soil moisture and hydrology are modeled using ISRIC SoilGrids 250m and FAO-56 empirical functions. In-situ physical soil compaction and local watertable depth may vary; local agricultural extension (SAAO) validation is recommended before major planting capital allocation.
+3. **Regional Mandi vs National Price Data:** Profit models utilize official BBS and FAOSTAT wholesale benchmarks. Actual farmgate returns at local village haats fluctuate based on transport access, middleman margins, and day-to-day market arrivals.
+4. **Synthetic Benchmark Boundaries:** Synthetic holdout scenarios in the research lab exist purely to benchmark PuLP MILP solver stability under non-linear perturbations. They are not empirical future forecasts and represent controlled synthetic stress-tests.
+5. **Wetland & Flash Flood Dynamics:** Low-lying haor basins (e.g. Sunamganj) face flash flood risks from upstream catchments. While our engine enforces Kharif fallow constraints, Boro harvest windows remain dependent on local submersible embankment conditions.
+6. **Data Honesty & Zero Fabrication:** FieldShift strictly rejects data fabrication. Telemetry metrics that cannot be verified from satellite or user inputs (such as single-bed NDVI or real-time sensor moisture) are never synthesized; they are honestly displayed as "তথ্য নেই" / "No data".
 
 ---
 

@@ -24,6 +24,7 @@ export function DataEvidenceView({
     { id: 'provenance', labelBn: 'ডেটা প্রোভেন্যান্স রেজিস্ট্রি (4-Tier)', labelEn: '2. Data Provenance Registry', icon: '🏛️' },
     { id: 'reports', labelBn: 'গবেষণা ও বেঞ্চমার্ক রিপোর্ট', labelEn: '3. Research Reports', icon: '📊' },
     { id: 'methodology', labelBn: 'বৈজ্ঞানিক পদ্ধতি ও নিয়ম', labelEn: '4. Scientific Methodology', icon: '🔬' },
+    { id: 'limitations', labelBn: 'সীমাবদ্ধতা ও পরিধি (Limitations)', labelEn: '5. Limitations & Boundaries', icon: '⚠️' },
   ];
 
   const DATASET_REGISTRY = [
@@ -320,6 +321,120 @@ export function DataEvidenceView({
                 4. রোপণ শিফট ও অনসেট শিফটের পার্থক্য (Recommendation Rule):
               </strong>
               বৃষ্টিপাত অনসেটের শিফট সরাসরি ধানের চারা রোপণ শিফটের সমান নয়। আগস্টের ১৫ তারিখের পরে রোপণ করলে অক্টোবরের শেষভাগে ধানের শীষ বের হওয়ার সময় খরা এবং নভেম্বরের ঠান্ডায় চিটা হওয়ার ঝুঁকি তৈরি হয়। তাই FieldShift সর্বোচ্চ ৭-১০ দিনের পরিমিত বীজতলা শিফট এবং স্বল্পমেয়াদী দ্রুত পরিপক্ক জাত (ব্রি ধান-৭৫, ১১৫ দিন) চাষের সুনির্দিষ্ট সুপারিশ করে।
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* SUB-TAB 5: SCIENTIFIC LIMITATIONS & BOUNDARIES */}
+      {subTab === 'limitations' && (
+        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 22 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: 'var(--text)' }}>
+                {lang === 'bn' ? 'মডেল ও ডেটার বৈজ্ঞানিক সীমাবদ্ধতা এবং ব্যবহারিক পরিধি' : 'Scientific Limitations & Operational Boundaries'}
+              </h3>
+              <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-2)' }}>
+                {lang === 'bn'
+                  ? 'গাণিতিক মডেল, রিমোট সেন্সিং উপাত্ত এবং বাজার তথ্যের বাস্তব সীমাবদ্ধতাসমূহ স্বচ্ছভাবে উপস্থাপিত।'
+                  : 'Transparent disclosure of gridded satellite resolution, simulation bounds, market dynamics, and agronomic assumptions.'}
+              </p>
+            </div>
+            <span style={{ fontSize: 12, padding: '4px 10px', borderRadius: 999, background: 'rgba(234, 179, 8, 0.15)', color: '#f59e0b', fontWeight: 700, border: '1px solid rgba(234, 179, 8, 0.3)' }}>
+              {lang === 'bn' ? 'স্বচ্ছ গবেষণা চুক্তি' : 'Honesty Contract'}
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
+            {/* Limitation 1 */}
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 12, border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>🛰️</span>
+                <strong style={{ fontSize: 14, color: 'var(--water)' }}>
+                  {lang === 'bn' ? '১. ০.৫° গ্রিড রেজোলিউশন (NASA POWER Scale)' : '1. 0.5° Gridded Scale (NASA POWER Resolution)'}
+                </strong>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                {lang === 'bn'
+                  ? 'NASA POWER আবহাওয়া উপাত্ত প্রায় ৫৫ কিমি × ৫৫ কিমি গ্রিড কোষে সংগৃহীত। এটি আঞ্চলিক মনসুন অনসেট ও সাধারণ প্রবণতা নির্ণয়ে অত্যন্ত নিখুঁত হলেও, অত্যন্ত স্থানীয় নদীর বাঁধ, গাছপালার ছায়া বা মাইক্রো-ক্লাইমেট বৈচিত্র্য এতে প্রতিফলিত হয় না।'
+                  : 'NASA POWER meteorology is assimilated over a 0.5° × 0.5° (~55 km) grid cell. While statistically robust for multi-decadal climatology and onset detection, hyper-local microclimates (canopy shade, river levees) are spatially averaged across the cell.'}
+              </p>
+            </div>
+
+            {/* Limitation 2 */}
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 12, border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>🌱</span>
+                <strong style={{ fontSize: 14, color: 'var(--leaf)' }}>
+                  {lang === 'bn' ? '২. মাঠ পর্যায়ে লাইসিমিটার প্রমাণের শূন্যতা' : '2. Remote Sensing vs In-Situ Lysimetry'}
+                </strong>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                {lang === 'bn'
+                  ? 'মাটির আর্দ্রতা ও হাইড্রোলজিক্যাল বৈশিষ্ট্য ISRIC SoilGrids ও FAO-56 সমীকরণ ভিত্তিক। মাঠের মাটির বাস্তব ঘনত্ব ও ভূগর্ভস্থ পানিস্তরের গভীরতার পরিবর্তন যাচাইয়ের জন্য স্থানীয় উপ-সহকারী কৃষি কর্মকর্তা (SAAO) বা আঞ্চলিক মাটি পরীক্ষাগারের পরামর্শ প্রয়োজন।'
+                  : 'Soil moisture and hydrology are modeled using ISRIC SoilGrids 250m and FAO-56 empirical functions. In-situ physical soil compaction and local watertable depth may vary; local agricultural extension (SAAO) validation is recommended.'}
+              </p>
+            </div>
+
+            {/* Limitation 3 */}
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 12, border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>📈</span>
+                <strong style={{ fontSize: 14, color: 'var(--accent-amber, #f59e0b)' }}>
+                  {lang === 'bn' ? '৩. স্থানীয় হাট বনাম জাতীয় গড় মূল্য' : '3. Regional Mandi vs National Price Data'}
+                </strong>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                {lang === 'bn'
+                  ? 'অর্থনৈতিক লাভজনকতা হিসাব BBS এবং FAOSTAT-এর প্রাতিষ্ঠানিক পাইকারি মূল্যের গড় ডেটা ব্যবহার করে। কিন্তু দৈনিক স্থানীয় হাটে পাইকার সিন্ডিকেট, পরিবহন খরচ এবং তাৎক্ষণিক সরবরাহ-চাহিদার কারণে বিক্রয়মূল্য ওঠানামা করতে পারে।'
+                  : 'Profit models utilize official BBS and FAOSTAT wholesale benchmarks. Actual farmgate returns at local village haats fluctuate based on transport access, middleman margins, and day-to-day market arrivals.'}
+              </p>
+            </div>
+
+            {/* Limitation 4 */}
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 12, border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>🧪</span>
+                <strong style={{ fontSize: 14, color: '#a855f7' }}>
+                  {lang === 'bn' ? '৪. সিন্থেটিক সিমুলেশন পরিধি' : '4. Synthetic Benchmark Boundaries'}
+                </strong>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                {lang === 'bn'
+                  ? 'গবেষণা ল্যাবে ব্যবহৃত সিন্থেটিক স্ট্রেস টেস্টগুলো অ্যালগরিদমের চরম আবহাওয়ায় প্রতিক্রিয়া যাচাইয়ের জন্য তৈরি। এগুলো ভবিষ্যৎ আবহাওয়ার পূর্বাভাস নয় এবং বাস্তব মাঠের পরিমাপিত তথ্য হিসেবে দাবি করা হয় না।'
+                  : 'Synthetic holdout scenarios in the research lab exist purely to benchmark PuLP MILP solver stability under non-linear perturbations. They are not empirical future forecasts and represent controlled synthetic stress-tests.'}
+              </p>
+            </div>
+
+            {/* Limitation 5 */}
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 12, border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>🌊</span>
+                <strong style={{ fontSize: 14, color: '#38bdf8' }}>
+                  {lang === 'bn' ? '৫. হাওর ও প্লাবনভূমির জলাবদ্ধতা গতিশীলতা' : '5. Wetland & Flash Flood Dynamics'}
+                </strong>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                {lang === 'bn'
+                  ? 'সুনামগঞ্জের মতো নিচু হাওর অঞ্চলে এপ্রিলের শেষ বা মে মাসে পাহাড়ি ঢলে আকস্মিক বন্যা হতে পারে। আমাদের মডেল আমন মৌসুমে হাওরের জমিকে অনাবাদী রাখে, তবে ফসল কাটার সময় স্থানীয় বাঁধের নিরাপত্তা ও নিষ্কাশন অত্যন্ত গুরুত্বপূর্ণ।'
+                  : 'Low-lying haor basins (e.g. Sunamganj) face flash flood risks from upstream catchments. While our engine enforces Kharif fallow constraints, Boro harvest windows remain dependent on local submersible embankment conditions.'}
+              </p>
+            </div>
+
+            {/* Limitation 6 */}
+            <div style={{ background: 'var(--glass)', padding: 16, borderRadius: 12, border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>🛡️</span>
+                <strong style={{ fontSize: 14, color: '#ec4899' }}>
+                  {lang === 'bn' ? '৬. উপাত্তের সততা ও ফাঁকা অবস্থা নীতি' : '6. Zero Fabrication & Honest Empty States'}
+                </strong>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                {lang === 'bn'
+                  ? 'যেখানে নাসার পরিমাপিত উপাত্ত বা ব্যবহারকারীর ইনপুট নেই (যেমন একক প্লটের লাইভ এনডিভিআই বা সেন্সর আর্দ্রতা), FieldShift সেখানে কৃত্রিম সংখ্যা বসায় না; স্পষ্টভাবে "তথ্য নেই" দেখায়।'
+                  : 'Where verified satellite telemetry or farmer field inputs are unavailable (e.g. single-plot live NDVI or continuous telemetry), FieldShift renders an honest "No data / তথ্য নেই" state rather than fabricated placeholders.'}
+              </p>
             </div>
           </div>
         </div>

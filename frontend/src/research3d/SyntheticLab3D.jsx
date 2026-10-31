@@ -453,7 +453,7 @@ export function SyntheticLab3D({
             fontWeight: 800,
             letterSpacing: '0.04em',
           }}>
-            ⚠️ SYNTHETIC — NOT MEASURED FIELD DATA
+            🧪 Synthetic Stress Simulation
           </span>
 
           <button
