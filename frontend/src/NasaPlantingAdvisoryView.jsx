@@ -15,8 +15,10 @@ export function NasaPlantingAdvisoryView({
   defaultCrop = 'aman',
   lang = 'bn',
   onNavigate,
+  activeField = null,
 }) {
-  const [district, setDistrict] = useState(defaultDistrict);
+  const initialDistrict = (activeField?.district || defaultDistrict || 'rajshahi').toLowerCase();
+  const [district, setDistrict] = useState(initialDistrict);
   const [crop, setCrop] = useState(defaultCrop);
   const [thresholdMm, setThresholdMm] = useState(25.0);
   const [loading, setLoading] = useState(true);
@@ -28,13 +30,21 @@ export function NasaPlantingAdvisoryView({
   const [viewMode3d, setViewMode3d] = useState('3d');
 
   useEffect(() => {
+    if (activeField?.district && typeof activeField.district === 'string') {
+      const d = activeField.district.trim().toLowerCase();
+      if (d) setDistrict(d);
+    }
+  }, [activeField?.district]);
+
+  useEffect(() => {
     let isCancelled = false;
     async function fetchAdvisory() {
       setLoading(true);
       setError(null);
+      const queryDistrict = (district && district.trim()) ? district.trim().toLowerCase() : (activeField?.district || 'rajshahi').toLowerCase();
       try {
         const queryParams = new URLSearchParams({
-          district,
+          district: queryDistrict,
           crop,
           threshold_mm: String(thresholdMm),
           dry_spell_window: '21',
@@ -56,7 +66,7 @@ export function NasaPlantingAdvisoryView({
     }
     fetchAdvisory();
     return () => { isCancelled = true; };
-  }, [district, crop, thresholdMm, lang]);
+  }, [district, crop, thresholdMm, lang, activeField?.district]);
 
   const districtsList = [
     { id: 'rajshahi', nameBn: 'রাজশাহী', nameEn: 'Rajshahi', icon: '🏛️' },

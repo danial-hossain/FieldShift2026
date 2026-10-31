@@ -648,7 +648,13 @@ export function App() {
   const [user, setUser] = useState(null);
   const [userFarms, setUserFarms] = useState([]);
   const [userFields, setUserFields] = useState([]);
-  const [selectedFieldId, setSelectedFieldId] = useState(null);
+  const [selectedFieldId, setSelectedFieldId] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fs_selected_field_id');
+      if (saved) return saved;
+    } catch {}
+    return null;
+  });
   const [fieldsLoaded, setFieldsLoaded] = useState(false);
   const [fieldsError, setFieldsError] = useState('');
   const [userAnalyses, setUserAnalyses] = useState([]);
@@ -856,6 +862,7 @@ export function App() {
     setSelectedFieldId(fld.id);
     setCounterfactualSimulation({ running: false, result: null, error: '' });
     try {
+      localStorage.setItem('fs_selected_field_id', String(fld.id));
       if (ownerId != null && fld.id !== 'demo') {
         localStorage.setItem(`fs_selected_field_id_${ownerId}`, String(fld.id));
       } else if (fld.id === 'demo') {
@@ -1060,20 +1067,23 @@ export function App() {
         try {
           targetId = account?.id != null ? localStorage.getItem(`fs_selected_field_id_${account.id}`) : null;
           if (!targetId) {
-            const oldSelection = localStorage.getItem('fs_selected_field_id');
-            if (oldSelection && fields.some(field => String(field.id) === String(oldSelection))) targetId = oldSelection;
+            targetId = localStorage.getItem('fs_selected_field_id');
           }
         } catch {}
       }
-      const active = (targetId ? fields.find(field => String(field.id) === String(targetId)) : null) || fields[0] || null;
+      let active = (targetId ? fields.find(field => String(field.id) === String(targetId)) : null);
+      if (!active && fields.length > 0) {
+        active = fields[0];
+      }
       if (active) {
         try {
+          localStorage.setItem('fs_selected_field_id', String(active.id));
           if (account?.id != null) localStorage.setItem(`fs_selected_field_id_${account.id}`, String(active.id));
         } catch {}
         handleSelectActiveField(active, false, account?.id);
       } else {
-        setSelectedFieldId(null);
-        setResult(null);
+        setSelectedFieldId('demo');
+        handleSelectActiveField(demoField, false);
       }
       const analRes = await request('/api/analyses');
       if (analRes.status === 'ok') {
@@ -1082,8 +1092,8 @@ export function App() {
     } catch (err) {
       console.error('Failed loading user data:', err);
       setUserFields([]);
-      setSelectedFieldId(null);
-      setResult(null);
+      setSelectedFieldId('demo');
+      handleSelectActiveField(demoField, false);
       setFieldsError(err.message || 'Could not load registered fields from PostgreSQL.');
       setFieldsLoaded(true);
     }
@@ -2164,10 +2174,11 @@ export function App() {
             </div>
             {cropSubTab === 'advisory' && (
               <NasaPlantingAdvisoryView
-                defaultDistrict={activeField?.district?.toLowerCase() || ''}
+                defaultDistrict={activeField?.district?.toLowerCase() || 'rajshahi'}
                 defaultCrop="aman"
                 lang={lang}
                 onNavigate={handleNavigate}
+                activeField={activeField}
               />
             )}
             {cropSubTab === 'advice' && (

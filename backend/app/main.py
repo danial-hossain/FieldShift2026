@@ -519,6 +519,8 @@ def health(db: DbSession = Depends(get_db)):
         ]
     }
 
+_PLANNING_CACHE: dict = {}
+
 @app.post("/api/workflow")
 @app.post("/api/planning")
 @app.post("/api/planning/six-seasons")
@@ -629,6 +631,21 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
         from src.optimizer.dynamic_agronomy import COASTAL_SALINE_DISTRICTS
         f_state.coastal_saline = dist_key in COASTAL_SALINE_DISTRICTS
 
+        cache_key = (
+            dist_key,
+            priority,
+            round(lat, 3),
+            round(lon, 3),
+            round(area_val, 1),
+            str(data.get("soil_texture") or getattr(f_state, "texture", "loam")),
+            bool(is_haor),
+            bool(f_state.coastal_saline),
+            bool(data.get("allow_kharif2_fallow", False)),
+            int(data.get("min_cereals_per_year", 1)),
+        )
+        if cache_key in _PLANNING_CACHE:
+            return _PLANNING_CACHE[cache_key]
+
         milp_res = optimize_rotation(
             field_state=f_state,
             crops=crops,
@@ -646,7 +663,7 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             num_years = len(climate_df["date"].dt.year.unique()) if "date" in climate_df.columns else 25
             env_basis = f"nasa_power_climatology_{num_years}_years"
 
-        return finite_json_value(jsonable_encoder({
+        final_resp = finite_json_value(jsonable_encoder({
             "status": "ok",
             "mode": data_mode or "offline",
             "climate_source": {
@@ -677,6 +694,8 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
                 }
             }
         }))
+        _PLANNING_CACHE[cache_key] = final_resp
+        return final_resp
 
     resp = workflow_result(data, user=user_dict)
     milp_st = resp.get("summary", {}).get("planning", {}).get("milp_status", {})
@@ -788,9 +807,63 @@ def counterfactual_reoptimize(
 @app.post("/api/location/weather")
 def location_weather(payload: Payload):
     _location_weather = legacy_workflow_module()._location_weather
-    try: return _location_weather(payload.model_dump())
-    except ValueError as e: raise HTTPException(400,str(e))
-    except RuntimeError as e: raise HTTPException(502,str(e))
+    data = payload.model_dump()
+    try:
+        res = _location_weather(data)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except RuntimeError as e:
+        raise HTTPException(502, str(e))
+
+    try:
+        lat = float(data.get("latitude") if data.get("latitude") is not None else 24.85)
+        lon = float(data.get("longitude") if data.get("longitude") is not None else 89.37)
+        dist_key = data.get("district")
+        from src.compute.advisory_service import nearest_district, load_district_climate_data
+        if not dist_key or not str(dist_key).strip():
+            dist_key = nearest_district(lat, lon)
+        else:
+            dist_key = str(dist_key).strip().lower()
+        df, mode = load_district_climate_data(dist_key, offline=True)
+        tail_30 = df.tail(30).copy()
+        series = []
+        for _, row in tail_30.iterrows():
+            d_str = str(row.get("date", ""))[:10]
+            series.append({
+                "date": d_str,
+                "temperature": round(float(row.get("temperature", 25.0)), 1),
+                "temp_max": round(float(row.get("temp_max", 30.0)), 1),
+                "temp_min": round(float(row.get("temp_min", 20.0)), 1),
+                "rainfall": round(float(row.get("rainfall", 0.0)), 2),
+                "humidity": round(float(row.get("humidity", 70.0)), 1),
+                "wind_speed": round(float(row.get("wind_speed", 1.5)), 2),
+                "solar_radiation": round(float(row.get("solar_radiation", 15.0)), 2),
+            })
+        summary = {
+            "temperature": round(float(tail_30.iloc[-1]["temperature"]), 1),
+            "temp_max": round(float(tail_30["temp_max"].mean()), 1),
+            "temp_min": round(float(tail_30["temp_min"].mean()), 1),
+            "humidity": round(float(tail_30["humidity"].mean()), 1),
+            "wind_speed": round(float(tail_30["wind_speed"].mean()), 2),
+            "rainfall": round(float(tail_30["rainfall"].sum()), 2),
+            "start_date": series[0]["date"] if series else "2025-12-01",
+            "latest_valid_date": series[-1]["date"] if series else "2025-12-31",
+            "rows": len(series),
+        }
+        res["series"] = series
+        res["summary"] = summary
+        res["district"] = dist_key
+        if "weather" in res and isinstance(res["weather"], dict):
+            res["weather"]["series"] = series
+            res["weather"]["summary"] = summary
+            res["weather"]["temperature_c"] = summary["temperature"]
+            res["weather"]["temp_max_c"] = summary["temp_max"]
+            res["weather"]["temp_min_c"] = summary["temp_min"]
+            res["weather"]["observation_date"] = summary["latest_valid_date"]
+    except Exception as err:
+        logger.warning(f"Failed enriching location_weather: {err}")
+
+    return res
 
 @app.get("/api/crops")
 def crops():

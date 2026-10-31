@@ -236,9 +236,11 @@ async function runVisualTest() {
         await cdp.send('Runtime.evaluate', {
           expression: `
             (function() {
+              try { localStorage.setItem('fs_selected_field_id', '${targetFieldId}'); } catch {}
               const sel = document.querySelector('select[aria-label="Active field parcel"]');
               if (sel) {
-                sel.value = '${targetFieldId}';
+                const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value').set;
+                nativeSetter.call(sel, '${targetFieldId}');
                 sel.dispatchEvent(new Event('change', { bubbles: true }));
               }
             })()
@@ -453,8 +455,8 @@ async function runVisualTest() {
           new Promise((resolve) => {
             const start = Date.now();
             const check = () => {
-              const spinner = document.querySelector('.loading-spinner, .shimmer-loading, [aria-busy="true"]');
-              if (!spinner || (Date.now() - start > 1200)) resolve(true);
+              const spinner = document.querySelector('.loading-spinner, .shimmer-loading, [aria-busy="true"], .skeleton');
+              if (!spinner || (Date.now() - start > 6000)) resolve(true);
               else setTimeout(check, 100);
             };
             check();

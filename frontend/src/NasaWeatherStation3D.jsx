@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DataSourceTag } from './ui/index.js';
+import { request } from './apiClient.js';
 import sampleSeries from './nasa_30day_series.json';
 
 export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, onBack }) {
@@ -8,6 +9,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
   const [activeChartMetric, setActiveChartMetric] = useState('temp'); // 'temp' | 'rain' | 'humidity' | 'solar'
   const [timeHorizon, setTimeHorizon] = useState(30); // 7 | 14 | 30
   const [hoveredDataPoint, setHoveredDataPoint] = useState(null);
+  const [liveWeather, setLiveWeather] = useState(null);
 
   // Fallbacks based on user inputs or active field
   const isDemo = Boolean(activeField?.id === 'demo' || activeField?.is_demo);
@@ -15,19 +17,48 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
   const longitude = activeField?.longitude != null ? Number(activeField.longitude) : 89.3700;
   const locationName = activeField?.name || (isDemo ? 'Demo Field (Bogura 10 ha) [DEMO]' : 'Regional Weather Center (Bogura Reference)');
 
-  const tempVal = env.temperature != null ? Number(env.temperature) : 27.8;
-  const tempMax = env.temp_max != null ? Number(env.temp_max) : 32.2;
-  const tempMin = env.temp_min != null ? Number(env.temp_min) : 24.2;
-  const humidVal = env.humidity != null ? Number(env.humidity) : 82.8;
-  const windVal = env.wind_speed != null ? Number(env.wind_speed) : 1.4;
-  const rainVal = env.rainfall != null ? Number(env.rainfall) : 0.17;
-  const observationDate = nasa.latest_valid_date || '2026-09-29';
-  const observationDays = nasa.rows || 30;
-  const isObserved = Boolean(nasa && (nasa.data_status === 'observed' || nasa.data_status === 'live'));
+  useEffect(() => {
+    let isCancelled = false;
+    async function loadWeather() {
+      try {
+        const body = {
+          latitude,
+          longitude,
+          district: activeField?.district || undefined,
+        };
+        const data = await request('/api/location/weather', {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        if (!isCancelled && data?.status === 'ok') {
+          setLiveWeather(data);
+        }
+      } catch (err) {
+        console.warn('Weather fetch fallback to cached telemetry:', err);
+      }
+    }
+    loadWeather();
+    return () => { isCancelled = true; };
+  }, [latitude, longitude, activeField?.district]);
+
+  const activeSeries = (liveWeather?.series && liveWeather.series.length > 0)
+    ? liveWeather.series
+    : (Array.isArray(sampleSeries) && sampleSeries.length > 0 ? sampleSeries : []);
+
+  const latestSummary = liveWeather?.summary || nasa?.summary || {};
+  const tempVal = latestSummary.temperature ?? (env.temperature != null ? Number(env.temperature) : 27.8);
+  const tempMax = latestSummary.temp_max ?? (env.temp_max != null ? Number(env.temp_max) : 32.2);
+  const tempMin = latestSummary.temp_min ?? (env.temp_min != null ? Number(env.temp_min) : 24.2);
+  const humidVal = latestSummary.humidity ?? (env.humidity != null ? Number(env.humidity) : 82.8);
+  const windVal = latestSummary.wind_speed ?? (env.wind_speed != null ? Number(env.wind_speed) : 1.4);
+  const rainVal = latestSummary.rainfall ?? (env.rainfall != null ? Number(env.rainfall) : 0.17);
+  const observationDate = latestSummary.latest_valid_date || nasa.latest_valid_date || '2025-12-31';
+  const observationDays = latestSummary.rows || nasa.rows || 30;
+  const isObserved = Boolean(liveWeather?.series?.length || (nasa && (nasa.data_status === 'observed' || nasa.data_status === 'live')));
 
   // Filter 30-day timeseries based on timeHorizon
   const chartData = useMemo(() => {
-    const raw = Array.isArray(sampleSeries) && sampleSeries.length > 0 ? sampleSeries : [];
+    const raw = activeSeries;
     const sliced = raw.slice(Math.max(0, raw.length - timeHorizon));
     return sliced.map(d => ({
       ...d,
@@ -39,7 +70,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
       wind_speed: Number(d.wind_speed) || windVal,
       solar_radiation: Number(d.solar_radiation) || 14.5
     }));
-  }, [timeHorizon, tempVal, tempMax, tempMin, humidVal, windVal, rainVal]);
+  }, [activeSeries, timeHorizon, tempVal, tempMax, tempMin, humidVal, windVal, rainVal]);
 
   // Derived agro-climatic metrics
   const dewPoint = (tempVal - ((100 - humidVal) / 5)).toFixed(1);
