@@ -7,6 +7,7 @@ import { SixSeasonRecommendationView } from './SixSeasonRecommendationView.jsx';
 import { AdaptiveReplanningView } from './AdaptiveReplanningView.jsx';
 import { ComparisonLabView } from './ComparisonLabView.jsx';
 import { ExperimentSimulator3DView } from './ExperimentSimulator3DView.jsx';
+import { NasaPlantingAdvisoryView } from './NasaPlantingAdvisoryView.jsx';
 import { formatNumber } from './marketUtils.js';
 import { useTranslation } from './i18n.js';
 import { Card, Pill, Tabs } from './ui/index.js';
@@ -29,9 +30,9 @@ export function FarmPlanningView({
 
   const subTabs = [
     { id: 'milp', label: lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনা (MILP)' : '1. 6-Season Rotation Planner', icon: '🌾' },
-    { id: 'replan', label: lang === 'bn' ? 'অভিযোজিত পুনঃপরিকল্পনা (Adaptive Replan)' : '2. Adaptive Next-Season Replan', icon: '🔄' },
-    { id: 'comparison', label: lang === 'bn' ? 'তুলনামূলক ল্যাব (MILP vs RL vs Rule)' : '3. 3-Way Comparison Lab', icon: '🧪' },
-    { id: 'experiment_simulator_3d', label: lang === 'bn' ? '৩ডি ওয়ার্কবেঞ্চ' : '4. 3D Experiment Workbench', icon: '🔬' },
+    { id: 'advisory', label: lang === 'bn' ? 'নাসা ধান রোপণ উপদেষ্টা' : '2. NASA Rice Planting Advisory', icon: '🌱' },
+    { id: 'replan', label: lang === 'bn' ? 'অভিযোজিত পুনঃপরিকল্পনা (Adaptive Replan)' : '3. Adaptive Next-Season Replan', icon: '🔄' },
+    { id: 'comparison', label: lang === 'bn' ? 'তুলনামূলক ল্যাব (MILP vs RL vs Rule)' : '4. 3-Way Comparison Lab', icon: '🧪' },
   ];
 
   return (
@@ -83,6 +84,15 @@ export function FarmPlanningView({
           onBack={() => setSubTab('milp')}
           lang={lang}
           onRunWorkflow={onRunWorkflow}
+        />
+      )}
+
+      {subTab === 'advisory' && (
+        <NasaPlantingAdvisoryView
+          defaultDistrict={activeField?.district || 'rajshahi'}
+          activeField={activeField}
+          lang={lang}
+          onNavigate={(target) => onNavigate ? onNavigate(target) : setSubTab('milp')}
         />
       )}
 

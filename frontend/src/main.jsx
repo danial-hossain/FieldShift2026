@@ -1807,142 +1807,95 @@ export function App() {
         </div>
 
         <nav className="sidebar-nav" aria-label="Primary Navigation">
-          {/* Group 1: Farmer Screens */}
-          <div className="nav-section-heading">{lang === 'bn' ? 'কৃষক' : 'Farmer'}</div>
+          {/* Canonical 8-Item Navigation Architecture (P1 Consolidation) */}
+          <div className="nav-section-heading">{lang === 'bn' ? 'প্ল্যাটফর্ম মেনু' : 'Platform Menu'}</div>
 
-          {/* 01. Home */}
+          {/* 1. Overview */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'dashboard' ? 'active' : ''}`}
             onClick={() => handleNavigate('dashboard')}
-            title={lang === 'bn' ? '০১. হোম - সারসংক্ষেপ' : '01. Home - Overview & Executive Summary'}
+            title={lang === 'bn' ? '১. হোম - আজকের সারসংক্ষেপ ও পরামর্শ' : '1. Overview - Today's Summary & Answer'}
           >
             <span className="nav-item-icon">🏠</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'হোম' : 'Home'}</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'হোম' : 'Overview'}</span>
           </button>
 
-          {/* 02. My Farm */}
+          {/* 2. My Fields */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'field' || activeNav === 'field_map' ? 'active' : ''}`}
             onClick={() => handleNavigate('field')}
-            title={lang === 'bn' ? '০২. আমার জমি - সীমানা, স্যাটেলাইট ম্যাপ ও মাটি' : '02. My Farm - Parcels, Map & Soil'}
+            title={lang === 'bn' ? '২. আমার জমি - সীমানা, স্যাটেলাইট ম্যাপ ও মাটি' : '2. My Fields - Parcels, Map & Soil'}
           >
             <span className="nav-item-icon">🗺️</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'আমার জমি' : 'My Farm'}</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আমার জমি' : 'My Fields'}</span>
           </button>
 
-          {/* 03. Crop Advice */}
+          {/* 3. Rotation Planner (THE HERO PAGE) */}
           <button
             type="button"
-            className={`nav-item ${activeNav === 'crop_advice' ? 'active' : ''}`}
-            onClick={() => handleNavigate('crop_advice')}
-            title={lang === 'bn' ? '০৩. ফসলের পরামর্শ - নাসা ধান রোপণ উপদেষ্টা ও ক্যাটালগ' : '03. Crop Advice - NASA Rice Advisory & Matches'}
+            className={`nav-item ${activeNav === 'farm_planning' || activeNav === 'crop_advice' ? 'active' : ''}`}
+            onClick={() => handleNavigate('farm_planning')}
+            title={lang === 'bn' ? '৩. আবর্তন পরিকল্পনা - বর্তমান বনাম ৩ বিকল্প কৌশল' : '3. Rotation Planner - Existing vs 3 Strategies'}
           >
-            <span className="nav-item-icon">🌱</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'ফসলের পরামর্শ' : 'Crop Advice'}</span>
+            <span className="nav-item-icon">📐</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আবর্তন পরিকল্পনা' : 'Rotation Planner'}</span>
           </button>
 
-          {/* 04. NASA Weather & Climate */}
+          {/* 4. Climate & Risk */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'weather' ? 'active' : ''}`}
             onClick={() => handleNavigate('weather')}
-            title={lang === 'bn' ? '০৪. নাসা আবহাওয়া ও জলবায়ু স্টেশন' : '04. NASA Weather & Climate Station'}
+            title={lang === 'bn' ? '৪. আবহাওয়া ও ঝুঁকি - নাসা বৃষ্টি, অনসেট ও খরা ঝুঁকি' : '4. Climate & Risk - NASA Rain, Onset & Heat'}
           >
             <span className="nav-item-icon">🌦️</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'আবহাওয়া ও জলবায়ু' : 'NASA Weather'}</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'আবহাওয়া ও ঝুঁকি' : 'Climate & Risk'}</span>
           </button>
 
-          {/* 05. Farm Planning */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'farm_planning' ? 'active' : ''}`}
-            onClick={() => handleNavigate('farm_planning')}
-            title={lang === 'bn' ? '০৫. খামার পরিকল্পনা - ৬-মৌসুম রোটেশন ও পুনঃপরিকল্পনা' : '05. Farm Planning - 6-Season MILP Rotation'}
-          >
-            <span className="nav-item-icon">📐</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'খামার পরিকল্পনা' : 'Farm Planning'}</span>
-          </button>
-
-          {/* 06. Harvest & Market */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'harvest_profit' || activeNav === 'market' ? 'active' : ''}`}
-            onClick={() => handleNavigate('harvest_profit')}
-            title={lang === 'bn' ? '০৬. ফসল ও বাজারদর - লাভ-ক্ষতি ক্যালকুলেটর ও দাম' : '06. Harvest & Market - Profit Calculator & Prices'}
-          >
-            <span className="nav-item-icon">💰</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'ফসল ও বাজারদর' : 'Harvest & Market'}</span>
-          </button>
-
-          {/* 07. AI Agronomist */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'assistant' ? 'active' : ''}`}
-            onClick={() => handleNavigate('assistant')}
-            title={lang === 'bn' ? '০৭. AI কৃষি সহকারী - ভয়েস ও চ্যাট পরামর্শ' : '07. AI Agronomist - Voice & Chat Support'}
-          >
-            <span className="nav-item-icon">🤖</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'AI কৃষি সহকারী' : 'AI Agronomist'}</span>
-          </button>
-
-          {/* 08. Profile & Settings */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'account' ? 'active' : ''}`}
-            onClick={() => handleNavigate('account')}
-            title={lang === 'bn' ? '০৮. প্রোফাইল ও সেটিংস' : '08. Profile & Settings'}
-          >
-            <span className="nav-item-icon">⚙️</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'প্রোফাইল' : 'Profile'}</span>
-          </button>
-
-          {/* Group 2: Research Screens */}
-          <div className="nav-section-heading" style={{ marginTop: 12 }}>{lang === 'bn' ? 'গবেষণা' : 'Research'}</div>
-
-          {/* 09. Research Lab */}
-          <button
-            type="button"
-            className={`nav-item ${activeNav === 'research' || activeNav === 'analytics' ? 'active' : ''}`}
-            onClick={() => handleNavigate('research')}
-            title={lang === 'bn' ? '০৯. উন্নত গবেষণা ল্যাব - ২০টি বৈজ্ঞানিক মডিউল' : '09. Research Lab - 20 Scientific Modules'}
-          >
-            <span className="nav-item-icon">🔬</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'গবেষণা ল্যাব' : 'Research Lab'}</span>
-          </button>
-
-          {/* 10. Water & Irrigation */}
+          {/* 5. Water & Irrigation */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'water_irrigation' ? 'active' : ''}`}
             onClick={() => handleNavigate('water_irrigation')}
-            title={lang === 'bn' ? '১০. পানি ও সেচ ব্যবস্থাপনা - FAO-56 ব্যালেন্স ও AWD' : '10. Water & Irrigation - FAO-56 Balance & AWD'}
+            title={lang === 'bn' ? '৫. পানি ও সেচ - সেচ ক্যালেন্ডার ও মাটির স্তর' : '5. Water - Irrigation Calendar & Soil Column'}
           >
             <span className="nav-item-icon">💧</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'পানি ও সেচ' : 'Water & Irrigation'}</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'পানি ও সেচ' : 'Water'}</span>
           </button>
 
-          {/* 11. 3D Digital Twin */}
+          {/* 6. Market */}
+          <button
+            type="button"
+            className={`nav-item ${activeNav === 'harvest_profit' || activeNav === 'market' ? 'active' : ''}`}
+            onClick={() => handleNavigate('harvest_profit')}
+            title={lang === 'bn' ? '৬. বাজার - বাজারদর, আয় ও জাতীয় চাহিদা' : '6. Market - Prices, Revenue & National Need'}
+          >
+            <span className="nav-item-icon">💰</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'বাজার' : 'Market'}</span>
+          </button>
+
+          {/* 7. 3D Farm Plan Viewer */}
           <button
             type="button"
             className={`nav-item ${activeNav === 'digital_twin' ? 'active' : ''}`}
             onClick={() => handleNavigate('digital_twin')}
-            title={lang === 'bn' ? '১১. ৩ডি ডিজিটাল টুইন - খামার দৃশ্যকল্প ও সিমুলেশন' : '11. 3D Digital Twin - Live Farm & Phenology'}
+            title={lang === 'bn' ? '৭. ৩ডি খামার - বাস্তবসম্মত ডায়োরামা প্ল্যান ভিউয়ার' : '7. 3D Farm - Plan Viewer Diorama'}
           >
             <span className="nav-item-icon">🌐</span>
-            <span className="nav-item-label">{lang === 'bn' ? '৩ডি ডিজিটাল টুইন' : '3D Digital Twin'}</span>
+            <span className="nav-item-label">{lang === 'bn' ? '৩ডি খামার' : '3D Farm'}</span>
           </button>
 
-          {/* 12. Data & Evidence */}
+          {/* 8. Evidence & Method */}
           <button
             type="button"
-            className={`nav-item ${activeNav === 'data_evidence' || activeNav === 'synthetic_lab' ? 'active' : ''}`}
+            className={`nav-item ${activeNav === 'data_evidence' || activeNav === 'research' || activeNav === 'assistant' || activeNav === 'account' ? 'active' : ''}`}
             onClick={() => handleNavigate('data_evidence')}
-            title={lang === 'bn' ? '১২. উপাত্ত ও প্রমাণ - ৪-স্তরীয় প্রোভেন্যান্স রেজিস্ট্রি' : '12. Data & Evidence - 4-Tier Provenance Registry'}
+            title={lang === 'bn' ? '৮. প্রমাণ ও পদ্ধতি - নাসা উপাত্ত, পদ্ধতি ও ল্যাব আর্কাইভ' : '8. Evidence & Method - Datasets, Methods & Research'}
           >
             <span className="nav-item-icon">📊</span>
-            <span className="nav-item-label">{lang === 'bn' ? 'উপাত্ত ও প্রমাণ' : 'Data & Evidence'}</span>
+            <span className="nav-item-label">{lang === 'bn' ? 'প্রমাণ ও পদ্ধতি' : 'Evidence & Method'}</span>
           </button>
         </nav>
 
@@ -2140,6 +2093,43 @@ export function App() {
             </div>
           </div>
         </header>
+
+        {/* Global Active Field Context Strip on Every Page (P1 Architecture) */}
+        <div className="active-field-context-strip" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 24px',
+          background: 'var(--bg-card, rgba(16, 28, 22, 0.86))',
+          borderBottom: '1px solid var(--border-medium, rgba(255,255,255,0.08))',
+          fontSize: '13px',
+          color: 'var(--text-2, #94a3b8)',
+          gap: 12,
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 16 }}>📍</span>
+            <strong style={{ color: 'var(--text, #f8fafc)', fontSize: 14 }}>
+              {activeField?.name || (lang === 'bn' ? 'বগুড়া পরীক্ষামূলক খামার' : 'Bogura Demo Field')}
+            </strong>
+            <span style={{ color: 'var(--border-medium)' }}>•</span>
+            <span>{activeField?.district ? (activeField.district.charAt(0).toUpperCase() + activeField.district.slice(1)) : 'Bogura'}, Bangladesh</span>
+            <span style={{ color: 'var(--border-medium)' }}>•</span>
+            <span style={{ fontFamily: 'monospace' }}>
+              {Number(activeField?.latitude || 24.85).toFixed(4)}°N, {Number(activeField?.longitude || 89.37).toFixed(4)}°E
+            </span>
+            <span style={{ color: 'var(--border-medium)' }}>•</span>
+            <span>{Number(activeField?.area_ha || 10).toFixed(1)} ha ({((Number(activeField?.area_ha || 10)) * 7.47).toFixed(1)} bigha)</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <span>{lang === 'bn' ? 'মাটি:' : 'Soil:'} <strong style={{ color: 'var(--text, #f8fafc)', textTransform: 'capitalize' }}>{activeField?.soil_texture || 'Loam'}</strong></span>
+            <span>{lang === 'bn' ? 'সেচ ধারণক্ষমতা:' : 'Irrigation:'} <strong style={{ color: 'var(--text, #f8fafc)' }}>{activeField?.irrigation_capacity_mm || 90} mm</strong></span>
+            <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
+              <span className="live-pulse-dot" style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+              NASA POWER + IMERG Connected
+            </span>
+          </div>
+        </div>
 
         {/* Workflow Alert Banner (suppressed for honest inline notifications) */}
 
