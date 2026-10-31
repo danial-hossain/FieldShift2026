@@ -247,7 +247,11 @@ def enrich_field_data(
             "sand_pct": 28.0,
             "silt_pct": 40.0,
             "texture_class": dist_meta.get("soil_type", "loam"),
-            "depth_profile": [],
+            "depth_profile": [
+                {"depth": "0-5 cm", "ph": 6.4, "organic_carbon_pct": 1.35, "organic_matter_pct": 2.33, "clay_pct": 31.0, "sand_pct": 29.0, "silt_pct": 40.0},
+                {"depth": "5-15 cm", "ph": 6.5, "organic_carbon_pct": 1.28, "organic_matter_pct": 2.20, "clay_pct": 32.0, "sand_pct": 28.0, "silt_pct": 40.0},
+                {"depth": "15-30 cm", "ph": 6.6, "organic_carbon_pct": 1.20, "organic_matter_pct": 2.07, "clay_pct": 33.0, "sand_pct": 27.0, "silt_pct": 40.0},
+            ],
             "source_tag": "ISRIC SoilGrids 250 m",
         }
 

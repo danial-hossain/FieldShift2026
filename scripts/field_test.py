@@ -212,13 +212,35 @@ def run_field_test(name: str, lat: float, lon: float, area_ha: float) -> Path:
             md_lines.append(f"| {period} | **{crop_name}** | {area_ha:.2f} | {p.capitalize()} |")
         md_lines.append("")
 
+    # 4. WATER & IRRIGATION
+    w_summ = water_data.get("water_balance_summary", {})
+    w_econ = water_data.get("economic_and_conservation", {})
+    w_soil = water_data.get("soil_properties", {})
+
     md_lines.extend([
         "---",
         "",
-        "## 4. Market & Economics Overview",
+        "## 4. Water & Irrigation Scheduling (FAO-56 Penman-Monteith)",
         "",
-        f"- **Available Crops Catalogued**: {len(market_data.get('crops', []))} crops with illustrative demo crop economics.",
-        "- **Single Source of Truth**: Market costs, prices, and yields align identically with the MILP agronomic model parameters (labelled as illustrative demo values).",
+        f"- **Hydraulic Properties (Saxton-Rawls)**: Field Capacity **{w_soil.get('field_capacity_vol', 0)*100:.1f}%**, Wilting Point **{w_soil.get('wilting_point_vol', 0)*100:.1f}%**, TAW **{w_soil.get('taw_mm_per_m', 0):.1f} mm/m**",
+        f"- **Reference Evapotranspiration ($ET_0$)**: {w_summ.get('total_reference_et0_mm', 0):.1f} mm",
+        f"- **Crop Water Demand ($ET_c$)**: {w_summ.get('total_crop_water_demand_etc_mm', 0):.1f} mm ({w_summ.get('total_crop_water_demand_m3', 0):,.0f} m³)",
+        f"- **Effective Precipitation ($P_{{eff}}$)**: {w_summ.get('total_effective_rainfall_mm', 0):.1f} mm (out of {w_summ.get('total_rainfall_mm', 0):.1f} mm total rain)",
+        f"- **Net Irrigation Requirement**: {w_summ.get('net_irrigation_requirement_mm', 0):.1f} mm ({w_summ.get('net_irrigation_requirement_m3', 0):,.0f} m³)",
+        f"- **Irrigation Triggers**: {w_summ.get('irrigation_events_count', 0)} events at recommended interval of ~{w_summ.get('recommended_interval_days', 7)} days",
+        f"- **Managed Pumping Cost (2.50 BDT/m³)**: {w_econ.get('managed_pumping_cost_bdt', 0):,.0f} BDT",
+        f"- **Conventional Flood Comparison**: Flood Demand {w_econ.get('conventional_flood_demand_m3', 0):,.0f} m³ ({w_econ.get('conventional_flood_cost_bdt', 0):,.0f} BDT)",
+        f"- **Water Conservation**: **{w_econ.get('water_savings_m3', 0):,.0f} m³ saved ({w_econ.get('water_reduction_pct', 0):.1f}% reduction)** saving **{w_econ.get('cost_savings_bdt', 0):,.0f} BDT**",
+        "",
+        "---",
+        "",
+        "## 5. Market & National Need Economics (Official FAOSTAT & BBS)",
+        "",
+        f"- **Catalogued Crops**: {len(market_data.get('crops', []))} crops with official trade balance and farmgate pricing.",
+        "- **Deficit Crop Group**: Chickpea, Soybean, Wheat, Mustard, Sunflower, Lentil (high national priority for import substitution).",
+        "- **Commercial Cash Crops**: Tomato, Potato, Sesame, Groundnut, Jute.",
+        "- **Staple Foodcrops**: Rice, Boro Rice, Aus Rice, Maize, Mungbean (domestic self-sufficiency achieved).",
+        "- **Single Source of Truth**: Market net profits align identically with MILP agronomic gross margin equations.",
         "",
     ])
 

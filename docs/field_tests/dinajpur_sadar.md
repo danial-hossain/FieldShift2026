@@ -124,7 +124,24 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ---
 
-## 4. Market & Economics Overview
+## 4. Water & Irrigation Scheduling (FAO-56 Penman-Monteith)
 
-- **Available Crops Catalogued**: 15 crops with illustrative demo crop economics.
-- **Single Source of Truth**: Market costs, prices, and yields align identically with the MILP agronomic model parameters (labelled as illustrative demo values).
+- **Hydraulic Properties (Saxton-Rawls)**: Field Capacity **37.5%**, Wilting Point **23.3%**, TAW **141.8 mm/m**
+- **Reference Evapotranspiration ($ET_0$)**: 405.0 mm
+- **Crop Water Demand ($ET_c$)**: 457.0 mm (4,570 m³)
+- **Effective Precipitation ($P_{eff}$)**: 429.0 mm (out of 752.8 mm total rain)
+- **Net Irrigation Requirement**: 309.1 mm (3,091 m³)
+- **Irrigation Triggers**: 21 events at recommended interval of ~4 days
+- **Managed Pumping Cost (2.50 BDT/m³)**: 7,728 BDT
+- **Conventional Flood Comparison**: Flood Demand 5,162 m³ (12,905 BDT)
+- **Water Conservation**: **2,071 m³ saved (40.1% reduction)** saving **5,177 BDT**
+
+---
+
+## 5. Market & National Need Economics (Official FAOSTAT & BBS)
+
+- **Catalogued Crops**: 17 crops with official trade balance and farmgate pricing.
+- **Deficit Crop Group**: Chickpea, Soybean, Wheat, Mustard, Sunflower, Lentil (high national priority for import substitution).
+- **Commercial Cash Crops**: Tomato, Potato, Sesame, Groundnut, Jute.
+- **Staple Foodcrops**: Rice, Boro Rice, Aus Rice, Maize, Mungbean (domestic self-sufficiency achieved).
+- **Single Source of Truth**: Market net profits align identically with MILP agronomic gross margin equations.

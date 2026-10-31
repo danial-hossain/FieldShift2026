@@ -2082,7 +2082,7 @@ export function App() {
             </div>
             {cropSubTab === 'advisory' && (
               <NasaPlantingAdvisoryView
-                defaultDistrict={activeField?.district?.toLowerCase() || 'rajshahi'}
+                defaultDistrict={activeField?.district?.toLowerCase() || 'bogura'}
                 defaultCrop="aman"
                 lang={lang}
                 onNavigate={handleNavigate}
@@ -2602,7 +2602,7 @@ export function App() {
                         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                           <span>Area: <strong>{formatNumber(activeField?.area_ha, 1) || '50.0'} ha</strong></span>
                           <span>Soil: <strong style={{ textTransform: 'capitalize' }}>{activeField?.soil_texture ? activeField.soil_texture.replaceAll('_', ' ') : 'Clay Loam'}</strong></span>
-                          <span>OM: <strong>{formatNumber(activeField?.organic_matter, 1) || '9.8'}%</strong></span>
+                          <span>OM: <strong>{formatNumber(activeField?.organic_matter, 1) || '2.4'}%</strong></span>
                         </div>
                         <button
                           type="button"

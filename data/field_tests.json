@@ -19,6 +19,13 @@
     "lon": 89.0705,
     "area_ha": 1.5,
     "description": "coastal, salinity zone"
+  },
+  {
+    "name": "Sunamganj haor",
+    "lat": 25.0658,
+    "lon": 91.3950,
+    "area_ha": 1.0,
+    "description": "northeast haor wetland rice basin"
   }
 ]
 
