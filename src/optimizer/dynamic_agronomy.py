@@ -39,7 +39,7 @@ class SeasonalEnvironment:
 def partition_seasonal_environments(
     field_state: Any,
     environmental_history: Optional[pd.DataFrame] = None,
-    planning_periods: Sequence[str] = ("Y1_S1", "Y1_S2", "Y2_S1", "Y2_S2", "Y3_S1", "Y3_S2"),
+    planning_periods: Sequence[str] = ("Y1_S1", "Y1_S2", "Y1_S3", "Y2_S1", "Y2_S2", "Y2_S3"),
 ) -> dict[str, SeasonalEnvironment]:
     """Derive seasonal environmental conditions from NASA POWER history or field baseline."""
     base_temp = getattr(field_state, "temperature", 26.0)
@@ -121,11 +121,80 @@ def partition_seasonal_environments(
                 "basis": f"nasa_power_climatology_{n_years}_years"
             }
 
+    # Calculate climatology for both 2-season (Nov-Apr / May-Oct) and 3-season modes
+    if n_years >= 2 and not valid_df.empty:
+        # 2-season Rabi (Nov-Apr)
+        rabi2_sub = valid_df.loc[valid_df["date"].dt.month.isin([11, 12, 1, 2, 3, 4])]
+        if not rabi2_sub.empty:
+            climatology["rabi_2season"] = {
+                "t_mean": float(rabi2_sub.groupby(rabi2_sub["date"].dt.year)["temperature"].mean().mean()),
+                "t_min": float(rabi2_sub.groupby(rabi2_sub["date"].dt.year)["temperature"].min().mean()),
+                "t_max": float(rabi2_sub.groupby(rabi2_sub["date"].dt.year)["temperature"].max().mean()),
+                "r_tot": float(rabi2_sub.groupby(rabi2_sub["date"].dt.year)["rainfall"].sum().mean()),
+                "solar": float(rabi2_sub["solar_radiation"].mean()) if "solar_radiation" in rabi2_sub else overall_solar,
+                "rh": float(rabi2_sub["humidity"].mean()) if "humidity" in rabi2_sub else 60.0,
+                "basis": f"nasa_power_climatology_{n_years}_years"
+            }
+        # 2-season Kharif (May-Oct)
+        kharif2_sub = valid_df.loc[valid_df["date"].dt.month.isin([5, 6, 7, 8, 9, 10])]
+        if not kharif2_sub.empty:
+            climatology["kharif_2season"] = {
+                "t_mean": float(kharif2_sub.groupby(kharif2_sub["date"].dt.year)["temperature"].mean().mean()),
+                "t_min": float(kharif2_sub.groupby(kharif2_sub["date"].dt.year)["temperature"].min().mean()),
+                "t_max": float(kharif2_sub.groupby(kharif2_sub["date"].dt.year)["temperature"].max().mean()),
+                "r_tot": float(kharif2_sub.groupby(kharif2_sub["date"].dt.year)["rainfall"].sum().mean()),
+                "solar": float(kharif2_sub["solar_radiation"].mean()) if "solar_radiation" in kharif2_sub else overall_solar,
+                "rh": float(kharif2_sub["humidity"].mean()) if "humidity" in kharif2_sub else 80.0,
+                "basis": f"nasa_power_climatology_{n_years}_years"
+            }
+        # 3-season Rabi (Nov-Feb)
+        rabi_sub = valid_df.loc[valid_df["date"].dt.month.isin([11, 12, 1, 2])]
+        if not rabi_sub.empty:
+            climatology["rabi_3season"] = {
+                "t_mean": float(rabi_sub.groupby(rabi_sub["date"].dt.year)["temperature"].mean().mean()),
+                "t_min": float(rabi_sub.groupby(rabi_sub["date"].dt.year)["temperature"].min().mean()),
+                "t_max": float(rabi_sub.groupby(rabi_sub["date"].dt.year)["temperature"].max().mean()),
+                "r_tot": float(rabi_sub.groupby(rabi_sub["date"].dt.year)["rainfall"].sum().mean()),
+                "solar": float(rabi_sub["solar_radiation"].mean()) if "solar_radiation" in rabi_sub else overall_solar,
+                "rh": float(rabi_sub["humidity"].mean()) if "humidity" in rabi_sub else 60.0,
+                "basis": f"nasa_power_climatology_{n_years}_years"
+            }
+        # 3-season Kharif-1 (Mar-Jun)
+        k1_sub = valid_df.loc[valid_df["date"].dt.month.isin([3, 4, 5, 6])]
+        if not k1_sub.empty:
+            climatology["kharif1"] = {
+                "t_mean": float(k1_sub.groupby(k1_sub["date"].dt.year)["temperature"].mean().mean()),
+                "t_min": float(k1_sub.groupby(k1_sub["date"].dt.year)["temperature"].min().mean()),
+                "t_max": float(k1_sub.groupby(k1_sub["date"].dt.year)["temperature"].max().mean()),
+                "r_tot": float(k1_sub.groupby(k1_sub["date"].dt.year)["rainfall"].sum().mean()),
+                "solar": float(k1_sub["solar_radiation"].mean()) if "solar_radiation" in k1_sub else overall_solar,
+                "rh": float(k1_sub["humidity"].mean()) if "humidity" in k1_sub else 70.0,
+                "basis": f"nasa_power_climatology_{n_years}_years"
+            }
+        # 3-season Kharif-2 (Jul-Oct)
+        k2_sub = valid_df.loc[valid_df["date"].dt.month.isin([7, 8, 9, 10])]
+        if not k2_sub.empty:
+            climatology["kharif2"] = {
+                "t_mean": float(k2_sub.groupby(k2_sub["date"].dt.year)["temperature"].mean().mean()),
+                "t_min": float(k2_sub.groupby(k2_sub["date"].dt.year)["temperature"].min().mean()),
+                "t_max": float(k2_sub.groupby(k2_sub["date"].dt.year)["temperature"].max().mean()),
+                "r_tot": float(k2_sub.groupby(k2_sub["date"].dt.year)["rainfall"].sum().mean()),
+                "solar": float(k2_sub["solar_radiation"].mean()) if "solar_radiation" in k2_sub else overall_solar,
+                "rh": float(k2_sub["humidity"].mean()) if "humidity" in k2_sub else 85.0,
+                "basis": f"nasa_power_climatology_{n_years}_years"
+            }
+
+    has_three_seasons = any("_S3" in p for p in planning_periods) or (len(planning_periods) % 3 == 0)
+    seasons_per_yr = 3 if has_three_seasons else 2
+
     for idx, period in enumerate(planning_periods):
-        year = (idx // 2) + 1
-        s_idx = (idx % 2) + 1
+        year = (idx // seasons_per_yr) + 1
+        s_idx = (idx % seasons_per_yr) + 1
         is_dry = (s_idx == 1)
-        s_key = "rabi" if is_dry else "kharif"
+        if seasons_per_yr == 3:
+            s_key = "rabi_3season" if s_idx == 1 else ("kharif1" if s_idx == 2 else "kharif2")
+        else:
+            s_key = "rabi_2season" if s_idx == 1 else "kharif_2season"
 
         if s_key in climatology:
             c_data = climatology[s_key]
@@ -179,11 +248,16 @@ def partition_seasonal_environments(
                 solar = 15.5
                 rh = 82.0
 
+        if seasons_per_yr == 3:
+            s_label = "Rabi (Nov-Feb, dry)" if s_idx == 1 else ("Kharif-1 (Mar-Jun, pre-monsoon)" if s_idx == 2 else "Kharif-2 (Jul-Oct, monsoon)")
+        else:
+            s_label = "Rabi (Nov-Apr, dry)" if s_idx == 1 else "Kharif (May-Oct, wet)"
+
         seasonal_envs[period] = SeasonalEnvironment(
             period=period,
             year=year,
             season_index=s_idx,
-            season_name=f"Year {year} {'Rabi (Nov-Apr, dry)' if is_dry else 'Kharif (May-Oct, wet)'}",
+            season_name=f"Year {year} {s_label}",
             mean_temperature_c=round(t_mean, 2),
             min_temperature_c=round(t_min, 2),
             max_temperature_c=round(t_max, 2),
@@ -377,7 +451,7 @@ def build_dynamic_crop_season_matrix(
     field_state: Any,
     crops: Optional[pd.DataFrame] = None,
     environmental_history: Optional[pd.DataFrame] = None,
-    planning_periods: Sequence[str] = ("Y1_S1", "Y1_S2", "Y2_S1", "Y2_S2", "Y3_S1", "Y3_S2"),
+    planning_periods: Sequence[str] = ("Y1_S1", "Y1_S2", "Y1_S3", "Y2_S1", "Y2_S2", "Y2_S3"),
 ) -> dict[str, Any]:
     """Build the full dynamic matrix of crop-by-season performance metrics for MILP optimization."""
     crop_df = load_crop_knowledge() if crops is None else crops

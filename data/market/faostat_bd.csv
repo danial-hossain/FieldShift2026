@@ -1,0 +1,16 @@
+crop,production_tonnes,import_tonnes,export_tonnes,domestic_supply_tonnes,self_sufficiency_ratio,import_dependency_ratio,national_priority_rank,source
+Chickpea,8200,185000,0,193200,0.0424,0.9576,1,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Soybean,98000,2150000,0,2248000,0.0436,0.9564,2,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Wheat,1085000,6720000,0,7805000,0.1390,0.8610,3,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Mustard,452000,2480000,0,2932000,0.1542,0.8458,4,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Sunflower,14500,48000,0,62500,0.2320,0.7680,5,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Lentil,182000,545000,0,727000,0.2503,0.7497,6,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Garlic,512000,245000,0,757000,0.6764,0.3236,7,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Maize,4650000,1780000,0,6430000,0.7232,0.2768,8,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Mungbean,218000,78000,0,296000,0.7365,0.2635,9,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Onion,2540000,890000,0,3430000,0.7405,0.2595,10,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Sesame,39500,12000,3500,48000,0.8229,0.1771,11,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Tomato,425000,28000,0,453000,0.9382,0.0618,12,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Rice,38400000,1150000,12000,39538000,0.9712,0.0288,13,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Potato,10450000,18000,75000,10393000,1.0055,0.0000,14,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023
+Jute,1520000,8000,685000,843000,1.8031,0.0000,15,FAOSTAT / BBS Bangladesh Agricultural Statistics 2023

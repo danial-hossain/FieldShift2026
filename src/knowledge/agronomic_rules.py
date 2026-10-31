@@ -230,6 +230,11 @@ def _family_rotation_rule(crop: Mapping[str, Any], field_state) -> dict[str, Any
     }
     previous_family = getattr(field_state, "previous_crop_family", None)
     candidate_family = crop.get("family")
+    candidate_crop_name = str(crop.get("crop", "")).strip().lower()
+    if candidate_crop_name == "fallow" or str(candidate_family).strip().lower() in ("none", "fallow", "neutral"):
+        return _rule("compatible", "Fallow is always compatible with crop rotation.", provenance)
+    if not isinstance(previous_family, str) or not previous_family.strip() or previous_family.strip().lower() in ("none", "fallow", "neutral"):
+        return _rule("unknown", "Previous crop family is unavailable or fallow.", provenance)
     if not isinstance(previous_family, str) or not previous_family.strip():
         return _rule(
             "unknown",

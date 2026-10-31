@@ -94,8 +94,8 @@ def validate_crop_knowledge(records: pd.DataFrame) -> pd.DataFrame:
             raise ValueError(f"Crop {column} must be numeric or blank.")
         data[column] = numeric.astype(float)
 
-    if data["duration_days"].isna().any() or (data["duration_days"] <= 0).any():
-        raise ValueError("Crop duration_days must be positive.")
+    if data["duration_days"].isna().any() or (data["duration_days"] < 0).any():
+        raise ValueError("Crop duration_days cannot be negative.")
     if (data["duration_days"] % 1 != 0).any():
         raise ValueError("Crop duration_days must be a whole number of days.")
     for column in ("min_temperature", "max_temperature", "min_ph", "max_ph"):
@@ -134,8 +134,10 @@ def load_crop_knowledge(
     if not path.is_file():
         raise FileNotFoundError(f"Crop knowledge CSV was not found: {path}")
     try:
-        records = pd.read_csv(path, keep_default_na=False)
-        if "allowed_seasons" not in records.columns:
+        records = pd.read_csv(path, keep_default_na=False)
+
+        if "allowed_seasons" not in records.columns:
+
             records["allowed_seasons"] = "rabi|kharif"
         if "allowed_seasons" not in records.columns:
             records["allowed_seasons"] = "rabi|kharif"

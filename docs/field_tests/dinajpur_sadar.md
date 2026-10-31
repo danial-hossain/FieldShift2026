@@ -56,71 +56,71 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `PROFIT`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 4.6365
-- **Rotation**: Y1_S1: **Tomato** → Y1_S2: **Groundnut** → Y2_S1: **Tomato** → Y2_S2: **Groundnut** → Y3_S1: **Tomato** → Y3_S2: **Groundnut**
-- **Profit Component**: 827,235 BDT
-- **Water Index Component**: 4.3692
-- **Soil Health Component**: 3.0000
+- **Objective Value**: 2.1337
+- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Soybean** → Y1_S3: **Rice** → Y2_S1: **Lentil** → Y2_S2: **Sesame** → Y2_S3: **Rice**
+- **Profit Component**: 315,043 BDT
+- **Water Index Component**: 4.7523
+- **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Tomato** | 2.00 | Profit |
-| Y1_S2 | **Groundnut** | 2.00 | Profit |
-| Y2_S1 | **Tomato** | 2.00 | Profit |
-| Y2_S2 | **Groundnut** | 2.00 | Profit |
-| Y3_S1 | **Tomato** | 2.00 | Profit |
-| Y3_S2 | **Groundnut** | 2.00 | Profit |
+| Y1_S1 | **Mustard** | 2.00 | Profit |
+| Y1_S2 | **Soybean** | 2.00 | Profit |
+| Y1_S3 | **Rice** | 2.00 | Profit |
+| Y2_S1 | **Lentil** | 2.00 | Profit |
+| Y2_S2 | **Sesame** | 2.00 | Profit |
+| Y2_S3 | **Rice** | 2.00 | Profit |
 
 ### Priority: `WATER`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 5.3580
-- **Rotation**: Y1_S1: **Chickpea** → Y1_S2: **Sesame** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y3_S1: **Chickpea** → Y3_S2: **Sesame**
-- **Profit Component**: 377,568 BDT
-- **Water Index Component**: 5.3580
-- **Soil Health Component**: 4.3332
+- **Objective Value**: 6.0000
+- **Rotation**: Y1_S1: **Fallow** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Fallow** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
+- **Profit Component**: 122,200 BDT
+- **Water Index Component**: 6.0000
+- **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Chickpea** | 2.00 | Water |
-| Y1_S2 | **Sesame** | 2.00 | Water |
-| Y2_S1 | **Chickpea** | 2.00 | Water |
-| Y2_S2 | **Sesame** | 2.00 | Water |
-| Y3_S1 | **Chickpea** | 2.00 | Water |
-| Y3_S2 | **Sesame** | 2.00 | Water |
+| Y1_S1 | **Fallow** | 2.00 | Water |
+| Y1_S2 | **Soybean** | 2.00 | Water |
+| Y1_S3 | **Fallow** | 2.00 | Water |
+| Y2_S1 | **Fallow** | 2.00 | Water |
+| Y2_S2 | **Mungbean** | 2.00 | Water |
+| Y2_S3 | **Fallow** | 2.00 | Water |
 
 ### Priority: `SOIL`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 4.3332
-- **Rotation**: Y1_S1: **Chickpea** → Y1_S2: **Sesame** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y3_S1: **Mustard** → Y3_S2: **Mungbean**
-- **Profit Component**: 334,645 BDT
-- **Water Index Component**: 5.2725
-- **Soil Health Component**: 4.3332
+- **Objective Value**: 3.3332
+- **Rotation**: Y1_S1: **Sunflower** → Y1_S2: **Groundnut** → Y1_S3: **Fallow** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
+- **Profit Component**: 239,870 BDT
+- **Water Index Component**: 5.2147
+- **Soil Health Component**: 3.3332
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Chickpea** | 2.00 | Soil |
-| Y1_S2 | **Sesame** | 2.00 | Soil |
+| Y1_S1 | **Sunflower** | 2.00 | Soil |
+| Y1_S2 | **Groundnut** | 2.00 | Soil |
+| Y1_S3 | **Fallow** | 2.00 | Soil |
 | Y2_S1 | **Chickpea** | 2.00 | Soil |
 | Y2_S2 | **Sesame** | 2.00 | Soil |
-| Y3_S1 | **Mustard** | 2.00 | Soil |
-| Y3_S2 | **Mungbean** | 2.00 | Soil |
+| Y2_S3 | **Fallow** | 2.00 | Soil |
 
 ### Priority: `BALANCED`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 4.1406
-- **Rotation**: Y1_S1: **Lentil** → Y1_S2: **Jute** → Y2_S1: **Lentil** → Y2_S2: **Jute** → Y3_S1: **Lentil** → Y3_S2: **Jute**
-- **Profit Component**: 402,012 BDT
-- **Water Index Component**: 5.2848
-- **Soil Health Component**: 4.3332
+- **Objective Value**: 3.3887
+- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
+- **Profit Component**: 245,309 BDT
+- **Water Index Component**: 5.2975
+- **Soil Health Component**: 3.3332
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Lentil** | 2.00 | Balanced |
-| Y1_S2 | **Jute** | 2.00 | Balanced |
-| Y2_S1 | **Lentil** | 2.00 | Balanced |
-| Y2_S2 | **Jute** | 2.00 | Balanced |
-| Y3_S1 | **Lentil** | 2.00 | Balanced |
-| Y3_S2 | **Jute** | 2.00 | Balanced |
+| Y1_S1 | **Mustard** | 2.00 | Balanced |
+| Y1_S2 | **Soybean** | 2.00 | Balanced |
+| Y1_S3 | **Fallow** | 2.00 | Balanced |
+| Y2_S1 | **Chickpea** | 2.00 | Balanced |
+| Y2_S2 | **Sesame** | 2.00 | Balanced |
+| Y2_S3 | **Fallow** | 2.00 | Balanced |
 
 ---
 

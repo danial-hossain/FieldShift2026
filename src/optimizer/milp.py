@@ -21,15 +21,14 @@ from src.data.field_history import (
 from src.knowledge.agronomic_rules import evaluate_crop_compatibility
 from src.optimizer.dynamic_agronomy import build_dynamic_crop_season_matrix
 
-DEFAULT_PLANNING_YEARS = 3
-DEFAULT_SEASONS_PER_YEAR = 2
+DEFAULT_PLANNING_YEARS = 2
+DEFAULT_SEASONS_PER_YEAR = 3
 LEGUME_INTERVAL_SEASONS = 3
-DEFAULT_PERIODS = tuple(
-    f"Y{year}_S{season}"
-    for year in range(1, DEFAULT_PLANNING_YEARS + 1)
-    for season in range(1, DEFAULT_SEASONS_PER_YEAR + 1)
+DEFAULT_PERIODS = (
+    "Y1_S1", "Y1_S2", "Y1_S3",
+    "Y2_S1", "Y2_S2", "Y2_S3"
 )
-OBJECTIVE_COMPONENTS = ("profit", "water", "soil")
+OBJECTIVE_COMPONENTS = ("profit", "water", "soil", "national_need")
 STATUS_MAP = {
     "observed": "observed",
     "synthetic": "synthetic",
@@ -44,6 +43,7 @@ NUTRIENT_EFFECT_VALUES = {
     "moderate_nitrogen_demand": 0.0,
     "high_potassium_demand": -1.0,
     "moderate_nutrient_demand": 0.0,
+    "neutral": 0.0,
 }
 SOIL_IMPACT_VALUES = {
     "improves_rotation_diversity": 1.0,
@@ -51,6 +51,8 @@ SOIL_IMPACT_VALUES = {
     "deep_root_residue": 0.5,
     "moderate_soil_disturbance": -0.5,
     "high_water_use": -0.5,
+    "moderate_water_use": -0.2,
+    "neutral": 0.0,
 }
 
 
@@ -61,6 +63,7 @@ class FarmerPriorityWeights:
     profit_weight: float = 0.5
     water_weight: float = 0.3
     soil_weight: float = 0.2
+    national_need_weight: float = 0.0
 
     def normalized(self, available: Optional[Sequence[str]] = None) -> dict[str, float]:
         supplied = {
@@ -68,6 +71,8 @@ class FarmerPriorityWeights:
             "water": self.water_weight,
             "soil": self.soil_weight,
         }
+        if self.national_need_weight > 0:
+            supplied["national_need"] = self.national_need_weight
         values = {}
         for name, value in supplied.items():
             if isinstance(value, (bool, np.bool_)):
@@ -129,18 +134,33 @@ def _period_list(
 
 
 def _period_season(period: str, period_idx: int) -> str:
-    """Map planning period (e.g. Y1_S1, S2, etc.) to agro-ecological season ('rabi' or 'kharif')."""
+    """Map planning period (e.g. Y1_S1, Y1_S2, Y1_S3) to agro-ecological season ('rabi', 'kharif1', or 'kharif2')."""
     p_upper = period.upper()
     if "_S" in p_upper:
         try:
             s_num = int(p_upper.split("_S")[-1])
-            return "rabi" if (s_num % 2 == 1) else "kharif"
+            if s_num == 1:
+                return "rabi"
+            elif s_num == 2:
+                return "kharif1"
+            elif s_num == 3:
+                return "kharif2"
         except ValueError:
             pass
     if p_upper.startswith("S") and p_upper[1:].isdigit():
         s_num = int(p_upper[1:])
-        return "rabi" if (s_num % 2 == 1) else "kharif"
-    return "rabi" if (period_idx % 2 == 0) else "kharif"
+        if s_num == 1:
+            return "rabi"
+        elif s_num == 2:
+            return "kharif1"
+        elif s_num == 3:
+            return "kharif2"
+    s_idx = (period_idx % 3) + 1
+    if s_idx == 1:
+        return "rabi"
+    elif s_idx == 2:
+        return "kharif1"
+    return "kharif2"
 
 
 def _crop_frame(crops: Optional[pd.DataFrame]) -> pd.DataFrame:
@@ -333,19 +353,45 @@ def _objective_data(crops: pd.DataFrame) -> dict[str, dict[str, Optional[float]]
                 (float(bool(is_legume)) + nutrient_value + soil_impact) / 3.0
             )
 
+    # 4. National demand / self-sufficiency from FAOSTAT Bangladesh
+    faostat_csv = Path(__file__).resolve().parents[2] / "data" / "market" / "faostat_bd.csv"
+    national_need: dict[str, Optional[float]] = {}
+    fao_scores = {}
+    if faostat_csv.exists():
+        try:
+            fao_df = pd.read_csv(faostat_csv)
+            fao_scores = dict(zip(fao_df["crop"], fao_df["import_dependency_ratio"]))
+        except Exception:
+            pass
+
+    for _, crop in crops.iterrows():
+        name = crop["crop"]
+        score = fao_scores.get(name)
+        if score is None:
+            if "rice" in name.lower():
+                score = fao_scores.get("Rice", 0.0288)
+            elif name.lower() == "fallow":
+                score = 0.0
+            else:
+                score = 0.1
+        national_need[name] = float(score)
+
     component_status = {
         "profit": "available" if all(v is not None for v in profit.values()) else "excluded_missing_metadata",
         "water": "available" if all(v is not None for v in water.values()) else "excluded_missing_metadata",
         "soil": "available" if all(v is not None for v in soil.values()) else "excluded_missing_metadata",
+        "national_need": "available",
     }
 
     return {
         "profit_raw": profit,
         "water_raw": water,
         "soil_raw": soil,
+        "national_need_raw": national_need,
         "profit_normalized": _normalized(profit, "maximize"),
         "water_normalized": _normalized(water, "minimize"),
         "soil_normalized": _normalized(soil, "maximize"),
+        "national_need_normalized": _normalized(national_need, "maximize"),
         "component_status": component_status,
     }
 
@@ -382,6 +428,7 @@ def build_milp_model(
     profit_weight: float = 0.5,
     water_weight: float = 0.3,
     soil_weight: float = 0.2,
+    national_need_weight: float = 0.0,
 ):
     """Build and return a PuLP problem and its prepared model metadata.
 
@@ -398,7 +445,7 @@ def build_milp_model(
     crop_frame = _crop_frame(crops)
     history = _history_frame(field_history, field_state)
     weights = FarmerPriorityWeights(
-        profit_weight, water_weight, soil_weight
+        profit_weight, water_weight, soil_weight, national_need_weight
     ).normalized()
     rule_results = _evaluate_rules(crop_frame, field_state, features, history)
 
@@ -434,7 +481,7 @@ def build_milp_model(
         if status == "available"
     ]
     effective_weights = FarmerPriorityWeights(
-        profit_weight, water_weight, soil_weight
+        profit_weight, water_weight, soil_weight, national_need_weight
     ).normalized(included_components)
 
     problem = pulp.LpProblem("FieldShift_Crop_Rotation", pulp.LpMaximize)
@@ -479,14 +526,47 @@ def build_milp_model(
         excluded_for_period = []
         for crop_idx, crop_name in enumerate(candidate_names):
             crop_row = crop_frame.loc[crop_frame["crop"] == crop_name].iloc[0]
-            allowed_str = str(crop_row.get("allowed_seasons", "rabi|kharif")).lower()
+            allowed_str = str(crop_row.get("allowed_seasons", "rabi|kharif1|kharif2")).lower()
             allowed = [s.strip() for s in allowed_str.split("|")]
-            if p_season not in allowed:
+            is_match = (
+                p_season in allowed
+                or ("kharif" in allowed and p_season in ("kharif1", "kharif2"))
+            )
+            if not is_match:
                 excluded_for_period.append(crop_name)
                 problem += variables[(crop_name, period)] == 0, (
                     f"season_suitability_{crop_idx}_{period_idx}"
                 )
         season_suitability_exclusions[period] = excluded_for_period
+
+    # Duration vs window occupancy constraint
+    # If crop 1 duration + crop 2 duration > 240 days, they cannot be grown in adjacent seasons
+    for p_idx in range(len(periods) - 1):
+        p_curr = periods[p_idx]
+        p_next = periods[p_idx + 1]
+        for c1 in candidate_names:
+            dur1 = float(crop_frame.loc[crop_frame["crop"] == c1, "duration_days"].iloc[0])
+            for c2 in candidate_names:
+                dur2 = float(crop_frame.loc[crop_frame["crop"] == c2, "duration_days"].iloc[0])
+                if dur1 + dur2 > 240:
+                    problem += (
+                        variables[(c1, p_curr)] + variables[(c2, p_next)] <= 1,
+                        f"duration_overlap_{p_idx}_{candidate_names.index(c1)}_{candidate_names.index(c2)}"
+                    )
+
+    # Rotation realism 1: No crop in the same season two years running (unless rice in kharif2 or fallow)
+    if len(periods) == 6:
+        for s in range(3):
+            p_y1 = periods[s]
+            p_y2 = periods[s + 3]
+            for c in candidate_names:
+                is_rice_in_k2 = (s == 2 and ("rice" in c.lower() or c == "Rice"))
+                is_fallow = (c.lower() == "fallow")
+                if not is_rice_in_k2 and not is_fallow:
+                    problem += (
+                        variables[(c, p_y1)] + variables[(c, p_y2)] <= 1,
+                        f"no_same_crop_consecutive_years_{s}_{candidate_names.index(c)}"
+                    )
 
     previous_family = _previous_crop_family(field_state, history, crop_frame)
     first_period_blocked = []
@@ -569,17 +649,19 @@ def build_milp_model(
                 pulp.lpSum(
                     variables[(crop, window[0])] for crop in candidate_names
                 )
-                >= 2,
+                <= 0,
                 f"legume_interval_impossible_{start}",
             )
         legume_window_count += 1
 
-    # Multi-objective optimization over dynamic seasonal metrics
+    # Multi-objective optimization over dynamic seasonal metrics & national need
+    nat_norm = objective.get("national_need_normalized", {})
     objective_expression = pulp.lpSum(
         (
-            effective_weights["profit"] * dyn_matrix[period][crop]["normalized_profit_score"]
-            + effective_weights["water"] * dyn_matrix[period][crop]["normalized_water_score"]
-            + effective_weights["soil"] * dyn_matrix[period][crop]["normalized_soil_score"]
+            effective_weights.get("profit", 0.0) * dyn_matrix[period][crop]["normalized_profit_score"]
+            + effective_weights.get("water", 0.0) * dyn_matrix[period][crop]["normalized_water_score"]
+            + effective_weights.get("soil", 0.0) * dyn_matrix[period][crop]["normalized_soil_score"]
+            + effective_weights.get("national_need", 0.0) * (nat_norm.get(crop) or 0.0)
         )
         * variables[(crop, period)]
         for crop in candidate_names
@@ -713,6 +795,7 @@ def optimize_rotation(
     profit_weight: float = 0.5,
     water_weight: float = 0.3,
     soil_weight: float = 0.2,
+    national_need_weight: float = 0.0,
     solver: Optional[pulp.LpSolver] = None,
 ) -> dict[str, Any]:
     """Optimize a long-term rotation for the supplied periods and priorities."""
@@ -729,6 +812,7 @@ def optimize_rotation(
         profit_weight=profit_weight,
         water_weight=water_weight,
         soil_weight=soil_weight,
+        national_need_weight=national_need_weight,
     )
     tmp_dir = None
     if solver is None:

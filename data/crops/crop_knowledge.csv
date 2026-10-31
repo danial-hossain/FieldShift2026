@@ -1,16 +1,18 @@
 crop,family,is_legume,water_requirement,duration_days,min_temperature,max_temperature,min_ph,max_ph,expected_yield,production_cost,market_price,nutrient_effect,soil_impact,source,data_status,allowed_seasons
-Rice,Poaceae,false,1200,130,20,35,5.0,7.5,4.0,80000,30000,high_nitrogen_demand,high_water_use,demo,synthetic,rabi|kharif
-Wheat,Poaceae,false,450,120,10,25,5.5,7.5,2.8,55000,32000,moderate_nitrogen_demand,moderate_residue,demo,synthetic,rabi
-Maize,Poaceae,false,600,110,18,32,5.5,7.5,5.0,70000,25000,high_nitrogen_demand,moderate_residue,demo,synthetic,rabi|kharif
+Rice,Poaceae,false,1100,130,20,35,5.0,7.5,4.0,80000,30000,high_nitrogen_demand,high_water_use,demo,synthetic,kharif2
+Boro Rice,Poaceae,false,1200,150,15,32,5.0,7.5,5.5,95000,30000,high_nitrogen_demand,high_water_use,demo,synthetic,rabi
+Aus Rice,Poaceae,false,600,100,20,36,5.0,7.5,3.5,60000,30000,moderate_nitrogen_demand,moderate_water_use,demo,synthetic,kharif1
+Wheat,Poaceae,false,450,115,10,25,5.5,7.5,2.8,55000,32000,moderate_nitrogen_demand,moderate_residue,demo,synthetic,rabi
+Maize,Poaceae,false,600,110,18,32,5.5,7.5,5.0,70000,25000,high_nitrogen_demand,moderate_residue,demo,synthetic,rabi|kharif1
 Lentil,Fabaceae,true,300,110,10,28,5.5,7.5,1.2,35000,90000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,rabi
-Mungbean,Fabaceae,true,350,75,20,35,5.0,7.5,1.0,30000,85000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,kharif
-Mustard,Brassicaceae,false,350,100,8,25,5.5,7.5,1.5,38000,65000,moderate_nutrient_demand,deep_root_residue,demo,synthetic,rabi
-Potato,Solanaceae,false,500,100,12,25,5.0,6.5,15.0,120000,18000,high_potassium_demand,moderate_soil_disturbance,demo,synthetic,rabi
+Mungbean,Fabaceae,true,350,70,20,35,5.0,7.5,1.0,30000,85000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,kharif1
+Mustard,Brassicaceae,false,350,95,8,25,5.5,7.5,1.5,38000,65000,moderate_nutrient_demand,deep_root_residue,demo,synthetic,rabi
+Potato,Solanaceae,false,500,95,12,25,5.0,6.5,15.0,120000,18000,high_potassium_demand,moderate_soil_disturbance,demo,synthetic,rabi
 Chickpea,Fabaceae,true,280,95,12,30,5.8,7.8,1.3,34000,82000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,rabi
-Soybean,Fabaceae,true,480,105,20,35,5.8,7.5,2.2,45000,60000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,rabi|kharif
-Sorghum,Poaceae,false,250,90,18,38,5.0,8.2,3.2,35000,22000,moderate_nutrient_demand,deep_root_residue,demo,synthetic,kharif
-Sesame,Pedaliaceae,false,280,85,20,36,5.5,7.8,0.9,26000,110000,moderate_nutrient_demand,deep_root_residue,demo,synthetic,kharif
-Groundnut,Fabaceae,true,450,120,20,34,5.2,7.0,2.2,45000,80000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,rabi|kharif
+Soybean,Fabaceae,true,480,105,20,35,5.8,7.5,2.2,45000,60000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,rabi|kharif1
+Sesame,Pedaliaceae,false,280,85,20,36,5.5,7.8,0.9,26000,110000,moderate_nutrient_demand,deep_root_residue,demo,synthetic,kharif1
+Groundnut,Fabaceae,true,450,120,20,34,5.2,7.0,2.2,45000,80000,biological_nitrogen_fixation,improves_rotation_diversity,demo,synthetic,rabi|kharif1
 Sunflower,Asteraceae,false,420,95,15,32,6.0,7.8,1.8,40000,58000,moderate_nutrient_demand,deep_root_residue,demo,synthetic,rabi
 Tomato,Solanaceae,false,550,105,18,32,5.5,6.8,18.0,120000,25000,high_potassium_demand,moderate_soil_disturbance,demo,synthetic,rabi
-Jute,Malvaceae,false,650,120,22,38,5.8,7.5,2.4,45000,52000,moderate_nitrogen_demand,moderate_residue,demo,synthetic,kharif
+Jute,Malvaceae,false,650,120,22,38,5.8,7.5,2.4,45000,52000,moderate_nitrogen_demand,moderate_residue,demo,synthetic,kharif1
+Fallow,None,false,0,0,0,50,3.0,10.0,0.0,0,0,neutral,neutral,demo,synthetic,rabi|kharif1|kharif2

@@ -506,8 +506,9 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             user = None
 
     priority = str(data.get("priority", "balanced")).strip().lower()
-    if priority not in {"balanced", "profit", "water", "soil"}:
-        raise HTTPException(400, f"Invalid priority '{priority}'. Allowed values: ['balanced', 'profit', 'water', 'soil']")
+    valid_priorities = {"balanced", "profit", "water", "soil", "national_need", "দেশের চাহিদা", "demand"}
+    if priority not in valid_priorities:
+        raise HTTPException(400, f"Invalid priority '{priority}'. Allowed values: ['balanced', 'profit', 'water', 'soil', 'national_need']")
 
     district = data.get("district")
     lat_val = data.get("latitude")
@@ -583,13 +584,15 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
         if "soil_ph" in data and data["soil_ph"] is not None:
             f_state.ph = float(data["soil_ph"])
 
-        p_wt, w_wt, s_wt = 0.34, 0.33, 0.33
+        p_wt, w_wt, s_wt, n_wt = 0.25, 0.25, 0.25, 0.25
         if priority == "profit":
-            p_wt, w_wt, s_wt = 1.0, 0.0, 0.0
+            p_wt, w_wt, s_wt, n_wt = 1.0, 0.0, 0.0, 0.0
         elif priority == "water":
-            p_wt, w_wt, s_wt = 0.0, 1.0, 0.0
+            p_wt, w_wt, s_wt, n_wt = 0.0, 1.0, 0.0, 0.0
         elif priority == "soil":
-            p_wt, w_wt, s_wt = 0.0, 0.0, 1.0
+            p_wt, w_wt, s_wt, n_wt = 0.0, 0.0, 1.0, 0.0
+        elif priority in {"national_need", "দেশের চাহিদা", "demand"}:
+            p_wt, w_wt, s_wt, n_wt = 0.20, 0.15, 0.15, 0.50
 
         milp_res = optimize_rotation(
             field_state=f_state,
@@ -598,6 +601,7 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             profit_weight=p_wt,
             water_weight=w_wt,
             soil_weight=s_wt,
+            national_need_weight=n_wt,
         )
         env_basis = milp_res.get("environment_basis")
         if not env_basis:
@@ -643,6 +647,30 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
     if "summary" in resp and "planning" in resp["summary"]:
         resp["summary"]["planning"]["environment_basis"] = env_basis
     return resp
+
+@app.post("/api/planning/robustness")
+def planning_robustness(payload: Payload):
+    data = payload.model_dump()
+    rotation = data.get("rotation") or data.get("milp_status") or data.get("selected_crop_by_period")
+    if not rotation:
+        raise HTTPException(400, "Missing 'rotation' in request body.")
+    district = data.get("district") or "bogura"
+    area_ha = float(data.get("area_ha") or data.get("field_size_ha") or 1.0)
+    lat = float(data["latitude"]) if data.get("latitude") is not None else None
+    lon = float(data["longitude"]) if data.get("longitude") is not None else None
+
+    from src.optimizer.robustness import evaluate_rotation_robustness
+    try:
+        result = evaluate_rotation_robustness(
+            rotation=rotation,
+            district=district,
+            area_ha=area_ha,
+            latitude=lat,
+            longitude=lon,
+        )
+        return finite_json_value(jsonable_encoder(result))
+    except Exception as exc:
+        raise HTTPException(500, f"Failed to compute robustness distribution: {str(exc)}") from exc
 
 @app.post("/api/counterfactual/reoptimize")
 def counterfactual_reoptimize(
