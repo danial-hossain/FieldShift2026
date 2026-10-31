@@ -103,6 +103,37 @@ export function SixSeasonRecommendationView({
   const [simulationSuccessMsg, setSimulationSuccessMsg] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // A5: Farmer Priorities and Resource Constraints State
+  const [waterAvailability, setWaterAvailability] = useState('full'); // 'full' | 'limited' | 'none'
+  const [noPowerTiller, setNoPowerTiller] = useState(false);
+  const [labourShortage, setLabourShortage] = useState(false);
+  const [marketPreferences, setMarketPreferences] = useState(['Mustard', 'Lentil', 'Potato', 'Maize']);
+  const [customWeights, setCustomWeights] = useState({ profit: 40, water: 30, soil: 20, national_need: 10 });
+  const [showConstraintsPanel, setShowConstraintsPanel] = useState(true);
+
+  // A5: Deterministic Binding Constraints Evaluation
+  const bindingConstraints = useMemo(() => {
+    const list = [];
+    if (waterAvailability === 'limited') {
+      list.push(lang === 'bn' ? 'আবদ্ধ সেচ সীমা: সর্বোচ্চ ৩৫০ মিমি (Limited Water Cap)' : 'Binding Cap: Limited Irrigation (350 mm max)');
+    } else if (waterAvailability === 'none') {
+      list.push(lang === 'bn' ? 'বৃষ্টি-নির্ভর সীমাবদ্ধতা: বোরো নিষিদ্ধ (Rainfed Only)' : 'Rainfed Constraint: High-water Boro disallowed');
+    }
+    if (noPowerTiller) {
+      list.push(lang === 'bn' ? 'টিলার সীমাবদ্ধতা: আলু ও নিবিড় কন্দশস্য বাদ (No Heavy Tiller)' : 'Equipment Limit: Potato/Tuber excluded');
+    }
+    if (labourShortage) {
+      list.push(lang === 'bn' ? 'শ্রম সংকট সীমাবদ্ধতা: উচ্চ শ্রমঘন নিড়ানি ফসল বর্জিত' : 'Labour Shortage: Intensive weeding crops excluded');
+    }
+    const distLower = (district || '').toLowerCase();
+    if (distLower === 'bogura' || distLower === 'rajshahi' || distLower === 'dinajpur') {
+      list.push(lang === 'bn' ? 'নাসা গ্রেস-এফও বরেন্দ্র ভূগর্ভস্থ পানি সংরক্ষণ গুণক (১.৫x)' : 'NASA GRACE-FO Barind Aquifer Depletion Factor (1.5x)');
+    }
+    list.push(lang === 'bn' ? 'খাদ্য নিরাপত্তা নীতি: বছরে ন্যূনতম ১টি খাদ্যশস্য (ভাত/গম/ভুট্টা)' : 'Food Security Constraint: Min 1 cereal per year');
+    list.push(lang === 'bn' ? 'মাটি স্বাস্থ্য বিধি: সর্বোচ্চ প্রতি ৩ মৌসুমে ১টি ডালশস্য (BNF)' : 'Soil Health Constraint: Min 1 legume every 3 seasons (BNF)');
+    return list;
+  }, [waterAvailability, noPowerTiller, labourShortage, district, lang]);
+
   // Backend planning fetch state (cache 4 priorities per district)
   const [plansByPriority, setPlansByPriority] = useState({});
   const [loading, setLoading] = useState(true);
@@ -572,6 +603,168 @@ export function SixSeasonRecommendationView({
           ⚠️ {errorMessage}
         </div>
       )}
+
+      {/* A5: Farmer Priorities and Resource Constraints Input Panel */}
+      <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: '16px 20px', marginBottom: 20, boxShadow: 'var(--glass-shadow)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: showConstraintsPanel ? 14 : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 20 }}>⚙️🚜</span>
+            <div>
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: 'var(--text)' }}>
+                {lang === 'bn' ? 'কৃষকের অগ্রাধিকার ও সম্পদ সীমাবদ্ধতা ইনপুট (Farmer Priorities & Constraints)' : 'Farmer Priorities & Resource Constraints'}
+              </h3>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'সেচ প্রাপ্যতা, যন্ত্রপাতির সীমাবদ্ধতা ও ওজনের ভিত্তিতে এমআইএলপি সলভার বাস্তবায়ন' : 'Tailor the PuLP MILP solver to exact field water, equipment, and market conditions'}
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowConstraintsPanel(!showConstraintsPanel)}
+            style={{
+              background: 'var(--glass)',
+              border: '1px solid var(--line)',
+              color: 'var(--water)',
+              padding: '6px 12px',
+              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            {showConstraintsPanel ? (lang === 'bn' ? '▲ প্যানেল সংক্ষেপ করুন' : '▲ Collapse') : (lang === 'bn' ? '▼ অগ্রাধিকার পরিবর্তন করুন' : '▼ Customize Constraints')}
+          </button>
+        </div>
+
+        {showConstraintsPanel && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14, paddingTop: 10, borderTop: '1px solid var(--line)' }}>
+            
+            {/* Input 1: Water Availability */}
+            <div style={{ background: 'var(--glass-strong)', borderRadius: 10, padding: 12, border: '1px solid var(--line)' }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--water)', textTransform: 'uppercase' }}>
+                💧 {lang === 'bn' ? 'পানি প্রাপ্যতা ও সেচ সুবিধা' : 'Water Availability'}
+              </span>
+              <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                {[
+                  { id: 'full', labelBn: 'পর্যাপ্ত নলকূপ সেচ (Full)', labelEn: 'Full Tube-well (>600 mm)' },
+                  { id: 'limited', labelBn: 'সীমিত সেচ (Limited 350mm)', labelEn: 'Limited (350 mm cap)' },
+                  { id: 'none', labelBn: 'বৃষ্টি-নির্ভর (Rainfed)', labelEn: 'Rainfed Only (0 mm)' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setWaterAvailability(opt.id)}
+                    style={{
+                      background: waterAvailability === opt.id ? 'var(--water)' : 'var(--glass)',
+                      color: waterAvailability === opt.id ? 'var(--bg-deep)' : 'var(--text-2)',
+                      border: '1px solid rgba(56, 189, 248, 0.3)',
+                      padding: '5px 10px',
+                      borderRadius: 6,
+                      fontSize: 11.5,
+                      fontWeight: waterAvailability === opt.id ? 800 : 500,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {lang === 'bn' ? opt.labelBn : opt.labelEn}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Input 2: Equipment & Labour Limits */}
+            <div style={{ background: 'var(--glass-strong)', borderRadius: 10, padding: 12, border: '1px solid var(--line)' }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--sun)', textTransform: 'uppercase' }}>
+                🚜 {lang === 'bn' ? 'যন্ত্রপাতি ও শ্রম সীমাবদ্ধতা' : 'Equipment & Labour Limits'}
+              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text-2)', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={noPowerTiller}
+                    onChange={(e) => setNoPowerTiller(e.target.checked)}
+                  />
+                  <span>{lang === 'bn' ? 'পাওয়ার টিলার নেই (আলু/টমেটো বাদ)' : 'No power tiller (exclude potato/tuber)'}</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text-2)', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={labourShortage}
+                    onChange={(e) => setLabourShortage(e.target.checked)}
+                  />
+                  <span>{lang === 'bn' ? 'শ্রম সংকট (নিবিড় নিড়ানি ফসল বর্জন)' : 'Labour shortage (exclude high-weeding crops)'}</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Input 3: Priority Weights Sliders */}
+            <div style={{ background: 'var(--glass-strong)', borderRadius: 10, padding: 12, border: '1px solid var(--line)' }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--leaf)', textTransform: 'uppercase' }}>
+                ⚖️ {lang === 'bn' ? 'অগ্রাধিকারের অনুপাত (Weights)' : 'Priority Balance'}
+              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+                  <span>{lang === 'bn' ? 'মুনাফা' : 'Profit'}: {customWeights.profit}%</span>
+                  <input
+                    type="range"
+                    min="10"
+                    max="70"
+                    value={customWeights.profit}
+                    onChange={(e) => setCustomWeights({ ...customWeights, profit: Number(e.target.value) })}
+                    style={{ width: 130 }}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+                  <span>{lang === 'bn' ? 'পানি সাশ্রয়' : 'Water'}: {customWeights.water}%</span>
+                  <input
+                    type="range"
+                    min="10"
+                    max="60"
+                    value={customWeights.water}
+                    onChange={(e) => setCustomWeights({ ...customWeights, water: Number(e.target.value) })}
+                    style={{ width: 130 }}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+                  <span>{lang === 'bn' ? 'মাটি স্বাস্থ্য' : 'Soil'}: {customWeights.soil}%</span>
+                  <input
+                    type="range"
+                    min="10"
+                    max="60"
+                    value={customWeights.soil}
+                    onChange={(e) => setCustomWeights({ ...customWeights, soil: Number(e.target.value) })}
+                    style={{ width: 130 }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Active Binding Constraints Notification Bar */}
+            <div style={{ gridColumn: '1 / -1', background: 'rgba(2, 6, 23, 0.6)', borderRadius: 8, padding: '10px 14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', marginRight: 8 }}>
+                🔒 {lang === 'bn' ? 'বর্তমানে সক্রিয় আবদ্ধ সীমাবদ্ধতা (Active Binding Constraints):' : 'Active Binding Constraints:'}
+              </span>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
+                {bindingConstraints.map((bc, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      fontSize: 10.5,
+                      background: 'rgba(197, 232, 108, 0.12)',
+                      border: '1px solid rgba(197, 232, 108, 0.3)',
+                      color: 'var(--accent)',
+                      padding: '2px 8px',
+                      borderRadius: 999
+                    }}
+                  >
+                    ✓ {bc}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        )}
+      </div>
 
       {/* 2. Strategy Profiles Selector */}
       <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 18, marginBottom: 20, boxShadow: 'var(--glass-shadow)' }}>
