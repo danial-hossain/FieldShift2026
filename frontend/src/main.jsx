@@ -34,6 +34,18 @@ import {
   runCounterfactualRequest,
 } from './counterfactual.js';
 import './styles.css';
+import {
+  HomeIcon,
+  FieldIcon,
+  RotationIcon,
+  WeatherIcon,
+  WaterIcon,
+  MarketIcon,
+  CubeIcon,
+  EvidenceIcon,
+  SunIcon,
+  MoonIcon,
+} from './ui/index.js';
 
 const API = import.meta.env.VITE_API_URL || '';
 
@@ -1821,7 +1833,7 @@ export function App() {
             type="button"
             className={`nav-item ${activeNav === 'dashboard' ? 'active' : ''}`}
             onClick={() => handleNavigate('dashboard')}
-            title={lang === 'bn' ? '১. হোম - আজকের সারসংক্ষেপ ও পরামর্শ' : '1. Overview - Today's Summary & Answer'}
+            title={lang === 'bn' ? '১. হোম - আজকের সারসংক্ষেপ ও পরামর্শ' : '1. Overview - Today\'s Summary & Answer'}
           >
             <span className="nav-item-icon">🏠</span>
             <span className="nav-item-label">{lang === 'bn' ? 'হোম' : 'Overview'}</span>
@@ -2085,8 +2097,9 @@ export function App() {
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Theme`}
               onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
               aria-label="Toggle visual theme"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              <span style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+              {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
             </button>
 
             {/* System Alerts */}
@@ -4525,7 +4538,7 @@ export function App() {
             onClick={() => handleNavigate('dashboard')}
             title="Home"
           >
-            <span className="mobile-nav-icon">🏠</span>
+            <span className="mobile-nav-icon"><HomeIcon size={20} /></span>
             <span className="mobile-nav-text">{lang === 'bn' ? 'হোম' : 'Home'}</span>
           </button>
           <button
@@ -4534,45 +4547,44 @@ export function App() {
             onClick={() => handleNavigate('field')}
             title="My Farm"
           >
-            <span className="mobile-nav-icon">🗺️</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'জমি' : 'Farm'}</span>
+            <span className="mobile-nav-icon"><FieldIcon size={20} /></span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'জমি' : 'Fields'}</span>
           </button>
           <button
             type="button"
-            className={`mobile-bottom-nav-item ${activeNav === 'crop_advice' ? 'active' : ''}`}
-            onClick={() => handleNavigate('crop_advice')}
-            title="Crop Advice & Planting"
-          >
-            <span className="mobile-nav-icon">🌱</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'পরামর্শ' : 'Crops'}</span>
-          </button>
-          <button
-            type="button"
-            className={`mobile-bottom-nav-item ${activeNav === 'farm_planning' ? 'active' : ''}`}
+            className={`mobile-bottom-nav-item ${activeNav === 'farm_planning' || activeNav === 'crop_advice' ? 'active' : ''}`}
             onClick={() => handleNavigate('farm_planning')}
-            title="Farm Planning"
+            title="Rotation Planner"
           >
-            <span className="mobile-nav-icon">📐</span>
+            <span className="mobile-nav-icon"><RotationIcon size={20} /></span>
             <span className="mobile-nav-text">{lang === 'bn' ? 'পরিকল্পনা' : 'Plan'}</span>
           </button>
           <button
             type="button"
-            className={`mobile-bottom-nav-item ${activeNav === 'research' || activeNav === 'analytics' ? 'active' : ''}`}
-            onClick={() => handleNavigate('research')}
-            title="Research Lab"
+            className={`mobile-bottom-nav-item ${activeNav === 'weather' ? 'active' : ''}`}
+            onClick={() => handleNavigate('weather')}
+            title="Climate & Risk"
           >
-            <span className="mobile-nav-icon">🔬</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'ল্যাব' : 'Lab'}</span>
+            <span className="mobile-nav-icon"><WeatherIcon size={20} /></span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'আবহাওয়া' : 'Weather'}</span>
           </button>
           <button
             type="button"
-            className={`mobile-bottom-nav-item ${mobileNavOpen ? 'active' : ''}`}
-            onClick={() => setMobileNavOpen(prev => !prev)}
-            aria-label="Open full 12-section menu drawer"
-            title="Menu"
+            className={`mobile-bottom-nav-item ${activeNav === 'harvest_profit' || activeNav === 'market' ? 'active' : ''}`}
+            onClick={() => handleNavigate('harvest_profit')}
+            title="Market"
           >
-            <span className="mobile-nav-icon">☰</span>
-            <span className="mobile-nav-text">{lang === 'bn' ? 'মেন্যু' : 'Menu'}</span>
+            <span className="mobile-nav-icon"><MarketIcon size={20} /></span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'বাজার' : 'Market'}</span>
+          </button>
+          <button
+            type="button"
+            className={`mobile-bottom-nav-item ${activeNav === 'data_evidence' || activeNav === 'digital_twin' || activeNav === 'research' ? 'active' : ''}`}
+            onClick={() => handleNavigate('data_evidence')}
+            title="Evidence"
+          >
+            <span className="mobile-nav-icon"><EvidenceIcon size={20} /></span>
+            <span className="mobile-nav-text">{lang === 'bn' ? 'প্রমাণ' : 'Evidence'}</span>
           </button>
         </nav>
       </div>

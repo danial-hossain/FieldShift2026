@@ -43,7 +43,7 @@ export function WaterIrrigationView({
   // Root zone depth (m) for rice / staple
   const zRootM = 0.8;
   const tawMm = Math.round(soilWaterSpecs.tawMmPerM * zRootM);
-  // Field-specific NASA Hydrology Telemetry (SRTM elevation/slope, GRACE-FO TWS, SMAP root-zone moisture)
+  // Field-specific NASA Hydrology Data (SRTM elevation/slope, GRACE-FO TWS, SMAP root-zone moisture)
   const fieldTelemetry = useMemo(() => {
     const fieldId = String(activeField?.id || '').toLowerCase();
     const dist = String(activeField?.district || '').toLowerCase();
@@ -165,7 +165,7 @@ export function WaterIrrigationView({
                   letterSpacing: '0.04em',
                 }}
               >
-                FAO-56 &amp; MILP HYDROLOGY SUITE
+                FAO-56 HYDROLOGY SUITE
               </span>
               <span
                 style={{
@@ -186,7 +186,7 @@ export function WaterIrrigationView({
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 840 }}>
               {lang === 'bn'
                 ? 'এফএও-৫৬ মৃত্তিকা পানি ব্যালেন্স, এডব্লিউডি (AWD) সেচ শিডিউলিং, এবং ভূগর্ভস্থ পানির অপচয় রোধে এমআইএলপি ওয়াটার-এফিসিয়েন্সি বিশ্লেষণ।'
-                : 'FAO-56 soil water balance, Alternate Wetting & Drying (AWD) irrigation scheduling, and MILP water-efficiency optimization to conserve Barind groundwater.'}
+                : 'FAO-56 soil water balance, Alternate Wetting & Drying (AWD) irrigation scheduling, and water-efficiency optimization to conserve Barind groundwater.'}
             </p>
           </div>
 
@@ -254,14 +254,14 @@ export function WaterIrrigationView({
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 18 }}>🛰️💧</span>
             <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--water)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {lang === 'bn' ? 'নাসা আর্থ অবজারভেশন হাইড্রোলজি টেলিমেট্রি' : 'NASA Earth Observation Hydrology Telemetry'}
+              {lang === 'bn' ? 'নাসা আর্থ অবজারভেশন হাইড্রোলজি টেলিমেট্রি' : 'NASA Earth Observation Hydrology Data'}
             </span>
             <span style={{ fontSize: 10, background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', color: 'var(--water)', padding: '2px 8px', borderRadius: 999 }}>
               GRACE-FO · SMAP L4 · SRTM
             </span>
           </div>
           <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
-            {lang === 'bn' ? `${activeField?.name || 'খামার'}-এর রিয়েল স্যাটেলাইট টেলিমেট্রি` : `Field Telemetry for ${activeField?.name || 'Selected Field'}`}
+            {lang === 'bn' ? `${activeField?.name || 'খামার'}-এর রিয়েল স্যাটেলাইট টেলিমেট্রি` : `Field Satellite Observations for ${activeField?.name || 'Selected Field'}`}
           </span>
         </div>
 
@@ -359,7 +359,7 @@ export function WaterIrrigationView({
 
         <div className="dash-card ui-card-hud" style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 18px' }}>
           <span style={{ fontSize: 11, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            {lang === 'bn' ? 'সেচ সাশ্রয়ী অপ্টিমাইজেশন' : 'MILP Water Conservation'}
+            {lang === 'bn' ? 'সেচ সাশ্রয়ী অপ্টিমাইজেশন' : 'Water-Saving Rotation'}
           </span>
           <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--accent)', marginTop: 4 }}>
             {waterSavedPct > 0 ? `-${waterSavedPct}%` : 'Optimal'}
@@ -423,7 +423,7 @@ export function WaterIrrigationView({
         <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
-              {lang === 'bn' ? 'এমআইএলপি সেচ অপ্টিমাইজেশন ও এডব্লিউডি শিডিউল' : 'MILP Irrigation Optimization & AWD Scheduling'}
+              {lang === 'bn' ? 'এমআইএলপি সেচ অপ্টিমাইজেশন ও এডব্লিউডি শিডিউল' : 'Optimized Irrigation & AWD Scheduling'}
             </h3>
             <span style={{ fontSize: 11, background: 'rgba(242, 193, 78, 0.15)', color: 'var(--sun)', border: '1px solid rgba(242, 193, 78, 0.3)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
               {lang === 'bn' ? 'উদাহরণমূলক মান' : 'Illustrative example values'}
@@ -432,7 +432,7 @@ export function WaterIrrigationView({
           <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>
             {lang === 'bn'
               ? 'বোরো ও আমন মৌসুমে বিকল্প ভেজানো ও শুকানো (Alternate Wetting and Drying - AWD) পদ্ধতি প্রয়োগে ২৫-৩০% ভূগর্ভস্থ পানি সাশ্রয় হয়। নিচে অপ্টিমাইজারের সেচ বণ্টন ছক দেওয়া হলো:'
-              : 'Applying Alternate Wetting and Drying (AWD) reduces seasonal irrigation by 25–30% without yield loss. The MILP water-efficiency strategy aligns crop selection to rainfall peaks:'}
+              : 'Applying Alternate Wetting and Drying (AWD) reduces seasonal irrigation by 25–30% without yield loss. The water-efficiency strategy aligns crop selection to rainfall peaks:'}
           </p>
 
           <div style={{ overflowX: 'auto' }}>

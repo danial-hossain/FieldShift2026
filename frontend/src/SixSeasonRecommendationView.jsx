@@ -1,5 +1,5 @@
 import { request } from './apiClient.js';
-import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton } from './ui/index.js';
+import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton, MarketIcon, WaterIcon, RotationIcon, ChecklistIcon, InfoIcon, PrintIcon, SmsIcon } from './ui/index.js';
 // frontend/src/SixSeasonRecommendationView.jsx
 // 6-Season Crop Recommendation & Rotation Planner (PuLP MILP Model)
 // Restored first-class feature for FieldShift Research Lab
@@ -588,7 +588,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
           </div>
 
           <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.02em' }}>
-            {lang === 'bn' ? '🌾 ৬-মৌসুমের ফসল সুপারিশ ও আবর্তন পরিকল্পনা (MILP)' : '🌾 6-Season Crop Recommendation & Rotation Planner (MILP)'}
+            {lang === 'bn' ? '🌾 ৬-মৌসুমের ফসল সুপারিশ ও আবর্তন পরিকল্পনা' : '🌾 6-Season Crop Recommendation & Rotation Planner'}
           </h1>
 
           <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)', maxWidth: 880, lineHeight: 1.5 }}>
@@ -702,7 +702,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
 
           <div className="kpi-tile" style={{ background: 'var(--surface-card, rgba(255,255,255,0.04))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 12, padding: '14px 16px' }}>
             <div style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)', marginBottom: 4 }}>
-              💧 {lang === 'bn' ? 'সেচ পানির সাশ্রয়' : 'Irrigation Savings'}
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><WaterIcon size={15} /> {lang === 'bn' ? 'সেচ পানির সাশ্রয়' : 'Irrigation Savings'}</span>
             </div>
             <div style={{ fontSize: 24, fontWeight: 800, color: '#38bdf8' }}>
               ~{toBanglaDigits(waterSavingsMm)} মিমি
@@ -714,7 +714,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
 
           <div className="kpi-tile" style={{ background: 'var(--surface-card, rgba(255,255,255,0.04))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 12, padding: '14px 16px' }}>
             <div style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)', marginBottom: 4 }}>
-              🌱 {lang === 'bn' ? 'জৈব নাইট্রোজেন বৃদ্ধি' : 'Soil Nitrogen Boost'}
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><RotationIcon size={15} /> {lang === 'bn' ? 'জৈব নাইট্রোজেন বৃদ্ধি' : 'Soil Nitrogen Boost'}</span>
             </div>
             <div style={{ fontSize: 24, fontWeight: 800, color: '#f59e0b' }}>
               +{toBanglaDigits(extraNkg)} কেজি N/ha
@@ -730,7 +730,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
       <div style={{ marginBottom: 24, background: 'var(--surface-card, rgba(255,255,255,0.02))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 14, padding: '14px 18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-2, #cbd5e1)' }}>
-            🚦 {lang === 'bn' ? 'জলবায়ু ও শস্য ঝুঁকি মূল্যায়ন (Traffic-Light Risk Matrix):' : 'Agro-Climatic Risk Evaluation:'}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><ChecklistIcon size={16} /> {lang === 'bn' ? 'জলবায়ু ও শস্য ঝুঁকি মূল্যায়ন (Traffic-Light Risk Matrix):' : 'Agro-Climatic Risk Evaluation:'}</span>
           </span>
           <span style={{ fontSize: 11.5, color: 'var(--text-muted, #94a3b8)' }}>
             {lang === 'bn' ? '১০ বছরের মধ্যে প্রায় ৭-৮ বছর অনুকূল থাকে' : '7 to 8 out of 10 years historically favorable'}
@@ -754,7 +754,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
         </div>
         {expandedRisk && (
           <div style={{ marginTop: 10, padding: '10px 14px', borderRadius: 8, background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: 12.5, color: 'var(--text, #f8fafc)' }}>
-            ℹ️ {riskSuite.find(r => r.id === expandedRisk)?.whyBn}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><InfoIcon size={15} /> {riskSuite.find(r => r.id === expandedRisk)?.whyBn}</span>
           </div>
         )}
       </div>
@@ -769,7 +769,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
                 {lang === 'bn' ? 'কৃষকের অগ্রাধিকার ও সম্পদ সীমাবদ্ধতা ইনপুট (Farmer Priorities & Constraints)' : 'Farmer Priorities & Resource Constraints'}
               </h3>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'সেচ প্রাপ্যতা, যন্ত্রপাতির সীমাবদ্ধতা ও ওজনের ভিত্তিতে এমআইএলপি সলভার বাস্তবায়ন' : 'Tailor the PuLP MILP solver to exact field water, equipment, and market conditions'}
+                {lang === 'bn' ? 'সেচ প্রাপ্যতা, যন্ত্রপাতির সীমাবদ্ধতা ও ওজনের ভিত্তিতে এমআইএলপি সলভার বাস্তবায়ন' : 'Tailor the optimization solver to exact field water, equipment, and market conditions'}
               </span>
             </div>
           </div>
@@ -926,7 +926,7 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
           <div>
             <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: 'var(--text)' }}>
-              🎯 {lang === 'bn' ? 'অপ্টিমাইজেশন কৌশল ও ওজন নির্বাচন (MILP Strategy Profiles)' : 'Optimization Strategy Profiles (Objective Weights)'}
+              🎯 {lang === 'bn' ? 'অপ্টিমাইজেশন কৌশল ও ওজন নির্বাচন (Strategy Profiles)' : 'Optimization Strategy Profiles (Objective Weights)'}
             </h3>
             <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--text-muted)' }}>
               {lang === 'bn' ? 'যেকোনো কৌশল নির্বাচন করে ৬-মৌসুমের ফলাফল ও আবর্তন তুলনা করুন:' : 'Select a primary strategy below to solve for alternative multi-season objectives:'}

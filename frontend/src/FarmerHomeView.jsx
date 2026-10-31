@@ -416,7 +416,7 @@ export function FarmerHomeView({
                     {lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনার ৩ডি ডিজিটাল টুইন দেখতে চান?' : 'Explore Full 6-Season 3D Digital Twin Plan Viewer'}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--text-3)' }}>
-                    {lang === 'bn' ? 'প্রতি মৌসুমের ফসল রোটেশন, সেচ ও মাটির আর্দ্রতা ত্রিমাত্রিক মডেলিংয়ে দেখুন।' : 'Interactive season slider over all 6 MILP periods with crop growth, moisture, and canal hydrology.'}
+                    {lang === 'bn' ? 'প্রতি মৌসুমের ফসল রোটেশন, সেচ ও মাটির আর্দ্রতা ত্রিমাত্রিক মডেলিংয়ে দেখুন।' : 'Interactive season slider over all 6 seasonal periods with crop growth, moisture, and canal hydrology.'}
                   </div>
                 </div>
               </div>
@@ -607,7 +607,7 @@ export function FarmerHomeView({
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span>📈</span> {lang === 'bn' ? '৩০ দিনের বৃষ্টিপাতের ধারা' : '30-Day Rainfall Telemetry'}
+                  <span>📈</span> {lang === 'bn' ? '৩০ দিনের বৃষ্টিপাতের ধারা' : '30-Day Rainfall (NASA POWER)'}
                 </h3>
                 <span style={{ fontSize: 11.5, color: 'var(--text-3)' }}>
                   {lang === 'bn' ? 'NASA POWER Reanalysis (দৈনিক মিলিমিটার)' : 'NASA POWER Reanalysis (daily mm)'}
@@ -856,7 +856,7 @@ export function FarmerHomeView({
                   {lang === 'bn' ? 'আবহাওয়া স্টেশন' : 'Weather Station'}
                 </span>
                 <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
-                  {lang === 'bn' ? '৩ডি ভিজ্যুয়ালাইজার' : '3D Telemetry'}
+                  {lang === 'bn' ? '৩ডি ভিজ্যুয়ালাইজার' : '3D Farm Model'}
                 </span>
               </button>
 
@@ -881,7 +881,7 @@ export function FarmerHomeView({
                   {lang === 'bn' ? 'বাজার ও মুনাফা' : 'Market & Profit'}
                 </span>
                 <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
-                  {lang === 'bn' ? 'ফসল মূল্য ও আয়' : 'Price Telemetry'}
+                  {lang === 'bn' ? 'ফসল মূল্য ও আয়' : 'Price Trends'}
                 </span>
               </button>
 

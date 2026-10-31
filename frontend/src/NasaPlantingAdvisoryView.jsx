@@ -191,7 +191,7 @@ export function NasaPlantingAdvisoryView({
 
         {loading ? (
           <div style={{ padding: '24px 0', color: 'var(--text-3)' }}>
-            {lang === 'bn' ? 'নাসা জলবায়ু উপাত্ত বিশ্লেষণ করা হচ্ছে...' : 'Analyzing 25-Year NASA Climate Telemetry...'}
+            {lang === 'bn' ? 'নাসা জলবায়ু উপাত্ত বিশ্লেষণ করা হচ্ছে...' : 'Analyzing 25-Year NASA Climate Data...'}
           </div>
         ) : error ? (
           <div style={{ color: 'var(--alert)', padding: '12px 0' }}>{error}</div>
