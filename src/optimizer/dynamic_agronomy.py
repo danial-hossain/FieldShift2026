@@ -20,6 +20,34 @@ import pandas as pd
 from src.data.crops import load_crop_knowledge
 
 
+CROP_SOIL_TEXTURE_SUITABILITY = {
+    "rice": {"clay": 1.12, "clay_loam": 1.08, "silty_loam": 0.98, "loam": 0.94, "sandy_loam": 0.72, "unknown": 1.0},
+    "boro rice": {"clay": 1.14, "clay_loam": 1.08, "silty_loam": 0.98, "loam": 0.94, "sandy_loam": 0.70, "unknown": 1.0},
+    "aus rice": {"clay": 1.08, "clay_loam": 1.05, "silty_loam": 1.00, "loam": 0.96, "sandy_loam": 0.80, "unknown": 1.0},
+    "chickpea": {"sandy_loam": 1.15, "silty_loam": 1.10, "loam": 1.00, "clay_loam": 0.72, "clay": 0.35, "unknown": 1.0},
+    "lentil": {"sandy_loam": 1.15, "silty_loam": 1.10, "loam": 1.00, "clay_loam": 0.75, "clay": 0.40, "unknown": 1.0},
+    "potato": {"sandy_loam": 1.18, "silty_loam": 1.14, "loam": 1.00, "clay_loam": 0.70, "clay": 0.30, "unknown": 1.0},
+    "groundnut": {"sandy_loam": 1.20, "silty_loam": 1.10, "loam": 1.00, "clay_loam": 0.70, "clay": 0.35, "unknown": 1.0},
+    "maize": {"silty_loam": 1.12, "loam": 1.06, "clay_loam": 0.98, "sandy_loam": 0.92, "clay": 0.80, "unknown": 1.0},
+    "mustard": {"silty_loam": 1.10, "loam": 1.05, "sandy_loam": 1.00, "clay_loam": 0.95, "clay": 0.78, "unknown": 1.0},
+    "sunflower": {"clay_loam": 1.10, "loam": 1.05, "silty_loam": 1.00, "sandy_loam": 0.92, "clay": 0.88, "unknown": 1.0},
+    "soybean": {"clay_loam": 1.10, "loam": 1.05, "silty_loam": 1.00, "sandy_loam": 0.90, "clay": 0.85, "unknown": 1.0},
+    "sesame": {"sandy_loam": 1.15, "silty_loam": 1.08, "loam": 1.00, "clay_loam": 0.72, "clay": 0.40, "unknown": 1.0},
+    "wheat": {"silty_loam": 1.14, "loam": 1.05, "clay_loam": 0.95, "sandy_loam": 0.90, "clay": 0.78, "unknown": 1.0},
+    "tomato": {"silty_loam": 1.10, "loam": 1.05, "sandy_loam": 1.04, "clay_loam": 0.85, "clay": 0.55, "unknown": 1.0},
+    "jute": {"silty_loam": 1.12, "clay_loam": 1.06, "loam": 1.00, "sandy_loam": 0.88, "clay": 0.85, "unknown": 1.0},
+    "fallow": {"clay": 1.0, "clay_loam": 1.0, "silty_loam": 1.0, "loam": 1.0, "sandy_loam": 1.0, "unknown": 1.0},
+}
+
+COASTAL_SALINE_DISTRICTS = {
+    "satkhira", "khulna", "bagerhat", "patuakhali", "barguna", "bhola", "pirojpur", "jhalokati", "coxsbazar"
+}
+
+HAOR_DISTRICTS = {
+    "sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar", "sylhet", "brahmanbaria"
+}
+
+
 @dataclass(frozen=True)
 class SeasonalEnvironment:
     """Environmental condition for a specific planning season."""
@@ -294,15 +322,18 @@ def compute_crop_thermal_suitability(
 def compute_crop_soil_suitability(
     crop: Mapping[str, Any],
     field_state: Any,
+    season_name: str = "",
 ) -> tuple[float, str]:
-    """Calculate soil suitability factor [0.0, 1.15] based on pH, OM, and texture."""
+    """Calculate soil suitability factor [0.0, 1.20] based on crop-specific texture, pH, OM, and coastal salinity."""
+    crop_name = str(crop.get("crop", "")).lower().strip()
     ph = getattr(field_state, "ph", 6.5)
     if ph is None or not math.isfinite(ph):
         ph = 6.5
     om = getattr(field_state, "organic_matter", 2.0)
     if om is None or not math.isfinite(om):
         om = 2.0
-    texture = getattr(field_state, "texture", "loam") or "loam"
+    texture = str(getattr(field_state, "texture", "loam") or "loam").lower().strip()
+    dist = str(getattr(field_state, "district", "") or "").lower().strip()
 
     ph_min = float(crop.get("min_ph", 5.5))
     ph_max = float(crop.get("max_ph", 7.5))
@@ -317,17 +348,22 @@ def compute_crop_soil_suitability(
     # Organic matter multiplier (2.0% baseline)
     om_factor = max(0.85, min(1.15, 1.0 + 0.04 * (om - 2.0)))
 
-    # Texture multiplier (1.00 baseline for loam)
-    texture_multipliers = {
-        "loam": 1.00,
-        "silty_loam": 1.00,
-        "clay_loam": 0.98,
-        "sandy_loam": 0.94,
-        "unknown": 1.00,
-    }
-    tex_factor = texture_multipliers.get(str(texture).lower(), 1.00)
+    # Crop-specific soil texture suitability factor
+    crop_tex_map = CROP_SOIL_TEXTURE_SUITABILITY.get(crop_name, {})
+    tex_factor = crop_tex_map.get(texture, 1.00)
 
-    soil_factor = round(ph_factor * om_factor * tex_factor, 4)
+    # Coastal salinity check in dry winter season (Rabi)
+    salinity_factor = 1.00
+    is_coastal = (dist in COASTAL_SALINE_DISTRICTS) or bool(getattr(field_state, "coastal_saline", False))
+    is_rabi = ("rabi" in season_name.lower()) or ("s1" in season_name.lower())
+    if is_coastal and is_rabi:
+        if crop_name in ["chickpea", "lentil", "potato", "mungbean"]:
+            # Salt-sensitive crops cannot tolerate dry season topsoil salinity (EC > 4 dS/m)
+            return 0.0, f"Coastal salinity constraint: {crop_name} cannot tolerate dry-season soil salinity in {dist}."
+        elif crop_name in ["sunflower", "mustard"]:
+            salinity_factor = 1.08  # Salt-tolerant coastal recommendation
+
+    soil_factor = round(ph_factor * om_factor * tex_factor * salinity_factor, 4)
     return soil_factor, f"pH={ph:.1f}, OM={om:.1f}%, Texture={texture} (factor={soil_factor:.2f})"
 
 
@@ -338,9 +374,16 @@ def compute_crop_water_balance(
 ) -> dict[str, Any]:
     """Calculate crop seasonal water demand, irrigation deficit, and water stress."""
     base_water = float(crop.get("water_requirement", 400.0))
+    dist = str(getattr(field_state, "district", "") or "").lower().strip()
+    is_haor = (dist in HAOR_DISTRICTS) or bool(getattr(field_state, "seasonally_flooded", False))
+
     irrig_cap = getattr(field_state, "irrigation_capacity_mm", None)
     if irrig_cap is None or not math.isfinite(irrig_cap):
-        irrig_cap = 400.0
+        if is_haor and env.season_index == 1:
+            # Haor wetland basin: abundant surface water from beels and rivers for winter Boro
+            irrig_cap = 1200.0
+        else:
+            irrig_cap = 400.0
 
     # Temperature adjustment to crop evapotranspiration (ETc)
     temp_adj = 1.0 + 0.010 * (env.mean_temperature_c - 24.0)
@@ -375,6 +418,7 @@ def compute_crop_water_balance(
         "water_stress_factor": water_factor,
         "is_water_feasible": is_water_feasible,
         "deficit_ratio": round(deficit_ratio, 3),
+        "is_haor": is_haor,
     }
 
 
@@ -392,7 +436,7 @@ def compute_dynamic_crop_season_metrics(
     base_cost = float(crop.get("production_cost", 30000.0))
 
     thermal_factor, thermal_diag = compute_crop_thermal_suitability(crop, env)
-    soil_factor, soil_diag = compute_crop_soil_suitability(crop, field_state)
+    soil_factor, soil_diag = compute_crop_soil_suitability(crop, field_state, env.season_name)
     water_data = compute_crop_water_balance(crop, env, field_state)
 
     is_feasible = (thermal_factor > 0.0) and (soil_factor > 0.0) and water_data["is_water_feasible"]
@@ -403,8 +447,9 @@ def compute_dynamic_crop_season_metrics(
     else:
         # Dynamic expected yield
         dyn_yield = round(base_yield * thermal_factor * soil_factor * water_data["water_stress_factor"], 3)
-        # Production cost includes base cultivation + energy pumping cost (20 BDT/mm for pumped water)
-        pumping_cost = water_data["irrigation_supplied_mm"] * 20.0
+        # Low-lift surface water pumping in haor costs 8 BDT/mm; deep groundwater pumping costs 20 BDT/mm
+        pump_rate = 8.0 if water_data.get("is_haor") else 20.0
+        pumping_cost = water_data["irrigation_supplied_mm"] * pump_rate
         dyn_cost = round(base_cost + pumping_cost, 2)
         dyn_margin = round(dyn_yield * market_price - dyn_cost, 2)
 

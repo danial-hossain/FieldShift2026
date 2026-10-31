@@ -622,7 +622,12 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
 
         is_haor = data.get("seasonally_flooded")
         if is_haor is None:
-            is_haor = dist_key in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}
+            is_haor = dist_key in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar", "sylhet"}
+
+        f_state.district = dist_key
+        f_state.seasonally_flooded = bool(is_haor)
+        from src.optimizer.dynamic_agronomy import COASTAL_SALINE_DISTRICTS
+        f_state.coastal_saline = dist_key in COASTAL_SALINE_DISTRICTS
 
         milp_res = optimize_rotation(
             field_state=f_state,
