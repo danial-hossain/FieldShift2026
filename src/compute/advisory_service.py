@@ -309,6 +309,38 @@ def load_district_climate_data(
     return df.copy(), data_mode
 
 
+def compute_dry_spell_probability_15jun_15jul(daily_df: pd.DataFrame) -> tuple[float, int, int]:
+    """Compute probability of dry spell (>= 7 consecutive days < 2.0 mm) between 15 June and 15 July from IMERG observations."""
+    if daily_df.empty or "date" not in daily_df.columns:
+        return 0.0, 0, 0
+    d_str = daily_df["date"].astype(str)
+    years = d_str.str[:4]
+    valid_mask = (years >= "2001") & (years <= "2024")
+    md = d_str.str[5:]
+    win = daily_df[valid_mask & (md >= "06-15") & (md <= "07-15")]
+    if win.empty:
+        return 0.0, 0, 0
+    
+    unique_years = sorted(win["date"].astype(str).str[:4].unique())
+    dry_years = 0
+    for yr in unique_years:
+        vals = win[win["date"].astype(str).str[:4] == yr]["rainfall"].tolist()
+        cnt = 0
+        has_spell = False
+        for v in vals:
+            if v < 2.0:
+                cnt += 1
+                if cnt >= 7:
+                    has_spell = True
+                    break
+            else:
+                cnt = 0
+        if has_spell:
+            dry_years += 1
+    pct = round((dry_years / len(unique_years)) * 100.0, 1) if unique_years else 0.0
+    return pct, dry_years, len(unique_years)
+
+
 def build_planting_advisory(
     district: str = "rajshahi",
     crop: str = "aman",
@@ -499,6 +531,8 @@ def build_planting_advisory(
         prob_late_30 = len(after_30jun) / len(valid_onsets) if valid_onsets else 0.0
         k_4 = max(1, int(round(prob_late_20 * 4))) if prob_late_20 >= 0.12 else 0
 
+        dry_pct, dry_k, dry_n = compute_dry_spell_probability_15jun_15jul(daily_df)
+
         risk_context = {
             "crop": "aman",
             "p25_doy": p25,
@@ -508,6 +542,10 @@ def build_planting_advisory(
             "prob_late_30jun": prob_late_30,
             "k_years_in_4": k_4,
             "rain_source": rain_source,
+            "dry_spell_pct": dry_pct,
+            "dry_spell_years": dry_k,
+            "dry_spell_total_years": dry_n,
+            "censored_fraction": censored_fraction,
         }
     elif crop_key == "aus":
         sub_df = daily_df[(daily_df["date"] >= "2001-01-01") & (daily_df["date"] <= "2024-12-31")].copy()
