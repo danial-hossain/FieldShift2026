@@ -2171,6 +2171,10 @@ export function App() {
             {harvestSubTab === 'sustainability' && (
               <SustainabilityTrackerView
                 activeField={activeField}
+                plan={plan}
+                summary={summary}
+                analysisResult={plan}
+                lang={lang}
                 onNavigateTab={(tab) => handleNavigate('analytics', tab)}
               />
             )}
