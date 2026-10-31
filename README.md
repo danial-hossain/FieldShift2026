@@ -1,8 +1,10 @@
 # FieldShift 2026: Climate-Adaptive Crop Rotation & Planting Intelligence
 
 **NASA International Space Apps Challenge 2026**  
-**Team:** Team Azoic  
+**Challenge:** "Field Shift: Adapting Farms with NASA Data" (Bangladesh Event, 13–14 Nov 2026)  
+**Team:** Team Azoic (6 members — see [Submission Document](docs/submission.md))  
 **License:** Apache License 2.0 (see [LICENSE](LICENSE))  
+**Official Submission:** [docs/submission.md](docs/submission.md)  
 **AI Disclosure:** Transparently documented in [docs/AI_USE.md](docs/AI_USE.md) and [docs/prompts/README.md](docs/prompts/README.md)  
 
 ---
@@ -32,7 +34,9 @@ Across Bangladesh, erratic monsoon onsets and escalating climate volatility seve
 - **Deterministic Rainfall Onset Detection:** Sourced from Bangladesh Agricultural Research Council (BARC) & BRRI standards. An onset is triggered when cumulative precipitation over 3 consecutive days reaches >= 25.0 mm (with >= 1 rainy day >= 1.0 mm), verified by a **21-day forward lookahead** that rejects false onsets with consecutive dry spells >= 7 days.
 - **Two-Sided Mann-Whitney U Test:** Non-parametric evaluation comparing Baseline (Period 1: 2001–2012, n=12) vs Recent Era (Period 2: 2013–2025, n=13) annual onset DOYs without assuming normality.
 - **Thermal Phenology (GDD):** Calibrated to BRRI rice varieties with base temperature T_base = 10.0°C and upper cap T_cap = 35.0°C.
-- **6-Season MILP Rotation Engine:** Exact mathematical programming using PuLP / CBC Branch-and-Bound to optimize 3-year (6-season) rotations under strict seasonal suitability constraints (`rabi`, `kharif`), non-repetition rules, water limits, and soil health objectives.
+- **6-Season MILP Rotation Engine:** Exact mathematical programming using PuLP / CBC Branch-and-Bound to optimize 2-year × 3-season (`rabi`, `kharif1`, `kharif2`) rotations under strict seasonal suitability constraints, non-repetition rules, biological nitrogen fixation (BNF) intervals, and soil health objectives.
+- **FAO-56 Water Budgeting & Soil Hydraulics:** Daily root-zone water balance computing Penman-Monteith reference evapotranspiration ($ET_0$), single-crop $K_c$ curves, and Saxton-Rawls hydraulics from ISRIC SoilGrids 250m, delivering a **40.1% water saving** over conventional flood irrigation.
+- **National Need & Market Intelligence:** Grounded in official FAOSTAT Bangladesh food balance sheets (2022–2024), prioritizing national deficit crops (pulses, oilseeds, wheat) for import substitution with unified profit equations matching the MILP solver.
 - **Three-Way Comparison Lab:** Transparent, side-by-side benchmarking of exact MILP, sequential Reinforcement Learning (Gymnasium), and heuristic domain rules.
 
 ---
@@ -42,11 +46,18 @@ Across Bangladesh, erratic monsoon onsets and escalating climate volatility seve
 FieldShift is engineered for complete offline autonomy (`OFFLINE=1`), ensuring that all core features function seamlessly without active internet connectivity.
 
 ### 1. Fast System Integrity Check
-Execute an end-to-end dry run testing all primary API endpoints (Health, Crops, Advisory, Planning, Location Weather):
+Execute an end-to-end dry run testing all 10 platform validation points (Health, Crops, Advisory, Planning, Weather, Water, Market, Field Enrichment, and 4 Field Test Reports):
 ```bash
 python scripts/demo_check.py
 ```
-*(Outputs full verification status and latency report; exits 0 on success).*
+*(Outputs full verification status across all 10 checkpoints; exits 0 on success).*
+
+### 2. End-to-End Field Validation Across 4 Regions
+Verify the platform across Northwest rice belt, Floodplain, Coastal salinity, and Haor wetland:
+```bash
+python scripts/field_test.py --all
+```
+*(Generates markdown verification reports under `docs/field_tests/`).*
 
 ### 2. Empirical Onset Window Sensitivity Analysis
 Run the 6-district sensitivity sweep across search boundaries (01 May vs 15 May vs 01 June):

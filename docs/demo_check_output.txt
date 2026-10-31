@@ -1,12 +1,16 @@
-﻿================================================================
+================================================================
 FIELDSHIFT OFFLINE DEMO INTEGRITY CHECK
 ================================================================
-[PASS] 1. GET /api/health -> status=200 (18.5ms)
-[PASS] 2. GET /api/crops -> count=15 crops (448.1ms)
-[PASS] 3. GET /api/advisory (Rajshahi Aman) -> P1=154.5, P2=158.0, Shift=+3.5d, p=0.9344 (1293.9ms)
-[PASS] 4. GET /api/advisory/districts -> 6 districts (3.5ms)
-[PASS] 5. POST /api/planning (Rajshahi Profit) -> status=optimal, 6 seasons resolved (691.9ms)
-[PASS] 6. POST /api/location/weather -> status=200 (1715.3ms)
+[PASS] 1. GET /api/health -> status=200 (16.4ms)
+[PASS] 2. GET /api/crops -> count=17 crops (379.8ms)
+[PASS] 3. GET /api/advisory (Rajshahi Aman) -> P1=154.0, P2=166.0, Shift=+12.0d, p=0.2991 (1170.8ms)
+[PASS] 4. GET /api/advisory/districts -> 64 districts (3.4ms)
+[PASS] 5. POST /api/planning (Rajshahi Profit) -> status=optimal, 6 seasons resolved (913.4ms)
+[PASS] 6. POST /api/location/weather -> status=200 (1805.6ms)
+[PASS] 7. GET /api/water/plan (Bogura) -> status=200, water reduction=40.1% (41.8ms)
+[PASS] 8. GET /api/market/overview (FAOSTAT) -> status=200, crops=17 (71.3ms)
+[PASS] 9. POST /api/fields/enrich -> district=bogura, texture=clay loam (5.8ms)
+[PASS] 10. Field Test Reports -> all 4 Bangladesh regions verified (0.2ms)
 ================================================================
-SUMMARY: 6/6 CHECKS PASSED
+SUMMARY: 10/10 CHECKS PASSED
 ================================================================

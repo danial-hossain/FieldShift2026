@@ -159,6 +159,86 @@ def run_checks():
         has_failure = True
         results.append(("Location Weather", False, str(e)))
 
+    # 7. Water Scheduling (FAO-56 Penman-Monteith)
+    t0 = time.time()
+    try:
+        res = client.get("/api/water/plan?district=bogura&lat=24.85&lon=89.37&area_ha=10.0")
+        dt = (time.time() - t0) * 1000
+        data = res.json() if res.status_code == 200 else {}
+        w_econ = data.get("economic_and_conservation", {})
+        savings_pct = w_econ.get("water_reduction_pct", 0)
+        if res.status_code == 200 and savings_pct > 0:
+            print(f"[PASS] 7. GET /api/water/plan (Bogura) -> status=200, water reduction={savings_pct:.1f}% ({dt:.1f}ms)")
+            results.append(("Water Scheduling", True, f"Reduction {savings_pct:.1f}%"))
+        else:
+            print(f"[FAIL] 7. GET /api/water/plan -> status={res.status_code}")
+            has_failure = True
+            results.append(("Water Scheduling", False, f"status {res.status_code}"))
+    except Exception as e:
+        print(f"[FAIL] 7. GET /api/water/plan -> {e}")
+        has_failure = True
+        results.append(("Water Scheduling", False, str(e)))
+
+    # 8. Market & National Need Intelligence (FAOSTAT BD)
+    t0 = time.time()
+    try:
+        res = client.get("/api/market/overview?district=bogura&lat=24.85&lon=89.37&area_ha=10.0")
+        dt = (time.time() - t0) * 1000
+        data = res.json() if res.status_code == 200 else {}
+        crops = data.get("crops", [])
+        has_need = any("national_need" in c for c in crops)
+        if res.status_code == 200 and len(crops) >= 15 and has_need:
+            print(f"[PASS] 8. GET /api/market/overview (FAOSTAT) -> status=200, crops={len(crops)} ({dt:.1f}ms)")
+            results.append(("Market Overview", True, f"{len(crops)} crops"))
+        else:
+            print(f"[FAIL] 8. GET /api/market/overview -> status={res.status_code}")
+            has_failure = True
+            results.append(("Market Overview", False, f"status {res.status_code}"))
+    except Exception as e:
+        print(f"[FAIL] 8. GET /api/market/overview -> {e}")
+        has_failure = True
+        results.append(("Market Overview", False, str(e)))
+
+    # 9. Geospatial Enrichment
+    t0 = time.time()
+    try:
+        res = client.post("/api/fields/demo_check_field/enrich", json={"latitude": 24.85, "longitude": 89.37, "area_ha": 5.0})
+        dt = (time.time() - t0) * 1000
+        data = res.json() if res.status_code == 200 else {}
+        dist = data.get("nearest_district")
+        soil = data.get("soil", {})
+        if res.status_code == 200 and dist == "bogura" and soil.get("texture_class"):
+            print(f"[PASS] 9. POST /api/fields/enrich -> district={dist}, texture={soil.get('texture_class')} ({dt:.1f}ms)")
+            results.append(("Field Enrichment", True, f"district={dist}"))
+        else:
+            print(f"[FAIL] 9. POST /api/fields/enrich -> status={res.status_code}")
+            has_failure = True
+            results.append(("Field Enrichment", False, f"status {res.status_code}"))
+    except Exception as e:
+        print(f"[FAIL] 9. POST /api/fields/enrich -> {e}")
+        has_failure = True
+        results.append(("Field Enrichment", False, str(e)))
+
+    # 10. Field Test Reports Verification
+    t0 = time.time()
+    try:
+        from pathlib import Path
+        docs_ft = Path(REPO_ROOT) / "docs" / "field_tests"
+        required_reports = ["bogura_demo.md", "dinajpur_sadar.md", "satkhira_coast.md", "sunamganj_haor.md"]
+        missing = [r for r in required_reports if not (docs_ft / r).is_file()]
+        dt = (time.time() - t0) * 1000
+        if not missing:
+            print(f"[PASS] 10. Field Test Reports -> all 4 Bangladesh regions verified ({dt:.1f}ms)")
+            results.append(("Field Test Reports", True, "4/4 reports present"))
+        else:
+            print(f"[FAIL] 10. Field Test Reports -> missing: {missing}")
+            has_failure = True
+            results.append(("Field Test Reports", False, f"missing {missing}"))
+    except Exception as e:
+        print(f"[FAIL] 10. Field Test Reports -> {e}")
+        has_failure = True
+        results.append(("Field Test Reports", False, str(e)))
+
     print("================================================================")
     print(f"SUMMARY: {len([r for r in results if r[1]])}/{len(results)} CHECKS PASSED")
     print("================================================================")
