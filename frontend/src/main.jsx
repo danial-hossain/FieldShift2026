@@ -2048,7 +2048,7 @@ export function App() {
               </div>
               <div className="user-profile-meta hide-on-mobile">
                 <strong className="user-profile-name">{user ? user.name : 'Sign In'}</strong>
-                <span className="user-profile-title">{user ? 'Chief Agronomist' : 'Guest Operator'}</span>
+                <span className="user-profile-title">{user ? (user.role || user.email || 'Farmer') : (lang === 'bn' ? 'অতিথি ব্যবহারকারী' : 'Guest')}</span>
               </div>
             </div>
           </div>
@@ -3565,7 +3565,7 @@ export function App() {
                           </svg>
                         )}
                       </div>
-                      <span className="holo-operator-role">Chief Agronomist & Decision Architect</span>
+                      <span className="holo-operator-role">{user?.role || (lang === 'bn' ? 'কৃষক ও খামার পরিচালক' : 'Farmer & Farm Operator')}</span>
                       <span className="holo-operator-email">{user ? user.email : 'guest@fieldshift.local'}</span>
                     </div>
                   </div>
