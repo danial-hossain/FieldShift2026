@@ -47,6 +47,8 @@ class Field(Timestamped, Base):
     organic_matter: Mapped[float | None] = mapped_column(Float)
     irrigation_capacity_mm: Mapped[float | None] = mapped_column(Float)
     soil_ph: Mapped[float | None] = mapped_column(Float)
+    district: Mapped[str | None] = mapped_column(String, nullable=True)
+    seasonally_flooded: Mapped[bool | None] = mapped_column(Boolean, default=False, nullable=True)
 
 class FieldHistory(Base):
     __tablename__ = "field_history"

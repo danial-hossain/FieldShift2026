@@ -465,7 +465,17 @@ def validate_rl_trajectory(raw: Any, final_state: dict[str, Any], strategy_id: s
 
 @app.on_event("startup")
 def startup() -> None:
-    Base.metadata.create_all(engine)  # deployment should use Alembic migration below
+    Base.metadata.create_all(engine)
+    try:
+        from sqlalchemy import inspect, text
+        with engine.begin() as conn:
+            cols = [c["name"] for c in inspect(conn).get_columns("fields")]
+            if "district" not in cols:
+                conn.execute(text("ALTER TABLE fields ADD COLUMN district VARCHAR"))
+            if "seasonally_flooded" not in cols:
+                conn.execute(text("ALTER TABLE fields ADD COLUMN seasonally_flooded BOOLEAN DEFAULT 0"))
+    except Exception as e:
+        logger.warning(f"Field table column migration notice: {e}")
 
 @app.get("/api/health")
 def health(db: DbSession = Depends(get_db)):
@@ -594,6 +604,10 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
         elif priority in {"national_need", "দেশের চাহিদা", "demand"}:
             p_wt, w_wt, s_wt, n_wt = 0.20, 0.15, 0.15, 0.50
 
+        is_haor = data.get("seasonally_flooded")
+        if is_haor is None:
+            is_haor = dist_key in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}
+
         milp_res = optimize_rotation(
             field_state=f_state,
             crops=crops,
@@ -602,6 +616,9 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             water_weight=w_wt,
             soil_weight=s_wt,
             national_need_weight=n_wt,
+            allow_kharif2_fallow=bool(data.get("allow_kharif2_fallow", False)),
+            min_cereals_per_year=int(data.get("min_cereals_per_year", 1)),
+            seasonally_flooded=bool(is_haor),
         )
         env_basis = milp_res.get("environment_basis")
         if not env_basis:
@@ -1654,6 +1671,23 @@ def create_field(payload: Payload, user: User = Depends(require_user), db: DbSes
         soil_ph_val = float(raw_ph)
         if not (0.0 <= soil_ph_val <= 14.0):
             raise HTTPException(400, "Soil pH must be between 0 and 14.")
+    # Auto-resolve district and seasonally_flooded if not provided
+    field_district = data.get("district")
+    if not field_district and lat is not None and lon is not None:
+        try:
+            from src.compute.advisory_service import nearest_district
+            field_district = nearest_district(lat, lon)
+        except Exception:
+            field_district = None
+
+    is_flooded = data.get("seasonally_flooded")
+    if is_flooded is None and field_district:
+        is_flooded = str(field_district).lower() in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}
+    elif is_flooded is not None:
+        is_flooded = bool(is_flooded)
+    else:
+        is_flooded = False
+
     stamp = now()
     field = FarmField(
         farm_id=int(farm_id),
@@ -1665,6 +1699,8 @@ def create_field(payload: Payload, user: User = Depends(require_user), db: DbSes
         organic_matter=om,
         irrigation_capacity_mm=irrig,
         soil_ph=soil_ph_val,
+        district=field_district,
+        seasonally_flooded=is_flooded,
         created_at=stamp,
         updated_at=stamp
     )
@@ -1751,6 +1787,10 @@ def update_field(field_id: int, payload: Payload, user: User = Depends(require_u
             field.soil_ph = ph_val
         else:
             field.soil_ph = None
+    if "district" in data:
+        field.district = str(data["district"]).strip() if data["district"] else None
+    if "seasonally_flooded" in data:
+        field.seasonally_flooded = bool(data["seasonally_flooded"]) if data["seasonally_flooded"] is not None else False
     stamp = now()
     field.updated_at = stamp
     crop = data.get("crop") or data.get("previous_crop") or data.get("current_crop")

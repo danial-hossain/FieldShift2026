@@ -1236,7 +1236,8 @@ export function App() {
       organic_matter: '2.5',
       irrigation_capacity_mm: '100',
       crop: 'Rice',
-      previous_crop_year: '2025'
+      previous_crop_year: '2025',
+      seasonally_flooded: (parseFloat(defaultLat) >= 24.5 && parseFloat(defaultLon) >= 91.0)
     });
   };
 
@@ -1255,7 +1256,8 @@ export function App() {
       organic_matter: fld.organic_matter != null ? String(fld.organic_matter) : '',
       irrigation_capacity_mm: fld.irrigation_capacity_mm != null ? String(fld.irrigation_capacity_mm) : '',
       crop: fld.previous_crop || fld.current_crop || (fld.history && fld.history[0]?.crop) || '',
-      previous_crop_year: fld.previous_crop_year != null ? String(fld.previous_crop_year) : (fld.history && fld.history[0]?.year ? String(fld.history[0]?.year) : '')
+      previous_crop_year: fld.previous_crop_year != null ? String(fld.previous_crop_year) : (fld.history && fld.history[0]?.year ? String(fld.history[0]?.year) : ''),
+      seasonally_flooded: Boolean(fld.seasonally_flooded)
     });
   };
 
@@ -1283,7 +1285,8 @@ export function App() {
         irrigation_capacity_mm: Number.isFinite(irrVal) ? irrVal : null,
         crop: fieldForm.crop ? fieldForm.crop.trim() : null,
         previous_crop: fieldForm.crop ? fieldForm.crop.trim() : null,
-        previous_crop_year: Number.isFinite(yrVal) ? yrVal : null
+        previous_crop_year: Number.isFinite(yrVal) ? yrVal : null,
+        seasonally_flooded: Boolean(fieldForm.seasonally_flooded)
       };
       if (userFarms.length) {
         payload.farm_id = userFarms[0].id;
@@ -4056,6 +4059,23 @@ export function App() {
                             onChange={e => setFieldForm(prev => ({ ...prev, previous_crop_year: e.target.value }))}
                           />
                         </div>
+                      </div>
+
+                      <div className="form-group" style={{ marginTop: 8, padding: '10px 14px', background: 'rgba(0, 223, 129, 0.05)', borderRadius: 8, border: '1px solid rgba(0, 223, 129, 0.2)' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', margin: 0 }}>
+                          <input
+                            type="checkbox"
+                            checked={Boolean(fieldForm.seasonally_flooded)}
+                            onChange={e => setFieldForm(prev => ({ ...prev, seasonally_flooded: e.target.checked }))}
+                            style={{ width: 18, height: 18, accentColor: '#00df81', cursor: 'pointer' }}
+                          />
+                          <span style={{ fontWeight: 600, color: 'var(--text-main, #e2e8f0)', fontSize: 13 }}>
+                            🌊 {lang === 'bn' ? 'মৌসুমি প্লাবিত হাওর জমি (জুন-নভেম্বর পানির নিচে)' : 'Seasonally Flooded Haor Wetland (Submerged Jun–Nov)'}
+                          </span>
+                        </label>
+                        <p style={{ margin: '4px 0 0 28px', fontSize: 11, color: 'var(--text-muted, #94a3b8)' }}>
+                          {lang === 'bn' ? 'হাওর জমিতে খরিপ-২ মৌসুমে জমি পানিতে তলিয়ে থাকে এবং রবি মৌসুমে বোরো ধান প্রধান ফসল।' : 'Haor basins are deep-flooded in Kharif-2; Boro rice is primary winter crop.'}
+                        </p>
                       </div>
 
                       {fieldModalError && (
