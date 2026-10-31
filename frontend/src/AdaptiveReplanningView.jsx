@@ -9,6 +9,8 @@ export function AdaptiveReplanningView({
   request: propRequest,
   formatNumber: propFormatNumber,
   onNavigateTab,
+  onBack,
+  lang = 'bn',
 }) {
   const request = typeof propRequest === 'function' ? propRequest : defaultRequest;
   const formatNumber = typeof propFormatNumber === 'function' ? propFormatNumber : defaultFormatNumber;
@@ -37,6 +39,7 @@ export function AdaptiveReplanningView({
 
   const handleUpdateHistoryCrop = (index, crop) => {
     const updated = [...historyItems];
+    updated[index].crop = crop;
     updated[index].crop_planted = crop;
     setHistoryItems(updated);
   };
@@ -45,9 +48,18 @@ export function AdaptiveReplanningView({
     setLoading(true);
     setError('');
     try {
-      const pastHistory = historyItems.slice(0, completedSeasonsCount);
+      const pastHistory = historyItems.slice(0, completedSeasonsCount).map(h => ({
+        ...h,
+        crop: h.crop || h.crop_planted,
+        crop_planted: h.crop_planted || h.crop,
+      }));
       const payload = {
         field_id: activeField?.id || 'demo',
+        latitude: activeField?.latitude != null ? Number(activeField.latitude) : undefined,
+        longitude: activeField?.longitude != null ? Number(activeField.longitude) : undefined,
+        district: activeField?.district || undefined,
+        area_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
+        seasonally_flooded: activeField?.seasonally_flooded,
         completed_seasons_history: pastHistory,
         updated_conditions: {
           soil_ph: updatedSoilPh ? parseFloat(updatedSoilPh) : null,
@@ -144,14 +156,26 @@ export function AdaptiveReplanningView({
               to regenerate optimal future seasons with explicit explanations of why recommendations changed.
             </p>
           </div>
-          <button
-            type="button"
-            className="dashboard-primary-run-btn"
-            onClick={executeReplan}
-            disabled={loading}
-          >
-            {loading ? 'Re-optimizing Plan...' : '🔄 Run Next-Season Replan'}
-          </button>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            {onBack && (
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={onBack}
+                style={{ padding: '8px 14px', borderRadius: 8, fontSize: 13 }}
+              >
+                ← {lang === 'bn' ? 'পরিকল্পনায় ফিরুন' : 'Back to Planner'}
+              </button>
+            )}
+            <button
+              type="button"
+              className="dashboard-primary-run-btn"
+              onClick={executeReplan}
+              disabled={loading}
+            >
+              {loading ? (lang === 'bn' ? 'পুনঃপরিকল্পনা চলছে...' : 'Re-optimizing Plan...') : (lang === 'bn' ? '🔄 পরবর্তী মৌসুম পুনঃপরিকল্পনা চালান' : '🔄 Run Next-Season Replan')}
+            </button>
+          </div>
         </div>
 
         {/* Dynamic Inputs: Past State & Updated Tests */}

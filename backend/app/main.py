@@ -968,34 +968,92 @@ def crop_failure_recovery(payload: Payload):
     return finite_json_value(jsonable_encoder(result))
 
 @app.post("/api/workflow/replan")
-def workflow_replan(payload: Payload):
+def workflow_replan(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
     data = payload.model_dump()
-    from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
     from src.state.field_state import build_field_state
     from src.data.crops import load_crop_knowledge
     from src.preprocessing.features import build_features
     from src.optimizer.adaptive_replan import run_adaptive_replan
+    from src.compute.advisory_service import load_district_climate_data, DISTRICT_REGISTRY, nearest_district
     import pandas as pd
 
-    lat = float(data.get("latitude") or 23.8103)
-    lon = float(data.get("longitude") or 90.4125)
+    user = None
+    if fieldshift_session:
+        try:
+            user = require_user(fieldshift_session, db)
+        except HTTPException:
+            user = None
+
+    requested_field_id = data.get("field_id")
+    if requested_field_id not in (None, "", "demo") and user is not None:
+        try:
+            fid = int(requested_field_id)
+            field_record = owned_field(db, fid, user)
+            data = use_field_record(data, field_record, db)
+        except Exception:
+            pass
+
+    lat_val = data.get("latitude")
+    lon_val = data.get("longitude")
+    district = data.get("district")
+    if not district and lat_val is not None and lon_val is not None:
+        try:
+            district = nearest_district(float(lat_val), float(lon_val))
+        except Exception:
+            district = "bogura"
+    if not district or str(district).strip().lower() not in DISTRICT_REGISTRY:
+        district = "bogura"
+
+    dist_key = str(district).strip().lower()
+    is_offline = os.environ.get("OFFLINE", "1") == "1"
+    try:
+        power, data_mode = load_district_climate_data(dist_key, offline=is_offline)
+    except Exception:
+        from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
+        power = pd.read_csv(DEFAULT_NASA_PATH)
+    if "date" in power.columns:
+        power["date"] = pd.to_datetime(power["date"])
+
+    lat = float(lat_val or DISTRICT_REGISTRY[dist_key].get("latitude") or 24.85)
+    lon = float(lon_val or DISTRICT_REGISTRY[dist_key].get("longitude") or 89.37)
+
     raw_completed = data.get("completed_seasons") or data.get("completed_seasons_history") or []
     if isinstance(raw_completed, int):
         last_crop = str(data.get("last_season_crop") or "Wheat")
-        completed_seasons = [{"period": f"Y{1+(i//2)}_S{1+(i%2)}", "crop": last_crop} for i in range(raw_completed)]
+        completed_seasons = [{"period": f"Y{1+(i//2)}_S{1+(i%2)}", "crop": last_crop, "crop_planted": last_crop} for i in range(raw_completed)]
     elif isinstance(raw_completed, list):
-        completed_seasons = raw_completed
+        completed_seasons = []
+        for i, item in enumerate(raw_completed):
+            if isinstance(item, dict):
+                crop_name = item.get("crop") or item.get("crop_planted") or item.get("crop_name") or "Wheat"
+                completed_seasons.append({
+                    "period": item.get("period") or f"Y{1+(i//2)}_S{1+(i%2)}",
+                    "crop": crop_name,
+                    "crop_planted": crop_name,
+                    "yield_kg_ha": item.get("yield_kg_ha"),
+                    "actual_yield_t_ha": (float(item["yield_kg_ha"]) / 1000.0) if item.get("yield_kg_ha") is not None else item.get("actual_yield_t_ha"),
+                    "actual_water_mm": item.get("water_applied_mm") or item.get("actual_water_mm"),
+                })
     else:
         completed_seasons = []
+
     updated_field_conditions = data.get("updated_field_conditions") or data.get("updated_conditions") or {}
     priority = str(data.get("priority") or "balanced")
 
-    power = pd.read_csv(DEFAULT_NASA_PATH)
-    power["date"] = pd.to_datetime(power["date"])
     crops_df = load_crop_knowledge()
     state = build_field_state(str(data.get("field_id") or "demo"), lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
     state.field_size_ha = float(data.get("field_size_ha") or data.get("area_ha") or 1.0)
     state.area_ha = state.field_size_ha
+    if "soil_texture" in data and data["soil_texture"] != "unknown":
+        state.texture = str(data["soil_texture"])
+    elif dist_key in DISTRICT_REGISTRY:
+        state.texture = DISTRICT_REGISTRY[dist_key].get("soil_type", "loam")
+
+    is_haor = data.get("seasonally_flooded")
+    if is_haor is None:
+        is_haor = dist_key in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}
+    state.seasonally_flooded = bool(is_haor)
+
     features = build_features(state, environmental_history=power)
 
     result = run_adaptive_replan(
@@ -1006,6 +1064,8 @@ def workflow_replan(payload: Payload):
         priority=priority,
         features=features,
     )
+    result["district"] = dist_key
+    result["climate_source"] = f"NASA POWER ({dist_key})"
     return finite_json_value(jsonable_encoder(result))
 
 @app.post("/api/scenarios/weather-uncertainty")

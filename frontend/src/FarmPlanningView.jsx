@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { SixSeasonRecommendationView } from './SixSeasonRecommendationView.jsx';
 import { AdaptiveReplanningView } from './AdaptiveReplanningView.jsx';
 import { ComparisonLabView } from './ComparisonLabView.jsx';
+import { ExperimentSimulator3DView } from './ExperimentSimulator3DView.jsx';
 import { formatNumber } from './marketUtils.js';
 import { useTranslation } from './i18n.js';
 import { Card, Pill, Tabs } from './ui/index.js';
@@ -30,6 +31,7 @@ export function FarmPlanningView({
     { id: 'milp', label: lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনা (MILP)' : '1. 6-Season Rotation Planner', icon: '🌾' },
     { id: 'replan', label: lang === 'bn' ? 'অভিযোজিত পুনঃপরিকল্পনা (Adaptive Replan)' : '2. Adaptive Next-Season Replan', icon: '🔄' },
     { id: 'comparison', label: lang === 'bn' ? 'তুলনামূলক ল্যাব (MILP vs RL vs Rule)' : '3. 3-Way Comparison Lab', icon: '🧪' },
+    { id: 'experiment_simulator_3d', label: lang === 'bn' ? '৩ডি ওয়ার্কবেঞ্চ' : '4. 3D Experiment Workbench', icon: '🔬' },
   ];
 
   return (
@@ -103,6 +105,15 @@ export function FarmPlanningView({
           user={user}
           lang={lang}
           onBack={() => setSubTab('milp')}
+        />
+      )}
+
+      {subTab === 'experiment_simulator_3d' && (
+        <ExperimentSimulator3DView
+          activeField={activeField}
+          lang={lang}
+          onBack={() => setSubTab('milp')}
+          onNavigateTab={(t) => setSubTab(t)}
         />
       )}
 
