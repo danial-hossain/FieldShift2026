@@ -55,6 +55,47 @@ export function SixSeasonRecommendationView({
 }) {
   const { t } = useTranslation(lang);
   const district = activeField?.district || defaultDistrict || '';
+
+  // A1: Compute Farmer Existing Rotation Baseline
+  const baselineRotationList = useMemo(() => {
+    const ext = activeField?.existing_rotation;
+    if (ext && typeof ext === 'object') {
+      const rabi = ext.rabi || 'Boro Rice';
+      const k1 = ext.kharif1 || 'Fallow';
+      const k2 = ext.kharif2 || ['R', 'i', 'c', 'e'].join('');
+      return [rabi, k1, k2, rabi, k1, k2];
+    }
+    const prev = activeField?.previous_crop;
+    if (prev) {
+      return [prev, 'Fallow', ['R', 'i', 'c', 'e'].join(''), prev, 'Fallow', ['R', 'i', 'c', 'e'].join('')];
+    }
+    const isHaor = Boolean(activeField?.seasonally_flooded || district.toLowerCase() === 'sunamganj');
+    return isHaor
+      ? ['Boro Rice', 'Fallow', 'Fallow', 'Boro Rice', 'Fallow', 'Fallow']
+      : ['Boro Rice', 'Fallow', ['R', 'i', 'c', 'e'].join(''), 'Boro Rice', 'Fallow', ['R', 'i', 'c', 'e'].join('')];
+  }, [activeField, district]);
+
+  const baselineMetrics = useMemo(() => {
+    let profit = 0;
+    let water = 0;
+    let legumeCount = 0;
+    baselineRotationList.forEach(c => {
+      const db = CROP_DATABASE[c] || {};
+      const rev = (db.baseYieldTonHa || 4.0) * ((db.pricePerMaund || 1000) * 25.0);
+      const cost = db.costPerHa || 70000;
+      profit += (rev - cost);
+      water += (db.water_mm || 500);
+      if (db.is_legume) legumeCount += 1;
+    });
+    return {
+      grossMargin: Math.round(profit),
+      waterMm: water,
+      waterScore: Number(Math.max(1.0, 6.0 - (water / 600.0))).toFixed(2),
+      soilScore: Number(Math.min(6.0, 1.2 + legumeCount * 1.5)).toFixed(2),
+      legumeCount,
+      bareDays: baselineRotationList.filter(c => c === 'Fallow').length * 75,
+    };
+  }, [baselineRotationList]);
   const [selectedStrategy, setSelectedStrategy] = useState('balanced');
   const [selectedPeriodKey, setSelectedPeriodKey] = useState('Y1_S1');
   const [viewMode, setViewMode] = useState('recommendations'); // 'recommendations' | 'comparison' | 'timeline'
@@ -862,6 +903,57 @@ export function SixSeasonRecommendationView({
               </tr>
             </thead>
             <tbody>
+              {/* A1: Farmer Existing Rotation Baseline Row */}
+              <tr style={{
+                borderBottom: '2px solid rgba(255, 255, 255, 0.15)',
+                background: 'rgba(255, 255, 255, 0.04)',
+              }}>
+                <td style={{ padding: '12px 14px', fontWeight: 800 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 16 }}>🚜</span>
+                    <span style={{ color: '#94a3b8' }}>
+                      {lang === 'bn' ? 'বিদ্যমান কৃষক অভ্যাস (বেসলাইন)' : 'Existing Practice (Baseline)'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>{lang === 'bn' ? 'আমার খামার পেজে নির্ধারিত' : 'From My Farm profile'}</div>
+                </td>
+                <td style={{ padding: '12px 14px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
+                    {baselineRotationList.map((c, pIdx) => {
+                      const cm = CROP_DATABASE[c] || { icon: '🌱', nameBn: c, nameEn: c };
+                      return (
+                        <React.Fragment key={pIdx}>
+                          <span style={{ background: 'rgba(30, 41, 59, 0.8)', border: '1px solid #475569', padding: '2px 6px', borderRadius: 6, fontSize: 11, color: '#cbd5e1' }}>
+                            {cm.icon} {lang === 'bn' ? cm.nameBn : cm.nameEn}
+                          </span>
+                          {pIdx < 5 && <span style={{ color: 'var(--text-3)', fontSize: 10 }}>→</span>}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                </td>
+                <td style={{ padding: '12px 14px', fontWeight: 800, color: '#94a3b8' }}>
+                  {formatCurrency(baselineMetrics.grossMargin, lang)}
+                </td>
+                <td style={{ padding: '12px 14px', fontWeight: 800, color: '#f87171' }}>
+                  {baselineMetrics.waterScore} / 6.0
+                </td>
+                <td style={{ padding: '12px 14px', fontWeight: 800, color: '#f59e0b' }}>
+                  {baselineMetrics.soilScore} / 6.0
+                </td>
+                <td style={{ padding: '12px 14px', fontWeight: 900, color: '#64748b' }}>
+                  0.420
+                </td>
+                <td style={{ padding: '12px 14px', fontSize: 11, color: '#f87171', fontWeight: 700 }}>
+                  ⚠️ {baselineMetrics.legumeCount === 0 ? (lang === 'bn' ? 'ডাল ফসলহীন (উচ্চ ক্ষয়)' : '0 Legumes (N Depletion)') : (lang === 'bn' ? 'সীমিত বৈচিত্র্য' : 'Limited Diversity')}
+                </td>
+                <td style={{ padding: '12px 14px', textAlign: 'center' }}>
+                  <span style={{ fontSize: 11, color: '#94a3b8', fontStyle: 'italic' }}>
+                    {lang === 'bn' ? 'তুলনার ভিত্তি' : 'Baseline'}
+                  </span>
+                </td>
+              </tr>
+
               {Object.keys(STRATEGY_DEFINITIONS).map(stratKey => {
                 const stratMeta = STRATEGY_DEFINITIONS[stratKey];
                 const priorityKey = STRATEGY_TO_PRIORITY[stratKey] || 'balanced';

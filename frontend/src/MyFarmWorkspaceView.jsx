@@ -21,6 +21,33 @@ export function MyFarmWorkspaceView({
   const { t } = useTranslation(lang);
   const [subTab, setSubTab] = useState(initialSubTab);
 
+  // A1: Existing Rotation Baseline State
+  const [existingRotation, setExistingRotation] = useState(() => {
+    if (activeField?.existing_rotation && typeof activeField.existing_rotation === 'object') {
+      return activeField.existing_rotation;
+    }
+    return {
+      rabi: activeField?.previous_crop || 'Boro Rice',
+      kharif1: 'Fallow',
+      kharif2: 'Rice',
+    };
+  });
+  const [baselineSaved, setBaselineSaved] = useState(false);
+  const handleSaveBaseline = () => {
+    if (!activeField) return;
+    const updated = {
+      ...activeField,
+      existing_rotation: existingRotation,
+      previous_crop: existingRotation.rabi,
+    };
+    if (typeof onSelectField === 'function') {
+      onSelectField(updated);
+    }
+    setBaselineSaved(true);
+    setTimeout(() => setBaselineSaved(false), 3000);
+  };
+
+
   const fallbackText = lang === 'bn' ? 'তথ্য নেই' : 'No data';
 
   const areaHa = activeField?.area_ha != null ? Number(activeField.area_ha) : null;
@@ -289,43 +316,158 @@ export function MyFarmWorkspaceView({
         </Card>
       )}
 
-      {/* SUB-TAB 5: FIELD HISTORY */}
+      {/* SUB-TAB 5: EXISTING ROTATION BASELINE & HISTORY (A1) */}
       {subTab === 'history' && (
-        <Card variant="glass">
-          <CardHeader
-            icon="📜"
-            title={lang === 'bn' ? 'ঐতিহাসিক ফসল আবর্তন ও ফলন রেকর্ড' : 'Historical Crop Rotation & Yield Records'}
-            subtitle={lang === 'bn' ? 'বিগত মৌসুমের ফসল, উৎপাদন ও মাটির পুষ্টি প্রভাব' : 'Past season crops, yield, water applied and nutrient balances'}
-          />
-          <div style={{ overflowX: 'auto', marginTop: 12 }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid var(--line)', color: 'var(--text-3)', textAlign: 'left' }}>
-                  <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'মৌসুম ও বছর' : 'Season'}</th>
-                  <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'উৎপাদিত ফসল' : 'Crop'}</th>
-                  <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'ফলন' : 'Yield'}</th>
-                  <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'সেচ' : 'Water Applied'}</th>
-                  <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'মাটির প্রভাব' : 'Soil Impact'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { season: '2025 Rabi', crop: 'Potato (গোল আলু)', yield: '24.5 t/ha (61 maund/bigha)', water: '480 mm', impact: 'High nutrient depletion' },
-                  { season: '2025 Kharif-1', crop: 'Mungbean (মুগডাল)', yield: '1.4 t/ha (3.5 maund/bigha)', water: '320 mm', impact: 'BNF +42 kg N/ha enrichment' },
-                  { season: '2025 Kharif-2', crop: 'BRRI dhan75 (আমন ধান)', yield: '4.8 t/ha (12 maund/bigha)', water: '850 mm', impact: 'Cereal residue retained' },
-                ].map((row, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid var(--line)' }}>
-                    <td style={{ padding: '12px', fontWeight: 600, color: 'var(--text)' }}>{row.season}</td>
-                    <td style={{ padding: '12px', color: 'var(--leaf)', fontWeight: 700 }}>{row.crop}</td>
-                    <td style={{ padding: '12px', color: 'var(--water)' }}>{row.yield}</td>
-                    <td style={{ padding: '12px', color: 'var(--sun)' }}>{row.water}</td>
-                    <td style={{ padding: '12px', color: 'var(--text-2)' }}>{row.impact}</td>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          {/* 1. Existing Rotation Baseline Input Form */}
+          <Card variant="glass">
+            <CardHeader
+              icon="🚜"
+              title={lang === 'bn' ? 'বিদ্যমান ফসল আবর্তন বেসলাইন (Existing Rotation Practice)' : 'Current Rotation Baseline (Farmer Practice)'}
+              subtitle={lang === 'bn' ? 'আপনার খামারে প্রচলিত ৩-মৌসুমের ফসল চক্র নির্ধারণ করুন, যা অপ্টিমাইজারের সাথে তুলনার মানদণ্ড হিসেবে ব্যবহৃত হবে।' : 'Configure your actual seasonal rotation baseline to benchmark against MILP optimization strategies.'}
+              action={
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleSaveBaseline}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                >
+                  <span>{baselineSaved ? '✓' : '💾'}</span>
+                  <span>{baselineSaved ? (lang === 'bn' ? 'সংরক্ষিত হয়েছে' : 'Baseline Saved') : (lang === 'bn' ? 'বেসলাইন সংরক্ষণ' : 'Save Baseline')}</span>
+                </Button>
+              }
+            />
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, margin: '16px 0' }}>
+              {/* Rabi Crop Selector */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--line)' }}>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--leaf)', marginBottom: 6, textTransform: 'uppercase' }}>
+                  ১. রবি মৌসুম (Rabi: Nov - Apr)
+                </label>
+                <select
+                  value={existingRotation.rabi}
+                  onChange={e => setExistingRotation({ ...existingRotation, rabi: e.target.value })}
+                  style={{ width: '100%', background: '#0b131a', color: '#fff', border: '1px solid #334155', borderRadius: 8, padding: '8px 10px', fontSize: 13, fontWeight: 600 }}
+                >
+                  <option value="Boro Rice">বোরো ধান (Boro Rice - High Water)</option>
+                  <option value="Wheat">গম (Wheat)</option>
+                  <option value="Potato">গোল আলু (Potato - Cash Crop)</option>
+                  <option value="Mustard">সরিষা (Mustard - Oilseed)</option>
+                  <option value="Lentil">মসুর ডাল (Lentil - Legume BNF)</option>
+                  <option value="Chickpea">ছোলা (Chickpea - Legume BNF)</option>
+                  <option value="Sunflower">সূর্যমুখী (Sunflower)</option>
+                  <option value="Maize">ভুট্টা (Maize)</option>
+                  <option value="Tomato">টমেটো (Tomato)</option>
+                  <option value="Fallow">পতিত জমি (Fallow / Rest)</option>
+                </select>
+              </div>
+
+              {/* Kharif-1 Crop Selector */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--line)' }}>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--water)', marginBottom: 6, textTransform: 'uppercase' }}>
+                  ২. খরিফ-১ মৌসুম (Kharif-1: Apr - Jun)
+                </label>
+                <select
+                  value={existingRotation.kharif1}
+                  onChange={e => setExistingRotation({ ...existingRotation, kharif1: e.target.value })}
+                  style={{ width: '100%', background: '#0b131a', color: '#fff', border: '1px solid #334155', borderRadius: 8, padding: '8px 10px', fontSize: 13, fontWeight: 600 }}
+                >
+                  <option value="Fallow">পতিত জমি (Fallow / Common Practice)</option>
+                  <option value="Aus Rice">আউশ ধান (Aus Rice)</option>
+                  <option value="Mungbean">মুগডাল (Mungbean - Legume BNF)</option>
+                  <option value="Sesame">তিল (Sesame)</option>
+                  <option value="Jute">পাট (Jute - Green Residue)</option>
+                  <option value="Maize">গ্রীষ্মকালীন ভুট্টা (Summer Maize)</option>
+                </select>
+              </div>
+
+              {/* Kharif-2 Crop Selector */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--line)' }}>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--sun)', marginBottom: 6, textTransform: 'uppercase' }}>
+                  ৩. খরিফ-২ মৌসুম (Kharif-2: Jul - Oct)
+                </label>
+                <select
+                  value={existingRotation.kharif2}
+                  onChange={e => setExistingRotation({ ...existingRotation, kharif2: e.target.value })}
+                  style={{ width: '100%', background: '#0b131a', color: '#fff', border: '1px solid #334155', borderRadius: 8, padding: '8px 10px', fontSize: 13, fontWeight: 600 }}
+                >
+                  <option value="Rice">রোপা আমন ধান (T.Aman Rice - Monsoon)</option>
+                  <option value="Fallow">পতিত জমি (Fallow - Waterlogged Basin)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Instant Baseline Agronomic Diagnostics */}
+            <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: 10, padding: '14px 18px', marginTop: 10 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--water)', marginBottom: 8 }}>
+                🔬 {lang === 'bn' ? 'বিদ্যমান ফসল চক্রের কৃষি-পরিবেশগত মূল্যায়ন:' : 'Baseline Agro-Ecological Diagnostics:'}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, fontSize: 12.5 }}>
+                <div>
+                  <span style={{ color: 'var(--text-3)' }}>{lang === 'bn' ? 'বার্ষিক আনুমানিক লাভ:' : 'Est. Annual Net Margin:'}</span>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--leaf)', marginTop: 2 }}>
+                    {existingRotation.rabi === 'Potato' ? '৳ ২,৪০,০০০ / হেক্টর' : existingRotation.rabi === 'Boro Rice' ? '৳ ১,২০,০০০ / হেক্টর' : '৳ ১,৬৫,০০০ / হেক্টর'}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-3)' }}>{lang === 'bn' ? 'ভূগর্ভস্থ সেচ চাহিদা:' : 'Irrigation Water Load:'}</span>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: existingRotation.rabi === 'Boro Rice' ? '#f87171' : 'var(--water)', marginTop: 2 }}>
+                    {existingRotation.rabi === 'Boro Rice' ? '১,২০০ মিমি (উচ্চ চাপ)' : existingRotation.rabi === 'Potato' ? '৪৮০ মিমি' : '৩৫০ মিমি (সাশ্রয়ী)'}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-3)' }}>{lang === 'bn' ? 'ডাল ফসল / নাইট্রোজেন:' : 'Legume BNF Balance:'}</span>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: (existingRotation.rabi === 'Lentil' || existingRotation.rabi === 'Chickpea' || existingRotation.kharif1 === 'Mungbean') ? 'var(--leaf)' : '#f59e0b', marginTop: 2 }}>
+                    {(existingRotation.rabi === 'Lentil' || existingRotation.rabi === 'Chickpea' || existingRotation.kharif1 === 'Mungbean') ? '+৪২ কেজি N/হেক্টর' : '০ কেজি (নাইট্রোজেন ক্ষয়)'}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-3)' }}>{lang === 'bn' ? 'নগ্ন মাটি অনাবৃত দিন:' : 'Bare Soil Exposure:'}</span>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: existingRotation.kharif1 === 'Fallow' ? '#f87171' : 'var(--leaf)', marginTop: 2 }}>
+                    {existingRotation.kharif1 === 'Fallow' ? '৭৫ দিন (উচ্চ ক্ষয় ঝুঁকি)' : '২৫ দিন (কভার শস্য রক্ষিত)'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* 2. Historical Past Yield Records */}
+          <Card variant="glass">
+            <CardHeader
+              icon="📜"
+              title={lang === 'bn' ? 'ঐতিহাসিক ফলন ও সেচ লগ' : 'Historical Past Yield & Irrigation Log'}
+              subtitle={lang === 'bn' ? 'বিগত মৌসুমসমূহের নথিভুক্ত ফলন ও মাটির পুষ্টি উপাত্ত' : 'Archived seasonal yield logs and soil nutrient balance'}
+            />
+            <div style={{ overflowX: 'auto', marginTop: 12 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--line)', color: 'var(--text-3)', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'মৌসুম ও বছর' : 'Season'}</th>
+                    <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'উৎপাদিত ফসল' : 'Crop'}</th>
+                    <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'ফলন' : 'Yield'}</th>
+                    <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'সেচ' : 'Water Applied'}</th>
+                    <th style={{ padding: '10px 12px' }}>{lang === 'bn' ? 'মাটির প্রভাব' : 'Soil Impact'}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+                </thead>
+                <tbody>
+                  {[
+                    { season: '2025 Rabi', crop: 'Potato (গোল আলু)', yield: '24.5 t/ha (61 maund/bigha)', water: '480 mm', impact: 'High nutrient depletion' },
+                    { season: '2025 Kharif-1', crop: 'Mungbean (মুগডাল)', yield: '1.4 t/ha (3.5 maund/bigha)', water: '320 mm', impact: 'BNF +42 kg N/ha enrichment' },
+                    { season: '2025 Kharif-2', crop: 'BRRI dhan75 (আমন ধান)', yield: '4.8 t/ha (12 maund/bigha)', water: '850 mm', impact: 'Cereal residue retained' },
+                  ].map((row, idx) => (
+                    <tr key={idx} style={{ borderBottom: '1px solid var(--line)' }}>
+                      <td style={{ padding: '12px', fontWeight: 600, color: 'var(--text)' }}>{row.season}</td>
+                      <td style={{ padding: '12px', color: 'var(--leaf)', fontWeight: 700 }}>{row.crop}</td>
+                      <td style={{ padding: '12px', color: 'var(--water)' }}>{row.yield}</td>
+                      <td style={{ padding: '12px', color: 'var(--sun)' }}>{row.water}</td>
+                      <td style={{ padding: '12px', color: 'var(--text-2)' }}>{row.impact}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
       )}
 
     </div>
