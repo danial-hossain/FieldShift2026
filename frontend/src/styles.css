@@ -15006,3 +15006,17 @@ select,
     scroll-snap-align: start !important;
   }
 }
+
+
+/* === D1: Demo Recording Mode (?demo=1) === */
+[data-demo-mode="true"] * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+[data-demo-mode="true"] .research-provenance-panel,
+[data-demo-mode="true"] .dev-debug-panel {
+  display: none !important;
+}

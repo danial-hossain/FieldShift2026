@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleFieldMapPicker } from './GoogleFieldMapPicker.jsx';
 import { GoogleFieldMapThumbnail } from './GoogleFieldMapThumbnail.jsx';
@@ -741,13 +741,63 @@ export function App() {
     source_label: 'Offline Research Benchmark'
   }), [lang]);
 
+  // D1: Demo Recording Mode (?demo=1)
+  const [demoRecordingMode, setDemoRecordingMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const sp = new URLSearchParams(window.location.search);
+      return sp.get('demo') === '1' || sp.get('demo') === 'true';
+    }
+    return false;
+  });
+
+  const toggleDemoRecordingMode = useCallback(() => {
+    setDemoRecordingMode(prev => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        if (next) {
+          url.searchParams.set('demo', '1');
+        } else {
+          url.searchParams.delete('demo');
+        }
+        window.history.replaceState({}, '', url.toString());
+      }
+      return next;
+    });
+  }, []);
+
+  const rajshahiDemoField = useMemo(() => ({
+    id: 'rajshahi_test',
+    is_demo: false,
+    name: lang === 'bn' ? 'রাজশাহী খামার (বরেন্দ্র)' : 'Rajshahi Field (Barind)',
+    full_name: lang === 'bn' ? 'রাজশাহী বরেন্দ্র বহুমুখী কৃষি প্লট (১ হেক্টর)' : 'Rajshahi Barind Agricultural Plot (1.0 ha)',
+    latitude: 24.47,
+    longitude: 88.33,
+    district: 'rajshahi',
+    division: 'Rajshahi',
+    area_ha: 1.0,
+    soil_texture: 'sandy_loam',
+    soil_ph: 7.2,
+    organic_matter: 1.4,
+    irrigation_capacity_mm: 180,
+    crop: 'rice',
+    previous_crop: 'Boro Rice',
+    previous_crop_year: 2024,
+    existing_rotation: { rabi: 'Boro Rice', kharif1: 'Fallow', kharif2: 'Aman Rice' },
+    source_label: 'NASA Space Apps 2026 Test Field'
+  }), [lang]);
+
   // Registered fields always resolve by the shared selectedFieldId.
   // Explicit demo option maps consistently to demoField across all views.
   const activeField = useMemo(() => {
+    if (demoRecordingMode) {
+      const match = userFields.find(f => f.district?.toLowerCase() === 'rajshahi' || f.name?.toLowerCase().includes('rajshahi'));
+      return match || rajshahiDemoField;
+    }
     if (selectedFieldId === 'demo') return demoField;
     if (selectedFieldId == null) return null;
     return userFields.find(field => String(field.id) === String(selectedFieldId)) || null;
-  }, [userFields, selectedFieldId, demoField]);
+  }, [userFields, selectedFieldId, demoField, demoRecordingMode, rajshahiDemoField]);
 
   const workflowPayload = (controls = form, field = activeField) => {
     const payload = {
@@ -1708,7 +1758,7 @@ export function App() {
   const currentMode = isResearchMode ? 'research' : 'farmer';
 
   return (
-    <div className="app-shell" data-mode={currentMode}>
+    <div className="app-shell" data-mode={currentMode} data-demo-mode={demoRecordingMode ? "true" : "false"}>
       {/* Fixed NASA VIIRS Background Layer */}
       <div className="nasa-bg-layer" aria-hidden="true">
         <div className="nasa-bg-image" />
@@ -1977,6 +2027,33 @@ export function App() {
                 NASA 🛰️
               </span>
             </div>
+
+            {/* D1: Demo Recording Mode Toggle */}
+            <button
+              type="button"
+              className="top-bar-icon-btn demo-toggle-btn"
+              title={demoRecordingMode ? 'Disable Demo Recording Mode' : 'Enable Demo Recording Mode (?demo=1)'}
+              onClick={toggleDemoRecordingMode}
+              aria-label="Toggle demo recording mode"
+              style={{
+                width: 'auto',
+                padding: '0 12px',
+                height: 36,
+                fontWeight: 700,
+                fontSize: 12.5,
+                background: demoRecordingMode ? 'rgba(239, 68, 68, 0.2)' : 'var(--bg-card-subtle)',
+                color: demoRecordingMode ? '#ef4444' : 'var(--text-muted)',
+                border: demoRecordingMode ? '1px solid #ef4444' : '1px solid var(--border-medium)',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer'
+              }}
+            >
+              <span style={{ fontSize: 14 }}>🎬</span>
+              <span>{lang === 'bn' ? (demoRecordingMode ? 'রেকর্ডিং মোড চালু' : 'ডেমো রেকর্ডিং') : (demoRecordingMode ? 'Recording: On' : 'Demo Mode')}</span>
+            </button>
 
             {/* Header Language Switcher (Bangla / English) */}
             <button

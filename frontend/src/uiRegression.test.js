@@ -392,3 +392,19 @@ test('U5: Unbacked marketing and status buzzwords removed and aligned with real 
   const mainSrc = fs.readFileSync(path.join(__dirname, 'main.jsx'), 'utf-8');
   assert.ok(!mainSrc.includes('<span>Drainage</span>\r\n                              <strong>100%</strong>') && !mainSrc.includes('<span>Drainage</span>\n                              <strong>100%</strong>'), 'main.jsx must not claim unbacked 100% Drainage');
 });
+
+test('D1: Demo recording mode toggle (?demo=1) preselects Rajshahi field and disables animations', () => {
+  const mainSrc = fs.readFileSync(path.join(__dirname, 'main.jsx'), 'utf-8');
+  assert.ok(mainSrc.includes('demoRecordingMode'), 'main.jsx must define demoRecordingMode state');
+  assert.ok(mainSrc.includes("sp.get('demo') === '1'"), 'main.jsx must parse ?demo=1 URL parameter');
+  assert.ok(mainSrc.includes('rajshahiDemoField'), 'main.jsx must define rajshahiDemoField');
+  assert.ok(mainSrc.includes("district: 'rajshahi'"), 'rajshahiDemoField must have district rajshahi');
+  assert.ok(mainSrc.includes("rabi: 'Boro Rice', kharif1: 'Fallow', kharif2: 'Aman Rice'"), 'rajshahiDemoField must preselect Boro-Fallow-Aman');
+  assert.ok(mainSrc.includes('demo-toggle-btn'), 'main.jsx must render demo-toggle-btn');
+  assert.ok(mainSrc.includes('data-demo-mode'), 'main.jsx must set data-demo-mode attribute');
+
+  const cssSrc = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+  assert.ok(cssSrc.includes('[data-demo-mode="true"] *'), 'styles.css must have animation reset for data-demo-mode');
+  assert.ok(cssSrc.includes('animation-duration: 0.001ms !important;'), 'styles.css must set 0.001ms animation duration in demo mode');
+  assert.ok(cssSrc.includes('[data-demo-mode="true"] .research-provenance-panel'), 'styles.css must hide research provenance in demo mode');
+});
