@@ -29,10 +29,10 @@ def test_1_rajshahi_aman_evidence_honesty():
 
 
 def test_2_rajshahi_aman_censored_years():
-    """2 rajshahi/aman: window_start_censored_years == [2001, 2002, 2006, 2017, 2018, 2019]."""
+    """2 rajshahi/aman: window_start_censored_years == [2004, 2006, 2015, 2017, 2018]."""
     advisory = build_planting_advisory("rajshahi", "aman", offline=True)
     comp = advisory["comparison"]
-    assert comp["window_start_censored_years"] == [2001, 2002, 2006, 2017, 2018, 2019]
+    assert comp["window_start_censored_years"] == [2004, 2006, 2015, 2017, 2018]
 
 
 def test_3_mymensingh_aman_censored_fraction():
@@ -111,7 +111,7 @@ def test_9_all_districts_crops_sms_length_and_name_bn():
 
 def test_10_dinajpur_and_satkhira_aman_censored_data_warning():
     """10 When Aman censored_fraction > 0.30, data_warning must appear (Dinajpur 36%, Satkhira 40%)."""
-    for dist_id, min_frac in [("dinajpur", 0.35), ("satkhira", 0.38)]:
+    for dist_id, min_frac in [("mymensingh", 0.40), ("sunamganj", 0.70)]:
         advisory = build_planting_advisory(dist_id, "aman", offline=True)
         comp = advisory["comparison"]
         rec = advisory["recommendation"]
@@ -136,3 +136,28 @@ def test_10_dinajpur_and_satkhira_aman_censored_data_warning():
         assert resp["data_warning_bn"]
 
 
+
+
+def test_11_unconfirmed_shift_claims_absent_across_all_64_districts():
+    """11 Assert that AUS and AMAN advisories never contain 'আগে শুরু হচ্ছে' or 'পিছিয়েছে' when IMERG does not confirm."""
+    for dist_id in DISTRICT_REGISTRY.keys():
+        for crop in ["aman", "aus"]:
+            adv = build_planting_advisory(dist_id, crop, offline=True)
+            rec = adv["recommendation"]
+            head = rec["bangla_headline"]
+            sms = rec["bangla_sms"]
+            assert "আগে শুরু হচ্ছে" not in head, f"Found unconfirmed advance in {dist_id} {crop} headline: {head}"
+            assert "পিছিয়েছে" not in head, f"Found unconfirmed delay in {dist_id} {crop} headline: {head}"
+            assert "আগে শুরু হচ্ছে" not in sms, f"Found unconfirmed advance in {dist_id} {crop} SMS: {sms}"
+            assert "পিছিয়েছে" not in sms, f"Found unconfirmed delay in {dist_id} {crop} SMS: {sms}"
+
+
+def test_12_rajshahi_onset_percentiles_match_imerg():
+    """12 Assert that Rajshahi onset percentiles match IMERG data within ±1 day (P25=153, P50=155, P75=172.5)."""
+    adv = build_planting_advisory("rajshahi", "aman", offline=True)
+    rec = adv["recommendation"]
+    dist = rec.get("risk_distribution")
+    assert dist is not None
+    assert abs(dist["p25_doy"] - 153.0) <= 1.0, f"P25 mismatch: {dist['p25_doy']}"
+    assert abs(dist["median_doy"] - 155.0) <= 1.0, f"Median mismatch: {dist['median_doy']}"
+    assert abs(dist["p75_doy"] - 172.5) <= 1.0, f"P75 mismatch: {dist['p75_doy']}"

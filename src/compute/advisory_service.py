@@ -33,6 +33,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = PROJECT_ROOT / "data" / "nasa_power" / "advisory_cache"
 FIXTURES_DIR = PROJECT_ROOT / "data" / "nasa_power" / "fixtures"
 
+_CLIMATE_DF_CACHE: Dict[str, Tuple[pd.DataFrame, str]] = {}
+
 # Authoritative Bangladesh Agricultural District Registry (64 districts)
 def _init_district_registry() -> Dict[str, Dict[str, Any]]:
     registry: Dict[str, Dict[str, Any]] = {
@@ -204,6 +206,10 @@ def load_district_climate_data(
             + ", ".join(DISTRICT_REGISTRY.keys())
         )
 
+    if key in _CLIMATE_DF_CACHE:
+        cached_df, cached_mode = _CLIMATE_DF_CACHE[key]
+        return cached_df.copy(), cached_mode
+
     district_info = DISTRICT_REGISTRY[key]
     cache_file = CACHE_DIR / f"nasa_power_{key}_2001_2025.csv"
     fixture_file = FIXTURES_DIR / f"nasa_power_{key}_fixture.csv"
@@ -211,72 +217,96 @@ def load_district_climate_data(
 
     is_forced_offline = bool(offline or os.getenv("OFFLINE") == "1")
 
+    df = None
+    data_mode = "cache"
+
     # 1. Offline Mode: Strictly use local files; never hit network
     if is_forced_offline:
         if cache_file.exists():
             df = pd.read_csv(cache_file)
-            return df, "cache"
+            data_mode = "cache"
         elif fixture_file.exists():
             df = pd.read_csv(fixture_file)
-            return df, "fixture"
+            data_mode = "fixture"
         elif fallback_fixture.exists():
             df = pd.read_csv(fallback_fixture)
-            return df, "fixture"
+            data_mode = "fixture"
         else:
             raise FileNotFoundError(
                 f"No offline cache or fixture available for district '{key}'."
             )
-
-    # 2. Online Mode: Prefer local cache if present; otherwise fetch and cache
-    if cache_file.exists():
+    elif cache_file.exists():
         df = pd.read_csv(cache_file)
-        return df, "cache"
+        data_mode = "cache"
     elif fixture_file.exists():
         df = pd.read_csv(fixture_file)
-        return df, "fixture"
+        data_mode = "fixture"
+    else:
+        # 3. Live acquisition via NASA POWER Daily Point API
+        try:
+            import requests
+            url = "https://power.larc.nasa.gov/api/temporal/daily/point"
+            params = {
+                "parameters": "PRECTOTCORR,T2M,T2M_MAX,T2M_MIN,RH2M,WS2M,ALLSKY_SFC_SW_DWN",
+                "community": "AG",
+                "longitude": float(district_info["longitude"]),
+                "latitude": float(district_info["latitude"]),
+                "start": "20010101",
+                "end": "20251231",
+                "format": "JSON",
+            }
+            resp = requests.get(url, params=params, timeout=45)
+            resp.raise_for_status()
+            data = resp.json()["properties"]["parameter"]
 
-    # 3. Live acquisition via NASA POWER Daily Point API
+            dates = list(data["PRECTOTCORR"].keys())
+            df = pd.DataFrame({
+                "date": [f"{d[:4]}-{d[4:6]}-{d[6:]}" for d in dates],
+                "rainfall": [data["PRECTOTCORR"].get(d, -999) for d in dates],
+                "temperature": [data["T2M"].get(d, -999) for d in dates],
+                "temp_max": [data["T2M_MAX"].get(d, -999) for d in dates],
+                "temp_min": [data["T2M_MIN"].get(d, -999) for d in dates],
+                "humidity": [data["RH2M"].get(d, -999) for d in dates],
+                "wind_speed": [data["WS2M"].get(d, -999) for d in dates],
+                "solar_radiation": [data["ALLSKY_SFC_SW_DWN"].get(d, -999) for d in dates],
+            })
+
+            CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            df.to_csv(cache_file, index=False)
+            data_mode = "live_acquired_cache"
+
+        except Exception:
+            if fixture_file.exists():
+                df = pd.read_csv(fixture_file)
+                data_mode = "fixture"
+            elif fallback_fixture.exists():
+                df = pd.read_csv(fallback_fixture)
+                data_mode = "fixture"
+            else:
+                raise RuntimeError(
+                    f"Could not acquire NASA POWER telemetry for '{key}' and no local fixture exists."
+                )
+
+    # Standardize column naming if 'PRECTOTCORR' present
+    if "PRECTOTCORR" in df.columns and "rainfall" not in df.columns:
+        df["rainfall"] = df["PRECTOTCORR"]
+
+    # Overlay NASA GPM IMERG Final Daily v07 as primary rainfall source
     try:
-        import requests
-        url = "https://power.larc.nasa.gov/api/temporal/daily/point"
-        params = {
-            "parameters": "PRECTOTCORR,T2M,T2M_MAX,T2M_MIN,RH2M,WS2M,ALLSKY_SFC_SW_DWN",
-            "community": "AG",
-            "longitude": float(district_info["longitude"]),
-            "latitude": float(district_info["latitude"]),
-            "start": "20010101",
-            "end": "20251231",
-            "format": "JSON",
-        }
-        resp = requests.get(url, params=params, timeout=45)
-        resp.raise_for_status()
-        data = resp.json()["properties"]["parameter"]
-
-        dates = list(data["PRECTOTCORR"].keys())
-        df = pd.DataFrame({
-            "date": [f"{d[:4]}-{d[4:6]}-{d[6:]}" for d in dates],
-            "rainfall": [data["PRECTOTCORR"].get(d, -999) for d in dates],
-            "temperature": [data["T2M"].get(d, -999) for d in dates],
-            "temp_max": [data["T2M_MAX"].get(d, -999) for d in dates],
-            "temp_min": [data["T2M_MIN"].get(d, -999) for d in dates],
-            "humidity": [data["RH2M"].get(d, -999) for d in dates],
-            "wind_speed": [data["WS2M"].get(d, -999) for d in dates],
-            "solar_radiation": [data["ALLSKY_SFC_SW_DWN"].get(d, -999) for d in dates],
-        })
-
-        CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        df.to_csv(cache_file, index=False)
-        return df, "live_acquired_cache"
-
+        from src.compute.imerg import get_district_imerg_series
+        imerg_df = get_district_imerg_series(key)
+        if imerg_df is not None and not imerg_df.empty:
+            imerg_map = dict(zip(imerg_df["date"], imerg_df["rainfall"]))
+            df["rainfall_power"] = df["rainfall"]
+            df["rainfall"] = df["date"].map(imerg_map).fillna(df["rainfall"])
+            df.attrs["rain_source"] = "NASA GPM IMERG Final Daily v07 (0.1°)"
+        else:
+            df.attrs["rain_source"] = "POWER reanalysis rain (not satellite-confirmed)"
     except Exception:
-        # If live acquisition fails, fall back to fixture if possible
-        if fixture_file.exists():
-            return pd.read_csv(fixture_file), "fixture"
-        elif fallback_fixture.exists():
-            return pd.read_csv(fallback_fixture), "fixture"
-        raise RuntimeError(
-            f"Could not acquire NASA POWER telemetry for '{key}' and no local fixture exists."
-        )
+        df.attrs["rain_source"] = "POWER reanalysis rain (not satellite-confirmed)"
+
+    _CLIMATE_DF_CACHE[key] = (df, data_mode)
+    return df.copy(), data_mode
 
 
 def build_planting_advisory(
@@ -455,6 +485,53 @@ def build_planting_advisory(
     # 4. Sensitivity sweeps (threshold +/- 5 mm)
     sensitivity = run_sensitivity_analysis(daily_df, config, step_mm=5.0)
 
+    # Risk context for Aman and Aus from 24-year IMERG satellite observations
+    rain_source = getattr(daily_df, "attrs", {}).get("rain_source", "NASA GPM IMERG Final Daily v07 (0.1°)")
+    if crop_key == "aman":
+        valid_onsets = [x for x in series_results["full_series"] if x.get("doy") is not None and 2001 <= x.get("year", 0) <= 2024]
+        doys = [x["doy"] for x in valid_onsets]
+        p25 = float(pd.Series(doys).quantile(0.25)) if doys else 153.0
+        p50 = float(pd.Series(doys).quantile(0.50)) if doys else 155.0
+        p75 = float(pd.Series(doys).quantile(0.75)) if doys else 172.5
+        after_20jun = [x for x in valid_onsets if str(x.get("onset_date", ""))[5:] > "06-20"]
+        after_30jun = [x for x in valid_onsets if str(x.get("onset_date", ""))[5:] > "06-30"]
+        prob_late_20 = len(after_20jun) / len(valid_onsets) if valid_onsets else 0.0
+        prob_late_30 = len(after_30jun) / len(valid_onsets) if valid_onsets else 0.0
+        k_4 = max(1, int(round(prob_late_20 * 4))) if prob_late_20 >= 0.12 else 0
+
+        risk_context = {
+            "crop": "aman",
+            "p25_doy": p25,
+            "median_doy": p50,
+            "p75_doy": p75,
+            "prob_late_20jun": prob_late_20,
+            "prob_late_30jun": prob_late_30,
+            "k_years_in_4": k_4,
+            "rain_source": rain_source,
+        }
+    elif crop_key == "aus":
+        sub_df = daily_df[(daily_df["date"] >= "2001-01-01") & (daily_df["date"] <= "2024-12-31")].copy()
+        sub_df["date_dt"] = pd.to_datetime(sub_df["date"])
+        sub_df["year"] = sub_df["date_dt"].dt.year
+        sub_df["month"] = sub_df["date_dt"].dt.month
+
+        mam = sub_df[sub_df["month"].isin([3, 4, 5])].groupby("year")["rainfall"].sum()
+        mam_med = float(mam.median()) if not mam.empty else 250.0
+
+        apr = sub_df[sub_df["month"] == 4].groupby("year")["rainfall"].sum()
+        dry_apr_count = int((apr < 50.0).sum()) if not apr.empty else 0
+        dry_apr_pct = (dry_apr_count / len(apr) * 100.0) if not apr.empty else 0.0
+
+        risk_context = {
+            "crop": "aus",
+            "mam_median_mm": mam_med,
+            "dry_april_pct": dry_apr_pct,
+            "dry_april_count": dry_apr_count,
+            "rain_source": rain_source,
+        }
+    else:
+        risk_context = None
+
     # 5. Agronomically defensible recommendations & SMS
     recommendation = generate_recommendation(
         district=district_meta["name_en"],
@@ -464,14 +541,17 @@ def build_planting_advisory(
         gdd_context=gdd_context,
         lang=lang,
         wet_season_comparison=wet_comparison,
+        risk_context=risk_context,
     )
 
     # 6. Provenance and traceability metadata
     provenance = {
-        "dataset_name": "NASA Prediction Of Worldwide Energy Resources (POWER) Daily Point API",
+        "dataset_name": "NASA POWER Daily Point & NASA GPM IMERG Final Daily v07",
+        "primary_rainfall_source": rain_source,
+        "satellite_precipitation_resolution": "0.1° (~10 km) NASA GPM IMERG v07",
         "official_url": "https://power.larc.nasa.gov/api/temporal/daily/point",
         "documentation_url": "https://power.larc.nasa.gov/docs/services/api/temporal/daily/",
-        "spatial_resolution": "0.5° x 0.5° latitude/longitude (~50 km)",
+        "spatial_resolution": "0.1° x 0.1° (IMERG rain) / 0.5° x 0.5° (POWER thermal/solar)",
         "assimilation_source": "NASA Goddard Earth Observing System (GEOS-5.12.4 / MERRA-2)",
         "temporal_coverage": "2001-01-01 to 2025-12-31 (25 continuous years)",
         "parameters": [

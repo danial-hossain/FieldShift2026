@@ -83,6 +83,7 @@ import { SyntheticDataLabView } from './SyntheticDataLabView.jsx';
 import { SensitivityAnalysisView } from './SensitivityAnalysisView.jsx';
 import { MultiFieldExperimentView } from './MultiFieldExperimentView.jsx';
 import { AdaptiveRlExperiment } from './AdaptiveRlExperiment.jsx';
+import { OnsetScienceView } from './OnsetScienceView.jsx';
 import { formatNumber as defaultFormatNumber } from './marketUtils.js';
 import { request as defaultRequest } from './apiClient.js';
 
@@ -133,6 +134,7 @@ export function ResearchWorkspaceView({
       title: lang === 'bn' ? 'ক. পরিকল্পনা ও অপ্টিমাইজেশন' : 'A. Planning & Optimization',
       icon: '🌾',
       items: [
+        { id: 'onset_science', label: lang === 'bn' ? 'অনসেট বিজ্ঞান (৩৯টি ইউনিক সেল)' : 'Onset Science (39 Unique Cells)', icon: '🔬', badge: 'NASA DUAL' },
         { id: 'six_seasons_milp', label: lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনা ও রোটেশন (MILP)' : '6-Season Crop Recommendation (MILP)', icon: '🌾', badge: 'MILP' },
         { id: 'comparison_lab', label: lang === 'bn' ? 'তুলনামূলক ল্যাব (MILP বনাম RL বনাম Rule)' : 'Comparison Lab (MILP vs RL vs Rule)', icon: '🧪', badge: '3-WAY' },
         { id: 'replan', label: lang === 'bn' ? 'পরবর্তী মৌসুমের অভিযোজিত পুনঃপরিকল্পনা' : 'Adaptive Next-Season Replanning', icon: '🔄', badge: 'ADAPTIVE' }
@@ -546,6 +548,14 @@ export function ResearchWorkspaceView({
               onBack={() => setSubTab('overview')}
               onNavigateTab={(tab) => setSubTab(tab)}
               lang={lang}
+            />
+          )}
+
+          {subTab === 'onset_science' && (
+            <OnsetScienceView
+              lang={lang}
+              request={request}
+              onBack={() => setSubTab('overview')}
             />
           )}
 

@@ -597,6 +597,33 @@ def run_sensitivity_analysis(
     return results
 
 
+BN_MONTHS = {
+    1: "জানুয়ারি", 2: "ফেব্রুয়ারি", 3: "মার্চ", 4: "এপ্রিল",
+    5: "মে", 6: "জুন", 7: "জুলাই", 8: "আগস্ট",
+    9: "সেপ্টেম্বর", 10: "অক্টোবর", 11: "নভেম্বর", 12: "ডিসেম্বর"
+}
+EN_MONTHS = {
+    1: "January", 2: "February", 3: "March", 4: "April",
+    5: "May", 6: "June", 7: "July", 8: "August",
+    9: "September", 10: "October", 11: "November", 12: "December"
+}
+
+
+def to_bn_digits(n: Any) -> str:
+    bn_map = {"0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯", ".": "."}
+    return "".join(bn_map.get(c, c) for c in str(n))
+
+
+def doy_to_day_month_bn(doy: float, year: int = 2025) -> str:
+    dt = pd.Timestamp(year, 1, 1) + pd.Timedelta(days=int(round(doy)) - 1)
+    return f"{to_bn_digits(dt.day)} {BN_MONTHS[dt.month]}"
+
+
+def doy_to_day_month_en(doy: float, year: int = 2025) -> str:
+    dt = pd.Timestamp(year, 1, 1) + pd.Timedelta(days=int(round(doy)) - 1)
+    return f"{dt.day:02d} {EN_MONTHS[dt.month]}"
+
+
 def generate_recommendation(
     district: str,
     crop: str,
@@ -605,6 +632,7 @@ def generate_recommendation(
     gdd_context: Dict[str, Any],
     lang: str = "bn",
     wet_season_comparison: Optional[Dict[str, Any]] = None,
+    risk_context: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Generate agronomically defensible recommendations and an SMS summary (< 160 chars).
 
@@ -663,7 +691,7 @@ def generate_recommendation(
     crop_en = crop_registry.get(crop_key, {}).get("name_en", crop.capitalize())
 
     # Recommended Calendar Windows: apply buffer ONLY in case (a)
-    if is_significant and shift >= 3.0 and not is_censored:
+    if is_significant and shift >= 3.0 and not is_censored and risk_context is None:
         buffer_days = min(int(round(shift)), 12)
         sow_start_doy = 166 + buffer_days  # June 15 + buffer
         sow_end_doy = 181 + buffer_days    # June 30 + buffer
@@ -680,75 +708,133 @@ def generate_recommendation(
     sowing_window_en = f"{doy_to_en_date(2025, sow_start_doy)} - {doy_to_en_date(2025, sow_end_doy)}"
     transplant_window_en = f"{doy_to_en_date(2025, trans_start_doy)} - {doy_to_en_date(2025, trans_end_doy)}"
 
-    # Evaluate whether wet season onset is significantly earlier
-    wet_shift = wet_season_comparison.get("shift_days_median") if wet_season_comparison else None
-    wet_p = wet_season_comparison.get("p_value") if wet_season_comparison else None
-    wet_q = wet_season_comparison.get("q_value_bh", wet_p) if wet_season_comparison else None
-    wet_is_sig_earlier = bool(wet_q is not None and wet_q < 0.05 and wet_shift is not None and wet_shift <= -3.0)
-    aman_not_sig = (not is_significant or shift > -3.0 or is_censored)
+    # Priority 1: Honest Risk-Based Recommendation from 24-year IMERG observations
+    if risk_context and crop_key == "aman":
+        evidence_level = "not_significant"
+        p25_doy = risk_context.get("p25_doy", 153.0)
+        p50_doy = risk_context.get("median_doy", 155.0)
+        p75_doy = risk_context.get("p75_doy", 172.5)
+        prob_late_20 = risk_context.get("prob_late_20jun", 0.0)
+        prob_late_30 = risk_context.get("prob_late_30jun", 0.0)
+        p25_bn = doy_to_day_month_bn(p25_doy)
+        p75_bn = doy_to_day_month_bn(p75_doy)
+        p25_en = doy_to_day_month_en(p25_doy)
+        p75_en = doy_to_day_month_en(p75_doy)
+        k_4 = max(1, int(round(prob_late_20 * 4))) if prob_late_20 >= 0.12 else 0
+        k_bn = to_bn_digits(k_4)
 
-    # Headline and SMS formulations
-    if status == "insufficient_evidence":
-        evidence_level = "insufficient"
-        headline_bn = f"{district_bn} জেলায় পর্যাপ্ত পর্যবেক্ষণ উপাত্ত না থাকায় প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
-        headline_en = f"Insufficient continuous observation data for {district_en}; follow standard BRRI crop calendar."
-        sms_bn = f"{district_bn} {crop_bn}: বীজতলা জুনের শেষ সপ্তাহে ফেলুন। পর্যাপ্ত বৃষ্টি না হলে সম্পূরক সেচ দিন। বিআরআরআই পরামর্শ।"
-    elif is_significant and shift >= 3.0 and not is_censored:
-        evidence_level = "significant"
-        delay_int = int(round(shift))
+        if k_4 > 0:
+            late_clause_bn = f"প্রতি ৪ বছরে প্রায় {k_bn} বছর ২০ জুনের পরে শুরু হয়"
+            late_clause_en = f"about {k_4} in 4 years starts after 20 June"
+            late_sms_bn = f"প্রতি ৪ বছরে প্রায় {k_bn} বছর দেরিতে আসে"
+        else:
+            late_clause_bn = "২০ জুনের পরে বর্ষা শুরু হওয়ার ঘটনা বিরল"
+            late_clause_en = "monsoon onset past 20 June is rare"
+            late_sms_bn = "দেরিতে আসার ঝুঁকি কম"
+
         headline_bn = (
-            f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত শুরুর মধ্যমা {delay_int} দিন পিছিয়েছে; "
-            f"বীজতলা বপন ৭-১০ দিন পিছিয়ে স্বল্পমেয়াদী ব্রি ধান-৭৫ চাষের পরামর্শ দেওয়া হচ্ছে।"
+            f"গত ২৪ বছরে বর্ষা শুরুর তারিখ সাধারণত {p25_bn}–{p75_bn} এর মধ্যে; "
+            f"{late_clause_bn}। তাই দুই কিস্তিতে বীজতলা ফেলুন: প্রথম কিস্তি ২০-২৫ মে, দ্বিতীয় কিস্তি ৫-১০ জুন।"
         )
         headline_en = (
-            f"NASA observations indicate a {delay_int}-day delay in median rainfall onset for {district_en}. "
-            f"Shift nursery sowing by 7–10 days and cultivate short-duration BRRI dhan75."
+            f"Over the last 24 years, monsoon onset typically begins between {p25_en} and {p75_en}; "
+            f"{late_clause_en}. Sow nursery seedbeds in two batches: May 20-25 and June 5-10."
+        )
+
+        if prob_late_30 > 0.25:
+            headline_bn += " দেরিতে বর্ষা শুরুর ঝুঁকি থাকায় স্বল্পমেয়াদী জাত (ব্রি ধান৭৫ / ব্রি ধান৮৭) নির্বাচন করুন।"
+            headline_en += " Due to late onset risk, select short-duration varieties (BRRI dhan75 / BRRI dhan87)."
+            sms_bn = f"{district_bn} আমন: বর্ষা সাধারণত {p25_bn}–{p75_bn} এ শুরু। দুই কিস্তিতে বীজতলা ফেলুন (মে শেষ ও জুনের শুরুতে)। স্বল্পমেয়াদী ব্রি ধান৭৫/৮৭ লাগান।"
+        else:
+            sms_bn = f"{district_bn} আমন: বর্ষা সাধারণত {p25_bn}–{p75_bn} এ শুরু হয় ({late_sms_bn})। দুই কিস্তিতে বীজতলা ফেলুন (২০-২৫ মে ও ৫-১০ জুন)।"
+
+    elif risk_context and crop_key == "aus":
+        evidence_level = "not_significant"
+        mam_med = round(risk_context.get("mam_median_mm", 250.0), 1)
+        dry_apr_pct = round(risk_context.get("dry_april_pct", 30.0))
+        mam_med_bn = to_bn_digits(int(round(mam_med)))
+        dry_apr_pct_bn = to_bn_digits(dry_apr_pct)
+
+        headline_bn = (
+            f"{district_bn} আউশ: প্রাক-বর্ষায় (মার্চ-মে) মধ্যমা বৃষ্টিপাত {mam_med_bn} মিমি, "
+            f"তবে {dry_apr_pct_bn}% বছর এপ্রিলে বৃষ্টি ৫০ মিমির কম থাকে। "
+            f"বপনের সময় না এগিয়ে সম্পূরক সেচের প্রস্তুতি রাখুন।"
+        )
+        headline_en = (
+            f"{district_en} Aus: Median pre-monsoon (Mar-May) rainfall is {mam_med:.0f} mm, "
+            f"but April rainfall is <50 mm in {dry_apr_pct}% of years. "
+            f"Ensure supplemental irrigation readiness rather than advancing planting."
         )
         sms_bn = (
-            f"{district_bn} {crop_bn}: বৃষ্টি {delay_int} দিন দেরিতে আসছে। "
-            f"বীজতলা {doy_to_bn_date(2025, sow_start_doy)} এর পরে ফেলুন। "
-            f"ব্রি ধান৭৫ চাষ করুন ও সম্পূরক সেচ প্রস্তুত রাখুন।"
+            f"{district_bn} আউশ: প্রাক-বর্ষার বৃষ্টি {mam_med_bn} মিমি, এপ্রিলে {dry_apr_pct_bn}% বছর খরা (<৫০ মিমি) থাকে। তারিখ না পিছিয়ে সম্পূরক সেচ প্রস্তুত রাখুন।"
         )
-    elif is_significant and shift <= -3.0 and not is_censored:
-        evidence_level = "significant"
-        adv_int = abs(int(round(shift)))
-        headline_bn = f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত {adv_int} দিন এগিয়ে এসেছে; আগাম বীজতলা প্রস্তুতি নিন।"
-        headline_en = f"NASA data indicates rainfall onset advanced by {adv_int} days in {district_en}; prepare early seedbeds."
-        sms_bn = f"{district_bn} {crop_bn}: বৃষ্টি {adv_int} দিন আগে শুরু হচ্ছে। বীজতলা জুনের দ্বিতীয় সপ্তাহে ফেলুন। ব্রি ধান৪৯/৭৫ লাগান।"
-    elif wet_is_sig_earlier and aman_not_sig:
-        # Phase C3: Pre-monsoon / wet-season onset earlier, but conventional Aman onset unchanged
-        if crop_key == "aman":
-            evidence_level = "not_significant"
-            headline_bn = f"{district_bn} অঞ্চলে আমন রোপণ সময় অপরিবর্তিত (জুলাইয়ের মাঝামাঝি থেকে আগস্টের প্রথম সপ্তাহ); প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
-            headline_en = f"Aman planting window for {district_en} remains unchanged (mid-July to early August); follow standard BRRI crop calendar."
-            sms_bn = f"{district_bn} আমন: রোপণের সময় অপরিবর্তিত। বীজতলা জুনের শেষ সপ্তাহে ও রোপণ জুলাইতে করুন। বিআরআরআই নির্দেশিকা মেনে চলুন।"
-        elif crop_key == "aus":
+
+    else:
+        # Legacy / Synthetic fallback path
+        wet_shift = wet_season_comparison.get("shift_days_median") if wet_season_comparison else None
+        wet_p = wet_season_comparison.get("p_value") if wet_season_comparison else None
+        wet_q = wet_season_comparison.get("q_value_bh", wet_p) if wet_season_comparison else None
+        wet_is_sig_earlier = bool(wet_q is not None and wet_q < 0.05 and wet_shift is not None and wet_shift <= -3.0)
+        aman_not_sig = (not is_significant or shift > -3.0 or is_censored)
+
+        if status == "insufficient_evidence":
+            evidence_level = "insufficient"
+            headline_bn = f"{district_bn} জেলায় পর্যাপ্ত পর্যবেক্ষণ উপাত্ত না থাকায় প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
+            headline_en = f"Insufficient continuous observation data for {district_en}; follow standard BRRI crop calendar."
+            sms_bn = f"{district_bn} {crop_bn}: বীজতলা জুনের শেষ সপ্তাহে ফেলুন। পর্যাপ্ত বৃষ্টি না হলে সম্পূরক সেচ দিন। বিআরআরআই পরামর্শ।"
+        elif is_significant and shift >= 3.0 and not is_censored:
             evidence_level = "significant"
-            headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।"
-            headline_en = f"Pre-monsoon rains in {district_en} now start earlier: Aus planting and land preparation can advance."
-            sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।"
+            delay_int = int(round(shift))
+            headline_bn = (
+                f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত শুরুর মধ্যমা {delay_int} দিন পিছিয়েছে; "
+                f"বীজতলা বপন ৭-১০ দিন পিছিয়ে স্বল্পমেয়াদী ব্রি ধান-৭৫ চাষের পরামর্শ দেওয়া হচ্ছে।"
+            )
+            headline_en = (
+                f"NASA observations indicate a {delay_int}-day delay in median rainfall onset for {district_en}. "
+                f"Shift nursery sowing by 7–10 days and cultivate short-duration BRRI dhan75."
+            )
+            sms_bn = (
+                f"{district_bn} {crop_bn}: বৃষ্টি {delay_int} দিন দেরিতে আসছে। "
+                f"বীজতলা {doy_to_bn_date(2025, sow_start_doy)} এর পরে ফেলুন। "
+                f"ব্রি ধান৭৫ চাষ করুন ও সম্পূরক সেচ প্রস্তুত রাখুন।"
+            )
+        elif is_significant and shift <= -3.0 and not is_censored:
+            evidence_level = "significant"
+            adv_int = abs(int(round(shift)))
+            headline_bn = f"নাসা উপাত্তে {district_bn} অঞ্চলে বৃষ্টিপাত {adv_int} দিন এগিয়ে এসেছে; আগাম বীজতলা প্রস্তুতি নিন।"
+            headline_en = f"NASA data indicates rainfall onset advanced by {adv_int} days in {district_en}; prepare early seedbeds."
+            sms_bn = f"{district_bn} {crop_bn}: বৃষ্টি {adv_int} দিন আগে শুরু হচ্ছে। বীজতলা জুনের দ্বিতীয় সপ্তাহে ফেলুন। ব্রি ধান৪৯/৭৫ লাগান।"
+        elif wet_is_sig_earlier and aman_not_sig:
+            if crop_key == "aman":
+                evidence_level = "not_significant"
+                headline_bn = f"{district_bn} অঞ্চলে আমন রোপণ সময় অপরিবর্তিত (জুলাইয়ের মাঝামাঝি থেকে আগস্টের প্রথম সপ্তাহ); প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
+                headline_en = f"Aman planting window for {district_en} remains unchanged (mid-July to early August); follow standard BRRI crop calendar."
+                sms_bn = f"{district_bn} আমন: রোপণের সময় অপরিবর্তিত। বীজতলা জুনের শেষ সপ্তাহে ও রোপণ জুলাইতে করুন। বিআরআরআই নির্দেশিকা মেনে চলুন।"
+            elif crop_key == "aus":
+                evidence_level = "not_significant"
+                headline_bn = f"{district_bn} আউশ: প্রাক-বর্ষার বৃষ্টিতে কোনো নিশ্চিত পরিবর্তন নেই; প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।"
+                headline_en = f"No confirmed pre-monsoon shift for {district_en} Aus; follow standard BRRI crop calendar."
+                sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি অপরিবর্তিত। প্রচলিত ক্যালেন্ডার অনুযায়ী আউশ চাষ করুন।"
+            else:
+                evidence_level = "not_significant"
+                headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি অপরিবর্তিত: প্রচলিত ক্যালেন্ডার অনুসরণ করুন।"
+                headline_en = f"Pre-monsoon rains in {district_en} unchanged: follow standard calendar."
+                sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি অপরিবর্তিত।"
         else:
             evidence_level = "not_significant"
-            headline_bn = f"{district_bn} অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: জমি প্রস্তুতি আগে করা যায়।"
-            headline_en = f"Pre-monsoon rains in {district_en} now start earlier: early land preparation can advance."
-            sms_bn = f"{district_bn} {crop_bn}: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: জমি প্রস্তুতি আগে করা যায়।"
-    else:
-        # Case (c): Not significant / censored / moderate trend
-        evidence_level = "not_significant"
-        p_val_display = p_val if p_val is not None else "N/A"
-        headline_bn = (
-            f"{district_bn} অঞ্চলে ২৫ বছরের নাসা উপাত্তে বর্ষা শুরুর সময়ে পরিসংখ্যানগতভাবে নিশ্চিত কোনো পরিবর্তন পাওয়া যায়নি, "
-            f"তবে বছরভেদে শুরুর সময় অনেক ওঠানামা করে। ঝুঁকি কমাতে দুই কিস্তিতে বীজতলা ফেলুন এবং স্বল্পমেয়াদী জাত বিবেচনা করুন।"
-        )
-        english_headline = (
-            f"No statistically significant change in rainfall onset for {district_en} over 2001-2025 (p = {p_val_display}). "
-            f"Onset varies widely from year to year, so stagger seedbeds and consider short-duration varieties."
-        )
-        headline_en = english_headline
-        sms_bn = (
-            f"{district_bn} {crop_bn}: বর্ষা শুরুর সময় অনিশ্চিত। বীজতলা ৭ দিন ব্যবধানে দুই কিস্তিতে ফেলুন। "
-            f"স্বল্পমেয়াদী জাত (ব্রি ধান৭৫) বিবেচনা করুন।"
-        )
+            p_val_display = p_val if p_val is not None else "N/A"
+            headline_bn = (
+                f"{district_bn} অঞ্চলে ২৫ বছরের নাসা উপাত্তে বর্ষা শুরুর সময়ে পরিসংখ্যানগতভাবে নিশ্চিত কোনো পরিবর্তন পাওয়া যায়নি, "
+                f"তবে বছরভেদে শুরুর সময় অনেক ওঠানামা করে। ঝুঁকি কমাতে দুই কিস্তিতে বীজতলা ফেলুন এবং স্বল্পমেয়াদী জাত বিবেচনা করুন।"
+            )
+            headline_en = (
+                f"No statistically significant change in rainfall onset for {district_en} over 2001-2025 (p = {p_val_display}). "
+                f"Onset varies widely from year to year, so stagger seedbeds and consider short-duration varieties."
+            )
+            sms_bn = (
+                f"{district_bn} {crop_bn}: বর্ষা শুরুর সময় অনিশ্চিত। বীজতলা ৭ দিন ব্যবধানে দুই কিস্তিতে ফেলুন। "
+                f"স্বল্পমেয়াদী জাত (ব্রি ধান৭৫) বিবেচনা করুন।"
+            )
 
     warning_en = comparison.get("data_warning_en")
     warning_bn = comparison.get("data_warning_bn")
@@ -762,6 +848,7 @@ def generate_recommendation(
         "english_headline": headline_en,
         "bangla_sms": sms_bn,
         "sms_character_count": len(sms_bn),
+        "risk_distribution": risk_context,
         "data_warning_en": warning_en,
         "data_warning_bn": warning_bn,
         "data_warning": warning_bn if lang == "bn" else warning_en,

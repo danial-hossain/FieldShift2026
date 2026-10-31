@@ -30,23 +30,23 @@
 
 ### Aman Rice Season Advisory:
 - **Status**: `ok`
-- **Median Historical Shift**: -0.5 days (Period 1 2001–2012 vs Period 2 2013–2025)
-- **Mann-Whitney p-value**: 0.8463
+- **Median Historical Shift**: +1.5 days (Period 1 2001–2012 vs Period 2 2013–2025)
+- **Mann-Whitney p-value**: 0.4904
 - **Statistically Significant**: False
-- **Censored Fraction**: 48.0%
+- **Censored Fraction**: 36.0%
 - **Suggested Sowing Window**: ১৫ জুন – ৩০ জুন
 - **Suggested Transplanting Window**: ১৫ জুলাই – ৫ আগস্ট
-- **Bangla Headline**: বগুড়া অঞ্চলে আমন রোপণ সময় অপরিবর্তিত (জুলাইয়ের মাঝামাঝি থেকে আগস্টের প্রথম সপ্তাহ); প্রচলিত বিআরআরআই ক্যালেন্ডার অনুসরণ করুন।
-- **English Headline**: Aman planting window for Bogura remains unchanged (mid-July to early August); follow standard BRRI crop calendar.
-- **Bangla SMS (<160 chars)**: `বগুড়া আমন: রোপণের সময় অপরিবর্তিত। বীজতলা জুনের শেষ সপ্তাহে ও রোপণ জুলাইতে করুন। বিআরআরআই নির্দেশিকা মেনে চলুন।`
+- **Bangla Headline**: গত ২৪ বছরে বর্ষা শুরুর তারিখ সাধারণত ২ জুন–৭ জুন এর মধ্যে; ২০ জুনের পরে বর্ষা শুরু হওয়ার ঘটনা বিরল। তাই দুই কিস্তিতে বীজতলা ফেলুন: প্রথম কিস্তি ২০-২৫ মে, দ্বিতীয় কিস্তি ৫-১০ জুন।
+- **English Headline**: Over the last 24 years, monsoon onset typically begins between 02 June and 07 June; monsoon onset past 20 June is rare. Sow nursery seedbeds in two batches: May 20-25 and June 5-10.
+- **Bangla SMS (<160 chars)**: `বগুড়া আমন: বর্ষা সাধারণত ২ জুন–৭ জুন এ শুরু হয় (দেরিতে আসার ঝুঁকি কম)। দুই কিস্তিতে বীজতলা ফেলুন (২০-২৫ মে ও ৫-১০ জুন)।`
 
 ### Aus Rice Season Advisory:
 - **Status**: `ok`
-- **Median Historical Shift**: +7.0 days
-- **Mann-Whitney p-value**: 0.8918
+- **Median Historical Shift**: -5.5 days
+- **Mann-Whitney p-value**: 0.9783
 - **Statistically Significant**: False
-- **Bangla Headline**: বগুড়া অঞ্চলে প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।
-- **Bangla SMS (<160 chars)**: `বগুড়া আউশ: প্রাক-বর্ষার বৃষ্টি এখন আগে শুরু হচ্ছে: আউশ রোপণ ও জমি প্রস্তুতি আগে করা যায়।`
+- **Bangla Headline**: বগুড়া আউশ: প্রাক-বর্ষায় (মার্চ-মে) মধ্যমা বৃষ্টিপাত ৩৫৮ মিমি, তবে ২৯% বছর এপ্রিলে বৃষ্টি ৫০ মিমির কম থাকে। বপনের সময় না এগিয়ে সম্পূরক সেচের প্রস্তুতি রাখুন।
+- **Bangla SMS (<160 chars)**: `বগুড়া আউশ: প্রাক-বর্ষার বৃষ্টি ৩৫৮ মিমি, এপ্রিলে ২৯% বছর খরা (<৫০ মিমি) থাকে। তারিখ না পিছিয়ে সম্পূরক সেচ প্রস্তুত রাখুন।`
 
 ---
 
@@ -56,10 +56,10 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `PROFIT`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 4.7232
+- **Objective Value**: 4.7643
 - **Rotation**: Y1_S1: **Tomato** → Y1_S2: **Groundnut** → Y2_S1: **Tomato** → Y2_S2: **Groundnut** → Y3_S1: **Tomato** → Y3_S2: **Groundnut**
-- **Profit Component**: 905,205 BDT
-- **Water Index Component**: 4.4895
+- **Profit Component**: 889,455 BDT
+- **Water Index Component**: 4.4469
 - **Soil Health Component**: 3.0000
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
@@ -73,10 +73,10 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `WATER`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 5.4831
+- **Objective Value**: 5.4405
 - **Rotation**: Y1_S1: **Chickpea** → Y1_S2: **Sesame** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y3_S1: **Chickpea** → Y3_S2: **Sesame**
-- **Profit Component**: 377,850 BDT
-- **Water Index Component**: 5.4831
+- **Profit Component**: 377,166 BDT
+- **Water Index Component**: 5.4405
 - **Soil Health Component**: 4.3332
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
@@ -92,8 +92,8 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
 - **Objective Value**: 4.3332
 - **Rotation**: Y1_S1: **Chickpea** → Y1_S2: **Sesame** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y3_S1: **Mustard** → Y3_S2: **Mungbean**
-- **Profit Component**: 331,575 BDT
-- **Water Index Component**: 5.3973
+- **Profit Component**: 330,891 BDT
+- **Water Index Component**: 5.3546
 - **Soil Health Component**: 4.3332
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
@@ -107,10 +107,10 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `BALANCED`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 4.1162
+- **Objective Value**: 4.1233
 - **Rotation**: Y1_S1: **Chickpea** → Y1_S2: **Jute** → Y2_S1: **Chickpea** → Y2_S2: **Jute** → Y3_S1: **Chickpea** → Y3_S2: **Jute**
-- **Profit Component**: 384,066 BDT
-- **Water Index Component**: 5.4831
+- **Profit Component**: 383,382 BDT
+- **Water Index Component**: 5.4405
 - **Soil Health Component**: 4.3332
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |

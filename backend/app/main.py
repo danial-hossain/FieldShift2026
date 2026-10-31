@@ -770,7 +770,7 @@ def get_advisory_districts():
 @app.get("/api/advisory/onset-comparison")
 def get_advisory_onset_comparison():
     """Return all-64-district dual onset analysis with Benjamini-Hochberg FDR control."""
-    onset_file = PROJECT_ROOT / "data" / "onset_analysis_64.json"
+    onset_file = ROOT_DIR / "data" / "onset_analysis_64.json"
     if onset_file.exists():
         import json
         with open(onset_file, "r", encoding="utf-8") as f:
