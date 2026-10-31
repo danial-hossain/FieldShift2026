@@ -133,6 +133,22 @@ def load_smap_data(
         & (observations["latitude"] - lat).abs().le(coordinate_tolerance)
         & (observations["longitude"] - lon).abs().le(coordinate_tolerance)
     ]
+    if matches.empty and csv_path is None:
+        real_smap_path = Path(__file__).resolve().parents[2] / "data" / "smap" / "smap_l4_monthly_4fields.csv"
+        if real_smap_path.is_file():
+            try:
+                real_raw = pd.read_csv(real_smap_path, keep_default_na=False)
+                real_obs = normalize_smap_observations(real_raw)
+                real_matches = real_obs.loc[
+                    real_obs["date"].between(start, end)
+                    & (real_obs["latitude"] - lat).abs().le(max(coordinate_tolerance, 0.5))
+                    & (real_obs["longitude"] - lon).abs().le(max(coordinate_tolerance, 0.5))
+                ]
+                if not real_matches.empty:
+                    return real_matches.reset_index(drop=True)[SMAP_COLUMNS]
+            except Exception:
+                pass
+
     if matches.empty:
         return pd.DataFrame(
             [[start, lat, lon, np.nan, "missing", "missing"]],

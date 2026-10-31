@@ -64,3 +64,5 @@ Thumbs.db
 # Database & Large Raw Archives
 data/fieldshift.db
 data/market/raw/*.zip
+data/grace/*.nc
+data/srtm/*.zip

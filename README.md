@@ -19,13 +19,46 @@ Across Bangladesh, erratic monsoon onsets and escalating climate volatility seve
 
 ## Key NASA Earth Observation Datasets
 
-1. **NASA POWER (Prediction Of Worldwide Energy Resources) Daily Point Climatology:**
-   - **Coverage:** 2001-01-01 to 2025-12-31 (25 continuous years) at 0.5° × 0.5° spatial resolution.
-   - **Parameters Ingested:** `PRECTOTCORR` (Precipitation Corrected), `T2M` (Mean Temp at 2m), `T2M_MAX`, `T2M_MIN`, `RH2M` (Relative Humidity), `WS2M` (Wind Speed), `ALLSKY_SFC_SW_DWN` (Solar Radiation).
-   - **Role:** Drives empirical usable monsoon onset detection, Growing Degree Day (GDD) tracking, and 25-year climatological baseline evaluation across 6 key Bangladesh agricultural divisions.
-2. **NASA Global Imagery Browse Services (GIBS) / VIIRS:**
-   - **Layer:** `VIIRS_NOAA20_CorrectedReflectance_TrueColor`.
-   - **Role:** High-resolution authentic true-color satellite reflectance imagery providing spatial geographic context for agricultural parcels in the Barind Tract (Rajshahi).
+FieldShift integrates multiple complementary NASA Earth Observation sensors and assimilation models to guide multi-season crop rotation decisions:
+
+1. **NASA POWER (Prediction Of Worldwide Energy Resources) Daily Point Meteorology:**
+   - **ID / Product:** NASA POWER Daily Point API (v2.0, MERRA-2 & GEOS-5.12.4 assimilation)
+   - **Resolution & Span:** 0.5° × 0.5° (~50 km) spatial grid; 2001-01-01 to 2025-12-31 (25 continuous years).
+   - **Parameters:** PRECTOTCORR (Precipitation Corrected), T2M (Mean Temp at 2m), T2M_MAX, T2M_MIN, RH2M (Relative Humidity), WS2M (Wind Speed), ALLSKY_SFC_SW_DWN (Solar Radiation).
+   - **Application:** Evaluates long-term thermal Growing Degree Days (GDD), diurnal temperature envelopes, heat-stress day tracking during sensitive flowering stages, and reference evapotranspiration (ET₀).
+
+2. **NASA GPM IMERG (Global Precipitation Measurement Integrated Multi-satellitE Retrievals):**
+   - **ID / Product:** GPM_3IMERGDF v07 (Final Precipitation L3 Daily 0.1° × 0.1°)
+   - **Resolution & Span:** 0.1° × 0.1° (~10 km) calibrated satellite precipitation grid; 2001-01-01 to 2024-12-31 (24 continuous years).
+   - **Application:** Validates daily monsoon rainfall accumulation, Aman planting onset, anomalous-accumulation onset, and 21-day dry-spell risk probabilities against POWER reanalysis.
+
+3. **NASA SMAP Level-4 (Soil Moisture Active Passive):**
+   - **ID / Product:** SPL4SMGP v008 (Global 3-Hourly 9 km EASE-Grid Surface and Root-Zone Soil Moisture)
+   - **Resolution & Span:** 9 km cylindrical equal-area grid; 2015-04 to 2024-12 (monthly means and seasonal anomalies).
+   - **Parameters:** sm_rootzone (0–100 cm depth volumetric fraction, m³/m³).
+   - **Application:** Identifies severe pre-monsoon (April–May) root-zone moisture depletion across the Barind tract, informing drought vulnerability and triggering legume/deep-taproot rotation rules.
+
+4. **NASA MODIS Terra & Aqua (Moderate Resolution Imaging Spectroradiometer):**
+   - **ID / Product:** MOD13Q1.061 (16-Day L3 Global 250 m SIN Grid Vegetation Indices)
+   - **Resolution & Span:** 250 m spatial resolution; 2001-01-01 to 2024-12-31 (24 continuous years).
+   - **Parameters:** _250m_16_days_NDVI (Normalized Difference Vegetation Index).
+   - **Application:** Provides regional mixed-pixel phenological context, validating peak crop greenness (Rabi Jan-Feb, Kharif-2 Sep-Oct) and post-harvest bare-soil exposure windows (< 0.25 NDVI) when soil is susceptible to wind and water erosion.
+
+5. **NASA GRACE & GRACE-FO (Gravity Recovery and Climate Experiment Follow-On):**
+   - **ID / Product:** TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4 (JPL RL06.3M Mascon Ocean, Ice, and Hydrology Equivalent Water Height Coastal Resolution Improvement Filtered)
+   - **Resolution & Span:** 0.5° equal-area CRI grid; 2002-04 to 2024-06 (267 monthly observations).
+   - **Parameters:** lwe_thickness (Liquid water equivalent thickness anomaly in cm).
+   - **Application:** Quantifies long-term aquifer depletion (-1.48 cm/year in the Northwest Barind Tract) caused by intensive Boro rice tube-well pumping, providing an empirical water-scarcity weight (1.5x) for water-saving crop rotation strategies.
+
+6. **NASA SRTM (Shuttle Radar Topography Mission):**
+   - **ID / Product:** SRTMGL1 (Global 1 Arc-Second 30 m Digital Elevation Model)
+   - **Resolution & Span:** 30 m spatial resolution (1 arc-second).
+   - **Parameters:** Elevation (meters above sea level) and derived 3×3 window topographic slope (%).
+   - **Application:** Informs topographic drainage, atmospheric pressure correction for Hargreaves ET₀, and distinguishes low-lying flood-susceptible coastal/haor parcels (< 10 m) from elevated alluvial terraces.
+
+7. **NASA Global Imagery Browse Services (GIBS) / VIIRS:**
+   - **ID / Layer:** VIIRS_NOAA20_CorrectedReflectance_TrueColor (Suomi NPP & NOAA-20)
+   - **Application:** High-resolution authentic true-color satellite reflectance imagery providing spatial geographic context for agricultural parcels in the Barind Tract (Rajshahi).
 
 ---
 

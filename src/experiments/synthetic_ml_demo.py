@@ -24,6 +24,8 @@ METADATA_PATH = MODEL_DIR / "synthetic_yield_demo_model.json"
 TARGET_NAME = "synthetic_yield_t_ha"
 SYNTHETIC_CROP_LEVELS = (
     "Rice",
+    "Boro Rice",
+    "Aus Rice",
     "Wheat",
     "Maize",
     "Lentil",
@@ -32,7 +34,6 @@ SYNTHETIC_CROP_LEVELS = (
     "Potato",
     "Chickpea",
     "Soybean",
-    "Sorghum",
     "Sesame",
     "Groundnut",
     "Sunflower",
@@ -423,7 +424,8 @@ def _feature_map_from_field_state(
             features[key] = _safe_float(value, default=features[key])
     crop = extra_features.get("crop")
     if crop is not None:
-        crop_key = f"crop_is_{str(crop).strip().lower()}"
+        crop_clean = str(crop).strip().lower()
+        crop_key = f"crop_is_{crop_clean}"
         if crop_key not in CROP_FEATURE_COLUMNS:
             raise ValueError(f"Unsupported synthetic ML crop: {crop}")
         for feature in CROP_FEATURE_COLUMNS:

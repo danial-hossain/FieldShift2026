@@ -117,7 +117,7 @@ SEQUENTIAL_RL_CROPS = (
     "Chickpea",
     "Lentil",
     "Mungbean",
-    "Sorghum",
+    "Sunflower",
     "Tomato",
     "Soybean",
 )

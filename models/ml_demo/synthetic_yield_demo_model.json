@@ -18,6 +18,8 @@
     "water_stress_indicator",
     "season_is_wet",
     "crop_is_rice",
+    "crop_is_boro rice",
+    "crop_is_aus rice",
     "crop_is_wheat",
     "crop_is_maize",
     "crop_is_lentil",
@@ -26,7 +28,6 @@
     "crop_is_potato",
     "crop_is_chickpea",
     "crop_is_soybean",
-    "crop_is_sorghum",
     "crop_is_sesame",
     "crop_is_groundnut",
     "crop_is_sunflower",
@@ -37,21 +38,21 @@
   "seed": 42,
   "dataset_seed": 42,
   "dataset_rows": 512,
-  "feature_count": 29,
+  "feature_count": 30,
   "train_rows": 409,
   "test_rows": 103,
   "evaluation_protocol": "Seeded random 80/20 holdout; normalization fitted on training rows only.",
   "cross_validation": "not performed",
   "metrics": {
-    "train_mae_t_ha": 0.012727867763830643,
-    "test_mae_t_ha": 0.01761700697148263,
-    "train_rmse_t_ha": 0.020911389744924392,
-    "test_rmse_t_ha": 0.04618450138905329,
-    "train_r2": 0.999982785491822,
-    "test_r2": 0.9999221489963563
+    "train_mae_t_ha": 0.01572174623886658,
+    "test_mae_t_ha": 0.018791011334936585,
+    "train_rmse_t_ha": 0.030181795635112457,
+    "test_rmse_t_ha": 0.04636388654505698,
+    "train_r2": 0.9999580543634266,
+    "test_r2": 0.9999215618562397
   },
   "data_boundary": "synthetic_demo_only",
   "generation_rule": "Synthetic crop-catalog baselines plus explicit environmental and season rules; not field-validated agronomic evidence.",
-  "artifact_path": "C:\\FieldShift\\models\\ml_demo\\synthetic_yield_demo_model.pkl",
-  "metadata_path": "C:\\FieldShift\\models\\ml_demo\\synthetic_yield_demo_model.json"
+  "artifact_path": "H:\\FieldShift2026\\models\\ml_demo\\synthetic_yield_demo_model.pkl",
+  "metadata_path": "H:\\FieldShift2026\\models\\ml_demo\\synthetic_yield_demo_model.json"
 }

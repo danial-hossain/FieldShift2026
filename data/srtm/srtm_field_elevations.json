@@ -1,0 +1,46 @@
+{
+  "dinajpur": {
+    "field_name": "Dinajpur Sadar",
+    "latitude": 25.6279,
+    "longitude": 88.6332,
+    "srtm_tile": "N25E088",
+    "elevation_m": 39,
+    "slope_percent": 3.7,
+    "flood_exposure_hint": "Low-lying alluvial floodplain",
+    "topographic_erosion_risk": "Moderate",
+    "dataset": "NASA SRTMGL1 (30 m resolution)"
+  },
+  "bogura": {
+    "field_name": "Bogura demo",
+    "latitude": 24.85,
+    "longitude": 89.37,
+    "srtm_tile": "N24E089",
+    "elevation_m": 24,
+    "slope_percent": 1.67,
+    "flood_exposure_hint": "Low-lying alluvial floodplain",
+    "topographic_erosion_risk": "Low",
+    "dataset": "NASA SRTMGL1 (30 m resolution)"
+  },
+  "satkhira": {
+    "field_name": "Satkhira coast",
+    "latitude": 22.7185,
+    "longitude": 89.0705,
+    "srtm_tile": "N22E089",
+    "elevation_m": 7,
+    "slope_percent": 6.17,
+    "flood_exposure_hint": "High coastal flood/surge exposure",
+    "topographic_erosion_risk": "Moderate",
+    "dataset": "NASA SRTMGL1 (30 m resolution)"
+  },
+  "sunamganj": {
+    "field_name": "Sunamganj haor",
+    "latitude": 25.0658,
+    "longitude": 91.395,
+    "srtm_tile": "N25E091",
+    "elevation_m": 15,
+    "slope_percent": 2.48,
+    "flood_exposure_hint": "High monsoon basin submergence risk (haor)",
+    "topographic_erosion_risk": "Low",
+    "dataset": "NASA SRTMGL1 (30 m resolution)"
+  }
+}
