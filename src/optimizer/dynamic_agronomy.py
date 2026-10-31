@@ -421,6 +421,11 @@ def compute_dynamic_crop_season_metrics(
     irrig_req = float(water_data.get("irrigation_required_mm", 0.0))
     norm_water = round(1.0 - min(irrig_req, 800.0) / 800.0, 4)
 
+    # Bare fallow receives zero agronomic benefit score
+    if crop_name.lower() == "fallow":
+        norm_soil = 0.0
+        norm_water = 0.0
+
     return {
         "crop": crop_name,
         "family": family,

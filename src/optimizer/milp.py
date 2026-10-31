@@ -415,6 +415,8 @@ def _compatible_pair(
     return result["rules"]["family_rotation"]["status"] != "incompatible"
 
 
+HAOR_DISTRICTS = {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}
+
 def build_milp_model(
     field_state,
     crops: Optional[pd.DataFrame] = None,
@@ -429,6 +431,9 @@ def build_milp_model(
     water_weight: float = 0.3,
     soil_weight: float = 0.2,
     national_need_weight: float = 0.0,
+    allow_kharif2_fallow: bool = False,
+    min_cereals_per_year: int = 1,
+    seasonally_flooded: Optional[bool] = None,
 ):
     """Build and return a PuLP problem and its prepared model metadata.
 
@@ -562,7 +567,8 @@ def build_milp_model(
             for c in candidate_names:
                 is_rice_in_k2 = (s == 2 and ("rice" in c.lower() or c == "Rice"))
                 is_fallow = (c.lower() == "fallow")
-                if not is_rice_in_k2 and not is_fallow:
+                is_haor_allowed_recur = seasonally_flooded and (s == 0 or is_fallow)
+                if not is_rice_in_k2 and not is_fallow and not is_haor_allowed_recur:
                     problem += (
                         variables[(c, p_y1)] + variables[(c, p_y2)] <= 1,
                         f"no_same_crop_consecutive_years_{s}_{candidate_names.index(c)}"
@@ -632,41 +638,114 @@ def build_milp_model(
         if bool(row["is_legume"])
     ]
     legume_window_count = 0
-    for start in range(0, len(periods) - legume_interval_seasons + 1):
-        window = periods[start : start + legume_interval_seasons]
-        if legume_names:
-            problem += (
-                pulp.lpSum(
-                    variables[(crop, period)]
-                    for crop in legume_names
-                    for period in window
+    # Legume interval constraint (every 3 seasons for soil nitrogen); relaxed for haor wetland
+    if not seasonally_flooded:
+        for start in range(0, len(periods) - legume_interval_seasons + 1):
+            window = periods[start : start + legume_interval_seasons]
+            if legume_names:
+                problem += (
+                    pulp.lpSum(
+                        variables[(crop, period)]
+                        for crop in legume_names
+                        for period in window
+                    )
+                    >= 1,
+                    f"legume_interval_{start}",
                 )
-                >= 1,
-                f"legume_interval_{start}",
-            )
-        else:
-            problem += (
-                pulp.lpSum(
-                    variables[(crop, window[0])] for crop in candidate_names
+            else:
+                problem += (
+                    pulp.lpSum(
+                        variables[(crop, window[0])] for crop in candidate_names
+                    )
+                    <= 0,
+                    f"legume_interval_impossible_{start}",
                 )
-                <= 0,
-                f"legume_interval_impossible_{start}",
-            )
-        legume_window_count += 1
+            legume_window_count += 1
 
-    # Multi-objective optimization over dynamic seasonal metrics & national need
+    # Auto-detect seasonally flooded haor land if not explicitly passed
+    if seasonally_flooded is None:
+        dist = str(getattr(field_state, "district", "") or "").lower().strip()
+        seasonally_flooded = (dist in HAOR_DISTRICTS) or bool(getattr(field_state, "seasonally_flooded", False))
+
+    # C3: Minimum cereal staple / income constraint per full year
+    cereal_names = [c for c in candidate_names if any(k in c.lower() for k in ["rice", "wheat", "maize", "sorghum"])]
+    full_years = len(periods) // seasons_per_year
+    if min_cereals_per_year > 0 and cereal_names and full_years > 0:
+        for y in range(full_years):
+            year_periods = periods[y * seasons_per_year : (y + 1) * seasons_per_year]
+            if len(year_periods) == seasons_per_year:
+                # Only enforce if at least one cereal is feasible in this year's seasonal environments
+                feasible_cereals = [
+                    (c, p)
+                    for c in cereal_names
+                    for p in year_periods
+                    if dyn_matrix[p][c]["is_feasible"]
+                    and c not in season_suitability_exclusions.get(p, [])
+                ]
+                if feasible_cereals:
+                    problem += (
+                        pulp.lpSum(variables[(c, p)] for (c, p) in feasible_cereals) >= min_cereals_per_year,
+                        f"min_cereal_staple_year_{y}",
+                    )
+
+    # C4: Seasonally flooded haor land constraints vs C3 normal land
+    if seasonally_flooded:
+        for period_idx, period in enumerate(periods):
+            p_season = _period_season(period, period_idx)
+            if p_season == "kharif2":
+                # Haor land is under 2-4m deep water from June to November -> forced Fallow / uncropped
+                if "Fallow" in candidate_names:
+                    problem += variables[("Fallow", period)] == 1, f"haor_flooded_kharif2_{period_idx}"
+            elif p_season == "kharif1":
+                # Haor land pre-monsoon flash floods arrive in mid-May -> only short-duration crops (<= 80 days) or fallow
+                for c in candidate_names:
+                    if c.lower() != "fallow":
+                        dur = float(crop_frame.loc[crop_frame["crop"] == c, "duration_days"].iloc[0])
+                        if dur > 80:
+                            problem += variables[(c, period)] == 0, f"haor_kharif1_duration_risk_{c}_{period_idx}"
+            elif p_season == "rabi":
+                # Boro rice is the main foodgrain of haor lands
+                if "Boro Rice" in candidate_names:
+                    problem += variables[("Boro Rice", period)] == 1, f"haor_boro_rabi_{period_idx}"
+    else:
+        # Normal land: Kharif-2 fallow allowed only if explicitly chosen by farmer,
+        # provided at least one suitable Kharif-2 crop is agronomically feasible.
+        if not allow_kharif2_fallow and "Fallow" in candidate_names:
+            for period_idx, period in enumerate(periods):
+                p_season = _period_season(period, period_idx)
+                if p_season == "kharif2":
+                    feasible_k2 = [
+                        c for c in candidate_names
+                        if c.lower() != "fallow"
+                        and dyn_matrix[period][c]["is_feasible"]
+                        and c not in season_suitability_exclusions.get(period, [])
+                    ]
+                    if feasible_k2:
+                        problem += variables[("Fallow", period)] == 0, f"no_kharif2_fallow_{period_idx}"
+
+    # Multi-objective optimization over dynamic seasonal metrics & national need with bare-field penalty
     nat_norm = objective.get("national_need_normalized", {})
-    objective_expression = pulp.lpSum(
-        (
-            effective_weights.get("profit", 0.0) * dyn_matrix[period][crop]["normalized_profit_score"]
-            + effective_weights.get("water", 0.0) * dyn_matrix[period][crop]["normalized_water_score"]
-            + effective_weights.get("soil", 0.0) * dyn_matrix[period][crop]["normalized_soil_score"]
-            + effective_weights.get("national_need", 0.0) * (nat_norm.get(crop) or 0.0)
-        )
-        * variables[(crop, period)]
-        for crop in candidate_names
-        for period in periods
-    )
+    objective_terms = []
+    for crop in candidate_names:
+        is_fallow = (crop.lower() == "fallow")
+        for period_idx, period in enumerate(periods):
+            p_season = _period_season(period, period_idx)
+            if is_fallow:
+                # Bare-field penalty: erosion and organic-matter loss
+                # Heavier in high-rain Kharif-2 months from IMERG
+                rain_mm = dynamic_data["seasonal_environments"][period].rainfall_mm
+                bare_penalty = 0.5 + (min(1.0, rain_mm / 600.0) if p_season == "kharif2" else 0.0)
+                score_coef = -bare_penalty
+            else:
+                score_coef = (
+                    effective_weights.get("profit", 0.0) * dyn_matrix[period][crop]["normalized_profit_score"]
+                    + effective_weights.get("water", 0.0) * dyn_matrix[period][crop]["normalized_water_score"]
+                    + effective_weights.get("soil", 0.0) * dyn_matrix[period][crop]["normalized_soil_score"]
+                    + effective_weights.get("national_need", 0.0) * (nat_norm.get(crop) or 0.0)
+                )
+            objective_terms.append(score_coef * variables[(crop, period)])
+
+    objective_expression = pulp.lpSum(objective_terms)
     problem += objective_expression
 
     metadata = {
@@ -796,6 +875,9 @@ def optimize_rotation(
     water_weight: float = 0.3,
     soil_weight: float = 0.2,
     national_need_weight: float = 0.0,
+    allow_kharif2_fallow: bool = False,
+    min_cereals_per_year: int = 1,
+    seasonally_flooded: Optional[bool] = None,
     solver: Optional[pulp.LpSolver] = None,
 ) -> dict[str, Any]:
     """Optimize a long-term rotation for the supplied periods and priorities."""
@@ -813,6 +895,9 @@ def optimize_rotation(
         water_weight=water_weight,
         soil_weight=soil_weight,
         national_need_weight=national_need_weight,
+        allow_kharif2_fallow=allow_kharif2_fallow,
+        min_cereals_per_year=min_cereals_per_year,
+        seasonally_flooded=seasonally_flooded,
     )
     tmp_dir = None
     if solver is None:
