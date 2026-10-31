@@ -34,6 +34,8 @@ import {
   runCounterfactualRequest,
 } from './counterfactual.js';
 import './styles.css';
+import { OnboardingModal } from './OnboardingModal.jsx';
+import { HelpModal } from './HelpModal.jsx';
 import {
   HomeIcon,
   FieldIcon,
@@ -45,6 +47,7 @@ import {
   EvidenceIcon,
   SunIcon,
   MoonIcon,
+  HelpIcon,
 } from './ui/index.js';
 
 const API = import.meta.env.VITE_API_URL || '';
@@ -680,6 +683,14 @@ export function App() {
   const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' });
   const [authMsg, setAuthMsg] = useState('');
   const [authError, setAuthError] = useState('');
+    const [onboardingOpen, setOnboardingOpen] = useState(() => {
+    try {
+      return !localStorage.getItem('fieldshift_onboarding_completed');
+    } catch (_) {
+      return false;
+    }
+  });
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [authModal, setAuthModal] = useState(false);
   const [saveFieldMsg, setSaveFieldMsg] = useState('');
   const [profileTab, setProfileTab] = useState('parcels');
@@ -2100,6 +2111,18 @@ export function App() {
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
+            </button>
+
+                        {/* In-App Help & Guide Button (P6.3) */}
+            <button
+              type="button"
+              className="top-bar-icon-btn help-guide-btn"
+              title={lang === 'bn' ? 'ব্যবহারকারী নির্দেশিকা ও সহায়তা (?)' : 'User Guide & Help (?)'}
+              onClick={() => setHelpModalOpen(true)}
+              aria-label="Help & User Guide"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <HelpIcon size={18} />
             </button>
 
             {/* System Alerts */}
