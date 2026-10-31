@@ -15020,3 +15020,77 @@ select,
 [data-demo-mode="true"] .dev-debug-panel {
   display: none !important;
 }
+
+
+/* ==========================================================================
+   P2.7 PRINT STYLESHEET (One-Page A4 Printable Farmer Card)
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 14mm;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .sidebar,
+  header,
+  .global-top-bar,
+  .mobile-bottom-nav,
+  .subnav-pills-bar,
+  .header-actions,
+  .nasa-header-actions,
+  button,
+  .btn,
+  .glass-btn,
+  .search-input-wrapper,
+  .active-field-context-strip,
+  .interactive-controls,
+  .scenario-sliders-panel {
+    display: none !important;
+  }
+
+  .app-shell,
+  main,
+  .content-area,
+  .six-season-recommendation-workspace,
+  .farm-planning-workspace {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .printable-farmer-card {
+    display: block !important;
+    page-break-inside: avoid;
+    border: 2px solid #16a34a !important;
+    padding: 16px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .answer-first-banner {
+    background: #f0fdf4 !important;
+    border: 2px solid #16a34a !important;
+    color: #14532d !important;
+    page-break-inside: avoid;
+  }
+
+  .kpi-tile, .strategy-card, .plan-card, .ui-card {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+}

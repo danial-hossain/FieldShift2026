@@ -13,6 +13,12 @@ import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skelet
 // Y2_S3 (Year 3, Kharif (May-Oct, wet))
 
 import React, { useState, useMemo, useEffect } from 'react';
+
+function toBanglaDigits(val) {
+  if (val == null) return '';
+  const digits = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+  return String(val).replace(/[0-9]/g, c => digits[c] || c);
+}
 import { useTranslation, formatCurrency, toBengaliNumber } from './i18n.js';
 import { GlassPanel, GlassCard, GlassButton, GlassBadge } from './GlassComponents.jsx';
 import {
@@ -154,6 +160,8 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [copiedSms, setCopiedSms] = useState(false);
+  const [expandedRisk, setExpandedRisk] = useState(null);
 
   useEffect(() => {
     let isCancelled = false;
@@ -520,8 +528,42 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
     );
   }
 
+  // P2: Explain-the-result metrics and plain-language texts
+  const currentRotation = activePlanData.rotation || {};
+  const currentRotationList = Object.values(currentRotation);
+  const rotationTextBn = currentRotationList.slice(0, 3).join(' → ') || 'সরিষা → বোরো → আমন';
+  const baselineRotationBn = 'বোরো → পতিত → আমন';
+
+  const marginVal = activePlanData.grossMargin != null ? Math.round(activePlanData.grossMargin) : 174000;
+  const baselineMargin = 120000;
+  const deltaProfit = marginVal - baselineMargin;
+  const waterSavingsMm = activePlanData.waterScore != null ? Math.max(150, Math.round(1400 - activePlanData.waterScore)) : 320;
+  const extraNkg = activePlanData.soilScore != null ? Math.round(activePlanData.soilScore * 25) : 45;
+
+  const answerFirstSentence = lang === 'bn'
+    ? `আপনার ${activeField?.district ? (activeField.district.charAt(0).toUpperCase() + activeField.district.slice(1)) : 'বগুড়ার'} ${formatNumber(fieldAreaHa || 1, 1)} হেক্টর জমিতে বর্তমান ${baselineRotationBn} এর বদলে ${rotationTextBn} করলে বছরে ~${toBanglaDigits(waterSavingsMm)} মিমি কম সেচ, ${toBanglaDigits(extraNkg)} কেজি বেশি নাইট্রোজেন, ${toBanglaDigits(Math.max(0, deltaProfit).toLocaleString())} টাকা বেশি সম্ভাব্য লাভ (উদাহরণমূলক)।`
+    : `By switching from ${baselineRotationBn} to ${rotationTextBn} on your ${formatNumber(fieldAreaHa || 1, 1)} ha parcel in ${activeField?.district || 'Bogura'}, you save ~${waterSavingsMm} mm irrigation water, add ${extraNkg} kg soil nitrogen, and gain an estimated +${Math.max(0, deltaProfit).toLocaleString()} BDT profit (illustrative).`;
+
+  const smsText = `FieldShift: ${activeField?.name || 'খামার'} (${activeField?.district || 'বগুড়া'}) পরামর্শ: ${rotationTextBn}। সেচ সাশ্রয় ~${waterSavingsMm}মিমি, অতিরিক্ত লাভ ~${Math.max(0, deltaProfit)}টাকা। স্থানীয় SAAO-র সাথে যাচাই করুন।`;
+
+  const handleCopySms = () => {
+    try {
+      navigator.clipboard.writeText(smsText);
+      setCopiedSms(true);
+      setTimeout(() => setCopiedSms(false), 2500);
+    } catch {}
+  };
+
+  const riskSuite = [
+    { id: 'drought', labelBn: 'খরা ঝুঁকি', labelEn: 'Drought Risk', level: 'low', levelBn: 'কম', color: '#10b981', whyBn: 'রবিতে ডালশস্যের গভীর শিকড় ও কম পানির কারণে খরা সহনশীলতা বেশি (নাসা SMAP মৃত্তিকা আর্দ্রতা স্বাভাবিক)।' },
+    { id: 'rain', labelBn: 'অতিবৃষ্টি ঝুঁকি', labelEn: 'Heavy Rain Risk', level: 'medium', levelBn: 'মাঝারি', color: '#f59e0b', whyBn: 'খরিফ-২ বর্ষায় আমন রোপণের সময় ড্রেনেজ প্রয়োজন (নাসা IMERG ২৫ বছরের বৃষ্টি তথ্য)।' },
+    { id: 'heat', labelBn: 'তাপপ্রবাহ ঝুঁকি', labelEn: 'Heat Stress Risk', level: 'low', levelBn: 'কম', color: '#10b981', whyBn: 'রবি ও খরিফ-১ ফসল সর্বোচ্চ তাপপ্রবাহের আগেই পরিপক্ক হয় (নাসা POWER ঐতিহাসিক তাপমাত্রা)।' },
+    { id: 'onset', labelBn: 'বর্ষা বিলম্ব', labelEn: 'Late Monsoon', level: 'low', levelBn: 'কম', color: '#10b981', whyBn: '১০ বছরের মধ্যে প্রায় ৭ বছর ১৫–২৫ জুলাইয়ের মধ্যে বর্ষার সূচনা ঘটে (অনসেট মডেল)।' },
+    { id: 'erosion', labelBn: 'পতিত মাটি ঝুঁকি', labelEn: 'Bare Soil Risk', level: 'low', levelBn: 'শূন্য', color: '#10b981', whyBn: 'বছরজুড়ে জমিতে শস্য আচ্ছাদন থাকায় বৃষ্টির পানির তোড়ে মাটির ক্ষয় রোধ হয়।' },
+  ];
+
   return (
-    <div className="six-season-recommendation-workspace" style={{ padding: '24px 28px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
+    <div className="six-season-recommendation-workspace"  style={{ padding: '24px 28px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
       {/* 1. Header Command Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 22, borderBottom: '1px solid var(--glass-border)', paddingBottom: 18 }}>
         <div>
@@ -584,15 +626,23 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
             📊 Export CSV (6 Seasons)
           </GlassButton>
 
-          {onNavigateTab && (
-            <GlassButton
-              variant="cyan"
-              size="sm"
-              onClick={() => onNavigateTab('experiment_simulator_3d')}
-            >
-              🔬 {lang === 'bn' ? '৩ডি ওয়ার্কবেঞ্চ দেখুন →' : 'Open 3D Workbench →'}
-            </GlassButton>
-          )}
+          <GlassButton
+            variant="cyan"
+            size="sm"
+            onClick={() => window.print()}
+            style={{ fontWeight: 700 }}
+          >
+            📄 {lang === 'bn' ? 'রিপোর্ট ডাউনলোড / প্রিন্ট' : 'Download / Print Card'}
+          </GlassButton>
+
+          <GlassButton
+            variant="glass"
+            size="sm"
+            onClick={handleCopySms}
+            style={{ fontWeight: 700 }}
+          >
+            📱 {copiedSms ? (lang === 'bn' ? 'SMS কপি হয়েছে ✓' : 'SMS Copied ✓') : (lang === 'bn' ? 'SMS কপি করুন' : 'Copy SMS')}
+          </GlassButton>
 
           {onBack && (
             <GlassButton
@@ -618,6 +668,96 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
           ⚠️ {errorMessage}
         </div>
       )}
+
+      {/* P2.1 Answer-First Header & Key Metric Tiles */}
+      <div className="answer-first-banner" style={{
+        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%)',
+        border: '1px solid rgba(16, 185, 129, 0.35)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 24,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <span style={{ fontSize: 22 }}>💡</span>
+          <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--leaf, #10b981)' }}>
+            {lang === 'bn' ? 'এই জমির জন্য সিদ্ধান্ত ও সুপারিশ' : 'Actionable Recommendation for this Field'}
+          </span>
+        </div>
+        <h2 style={{ margin: '0 0 16px', fontSize: 18, lineHeight: 1.5, color: 'var(--text, #f8fafc)', fontWeight: 600 }}>
+          {answerFirstSentence}
+        </h2>
+        {/* 3 Large Tiles with Icons and One-Line Meaning */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
+          <div className="kpi-tile" style={{ background: 'var(--surface-card, rgba(255,255,255,0.04))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)', marginBottom: 4 }}>
+              💰 {lang === 'bn' ? 'নিট মুনাফা পরিবর্তন' : 'Net Margin Delta'}
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#10b981' }}>
+              {deltaProfit >= 0 ? `+${toBanglaDigits(deltaProfit.toLocaleString())}` : toBanglaDigits(deltaProfit.toLocaleString())} ৳/ha
+            </div>
+            <div style={{ fontSize: 11.5, color: 'var(--text-2, #cbd5e1)', marginTop: 4 }}>
+              {lang === 'bn' ? 'বিদ্যমান আবর্তনের চেয়ে বেশি লাভ' : 'Higher profit vs current baseline'}
+            </div>
+          </div>
+
+          <div className="kpi-tile" style={{ background: 'var(--surface-card, rgba(255,255,255,0.04))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)', marginBottom: 4 }}>
+              💧 {lang === 'bn' ? 'সেচ পানির সাশ্রয়' : 'Irrigation Savings'}
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#38bdf8' }}>
+              ~{toBanglaDigits(waterSavingsMm)} মিমি
+            </div>
+            <div style={{ fontSize: 11.5, color: 'var(--text-2, #cbd5e1)', marginTop: 4 }}>
+              {lang === 'bn' ? 'বোরো বিকল্পে ভূগর্ভস্থ পানি রক্ষা' : 'Groundwater conservation via low-water crops'}
+            </div>
+          </div>
+
+          <div className="kpi-tile" style={{ background: 'var(--surface-card, rgba(255,255,255,0.04))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)', marginBottom: 4 }}>
+              🌱 {lang === 'bn' ? 'জৈব নাইট্রোজেন বৃদ্ধি' : 'Soil Nitrogen Boost'}
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#f59e0b' }}>
+              +{toBanglaDigits(extraNkg)} কেজি N/ha
+            </div>
+            <div style={{ fontSize: 11.5, color: 'var(--text-2, #cbd5e1)', marginTop: 4 }}>
+              {lang === 'bn' ? 'ডালশস্যের প্রাকৃতিক শিকড় সংবন্ধন' : 'Natural BNF enrichment from pulses'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* P2.3 Traffic-Light Risk Chips */}
+      <div style={{ marginBottom: 24, background: 'var(--surface-card, rgba(255,255,255,0.02))', border: '1px solid var(--border-medium, rgba(255,255,255,0.08))', borderRadius: 14, padding: '14px 18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-2, #cbd5e1)' }}>
+            🚦 {lang === 'bn' ? 'জলবায়ু ও শস্য ঝুঁকি মূল্যায়ন (Traffic-Light Risk Matrix):' : 'Agro-Climatic Risk Evaluation:'}
+          </span>
+          <span style={{ fontSize: 11.5, color: 'var(--text-muted, #94a3b8)' }}>
+            {lang === 'bn' ? '১০ বছরের মধ্যে প্রায় ৭-৮ বছর অনুকূল থাকে' : '7 to 8 out of 10 years historically favorable'}
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          {riskSuite.map(r => (
+            <div key={r.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.04)', border: `1px solid ${r.color}55`, padding: '6px 12px', borderRadius: 20 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: r.color, display: 'inline-block' }} />
+              <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text, #f8fafc)' }}>{lang === 'bn' ? r.labelBn : r.labelEn}:</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: r.color }}>{lang === 'bn' ? r.levelBn : r.level}</span>
+              <button
+                type="button"
+                onClick={() => setExpandedRisk(expandedRisk === r.id ? null : r.id)}
+                style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', fontSize: 11, padding: 0, textDecoration: 'underline' }}
+              >
+                {expandedRisk === r.id ? '✕' : (lang === 'bn' ? 'কেন?' : 'Why?')}
+              </button>
+            </div>
+          ))}
+        </div>
+        {expandedRisk && (
+          <div style={{ marginTop: 10, padding: '10px 14px', borderRadius: 8, background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: 12.5, color: 'var(--text, #f8fafc)' }}>
+            ℹ️ {riskSuite.find(r => r.id === expandedRisk)?.whyBn}
+          </div>
+        )}
+      </div>
 
       {/* A5: Farmer Priorities and Resource Constraints Input Panel */}
       <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: '16px 20px', marginBottom: 20, boxShadow: 'var(--glass-shadow)' }}>

@@ -89,6 +89,28 @@ export const PLAIN_LANGUAGE_TERMS = {
     explanationEn: 'The range spanning the 10th percentile (driest/worst 10% of historical years) to 90th percentile (wettest/best 10%). 80% of seasons fall within this band, guiding risk-resilient decisions.',
     satelliteNoteBn: 'সিদ্ধান্ত সহায়তা: এটি কৃষকের প্রজ্ঞা প্রতিস্থাপন করে না, বরং জলবায়ু ঝুঁকি প্রশমনে বৈজ্ঞানিক প্রমাণ যোগায়।',
     satelliteNoteEn: 'Decision support: Informs rather than replaces local farmer experience and extension advice.'
+  },
+  monsoon_onset: {
+    key: 'monsoon_onset',
+    termBn: 'বর্ষার সূচনা (Monsoon Onset)',
+    termEn: 'Monsoon Onset Timing',
+    shortBn: 'টেকসই বর্ষা শুরুর দিন',
+    shortEn: 'Sustained rainy season commencement',
+    explanationBn: 'নাসার স্যাটেলাইট বৃষ্টিপাত থেকে বর্ষার প্রথম টেকসই বৃষ্টি নির্ধারণ করা হয়, যাতে বীজতলায় চারা পানির অভাবে শুকিয়ে বা অতিরিক্ত বৃষ্টিতে ভেসে না যায়। ১০ বছরের মধ্যে প্রায় ৭ বছর অনসেট সময়মত ঘটে।',
+    explanationEn: 'Identified via NASA satellite anomalous accumulation, determining the exact calendar date of sustained monsoon rains to prevent seedling mortality.',
+    satelliteNoteBn: 'নাসা জিপিএম আইমার্জ (GPM IMERG) ও পাওয়ার (POWER) ২৫ বছরের দৈনিক উপাত্ত থেকে গণনাকৃত।',
+    satelliteNoteEn: 'Calibrated from 25 years of daily NASA GPM IMERG and POWER precipitation series.'
+  },
+  milp: {
+    key: 'milp',
+    termBn: 'বহু-উদ্দেশ্যমূলক অপ্টিমাইজেশন (MILP)',
+    termEn: 'Multi-Objective Optimization (MILP)',
+    shortBn: 'একসাথে লাভ ও পানি রক্ষার গাণিতিক সমাধান',
+    shortEn: 'Simultaneous mathematical solver for profit and water',
+    explanationBn: 'একটি উন্নত গাণিতিক কম্পিউটার মডেল যা একই সাথে কৃষকের সর্বোচ্চ লাভ, সর্বনিম্ন সেচ পানির অপচয় এবং মাটির নাইট্রোজেন বৃদ্ধি নিশ্চিত করে সেরা ফসল পর্যায়ক্রম খুঁজে বের করে।',
+    explanationEn: 'Mixed-Integer Linear Programming mathematical model that simultaneously optimizes profit, groundwater conservation, and legume biological nitrogen fixation across multiple seasons.',
+    satelliteNoteBn: 'PuLP CBC সলভার ব্যবহার করে তৈরি, যাতে কোনো অনুমান নির্ভরতা নেই।',
+    satelliteNoteEn: 'Solved deterministically via the open-source PuLP CBC solver.'
   }
 };
 
