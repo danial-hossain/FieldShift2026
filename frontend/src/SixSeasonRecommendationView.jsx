@@ -51,10 +51,10 @@ export function SixSeasonRecommendationView({
   lang = 'bn',
   onSelectField,
   onRunWorkflow,
-  defaultDistrict = 'bogura',
+  defaultDistrict = '',
 }) {
   const { t } = useTranslation(lang);
-  const district = activeField?.district || defaultDistrict || 'bogura';
+  const district = activeField?.district || defaultDistrict || '';
   const [selectedStrategy, setSelectedStrategy] = useState('balanced');
   const [selectedPeriodKey, setSelectedPeriodKey] = useState('Y1_S1');
   const [viewMode, setViewMode] = useState('recommendations'); // 'recommendations' | 'comparison' | 'timeline'
@@ -73,12 +73,20 @@ export function SixSeasonRecommendationView({
     setLoading(true);
     setFetchError(null);
 
+    if (!district && (activeField?.latitude == null || activeField?.longitude == null)) {
+      setLoading(false);
+      setFetchError(lang === 'bn' ? 'জমির অবস্থান বা জেলা নির্বাচন করুন।' : 'Please select a field location or district.');
+      return;
+    }
+
     const bodyBase = {
-      district,
+      district: district || undefined,
+      field_id: activeField?.id !== 'demo' && activeField?.id ? activeField.id : undefined,
       latitude: activeField?.latitude != null ? Number(activeField.latitude) : undefined,
       longitude: activeField?.longitude != null ? Number(activeField.longitude) : undefined,
       field_size_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
       area_ha: activeField?.area_ha != null ? Number(activeField.area_ha) : undefined,
+      seasonally_flooded: activeField?.seasonally_flooded,
     };
 
     Promise.all(

@@ -49,6 +49,10 @@ class Field(Timestamped, Base):
     soil_ph: Mapped[float | None] = mapped_column(Float)
     district: Mapped[str | None] = mapped_column(String, nullable=True)
     seasonally_flooded: Mapped[bool | None] = mapped_column(Boolean, default=False, nullable=True)
+    nearest_district_distance_km: Mapped[float | None] = mapped_column(Float, nullable=True)
+    power_cell: Mapped[str | None] = mapped_column(String, nullable=True)
+    imerg_cell: Mapped[str | None] = mapped_column(String, nullable=True)
+    soilgrids_soil: Mapped[str | None] = mapped_column(String, nullable=True)
 
 class FieldHistory(Base):
     __tablename__ = "field_history"

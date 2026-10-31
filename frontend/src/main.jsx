@@ -770,7 +770,7 @@ export function App() {
         ...payload,
         field_id: 'demo',
         mode: 'offline',
-        district: field.district || 'bogura',
+        district: field.district || undefined,
         field_size_ha: field.area_ha || 10.0,
         area_ha: field.area_ha || 10.0,
         latitude: field.latitude,
@@ -786,6 +786,8 @@ export function App() {
       return {
         ...payload,
         field_id: field.id,
+        district: field.district || undefined,
+        seasonally_flooded: field.seasonally_flooded,
         field_size_ha: field.area_ha,
         area_ha: field.area_ha,
         latitude: field.latitude,
@@ -2085,7 +2087,7 @@ export function App() {
             </div>
             {cropSubTab === 'advisory' && (
               <NasaPlantingAdvisoryView
-                defaultDistrict={activeField?.district?.toLowerCase() || 'bogura'}
+                defaultDistrict={activeField?.district?.toLowerCase() || ''}
                 defaultCrop="aman"
                 lang={lang}
                 onNavigate={handleNavigate}

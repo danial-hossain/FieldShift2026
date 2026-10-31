@@ -162,6 +162,12 @@ def use_field_record(data: dict[str, Any], field: FarmField, db: DbSession) -> d
         "organic_matter": field.organic_matter,
         "irrigation_capacity_mm": field.irrigation_capacity_mm,
         "soil_ph": getattr(field, "soil_ph", None),
+        "district": getattr(field, "district", None),
+        "seasonally_flooded": getattr(field, "seasonally_flooded", False),
+        "nearest_district_distance_km": getattr(field, "nearest_district_distance_km", None),
+        "power_cell": getattr(field, "power_cell", None),
+        "imerg_cell": getattr(field, "imerg_cell", None),
+        "soilgrids_soil": getattr(field, "soilgrids_soil", None),
     })
     histories = list(db.scalars(
         select(FieldHistory)
@@ -474,6 +480,14 @@ def startup() -> None:
                 conn.execute(text("ALTER TABLE fields ADD COLUMN district VARCHAR"))
             if "seasonally_flooded" not in cols:
                 conn.execute(text("ALTER TABLE fields ADD COLUMN seasonally_flooded BOOLEAN DEFAULT 0"))
+            if "nearest_district_distance_km" not in cols:
+                conn.execute(text("ALTER TABLE fields ADD COLUMN nearest_district_distance_km FLOAT"))
+            if "power_cell" not in cols:
+                conn.execute(text("ALTER TABLE fields ADD COLUMN power_cell VARCHAR"))
+            if "imerg_cell" not in cols:
+                conn.execute(text("ALTER TABLE fields ADD COLUMN imerg_cell VARCHAR"))
+            if "soilgrids_soil" not in cols:
+                conn.execute(text("ALTER TABLE fields ADD COLUMN soilgrids_soil VARCHAR"))
     except Exception as e:
         logger.warning(f"Field table column migration notice: {e}")
 
@@ -506,6 +520,7 @@ def health(db: DbSession = Depends(get_db)):
 
 @app.post("/api/workflow")
 @app.post("/api/planning")
+@app.post("/api/planning/six-seasons")
 def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
     data = payload.model_dump()
     user = None
@@ -514,6 +529,19 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             user = require_user(fieldshift_session, db)
         except HTTPException:
             user = None
+
+    requested_field_id = data.get("field_id")
+    if requested_field_id not in (None, "", "demo"):
+        if user is None:
+            raise HTTPException(401, "Sign in to analyze a registered field.")
+        try:
+            fid = int(requested_field_id)
+        except (ValueError, TypeError) as error:
+            raise HTTPException(400, "field_id must identify a registered PostgreSQL field.") from error
+        field_record = owned_field(db, fid, user)
+        data = use_field_record(data, field_record, db)
+    elif "area_ha" in data and ("field_size_ha" not in data or data["field_size_ha"] in (None, "")):
+        data["field_size_ha"] = data["area_ha"]
 
     priority = str(data.get("priority", "balanced")).strip().lower()
     valid_priorities = {"balanced", "profit", "water", "soil", "national_need", "দেশের চাহিদা", "demand"}
@@ -528,9 +556,9 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
             from src.compute.advisory_service import nearest_district
             district = nearest_district(float(lat_val), float(lon_val))
         except Exception:
-            district = "bogura"
+            raise HTTPException(400, "Could not resolve nearest district from provided coordinates.")
     elif district is None or not str(district).strip():
-        district = "bogura"
+        raise HTTPException(400, "District or valid latitude/longitude is required for planning. Please specify a location.")
 
     dist_key = None
     climate_df = None
@@ -548,19 +576,6 @@ def workflow(payload: Payload, fieldshift_session: str | None = Cookie(None), db
         if "date" in climate_df.columns:
             import pandas as pd
             climate_df["date"] = pd.to_datetime(climate_df["date"])
-
-    requested_field_id = data.get("field_id")
-    if requested_field_id not in (None, "", "demo"):
-        if user is None:
-            raise HTTPException(401, "Sign in to analyze a registered field.")
-        try:
-            fid = int(requested_field_id)
-        except (ValueError, TypeError) as error:
-            raise HTTPException(400, "field_id must identify a registered PostgreSQL field.") from error
-        field_record = owned_field(db, fid, user)
-        data = use_field_record(data, field_record, db)
-    elif "area_ha" in data and ("field_size_ha" not in data or data["field_size_ha"] in (None, "")):
-        data["field_size_ha"] = data["area_ha"]
 
     user_dict = public_user(user) if user else None
 
@@ -1688,6 +1703,29 @@ def create_field(payload: Payload, user: User = Depends(require_user), db: DbSes
     else:
         is_flooded = False
 
+    dist_km = data.get("nearest_district_distance_km")
+    p_cell = data.get("power_cell")
+    i_cell = data.get("imerg_cell")
+    s_soil = data.get("soilgrids_soil")
+
+    if lat is not None and lon is not None:
+        if not p_cell:
+            p_cell = f"{round(float(lat) * 2.0) / 2.0:.1f},{round(float(lon) * 2.0) / 2.0:.1f}"
+        if not i_cell:
+            i_cell = f"{round(float(lat) * 10.0) / 10.0:.1f},{round(float(lon) * 10.0) / 10.0:.1f}"
+        if dist_km is None and field_district:
+            try:
+                from src.compute.advisory_service import DISTRICT_REGISTRY, haversine_distance_km
+                d_meta = DISTRICT_REGISTRY.get(str(field_district).lower(), {})
+                d_lat = d_meta.get("latitude")
+                d_lon = d_meta.get("longitude")
+                if d_lat is not None and d_lon is not None:
+                    dist_km = round(haversine_distance_km(float(lat), float(lon), float(d_lat), float(d_lon)), 1)
+                if not s_soil:
+                    s_soil = d_meta.get("soil_type")
+            except Exception:
+                pass
+
     stamp = now()
     field = FarmField(
         farm_id=int(farm_id),
@@ -1701,6 +1739,10 @@ def create_field(payload: Payload, user: User = Depends(require_user), db: DbSes
         soil_ph=soil_ph_val,
         district=field_district,
         seasonally_flooded=is_flooded,
+        nearest_district_distance_km=float(dist_km) if dist_km is not None else None,
+        power_cell=p_cell,
+        imerg_cell=i_cell,
+        soilgrids_soil=s_soil,
         created_at=stamp,
         updated_at=stamp
     )
@@ -1791,6 +1833,32 @@ def update_field(field_id: int, payload: Payload, user: User = Depends(require_u
         field.district = str(data["district"]).strip() if data["district"] else None
     if "seasonally_flooded" in data:
         field.seasonally_flooded = bool(data["seasonally_flooded"]) if data["seasonally_flooded"] is not None else False
+    if "nearest_district_distance_km" in data:
+        field.nearest_district_distance_km = float(data["nearest_district_distance_km"]) if data["nearest_district_distance_km"] is not None else None
+    if "power_cell" in data:
+        field.power_cell = str(data["power_cell"]) if data["power_cell"] else None
+    if "imerg_cell" in data:
+        field.imerg_cell = str(data["imerg_cell"]) if data["imerg_cell"] else None
+    if "soilgrids_soil" in data:
+        field.soilgrids_soil = str(data["soilgrids_soil"]) if data["soilgrids_soil"] else None
+
+    if field.latitude is not None and field.longitude is not None:
+        if not field.power_cell or "latitude" in data or "longitude" in data:
+            field.power_cell = f"{round(float(field.latitude) * 2.0) / 2.0:.1f},{round(float(field.longitude) * 2.0) / 2.0:.1f}"
+        if not field.imerg_cell or "latitude" in data or "longitude" in data:
+            field.imerg_cell = f"{round(float(field.latitude) * 10.0) / 10.0:.1f},{round(float(field.longitude) * 10.0) / 10.0:.1f}"
+        if field.district:
+            try:
+                from src.compute.advisory_service import DISTRICT_REGISTRY, haversine_distance_km
+                d_meta = DISTRICT_REGISTRY.get(str(field.district).lower(), {})
+                d_lat = d_meta.get("latitude")
+                d_lon = d_meta.get("longitude")
+                if d_lat is not None and d_lon is not None:
+                    field.nearest_district_distance_km = round(haversine_distance_km(float(field.latitude), float(field.longitude), float(d_lat), float(d_lon)), 1)
+                if not field.soilgrids_soil:
+                    field.soilgrids_soil = d_meta.get("soil_type")
+            except Exception:
+                pass
     stamp = now()
     field.updated_at = stamp
     crop = data.get("crop") or data.get("previous_crop") or data.get("current_crop")
@@ -1876,6 +1944,27 @@ def enrich_field_endpoint(
         user_overrides=data,
         offline=is_offline,
     )
+    if field_id not in {"demo", "field_demo", "0"}:
+        try:
+            f_obj = db.scalar(select(FarmField).where(FarmField.id == int(field_id)))
+            if f_obj:
+                geo = result.get("geography", {})
+                soil = result.get("soil", {})
+                if geo.get("nearest_district"):
+                    f_obj.district = geo.get("nearest_district")
+                if geo.get("distance_to_district_km") is not None:
+                    f_obj.nearest_district_distance_km = float(geo.get("distance_to_district_km"))
+                if geo.get("power_cell"):
+                    f_obj.power_cell = geo.get("power_cell")
+                if geo.get("imerg_cell"):
+                    f_obj.imerg_cell = geo.get("imerg_cell")
+                if soil.get("texture"):
+                    f_obj.soilgrids_soil = soil.get("texture")
+                if geo.get("nearest_district") in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}:
+                    f_obj.seasonally_flooded = True
+                db.commit()
+        except Exception as enrich_err:
+            logger.warning(f"Failed to persist enriched fields to DB: {enrich_err}")
     return finite_json_value(jsonable_encoder(result))
 
 @app.post("/api/analyses",status_code=201)
