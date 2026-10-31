@@ -8,7 +8,8 @@
     "build": "node node_modules/vite/bin/vite.js build",
     "preview": "node node_modules/vite/bin/vite.js preview",
     "test": "node --test src/*.test.js",
-    "smoke": "node node_modules/vite/bin/vite.js build --ssr scripts/smoke-ssr.jsx --outDir .smoke --emptyOutDir && node .smoke/smoke-ssr.js"
+    "smoke": "node node_modules/vite/bin/vite.js build --ssr scripts/smoke-ssr.jsx --outDir .smoke --emptyOutDir && node .smoke/smoke-ssr.js",
+    "e2e": "node e2e/runner.js"
   },
   "dependencies": {
     "@react-three/fiber": "^9.8.2",
