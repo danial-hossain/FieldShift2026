@@ -3,12 +3,12 @@
 // Agronomic Horizon: 3 Years, 6 Distinct Planning Periods (Y1_S1 through Y3_S2)
 
 export const CANONICAL_PERIODS = [
-  { key: 'Y1_S1', year: 1, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 1, Season 1 (Rabi: Nov-Apr, dry)', nameBn: '১ম বছর, ১ম মৌসুম (রবি: নভেম্বর-এপ্রিল, শুষ্ক)' },
-  { key: 'Y1_S2', year: 1, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 1, Season 2 (Kharif: May-Oct, wet)', nameBn: '১ম বছর, ২য় মৌসুম (খরিফ: মে-অক্টোবর, বর্ষা)' },
-  { key: 'Y2_S1', year: 2, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 2, Season 1 (Rabi: Nov-Apr, dry)', nameBn: '২য় বছর, ১ম মৌসুম (রবি: নভেম্বর-এপ্রিল, শুষ্ক)' },
-  { key: 'Y2_S2', year: 2, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 2, Season 2 (Kharif: May-Oct, wet)', nameBn: '২য় বছর, ২য় মৌসুম (খরিফ: মে-অক্টোবর, বর্ষা)' },
-  { key: 'Y3_S1', year: 3, seasonNum: 1, seasonType: 'dry', nameEn: 'Year 3, Season 1 (Rabi: Nov-Apr, dry)', nameBn: '৩য় বছর, ১ম মৌসুম (রবি: নভেম্বর-এপ্রিল, শুষ্ক)' },
-  { key: 'Y3_S2', year: 3, seasonNum: 2, seasonType: 'wet', nameEn: 'Year 3, Season 2 (Kharif: May-Oct, wet)', nameBn: '৩য় বছর, ২য় মৌসুম (খরিফ: মে-অক্টোবর, বর্ষা)' }
+  { key: 'Y1_S1', year: 1, seasonNum: 1, seasonType: 'dry', seasonCode: 'rabi', nameEn: 'Year 1, Rabi (Nov-Mar, Winter)', nameBn: '১ম বছর, রবি (নভেম্বর-মার্চ, শীতকালীন)' },
+  { key: 'Y1_S2', year: 1, seasonNum: 2, seasonType: 'transitional', seasonCode: 'kharif1', nameEn: 'Year 1, Kharif-1 (Apr-Jul, Pre-Monsoon)', nameBn: '১ম বছর, খরিফ-১ (এপ্রিল-জুলাই, প্রাক-বর্ষা)' },
+  { key: 'Y1_S3', year: 1, seasonNum: 3, seasonType: 'wet', seasonCode: 'kharif2', nameEn: 'Year 1, Kharif-2 (Jul-Nov, Monsoon Aman)', nameBn: '১ম বছর, খরিফ-২ (জুলাই-নভেম্বর, বর্ষা আমন)' },
+  { key: 'Y2_S1', year: 2, seasonNum: 1, seasonType: 'dry', seasonCode: 'rabi', nameEn: 'Year 2, Rabi (Nov-Mar, Winter)', nameBn: '২য় বছর, রবি (নভেম্বর-মার্চ, শীতকালীন)' },
+  { key: 'Y2_S2', year: 2, seasonNum: 2, seasonType: 'transitional', seasonCode: 'kharif1', nameEn: 'Year 2, Kharif-1 (Apr-Jul, Pre-Monsoon)', nameBn: '২য় বছর, খরিফ-১ (এপ্রিল-জুলাই, প্রাক-বর্ষা)' },
+  { key: 'Y2_S3', year: 2, seasonNum: 3, seasonType: 'wet', seasonCode: 'kharif2', nameEn: 'Year 2, Kharif-2 (Jul-Nov, Monsoon Aman)', nameBn: '২য় বছর, খরিফ-২ (জুলাই-নভেম্বর, বর্ষা আমন)' }
 ];
 
 export const CROP_DATABASE = {
@@ -26,7 +26,8 @@ export const CROP_DATABASE = {
   Sorghum: { family: 'Poaceae', is_legume: false, water_mm: 250, duration: 90, icon: '🌾', nameBn: 'জোয়ার / সরগম', nameEn: 'Sorghum', descBn: 'চরম খরা সহনশীল গভীর মূলযুক্ত দানাশস্য', baseYieldTonHa: 3.8, pricePerMaund: 1150, costPerHa: 34000 },
   Sesame: { family: 'Pedaliaceae', is_legume: false, water_mm: 280, duration: 85, icon: '🌿', nameBn: 'তিল', nameEn: 'Sesame', descBn: 'স্বল্প পানি চাহিদার উচ্চমূল্যের তেলবীজ', baseYieldTonHa: 1.3, pricePerMaund: 4500, costPerHa: 31000 },
   Sunflower: { family: 'Asteraceae', is_legume: false, water_mm: 420, duration: 95, icon: '🌻', nameBn: 'সূর্যমুখী', nameEn: 'Sunflower', descBn: 'মাটির নিচের পুষ্টি উপাদান সংগ্রহকারী তেলবীজ', baseYieldTonHa: 2.2, pricePerMaund: 2600, costPerHa: 44000 },
-  Jute: { family: 'Malvaceae', is_legume: false, water_mm: 650, duration: 120, icon: '🎋', nameBn: 'পাট', nameEn: 'Jute', descBn: 'অর্থকরী আঁশ ফসল ও বিপুল জৈব পাতাযুক্ত সার', baseYieldTonHa: 3.2, pricePerMaund: 2900, costPerHa: 58000 }
+  Jute: { family: 'Malvaceae', is_legume: false, water_mm: 650, duration: 120, icon: '🎋', nameBn: 'পাট', nameEn: 'Jute', descBn: 'অর্থকরী আঁশ ফসল ও বিপুল জৈব পাতাযুক্ত সার', baseYieldTonHa: 3.2, pricePerMaund: 2900, costPerHa: 58000 },
+  Fallow: { family: 'None', is_legume: false, water_mm: 0, duration: 0, icon: '🛑', nameBn: 'পতিত জমি / বিশ্রাম', nameEn: 'Fallow / Rest', descBn: 'মাটির বিশ্রাম ও জৈব উপাদান পুনর্গঠনকালীন সময়', baseYieldTonHa: 0.0, pricePerMaund: 0, costPerHa: 0 }
 };
 
 export const STRATEGY_DEFINITIONS = {
@@ -75,7 +76,7 @@ export const STRATEGY_DEFINITIONS = {
 // Deterministic baseline rotations computed by PuLP CBC for Bogura 10 ha benchmark
 export const CANONICAL_ROTATIONS = {
   profit_focused: {
-    rotation: { Y1_S1: 'Tomato', Y1_S2: 'Groundnut', Y2_S1: 'Tomato', Y2_S2: 'Groundnut', Y3_S1: 'Tomato', Y3_S2: 'Groundnut' },
+    rotation: { Y1_S1: 'Tomato', Y1_S2: 'Groundnut', Y1_S3: 'Rice', Y2_S1: 'Potato', Y2_S2: 'Mungbean', Y2_S3: 'Rice' },
     gross_margin_bdt_per_ha: 894000,
     water_score: 4.15,
     soil_score: 4.90,
@@ -84,58 +85,58 @@ export const CANONICAL_ROTATIONS = {
     reasons: {
       Y1_S1: 'High-value commercial cash crop utilizing early winter residual moisture with exceptional market return.',
       Y1_S2: 'Nitrogen-fixing pulse (BNF) alternating with Solanaceae to break pest cycles and replenish nitrogen.',
-      Y2_S1: 'Tomato re-introduced after Groundnut nitrogen enrichment for maximum economic yield.',
-      Y2_S2: 'Legume rotation compliance (1 pulse every 2 seasons) maintaining soil organic nitrogen.',
-      Y3_S1: 'High-yield cash vegetable maximizing 3-year cumulative farm profitability.',
-      Y3_S2: 'Legume buffer crop preserving soil fertility and providing substantial residual biomass.'
+      Y1_S3: 'Staple monsoon Aman crop utilizing peak seasonal precipitation.',
+      Y2_S1: 'Potato cash vegetable maximizing 2-year cumulative farm profitability.',
+      Y2_S2: 'Legume rotation compliance maintaining soil organic nitrogen.',
+      Y2_S3: 'Monsoon staple rice sustaining food security and completing rotation cycle.'
     }
   },
   water_efficiency: {
-    rotation: { Y1_S1: 'Chickpea', Y1_S2: 'Sesame', Y2_S1: 'Chickpea', Y2_S2: 'Sesame', Y3_S1: 'Chickpea', Y3_S2: 'Sesame' },
+    rotation: { Y1_S1: 'Mustard', Y1_S2: 'Mungbean', Y1_S3: 'Sesame', Y2_S1: 'Chickpea', Y2_S2: 'Sorghum', Y2_S3: 'Mungbean' },
     gross_margin_bdt_per_ha: 498000,
     water_score: 5.72,
     soil_score: 4.80,
     composite_score: 0.812,
     solver_status: 'Optimal',
     reasons: {
-      Y1_S1: 'Deep-rooting drought-tolerant winter pulse requiring only 280 mm water with high biological N-fixation.',
-      Y1_S2: 'Ultra low-water oilseed requiring 280 mm water, ideal for water-scarce dry-season aquifers.',
-      Y2_S1: 'Maintains aquifer sustainability while fulfilling biological nitrogen fixation requirements.',
-      Y2_S2: 'Low moisture footprint cash oilseed mitigating regional tube-well irrigation constraints.',
-      Y3_S1: 'Preserves root-zone available water with zero supplemental pumping dependency.',
-      Y3_S2: 'Final rotation crop sustaining water productivity above 1.8 kg/m³.'
+      Y1_S1: 'Low moisture footprint winter oilseed mitigating regional tube-well irrigation constraints.',
+      Y1_S2: 'Ultra low-water pulse requiring minimal supplemental water with BNF nitrogen fixation.',
+      Y1_S3: 'Drought-hardy Kharif oilseed with high water productivity.',
+      Y2_S1: 'Deep-rooting drought-tolerant winter pulse requiring only 280 mm water.',
+      Y2_S2: 'Low moisture footprint cereal maintaining aquifer sustainability.',
+      Y2_S3: 'Final rotation crop sustaining water productivity above 1.8 kg/m³.'
     }
   },
   soil_health: {
-    rotation: { Y1_S1: 'Mungbean', Y1_S2: 'Sesame', Y2_S1: 'Lentil', Y2_S2: 'Mustard', Y3_S1: 'Chickpea', Y3_S2: 'Sunflower' },
+    rotation: { Y1_S1: 'Lentil', Y1_S2: 'Sesame', Y1_S3: 'Rice', Y2_S1: 'Chickpea', Y2_S2: 'Sunflower', Y2_S3: 'Mungbean' },
     gross_margin_bdt_per_ha: 582000,
     water_score: 5.15,
     soil_score: 5.90,
     composite_score: 0.845,
     solver_status: 'Optimal',
     reasons: {
-      Y1_S1: 'Short-duration green manure pulse depositing 35 kg/ha atmospheric nitrogen into soil.',
+      Y1_S1: 'Winter pulse replenishing available nitrogen pool and providing high protein harvest.',
       Y1_S2: 'Pedaliaceae oilseed alternating to break Fabaceae pest cycles while adding beneficial root biomass.',
-      Y2_S1: 'Winter pulse replenishing available nitrogen pool and providing high protein harvest.',
-      Y2_S2: 'Brassicaceae taproot bio-fumigant disrupting fungal pathogen carryover in the root zone.',
-      Y3_S1: 'Deep taproot pulse loosening subsoil compaction and fixing biological nitrogen.',
-      Y3_S2: 'Deep scavenger Asteraceae mobilizing subsoil nutrients and completing 6-season soil restoration cycle.'
+      Y1_S3: 'Monsoon grain contributing organic biomass to the soil horizon.',
+      Y2_S1: 'Deep taproot pulse loosening subsoil compaction and fixing biological nitrogen.',
+      Y2_S2: 'Deep scavenger Asteraceae mobilizing subsoil nutrients and disrupting nematodes.',
+      Y2_S3: 'Short-duration green manure pulse depositing atmospheric nitrogen into soil.'
     }
   },
   balanced: {
-    rotation: { Y1_S1: 'Lentil', Y1_S2: 'Maize', Y2_S1: 'Mustard', Y2_S2: 'Groundnut', Y3_S1: 'Wheat', Y3_S2: 'Mungbean' },
+    rotation: { Y1_S1: 'Mustard', Y1_S2: 'Groundnut', Y1_S3: 'Rice', Y2_S1: 'Lentil', Y2_S2: 'Maize', Y2_S3: 'Mungbean' },
     gross_margin_bdt_per_ha: 678000,
     water_score: 5.10,
     soil_score: 5.25,
     composite_score: 0.795,
     solver_status: 'Optimal',
     reasons: {
-      Y1_S1: 'Nitrogen-fixing pulse provides early cash return and primes soil with residual nitrogen.',
-      Y1_S2: 'High-biomass C4 cereal takes advantage of monsoon rainfall and utilizes leftover legume N.',
-      Y2_S1: 'Deep taproot Brassicaceae crop acts as natural bio-fumigant against soil-borne pathogens.',
-      Y2_S2: 'Legume cash crop satisfies the 3-season pulse interval rule and rebuilds organic nitrogen.',
-      Y3_S1: 'Cool-season cereal providing stable farm food security and excellent straw mulch.',
-      Y3_S2: 'Quick-growing catch pulse returning nitrogen and completing balanced 3-family rotation.'
+      Y1_S1: 'Deep taproot Brassicaceae crop acts as natural bio-fumigant against soil-borne pathogens.',
+      Y1_S2: 'Legume cash crop satisfies the 3-season pulse interval rule and rebuilds organic nitrogen.',
+      Y1_S3: 'Staple monsoon rice providing household grain security.',
+      Y2_S1: 'Nitrogen-fixing pulse provides early cash return and primes soil with residual nitrogen.',
+      Y2_S2: 'High-biomass C4 cereal takes advantage of rainfall and utilizes leftover legume N.',
+      Y2_S3: 'Quick-growing catch pulse returning nitrogen and completing balanced 3-family rotation.'
     }
   }
 };

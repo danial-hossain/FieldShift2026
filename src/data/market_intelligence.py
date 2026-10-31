@@ -539,6 +539,12 @@ def get_market_overview(
             "currency": "BDT (Bangladeshi Taka / বাংলাদেশী টাকা)",
             "unit_standard": "BDT/kg, BDT/maund (40kg), BDT/metric ton (1000kg)",
             "sources": OFFICIAL_MARKET_SOURCES,
+            "demand_signal": {
+                "status": "unavailable",
+                "message": "Demand data unavailable.",
+                "message_bn": "চাহিদা সম্পর্কিত প্রত্যক্ষ তথ্য উন্মুক্তভাবে উপলব্ধ নয়।",
+                "explanation": "Official Bangladesh marketing authorities (DAM, TCB) record spot price surveys but do not publish daily transaction volume or quantitative buyer demand curves as an open API. FieldShift strictly avoids fabricating speculative demand indicators.",
+            },
             "national_demand_source": "FAOSTAT Bangladesh Food Balance Sheets (2022-2024)",
             "groupings": {
                 "deficit_crops": deficit_crops,

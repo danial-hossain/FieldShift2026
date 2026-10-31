@@ -10,7 +10,7 @@ import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skelet
 // Y2_S1 (Year 2, Rabi (Nov-Apr, dry))
 // Y2_S2 (Year 2, Kharif (May-Oct, wet))
 // Y3_S1 (Year 3, Rabi (Nov-Apr, dry))
-// Y3_S2 (Year 3, Kharif (May-Oct, wet))
+// Y2_S3 (Year 3, Kharif (May-Oct, wet))
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation, formatCurrency, toBengaliNumber } from './i18n.js';
@@ -456,8 +456,8 @@ export function SixSeasonRecommendationView({
 
           <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)', maxWidth: 880, lineHeight: 1.5 }}>
             {lang === 'bn'
-              ? '৩ বছরের ৬টি ধারাবাহিক মৌসুমে (Y1_S1 থেকে Y3_S2) সর্বোচ্চ লাভ, ভূগর্ভস্থ পানি সাশ্রয় এবং মাটির নাইট্রোজেন বৃদ্ধিতে গাণিতিক অপ্টিমাইজেশন (PuLP CBC Solver) ভিত্তিক পূর্ণাঙ্গ ফসল পরিকল্পনা ও বৈজ্ঞানিক ব্যাখ্যা।'
-              : 'Multi-period Mixed Integer Linear Programming (PuLP CBC) solving simultaneously across 6 consecutive agricultural seasons (Y1_S1 through Y3_S2). Balances gross margin, water conservation, and soil health with strict legume BNF interval and botanical alternation constraints.'}
+              ? '২ বছরের ৬টি ধারাবাহিক মৌসুমে (Y1_S1 থেকে Y2_S3: রবি, খরিফ-১ ও খরিফ-২) সর্বোচ্চ লাভ, ভূগর্ভস্থ পানি সাশ্রয় এবং মাটির নাইট্রোজেন বৃদ্ধিতে গাণিতিক অপ্টিমাইজেশন (PuLP CBC Solver) ভিত্তিক পূর্ণাঙ্গ ফসল পরিকল্পনা ও বৈজ্ঞানিক ব্যাখ্যা।'
+              : 'Multi-period Mixed Integer Linear Programming (PuLP CBC) solving simultaneously across 6 consecutive agricultural seasons (Y1_S1 through Y2_S3). Balances gross margin, water conservation, and soil health with strict legume BNF interval and botanical alternation constraints.'}
           </p>
         </div>
 
@@ -1121,7 +1121,7 @@ export function SixSeasonRecommendationView({
           🔬 বৈজ্ঞানিক ভিত্তি ও স্বচ্ছতা নীতিমালা (Scientific Provenance & Agronomic Caveats):
         </strong>
         <p style={{ margin: '0 0 6px' }}>
-          ১. <strong>গাণিতিক সমাধান (PuLP CBC Solver):</strong> মিশ্র-পূর্ণসংখ্যা রৈখিক প্রোগ্রামিং (MILP) এর মাধ্যমে ৩ বছরের ৬টি ধারাবাহিক মৌসুমে (Y1_S1 থেকে Y3_S2) একই সাথে গ্লোবাল অপ্টিমাল সমাধান নির্ণয় করা হয়। এতে প্রতি ৩ মৌসুমে কমপক্ষে ১টি ডাল (Legume BNF) এবং একই পরিবারের ফসলের পুনরাবৃত্তি রোধ করার কঠোর শর্ত প্রয়োগ করা হয়েছে।
+          ১. <strong>গাণিতিক সমাধান (PuLP CBC Solver):</strong> মিশ্র-পূর্ণসংখ্যা রৈখিক প্রোগ্রামিং (MILP) এর মাধ্যমে ২ বছরের ৬টি ধারাবাহিক মৌসুমে (Y1_S1 থেকে Y2_S3: রবি, খরিফ-১ ও খরিফ-২) একই সাথে গ্লোবাল অপ্টিমাল সমাধান নির্ণয় করা হয়। এতে প্রতি ৩ মৌসুমে কমপক্ষে ১টি ডাল (Legume BNF) এবং একই পরিবারের ফসলের পুনরাবৃত্তি রোধ করার কঠোর শর্ত প্রয়োগ করা হয়েছে।
         </p>
         <p style={{ margin: '0 0 6px' }}>
           ২. <strong>পানি ও ফলন মডেল (FAO-33 & FAO-56):</strong> ফসলের পানির চাহিদা ও স্টুয়ার্ট ফলন হ্রাস মডেল জাতিসংঘের খাদ্য ও কৃষি সংস্থার বৈজ্ঞানিক সমীকরণ অনুসারে নির্ধারিত।

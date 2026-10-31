@@ -6,7 +6,7 @@ import {
   readInputValue
 } from './rlSimulationState.js';
 
-const SEASONS = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
+const SEASONS = ['Y1_S1', 'Y1_S2', 'Y1_S3', 'Y2_S1', 'Y2_S2', 'Y2_S3'];
 const ACTIONS = ['Sesame', 'Groundnut', 'Chickpea', 'Lentil', 'Mungbean', 'Sorghum', 'Tomato', 'Soybean'];
 const num = (value, digits = 1) =>
   value == null || !Number.isFinite(Number(value)) ? 'Not Available' : Number(value).toFixed(digits);

@@ -167,7 +167,7 @@ export function SustainabilityTrackerView({
           {/* NPK Sensor */}
           <div style={{ background: '#0e1318', padding: '12px 16px', borderRadius: '10px', border: '1px solid #1e293b' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-              <span style={{ fontSize: '11.5px', color: '#94a3b8' }}>In-situ N-P-K Nutrients</span>
+              <span style={{ fontSize: '11.5px', color: '#94a3b8' }}>In-situ Lab N-P-K Status</span>
               <span style={{
                 fontSize: '10px',
                 padding: '1px 6px',

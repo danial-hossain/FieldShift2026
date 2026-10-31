@@ -2876,7 +2876,7 @@ export function App() {
                             <span className="stress-stage-dot mint" />
                             <div>
                               <div className="stress-stage-title">Soil Biota Recovery (S4–S6)</div>
-                              <div className="stress-stage-desc">Organic matter: 9.8% • Humus equilibrium stable</div>
+                              <div className="stress-stage-desc">Organic matter: 2.4% • Soil organic carbon equilibrium stable</div>
                             </div>
                           </div>
                           <span className="stress-stage-chevron">›</span>
@@ -2908,39 +2908,39 @@ export function App() {
                         <tbody>
                           <tr>
                             <td><strong style={{ color: 'var(--primary)' }}>Y1_S1</strong></td>
-                            <td>{rotationPeriods.Y1_S1 || 'Sorghum'}</td>
-                            <td>2.19 t/ha</td>
-                            <td>109.5 t</td>
+                            <td>{rotationPeriods.Y1_S1 || 'Mustard'}</td>
+                            <td>1.90 t/ha</td>
+                            <td>19.0 t</td>
                           </tr>
                           <tr>
                             <td><strong style={{ color: 'var(--primary)' }}>Y1_S2</strong></td>
-                            <td>{rotationPeriods.Y1_S2 || 'Sesame'}</td>
-                            <td>0.97 t/ha</td>
-                            <td>48.3 t</td>
+                            <td>{rotationPeriods.Y1_S2 || 'Groundnut'}</td>
+                            <td>2.80 t/ha</td>
+                            <td>28.0 t</td>
+                          </tr>
+                          <tr>
+                            <td><strong style={{ color: 'var(--primary)' }}>Y1_S3</strong></td>
+                            <td>{rotationPeriods.Y1_S3 || 'Rice'}</td>
+                            <td>5.50 t/ha</td>
+                            <td>55.0 t</td>
                           </tr>
                           <tr>
                             <td><strong style={{ color: 'var(--primary)' }}>Y2_S1</strong></td>
-                            <td>{rotationPeriods.Y2_S1 || 'Chickpea'}</td>
-                            <td>0.78 t/ha</td>
-                            <td>39.0 t</td>
+                            <td>{rotationPeriods.Y2_S1 || 'Lentil'}</td>
+                            <td>1.80 t/ha</td>
+                            <td>18.0 t</td>
                           </tr>
                           <tr>
                             <td><strong style={{ color: 'var(--primary)' }}>Y2_S2</strong></td>
-                            <td>{rotationPeriods.Y2_S2 || 'Sesame'}</td>
-                            <td>0.97 t/ha</td>
-                            <td>48.3 t</td>
+                            <td>{rotationPeriods.Y2_S2 || 'Maize'}</td>
+                            <td>8.50 t/ha</td>
+                            <td>85.0 t</td>
                           </tr>
                           <tr>
-                            <td><strong style={{ color: 'var(--primary)' }}>Y3_S1</strong></td>
-                            <td>{rotationPeriods.Y3_S1 || 'Chickpea'}</td>
-                            <td>0.78 t/ha</td>
-                            <td>39.0 t</td>
-                          </tr>
-                          <tr>
-                            <td><strong style={{ color: 'var(--primary)' }}>Y3_S2</strong></td>
-                            <td>{rotationPeriods.Y3_S2 || 'Sesame'}</td>
-                            <td>0.97 t/ha</td>
-                            <td>48.3 t</td>
+                            <td><strong style={{ color: 'var(--primary)' }}>Y2_S3</strong></td>
+                            <td>{rotationPeriods.Y2_S3 || 'Mungbean'}</td>
+                            <td>1.60 t/ha</td>
+                            <td>16.0 t</td>
                           </tr>
                         </tbody>
                       </table>
@@ -3532,7 +3532,7 @@ export function App() {
                         <line x1="12" y1="20" x2="12.01" y2="20"/>
                       </svg>
                     </div>
-                    <span className="holo-clearance-badge">LEVEL 4 • CHIEF SCIENTIST</span>
+                    <span className="holo-clearance-badge">NASA SPACE APPS 2026 • AGRO-ADVISORY</span>
                   </div>
 
                   {/* Middle: 3D Rotating Orbit Avatar & Identity */}
@@ -3568,7 +3568,7 @@ export function App() {
                     <div className="holo-spec-box">
                       <span className="holo-spec-label">Active Station</span>
                       <span className="holo-spec-value">
-                        {userFarms.find(farm => farm.id === activeField?.farm_id)?.name || 'Station Alpha'}
+                        {userFarms.find(farm => farm.id === activeField?.farm_id)?.name || activeField?.name || 'Bogura Field'}
                       </span>
                     </div>
                     <div className="holo-spec-box">
@@ -3776,7 +3776,7 @@ export function App() {
               <div className="soil-3d-core-flex">
                 {/* 3D Vertical Cylinder */}
                 <div className="soil-3d-cylinder">
-                  <div className="soil-cylinder-layer-a">A-Horizon (0–15 cm) • 9.8% OM</div>
+                  <div className="soil-cylinder-layer-a">A-Horizon (0–15 cm) • 2.4% OM (ISRIC SoilGrids)</div>
                   <div className="soil-cylinder-layer-b">B-Horizon (15–40 cm) • FC 32%</div>
                   <div className="soil-cylinder-layer-c">C-Horizon (40+ cm) • Drainage</div>
                 </div>
@@ -3786,7 +3786,7 @@ export function App() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
                     <div className="holo-spec-box">
                       <span className="holo-spec-label">A-Horizon Topsoil</span>
-                      <strong style={{ fontSize: 12.5, color: '#f1f5f9' }}>Organic Matter: 9.8%</strong>
+                      <strong style={{ fontSize: 12.5, color: '#f1f5f9' }}>Organic Matter: 2.4% (ISRIC SoilGrids)</strong>
                       <span style={{ fontSize: 10.5, color: 'var(--text-dim)' }}>High Microbial Biota & Rootzone</span>
                     </div>
                     <div className="holo-spec-box">

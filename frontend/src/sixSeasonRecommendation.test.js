@@ -11,20 +11,20 @@ import {
 
 test('CANONICAL_PERIODS contains exactly 6 chronological planning periods', () => {
   assert.equal(CANONICAL_PERIODS.length, 6, 'Must contain exactly 6 periods');
-  const expectedKeys = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
+  const expectedKeys = ['Y1_S1', 'Y1_S2', 'Y1_S3', 'Y2_S1', 'Y2_S2', 'Y2_S3'];
   assert.deepEqual(CANONICAL_PERIODS.map(p => p.key), expectedKeys);
 
-  // Check alternating dry/wet season pattern
-  assert.equal(CANONICAL_PERIODS[0].seasonType, 'dry');
-  assert.equal(CANONICAL_PERIODS[1].seasonType, 'wet');
-  assert.equal(CANONICAL_PERIODS[2].seasonType, 'dry');
-  assert.equal(CANONICAL_PERIODS[3].seasonType, 'wet');
-  assert.equal(CANONICAL_PERIODS[4].seasonType, 'dry');
-  assert.equal(CANONICAL_PERIODS[5].seasonType, 'wet');
+  // Check season patterns (Rabi=dry, Kharif1=transitional, Kharif2=wet)
+  assert.equal(CANONICAL_PERIODS[0].seasonCode, 'rabi');
+  assert.equal(CANONICAL_PERIODS[1].seasonCode, 'kharif1');
+  assert.equal(CANONICAL_PERIODS[2].seasonCode, 'kharif2');
+  assert.equal(CANONICAL_PERIODS[3].seasonCode, 'rabi');
+  assert.equal(CANONICAL_PERIODS[4].seasonCode, 'kharif1');
+  assert.equal(CANONICAL_PERIODS[5].seasonCode, 'kharif2');
 
   // Check chronological years and seasons
-  assert.deepEqual(CANONICAL_PERIODS.map(p => p.year), [1, 1, 2, 2, 3, 3]);
-  assert.deepEqual(CANONICAL_PERIODS.map(p => p.seasonNum), [1, 2, 1, 2, 1, 2]);
+  assert.deepEqual(CANONICAL_PERIODS.map(p => p.year), [1, 1, 1, 2, 2, 2]);
+  assert.deepEqual(CANONICAL_PERIODS.map(p => p.seasonNum), [1, 2, 3, 1, 2, 3]);
 });
 
 test('All 4 MILP strategy profiles have valid objective weights summing to 1.0', () => {
@@ -43,7 +43,7 @@ test('All 4 MILP strategy profiles have valid objective weights summing to 1.0',
 });
 
 test('Canonical rotations cover all 6 periods with crops present in CROP_DATABASE', () => {
-  const periods = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
+  const periods = ['Y1_S1', 'Y1_S2', 'Y1_S3', 'Y2_S1', 'Y2_S2', 'Y2_S3'];
   for (const [stratKey, stratData] of Object.entries(CANONICAL_ROTATIONS)) {
     assert.ok(stratData.rotation, `Strategy ${stratKey} must define a rotation`);
     for (const p of periods) {
@@ -59,7 +59,7 @@ test('Canonical rotations cover all 6 periods with crops present in CROP_DATABAS
 });
 
 test('Legume BNF interval rule: every strategy contains at least 1 pulse/legume in every 3 consecutive seasons', () => {
-  const periods = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
+  const periods = ['Y1_S1', 'Y1_S2', 'Y1_S3', 'Y2_S1', 'Y2_S2', 'Y2_S3'];
 
   for (const [stratKey, stratData] of Object.entries(CANONICAL_ROTATIONS)) {
     const crops = periods.map(p => stratData.rotation[p]);
@@ -78,7 +78,7 @@ test('Legume BNF interval rule: every strategy contains at least 1 pulse/legume 
 });
 
 test('Botanical family alternation: no consecutive seasons use crops from the same family', () => {
-  const periods = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
+  const periods = ['Y1_S1', 'Y1_S2', 'Y1_S3', 'Y2_S1', 'Y2_S2', 'Y2_S3'];
 
   for (const [stratKey, stratData] of Object.entries(CANONICAL_ROTATIONS)) {
     const families = periods.map(p => CROP_DATABASE[stratData.rotation[p]].family);
@@ -104,7 +104,7 @@ test('buildSixSeasonRecommendations produces complete, ordered recommendations w
   assert.equal(recommendations.length, 6, 'Must produce exactly 6 recommendations');
 
   // Verify chronological ordering
-  const expectedKeys = ['Y1_S1', 'Y1_S2', 'Y2_S1', 'Y2_S2', 'Y3_S1', 'Y3_S2'];
+  const expectedKeys = ['Y1_S1', 'Y1_S2', 'Y1_S3', 'Y2_S1', 'Y2_S2', 'Y2_S3'];
   assert.deepEqual(recommendations.map(r => r.key), expectedKeys);
 
   // Check first recommendation

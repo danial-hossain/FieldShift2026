@@ -146,7 +146,7 @@ export function FarmerHomeView({
             </span>
           </div>
           <span style={{ fontSize: 11, color: 'var(--accent)', fontWeight: 500 }}>
-            {lang === 'bn' ? 'ERA5 ও স্যাটেলাইট সমন্বিত' : 'Daily Reanalysis Telemetry'}
+            {lang === 'bn' ? 'NASA POWER ও স্যাটেলাইট সমন্বিত' : 'NASA POWER & Satellite Reanalysis'}
           </span>
         </Card>
 
@@ -251,7 +251,7 @@ export function FarmerHomeView({
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <DataSourceTag source="NASA POWER" mode="in-situ" period="2026" />
+              <DataSourceTag source="NASA POWER" mode="observed" period="2026" />
               <Button size="sm" variant="ghost" onClick={() => onNavigate('field')}>
                 {lang === 'bn' ? 'জমির বিস্তারিত ➔' : 'Manage Parcel ➔'}
               </Button>
