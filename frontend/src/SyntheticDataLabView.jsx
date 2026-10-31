@@ -425,7 +425,7 @@ export function SyntheticDataLabView({
                   </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 32, fontWeight: 800, color: '#16a34a' }}>
+                  <div style={{ fontSize: 28, fontWeight: 600, color: '#16a34a' }}>
                     {provenanceSummary.reliability_score}%
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: '#15803d' }}>

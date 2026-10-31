@@ -13865,18 +13865,40 @@ html, body {
 
 
 
-/* Phase 3 Typography & Bangla Rules */
+/* U1 & Phase 3 Typography & Bangla Rules: Page 24/600, Card 16/600, Stat max 28/600, Label 12/500 muted, Bangla 1.6 */
 body {
   font-family: 'Inter', 'Hind Siliguri', system-ui, sans-serif !important;
   color: var(--text) !important;
   background-color: var(--bg) !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, .page-title, .dash-header h1 {
   font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+h2, h3, .card-title, .panel-title {
+  font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+}
+
+.stat-value, .kpi-value, .metric-value, [data-stat] {
+  font-size: clamp(20px, 2.5vw, 28px) !important;
+  font-weight: 600 !important;
+}
+
+.stat-label, .kpi-label, .metric-label, .label-muted {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
 }
 
 :lang(bn), [lang="bn"], .bangla-text {
+  font-family: 'Hind Siliguri', 'Inter', system-ui, sans-serif !important;
   line-height: 1.6 !important;
 }
 

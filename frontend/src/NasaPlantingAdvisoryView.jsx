@@ -194,7 +194,7 @@ export function NasaPlantingAdvisoryView({
               </div>
             )}
 
-            <h1 style={{ fontSize: 30, lineHeight: 1.6, margin: '0 0 12px 0', color: 'var(--text)', fontWeight: 600, fontFamily: 'Hind Siliguri, sans-serif' }}>
+            <h1 style={{ fontSize: 24, lineHeight: 1.6, margin: '0 0 12px 0', color: 'var(--text)', fontWeight: 600, fontFamily: 'Hind Siliguri, sans-serif' }}>
               {headline}
             </h1>
 

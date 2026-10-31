@@ -292,3 +292,21 @@ test('R5: Unified visual language for research pages', () => {
     'ResearchWorkspaceView must not set textTransform: "uppercase" on section headings'
   );
 });
+
+test('U1: Typography scale integrity - no inline data values with fontSize >= 32', () => {
+  const synSrc = fs.readFileSync(path.join(__dirname, 'SyntheticDataLabView.jsx'), 'utf-8');
+  const sixSrc = fs.readFileSync(path.join(__dirname, 'SixSeasonRecommendationView.jsx'), 'utf-8');
+  const stylesSrc = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+
+  // Verify no inline fontSize >= 32 on data values
+  assert.ok(!synSrc.includes('fontSize: 32'), 'SyntheticDataLabView must not have fontSize 32 on data values');
+  assert.ok(synSrc.includes('fontSize: 28, fontWeight: 600'), 'SyntheticDataLabView must use max 28/600 for reliability score');
+
+  // Verify page titles use 24/600
+  assert.ok(sixSrc.includes('fontSize: 24, fontWeight: 600'), 'SixSeasonRecommendationView page title must use 24/600');
+
+  // Verify styles.css contains U1 type scale definitions
+  assert.ok(stylesSrc.includes('font-size: 24px !important;'), 'styles.css must enforce 24px for page title');
+  assert.ok(stylesSrc.includes('font-size: 16px !important;'), 'styles.css must enforce 16px for card title');
+  assert.ok(stylesSrc.includes('line-height: 1.6 !important;'), 'styles.css must enforce 1.6 line-height for Bangla');
+});
