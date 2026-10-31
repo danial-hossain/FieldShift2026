@@ -23,6 +23,7 @@ import {
 } from './sixSeasonEngine.js';
 import { SixSeasonTrajectory3D } from './research3d/SixSeasonTrajectory3D.jsx';
 import { BangladeshClimateMap } from './BangladeshClimateMap.jsx';
+import { PlainLanguagePopover, SaaoNotice } from './PlainLanguagePopover.jsx';
 
 
 const PRIORITIES = ['balanced', 'profit', 'water', 'soil'];
@@ -833,7 +834,7 @@ export function SixSeasonRecommendationView({
           })}
         </div>
 
-        {/* A2: Deterministic 5-Item Strategy Card */}
+        {/* A2 & A7: Deterministic 5-Item Strategy Card with Plain-Language Popovers and SAAO Notice */}
         <div style={{
           marginTop: 18,
           background: 'rgba(15, 23, 42, 0.65)',
@@ -849,6 +850,31 @@ export function SixSeasonRecommendationView({
               </strong>
             </div>
             <DataSourceTag source="NASA POWER" mode="climatology" period="2001-2025" />
+          </div>
+
+          {/* Plain-Language Science Explanations Quick Bar */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flexWrap: 'wrap',
+            padding: '8px 12px',
+            background: 'rgba(2, 6, 23, 0.55)',
+            borderRadius: 8,
+            border: '1px solid rgba(56, 189, 248, 0.18)',
+            marginBottom: 14
+          }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--water)' }}>
+              💡 {lang === 'bn' ? 'বিজ্ঞান ও পরিভাষা গাইড:' : 'Plain-Language Explanations:'}
+            </span>
+            <PlainLanguagePopover termKey="evapotranspiration" lang={lang} label={lang === 'bn' ? 'বাষ্পীভবন (ET0)' : 'Evapotranspiration (ET0)'} />
+            <PlainLanguagePopover termKey="soil_moisture" lang={lang} label={lang === 'bn' ? 'মাটির রস (SMAP)' : 'Soil Moisture (SMAP)'} />
+            <PlainLanguagePopover termKey="ndvi" lang={lang} label={lang === 'bn' ? 'সবুজায়ন (NDVI)' : 'NDVI Index'} />
+            <PlainLanguagePopover termKey="heat_stress" lang={lang} label={lang === 'bn' ? 'তাপপ্রবাহ ঝুঁকি' : 'Heat Stress'} />
+            <PlainLanguagePopover termKey="water_balance" lang={lang} label={lang === 'bn' ? 'পানির ভারসাম্য' : 'Water Balance'} />
+            <PlainLanguagePopover termKey="satellite_vs_ground" lang={lang} label={lang === 'bn' ? 'উপগ্রহ বনাম ভূমি' : 'Satellite vs Ground'} />
+            <PlainLanguagePopover termKey="reanalysis_vs_observation" lang={lang} label={lang === 'bn' ? 'পুনর্বিশ্লেষণ বনাম পর্যবেক্ষণ' : 'Reanalysis vs Observation'} />
+            <PlainLanguagePopover termKey="uncertainty" lang={lang} label={lang === 'bn' ? 'অনিশ্চয়তা (P10-P90)' : 'Uncertainty (P10-P90)'} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
@@ -870,8 +896,14 @@ export function SixSeasonRecommendationView({
 
             {/* 2. Scientific Evidence with Dataset Tag */}
             <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--leaf)', textTransform: 'uppercase', marginBottom: 4 }}>
-                ২. উপাত্তভিত্তিক প্রমাণ (Scientific Evidence)
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--leaf)', textTransform: 'uppercase' }}>
+                  ২. উপাত্তভিত্তিক প্রমাণ (Scientific Evidence)
+                </span>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <PlainLanguagePopover termKey="satellite_vs_ground" lang={lang} />
+                  <PlainLanguagePopover termKey="reanalysis_vs_observation" lang={lang} />
+                </div>
               </div>
               <p style={{ margin: 0, fontSize: 12, color: 'var(--text-2)', lineHeight: 1.5 }}>
                 {lang === 'bn'
@@ -894,8 +926,11 @@ export function SixSeasonRecommendationView({
 
             {/* 4. Information Gaps */}
             <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#ec4899', textTransform: 'uppercase', marginBottom: 4 }}>
-                ৪. উপাত্তের সীমাবদ্ধতা (Information Gaps)
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#ec4899', textTransform: 'uppercase' }}>
+                  ৪. উপাত্তের সীমাবদ্ধতা (Information Gaps)
+                </span>
+                <PlainLanguagePopover termKey="uncertainty" lang={lang} />
               </div>
               <p style={{ margin: 0, fontSize: 12, color: 'var(--text-2)', lineHeight: 1.5 }}>
                 {lang === 'bn'
@@ -917,6 +952,8 @@ export function SixSeasonRecommendationView({
             </div>
           </div>
 
+          {/* SAAO Verification Advisory Notice */}
+          <SaaoNotice lang={lang} />
         </div>
       </div>
 
@@ -955,6 +992,8 @@ export function SixSeasonRecommendationView({
         <div style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--glass-border)', padding: '14px 18px', boxShadow: 'var(--glass-shadow)' }}>
           <span style={{ display: 'block', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             {lang === 'bn' ? 'পানি সাশ্রয় সূচক' : 'WATER CONSERVATION'}
+            <PlainLanguagePopover termKey="evapotranspiration" lang={lang} />
+            <PlainLanguagePopover termKey="water_balance" lang={lang} />
           </span>
           <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--water)', marginTop: 4 }}>
             {activePlanData.waterScore != null ? `${Number(activePlanData.waterScore).toFixed(2)} ` : (lang === 'bn' ? 'তথ্য নেই ' : 'No data ')}
@@ -1004,6 +1043,7 @@ export function SixSeasonRecommendationView({
           <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
               🛡️ {lang === 'bn' ? 'নগ্ন মাটি অনাবৃত দিন' : 'Bare-Field Days'}
+              <PlainLanguagePopover termKey="ndvi" lang={lang} />
             </span>
             <div style={{ fontSize: 20, fontWeight: 800, color: soilHealthIndicators.annualBareDays <= 45 ? 'var(--leaf)' : '#f59e0b', marginTop: 4 }}>
               {soilHealthIndicators.annualBareDays} {lang === 'bn' ? 'দিন/বছর' : 'days/yr'}
@@ -1056,6 +1096,7 @@ export function SixSeasonRecommendationView({
           <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
               🌧️ {lang === 'bn' ? 'মৃত্তিকা আচ্ছাদন সূচক' : 'Erosion Cover Index'}
+              <PlainLanguagePopover termKey="soil_moisture" lang={lang} />
             </span>
             <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--leaf)', marginTop: 4 }}>
               {soilHealthIndicators.erosionCoverPct}%
@@ -1254,6 +1295,8 @@ export function SixSeasonRecommendationView({
         </div>
       )}
 
+      {viewMode === 'recommendations' && <SaaoNotice lang={lang} />}
+
       {/* 6. VIEW B: 4-STRATEGY COMPARISON MATRIX TABLE */}
       {viewMode === 'comparison' && (
         <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 20, marginBottom: 24, boxShadow: 'var(--glass-shadow)', overflowX: 'auto' }}>
@@ -1414,6 +1457,7 @@ export function SixSeasonRecommendationView({
               })}
             </tbody>
           </table>
+          <SaaoNotice lang={lang} />
         </div>
       )}
 
@@ -1436,6 +1480,7 @@ export function SixSeasonRecommendationView({
               <strong style={{ fontSize: 13, color: 'var(--water)' }}>
                 🗓️ {lang === 'bn' ? '১২-মাসের ক্রপিং ক্যালেন্ডার স্ট্রিপ (বার্ষিক চক্র)' : '12-Month Continuous Cropping Calendar Strip'}
               </strong>
+              <PlainLanguagePopover termKey="heat_stress" lang={lang} />
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                 {lang === 'bn' ? 'রবি (নভে-এপ্রি) • খরিফ-১ (এপ্রি-জুন) • খরিফ-২ (জুলাই-অক্টো)' : 'Rabi (Nov-Apr) • Kharif-1 (Apr-Jun) • Kharif-2 (Jul-Oct)'}
               </span>
@@ -1606,7 +1651,9 @@ export function SixSeasonRecommendationView({
         </div>
       )}
 
-      {/* VIEW D: 3D ROTATION TRAJECTORY (CHRONOLOGICAL PARCEL RING) */}
+      {viewMode === 'timeline' && <SaaoNotice lang={lang} />}
+
+            {/* VIEW D: 3D ROTATION TRAJECTORY (CHRONOLOGICAL PARCEL RING) */}
       {viewMode === '3d_trajectory' && (
         <div style={{ marginBottom: 24 }}>
           <SixSeasonTrajectory3D

@@ -15,6 +15,7 @@ import {
   validateFieldInputs,
   determineComparisonWinner
 } from './comparisonLabEngine.js';
+import { SaaoNotice } from './PlainLanguagePopover.jsx';
 
 export {
   validateComparisonResponse,
@@ -775,6 +776,7 @@ export function ComparisonLabView({
             )}
           </div>
         </div>
+        <SaaoNotice lang={lang} />
       </div>
     </div>
   );
