@@ -893,25 +893,55 @@ def satellite_readiness(latitude: float = 23.8103, longitude: float = 90.4125, l
     return finite_json_value(jsonable_encoder(data))
 
 @app.post("/api/lab/compare")
-def lab_compare(payload: Payload):
+def lab_compare(payload: Payload, fieldshift_session: str | None = Cookie(None), db: DbSession = Depends(get_db)):
     data = payload.model_dump()
-    from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
     from src.state.field_state import build_field_state
     from src.data.crops import load_crop_knowledge
     from src.preprocessing.features import build_features
     from src.integration.comparison_lab import run_three_way_comparison
+    from src.compute.advisory_service import load_district_climate_data, DISTRICT_REGISTRY, nearest_district
     import pandas as pd
 
-    lat = float(data.get("latitude") or 23.8103)
-    lon = float(data.get("longitude") or 90.4125)
-    priority = str(data.get("priority") or "balanced")
+    user = None
+    if fieldshift_session:
+        try:
+            user = require_user(fieldshift_session, db)
+        except HTTPException:
+            user = None
 
-    if DEFAULT_NASA_PATH.is_file():
+    requested_field_id = data.get("field_id")
+    if requested_field_id not in (None, "", "demo") and user is not None:
+        try:
+            fid = int(requested_field_id)
+            field_record = owned_field(db, fid, user)
+            data = use_field_record(data, field_record, db)
+        except Exception:
+            pass
+
+    lat_val = data.get("latitude")
+    lon_val = data.get("longitude")
+    district = data.get("district")
+    if not district and lat_val is not None and lon_val is not None:
+        try:
+            district = nearest_district(float(lat_val), float(lon_val))
+        except Exception:
+            district = "bogura"
+    if not district or str(district).strip().lower() not in DISTRICT_REGISTRY:
+        district = "bogura"
+
+    dist_key = str(district).strip().lower()
+    is_offline = os.environ.get("OFFLINE", "1") == "1"
+    try:
+        power, data_mode = load_district_climate_data(dist_key, offline=is_offline)
+    except Exception:
+        from src.experiments.integrated_research_demo import DEFAULT_NASA_PATH
         power = pd.read_csv(DEFAULT_NASA_PATH)
+    if "date" in power.columns:
         power["date"] = pd.to_datetime(power["date"])
-    else:
-        from src.data.nasa_power import fetch_recent_nasa_power
-        power = fetch_recent_nasa_power(lat, lon)
+
+    lat = float(lat_val or DISTRICT_REGISTRY[dist_key].get("latitude") or 24.85)
+    lon = float(lon_val or DISTRICT_REGISTRY[dist_key].get("longitude") or 89.37)
+    priority = str(data.get("priority") or "balanced")
 
     crops_df = load_crop_knowledge()
     state = build_field_state(str(data.get("field_id") or "demo"), lat, lon, power["date"].max(), power, crop_knowledge=crops_df)
@@ -921,10 +951,22 @@ def lab_compare(payload: Payload):
     if data.get("organic_matter"): state.organic_matter = float(data["organic_matter"])
     if data.get("temperature_c"): state.temperature = float(data["temperature_c"])
     if data.get("irrigation_capacity_mm"): state.irrigation_capacity_mm = float(data["irrigation_capacity_mm"])
+    if "soil_texture" in data and data["soil_texture"] != "unknown":
+        state.texture = str(data["soil_texture"])
+    elif dist_key in DISTRICT_REGISTRY:
+        state.texture = DISTRICT_REGISTRY[dist_key].get("soil_type", "loam")
+
+    is_haor = data.get("seasonally_flooded")
+    if is_haor is None:
+        is_haor = dist_key in {"sunamganj", "netrokona", "kishoreganj", "habiganj", "moulvibazar"}
+    state.seasonally_flooded = bool(is_haor)
+
     features = build_features(state, environmental_history=power)
     if data.get("available_water_mm"): features["available_water_mm"] = float(data["available_water_mm"])
 
     result = run_three_way_comparison(state, power, crops=crops_df, features=features, priority=priority)
+    result["district"] = dist_key
+    result["climate_source"] = f"NASA POWER ({dist_key})"
     return finite_json_value(jsonable_encoder(result))
 
 @app.post("/api/scenarios/crop-failure-recovery")
