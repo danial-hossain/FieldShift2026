@@ -910,61 +910,31 @@ async function runVisualTest() {
   fs.writeFileSync(reportHtmlPath, html, 'utf8');
   console.log(`[REPORT] Written HTML report to ${reportHtmlPath} (${html.length} bytes).`);
 
-  // Print PDF using Chrome CDP
-  console.log('[PDF] Printing report.html to A4 Landscape PDF via Chrome CDP...');
-  const printProc = spawn(chromePath, [
-    '--headless=new',
-    `--remote-debugging-port=9223`,
-    '--window-size=1440,900',
-    '--disable-gpu',
-    '--no-first-run',
-    '--no-default-browser-check'
-  ]);
+  // Print PDF using Chrome CLI
+  console.log('[PDF] Printing report.html to A4 Landscape PDF...');
+  const pdfPath = path.join(DOCS_DIR, 'FieldShift_visual_test_report.pdf');
+  const fileUrl = 'file:///' + reportHtmlPath.replace(/\\/g, '/');
 
-  await new Promise(r => setTimeout(r, 1600));
-
-  let printTargets = [];
-  for (let i = 0; i < 20; i++) {
-    try {
-      printTargets = await fetchJson('http://127.0.0.1:9223/json');
-      if (printTargets.length > 0 && printTargets[0].webSocketDebuggerUrl) break;
-    } catch {
-      await new Promise(r => setTimeout(r, 200));
-    }
+  try {
+    const { execFileSync } = await import('child_process');
+    execFileSync(chromePath, [
+      '--headless=new',
+      '--disable-gpu',
+      '--no-margins',
+      `--print-to-pdf=${pdfPath}`,
+      fileUrl
+    ]);
+  } catch (cliErr) {
+    console.warn('[PDF] Direct CLI print failed:', cliErr.message);
   }
 
-  const printCdp = new CDPClient(printTargets[0].webSocketDebuggerUrl);
-  await printCdp.connect();
-  await printCdp.send('Page.enable');
+  if (!fs.existsSync(pdfPath)) {
+    throw new Error('Failed to generate FieldShift_visual_test_report.pdf');
+  }
 
-  const fileUrl = 'file:///' + reportHtmlPath.replace(/\\/g, '/');
-  console.log(`[PDF] Loading ${fileUrl} ...`);
-  await printCdp.send('Page.navigate', { url: fileUrl });
-  await new Promise(r => setTimeout(r, 3000));
-
-  console.log('[PDF] Generating A4 Landscape PDF with print backgrounds...');
-  const pdfRes = await printCdp.send('Page.printToPDF', {
-    landscape: true,
-    displayHeaderFooter: false,
-    printBackground: true,
-    preferCSSPageSize: true,
-    paperWidth: 11.69,
-    paperHeight: 8.27,
-    marginTop: 0.3,
-    marginBottom: 0.3,
-    marginLeft: 0.35,
-    marginRight: 0.35
-  });
-
-  const pdfPath = path.join(DOCS_DIR, 'FieldShift_visual_test_report.pdf');
-  const pdfBuffer = Buffer.from(pdfRes.data, 'base64');
-  fs.writeFileSync(pdfPath, pdfBuffer);
-
-  const pdfSizeMb = (pdfBuffer.length / (1024 * 1024)).toFixed(2);
+  const pdfStats = fs.statSync(pdfPath);
+  const pdfSizeMb = (pdfStats.size / (1024 * 1024)).toFixed(2);
   console.log(`[PDF] SUCCESS: Generated PDF at ${pdfPath} (${pdfSizeMb} MB).`);
-
-  printCdp.close();
-  printProc.kill();
 
   // Cleanup raw screenshots to avoid repo bloat
   console.log('[CLEANUP] Cleaning raw screenshot files to preserve repository size limits...');

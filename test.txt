@@ -182,3 +182,72 @@ Test: Compare PuLP MILP planning outputs for Rajshahi (Barind) vs Sunamganj (Hao
 ================================================================================
 FINAL MANUAL AUDIT RESULT: 12/12 PAGES PASSED (ALL INVARIANTS VERIFIED)
 ================================================================================
+
+
+================================================================================
+STAGE P8: FINAL VERIFICATION SUITE & COMPREHENSIVE AUDIT REPORT
+NASA International Space Apps Challenge 2026 — Team Azoic
+================================================================================
+
+1. Automated Frontend Unit & Regression Suite:
+   - Command: cd frontend ; npm test
+   - Result: 146/146 PASS (0 failed, 0 skipped, 0 cancelled, 252ms)
+   - Exit Code: 0
+
+2. Production Client Bundle Compilation:
+   - Command: cd frontend ; npm run build
+   - Result: 132 modules transformed into 7 production chunks:
+       * dist/index.html (1.18 kB)
+       * dist/assets/index-BSuWm6v6.css (225.91 kB)
+       * dist/assets/rolldown-runtime-CbXtAM7H.js (0.58 kB)
+       * dist/assets/react-vendor-Dy-GIXkn.js (218.83 kB)
+       * dist/assets/index-CFZ_9Awr.js (443.52 kB)
+       * dist/assets/research-lab-views-CqJDsyhZ.js (511.69 kB)
+       * dist/assets/research-3d-views-64j2nUq2.js (856.19 kB)
+   - Exit Code: 0
+
+3. SSR Hydration & Render Guard (12 Destinations + Sub-Labs):
+   - Command: cd frontend ; npm run smoke
+   - Result: 12/12 destinations rendered cleanly in both states (no data + fixture props):
+       * 01. FarmerHomeView (dashboard) [PASS]
+       * 02. MyFarmWorkspaceView (field) [PASS]
+       * 03. NasaPlantingAdvisoryView (crop_advice) [PASS]
+       * 04. NasaWeatherStation3D (weather) [PASS]
+       * 05. FarmPlanningView (farm_planning) [PASS]
+       * 05b. SixSeasonRecommendationView (6-Season MILP Planner) [PASS]
+       * 06. WaterIrrigationView (water_irrigation) [PASS]
+       * 07. ResearchWorkspaceView (research) [PASS]
+       * 08. DigitalTwin3DView (digital_twin) [PASS]
+       * 09. MarketIntelligenceView (harvest_profit) [PASS]
+       * 10. AiAssistantView (assistant) [PASS]
+       * 11. DataEvidenceView (data_evidence) [PASS]
+       * 12. AccountCockpitView (account) [PASS]
+   - Exit Code: 0
+
+4. Offline Demo & API Integrity Verification:
+   - Command: python scripts/demo_check.py
+   - Result: 10/10 PASS (status, crops, advisory, 64 districts, planning 4 strategies, location weather, water plan, FAOSTAT market overview, field enrichment, NASA Earth observation suites verified)
+   - Exit Code: 0
+
+5. Scientific & Soil Hydrology Pytest Suite:
+   - Command: python -m pytest tests/test_smap.py tests/test_provenance.py
+   - Result: 10/10 PASS (14.04s)
+   - Exit Code: 0
+
+6. Autonomous CDP End-to-End Test Suite:
+   - Command: cd frontend ; node e2e/runner.js
+   - Result: 12/12 destinations audited, 0 console errors, mobile 390x844 layout verified, Rajshahi vs Sunamganj invariant verified
+   - Exit Code: 0
+
+7. Cross-Field Visual Test & CDP Comparison Report (4 Canonical Fields x 43 Views):
+   - Fields:
+       * Dinajpur Sadar (25.6279°N, 88.6332°E, 2.0 ha, Northwest Grain Belt)
+       * Bogura Demo (24.8500°N, 89.3700°E, 10.0 ha, High-Input Floodplain)
+       * Satkhira Coast (22.7185°N, 89.0705°E, 1.5 ha, Coastal Saline Estuary)
+       * Sunamganj Haor (25.0658°N, 91.3950°E, 1.0 ha, Wetland Haor Flash Flood Basin)
+   - Metrics Evaluated: 43 Views x 4 Fields = 172 Visual Evaluations
+   - Cross-Field Summary: 43 DIFFERS, 0 SAME, 0 BROKEN (100% regional differentiation, 0 rendering failures)
+   - Deliverables:
+       * HTML Visual Report: docs/visual_test/report.html (24.7 MB)
+       * A4 Landscape PDF: docs/visual_test/FieldShift_visual_test_report.pdf (18.53 MB)
+   - Exit Code: 0

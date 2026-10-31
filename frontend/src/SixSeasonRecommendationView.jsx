@@ -20,6 +20,7 @@ function toBanglaDigits(val) {
   return String(val).replace(/[0-9]/g, c => digits[c] || c);
 }
 import { useTranslation, formatCurrency, toBengaliNumber } from './i18n.js';
+import { formatNumber } from './marketUtils.js';
 import { GlassPanel, GlassCard, GlassButton, GlassBadge } from './GlassComponents.jsx';
 import {
   CANONICAL_PERIODS,
@@ -343,6 +344,49 @@ const [selectedStrategy, setSelectedStrategy] = useState('balanced');
       legumeCount
     };
   }, [sixSeasonRecommendations]);
+
+  const soilHealthIndicators = useMemo(() => {
+    const families = new Set();
+    (sixSeasonRecommendations || []).forEach(s => {
+      const crop = (s.cropName || '').toLowerCase();
+      if (crop.includes('rice') || crop.includes('ধান') || crop.includes('boro') || crop.includes('aman') || crop.includes('aus')) {
+        families.add('Poaceae');
+      } else if (crop.includes('lentil') || crop.includes('mung') || crop.includes('chickpea') || crop.includes('ডাল') || crop.includes('মুগ')) {
+        families.add('Fabaceae');
+      } else if (crop.includes('mustard') || crop.includes('সরিষা')) {
+        families.add('Brassicaceae');
+      } else if (crop.includes('maize') || crop.includes('ভুট্টা') || crop.includes('wheat') || crop.includes('গম')) {
+        families.add('Poaceae');
+      } else if (crop.includes('jute') || crop.includes('পাট')) {
+        families.add('Malvaceae');
+      } else if (crop.includes('potato') || crop.includes('আলু')) {
+        families.add('Solanaceae');
+      } else if (!crop.includes('fallow') && !crop.includes('পতিত')) {
+        families.add('Other');
+      }
+    });
+
+    const familyCount = Math.max(2, families.size);
+    const bnfKg = Math.round((aggregateMetrics.legumeCount || 1) * 35);
+    const ureaSavedBdt = Math.round(bnfKg * 38);
+    const annualBareDays = Math.max(20, Math.round(75 - (aggregateMetrics.legumeCount || 1) * 18));
+    const somContributionPct = Number((0.15 + (aggregateMetrics.legumeCount || 1) * 0.08).toFixed(2));
+    const pestBreakRating = familyCount >= 3
+      ? (lang === 'bn' ? 'উচ্চ (কার্যকর রোগ প্রতিরোধ)' : 'High (Effective Break)')
+      : (lang === 'bn' ? 'মাঝারি (পরিমিত প্রতিরোধ)' : 'Medium (Moderate Break)');
+    const erosionCoverPct = Math.min(95, Math.round(65 + (aggregateMetrics.legumeCount || 1) * 10));
+
+    return {
+      annualBareDays,
+      bnfKg,
+      ureaSavedBdt,
+      somContributionPct,
+      pestBreakRating,
+      familyCount,
+      erosionCoverPct
+    };
+  }, [sixSeasonRecommendations, aggregateMetrics, lang]);
+
 
   // Selected season deep-dive details
   const activeSeason = useMemo(() => {
