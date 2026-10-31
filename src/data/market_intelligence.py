@@ -340,6 +340,37 @@ def convert_price(val: float, from_unit: PriceUnit, to_unit: PriceUnit) -> float
         raise ValueError(f"Unsupported to_unit: {to_unit}")
 
 
+
+# Major producing district hubs according to Bangladesh Bureau of Statistics (BBS) Agricultural Yearbook
+BBS_PRODUCING_DISTRICTS: Dict[str, list[str]] = {
+    "Rice": ["Bogura", "Mymensingh", "Naogaon", "Rangpur", "Dinajpur"],
+    "Boro Rice": ["Sunamganj", "Kishoreganj", "Netrokona", "Habiganj", "Bogura"],
+    "Aus Rice": ["Comilla", "Kushtia", "Barishal", "Sylhet", "Pabna"],
+    "Wheat": ["Dinajpur", "Pabna", "Rajshahi", "Kushtia", "Chuadanga"],
+    "Maize": ["Dinajpur", "Chuadanga", "Meherpur", "Bogura", "Lalmonirhat"],
+    "Lentil": ["Faridpur", "Rajshahi", "Jessore", "Magura", "Kushtia", "Natore"],
+    "Mungbean": ["Patuakhali", "Barishal", "Bhola", "Jhalokati", "Madaripur"],
+    "Mustard": ["Sirajganj", "Tangail", "Manikganj", "Pabna", "Jamalpur", "Bogura"],
+    "Potato": ["Munshiganj", "Bogura", "Rangpur", "Dinajpur", "Joypurhat"],
+    "Chickpea": ["Rajshahi", "Chapai Nawabganj", "Kushtia", "Faridpur"],
+    "Soybean": ["Lakshmipur", "Noakhali", "Bhola"],
+    "Sesame": ["Faridpur", "Magura", "Jhenaidah", "Rajbari", "Khulna"],
+    "Groundnut": ["Noakhali", "Kurigram", "Jamalpur", "Kishoreganj"],
+    "Sunflower": ["Patuakhali", "Barguna", "Satkhira", "Khulna"],
+    "Tomato": ["Comilla", "Jessore", "Bogura", "Dinajpur", "Chittagong"],
+    "Jute": ["Faridpur", "Jessore", "Sirajganj", "Tangail", "Rangpur"],
+}
+
+def _haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    import math
+    R = 6371.0
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
+
+
 def get_market_overview(
     crop_query: Optional[str] = None,
     district: Optional[str] = None,
@@ -528,7 +559,60 @@ def get_market_overview(
                 "formula": "Net profit = yield * price - cost",
             }
 
+        # Attach nearby producing districts from BBS agricultural hubs
+        producing_hubs = BBS_PRODUCING_DISTRICTS.get(crop, ["Bogura", "Dinajpur", "Faridpur"])
+        nearby_districts = []
+        if (latitude is not None and longitude is not None) or district:
+            ref_lat = float(latitude or lat)
+            ref_lon = float(longitude or lon)
+            from src.compute.advisory_service import DISTRICT_REGISTRY
+            for h in producing_hubs:
+                h_key = h.lower().replace(" ", "")
+                matched_ctx = None
+                for d_k, d_v in DISTRICT_REGISTRY.items():
+                    if d_k in h_key or h_key in d_k or d_v.get("name_en", "").lower() == h.lower():
+                        matched_ctx = d_v
+                        break
+                if matched_ctx:
+                    h_lat = float(matched_ctx.get("latitude", ref_lat))
+                    h_lon = float(matched_ctx.get("longitude", ref_lon))
+                    d_km = _haversine_distance_km(ref_lat, ref_lon, h_lat, h_lon)
+                    nearby_districts.append({
+                        "district": matched_ctx.get("name_en", h),
+                        "district_bn": matched_ctx.get("name_bn", h),
+                        "division": matched_ctx.get("division", ""),
+                        "distance_km": round(d_km, 1),
+                    })
+            nearby_districts.sort(key=lambda x: x["distance_km"])
+        else:
+            nearby_districts = [{"district": h, "distance_km": None} for h in producing_hubs]
+        item["nearby_producing_districts"] = nearby_districts[:4]
+
+        # Calculate location-based suitability score based on climate, soil, rain reliability, and economics
+        is_suit = bool(item["field_profitability"].get("is_suitable_for_field", True))
+        climate_score = 35.0 if is_suit else 10.0
+        soil_score = 20.0
+        pumping = float(item["field_profitability"].get("irrigation_pumping_cost_bdt_ha", 0.0))
+        rain_rel_score = max(5.0, 15.0 - (pumping / 500.0))
+        margin = max(0.0, float(item["field_profitability"].get("net_profit_bdt_per_ha", 0.0)))
+        econ_score = min(20.0, (margin / 80000.0) * 20.0)
+        deficit_bonus = 10.0 if import_dep >= 0.35 else (5.0 if category_key == "commercial_cash" else 2.0)
+        total_suitability = round(climate_score + soil_score + rain_rel_score + econ_score + deficit_bonus, 1)
+
+        item["location_ranking"] = {
+            "suitability_score": total_suitability,
+            "climate_suitability": "Optimal" if is_suit else "Marginal / Infeasible",
+            "rain_reliability": "High (Low Pumping Deficit)" if pumping < 2000 else "Moderate Irrigation Required",
+            "economics_score": round(econ_score + deficit_bonus, 1),
+            "national_deficit_priority": import_dep >= 0.35,
+        }
+
         catalog.append(item)
+
+    if district or (latitude is not None and longitude is not None):
+        catalog.sort(key=lambda x: x["location_ranking"]["suitability_score"], reverse=True)
+        for idx, item in enumerate(catalog, start=1):
+            item["location_ranking"]["rank"] = idx
 
     return {
         "metadata": {

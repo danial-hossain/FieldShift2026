@@ -10,6 +10,8 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCropName, setSelectedCropName] = useState('Rice');
   const [priceUnit, setPriceUnit] = useState('bdt_kg'); // 'bdt_kg', 'bdt_maund', 'bdt_ton'
+  const [localHaatPriceKg, setLocalHaatPriceKg] = useState(null);
+  const [sortBySuitability, setSortBySuitability] = useState(true);
 
   // Profitability calculator state
   const [calcAreaHa, setCalcAreaHa] = useState(activeField?.area_ha || 1.0);
@@ -35,7 +37,13 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
       setLoading(true);
       setError(null);
       try {
-        const json = await request('/api/market/overview');
+        const params = new URLSearchParams();
+        if (activeField?.district) params.append('district', activeField.district);
+        if (activeField?.latitude != null) params.append('lat', activeField.latitude);
+        if (activeField?.longitude != null) params.append('lon', activeField.longitude);
+        if (activeField?.area_ha != null) params.append('area_ha', activeField.area_ha);
+        const url = `/api/market/overview${params.toString() ? '?' + params.toString() : ''}`;
+        const json = await request(url);
         if (!ignore) {
           setMarketData(json);
           if (json.crops && json.crops.length > 0) {
@@ -54,13 +62,14 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
     }
     loadData();
     return () => { ignore = true; };
-  }, []);
+  }, [activeField?.district, activeField?.latitude, activeField?.longitude, activeField?.area_ha]);
 
   // When selected crop changes in UI, update calculator defaults
   const handleSelectCrop = (cropItem) => {
     setSelectedCropName(cropItem.crop);
-    setCalcYield(cropItem.default_yield_t_ha);
-    setCalcPrice(cropItem.farmgate_bdt_ton);
+    setCalcYield(cropItem.field_profitability?.dynamic_yield_t_ha || cropItem.default_yield_t_ha);
+    setCalcPrice(cropItem.field_profitability?.selling_price_bdt_t || cropItem.farmgate_bdt_ton);
+    setLocalHaatPriceKg(cropItem.farmgate_bdt_kg);
     setCalcProdCost(cropItem.default_cost_bdt_ha);
   };
 
@@ -96,13 +105,23 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
 
   const filteredCrops = useMemo(() => {
     if (!marketData?.crops) return [];
+    let list = [...marketData.crops];
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return marketData.crops;
-    return marketData.crops.filter(c =>
-      (typeof c?.crop === 'string' && c.crop.toLowerCase().includes(q)) ||
-      (typeof c?.name_bn === 'string' && c.name_bn.toLowerCase().includes(q))
-    );
-  }, [marketData, searchQuery]);
+    if (q) {
+      list = list.filter(c =>
+        (typeof c?.crop === 'string' && c.crop.toLowerCase().includes(q)) ||
+        (typeof c?.name_bn === 'string' && c.name_bn.toLowerCase().includes(q))
+      );
+    }
+    if (sortBySuitability) {
+      list.sort((a, b) => {
+        const rA = a?.location_ranking?.rank ?? 999;
+        const rB = b?.location_ranking?.rank ?? 999;
+        return rA - rB;
+      });
+    }
+    return list;
+  }, [marketData, searchQuery, sortBySuitability]);
 
   const currentCropObj = useMemo(() => {
     return marketData?.crops?.find(c => c.crop === selectedCropName) || null;
@@ -220,15 +239,16 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
             }
           />
 
-          {/* Search bar */}
-          <div style={{ margin: '14px 0' }}>
+          {/* Search and Ranking bar */}
+          <div style={{ margin: '14px 0', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
             <input
               type="text"
               placeholder={lang === 'bn' ? 'ফসলের নাম দিয়ে খুঁজুন (যেমন ধান, আলু, গম, সরিষা)...' : 'Search crop by name (e.g. Rice, Lentil, Potato)...'}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               style={{
-                width: '100%',
+                flex: 1,
+                minWidth: 200,
                 padding: '9px 14px',
                 borderRadius: 10,
                 border: '1px solid var(--line)',
@@ -239,6 +259,26 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
                 outline: 'none'
               }}
             />
+            <button
+              type="button"
+              onClick={() => setSortBySuitability(!sortBySuitability)}
+              style={{
+                padding: '9px 14px',
+                borderRadius: 10,
+                border: sortBySuitability ? '1px solid var(--leaf)' : '1px solid var(--line)',
+                background: sortBySuitability ? 'rgba(0, 223, 129, 0.15)' : 'var(--glass)',
+                color: sortBySuitability ? 'var(--leaf)' : 'var(--text-2)',
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6
+              }}
+            >
+              <span>{sortBySuitability ? '★' : '↕'}</span>
+              <span>{lang === 'bn' ? 'খামার উপযোগী ক্রমানুসারে' : 'Field Match Rank'}</span>
+            </button>
           </div>
 
           {loading ? (
@@ -276,7 +316,21 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
                         }}
                       >
                         <td style={{ padding: '10px 10px' }}>
-                          <div style={{ fontWeight: 600, color: 'var(--text)' }}>{c.crop}</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            {c.location_ranking?.rank != null && (
+                              <span style={{
+                                fontSize: 10,
+                                fontWeight: 800,
+                                padding: '2px 5px',
+                                borderRadius: 4,
+                                background: c.location_ranking.rank <= 3 ? 'rgba(0, 223, 129, 0.2)' : 'rgba(255, 255, 255, 0.08)',
+                                color: c.location_ranking.rank <= 3 ? 'var(--leaf)' : 'var(--text-3)',
+                              }}>
+                                #{c.location_ranking.rank}
+                              </span>
+                            )}
+                            <strong style={{ fontWeight: 600, color: 'var(--text)' }}>{c.crop}</strong>
+                          </div>
                           <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{c.name_bn}</div>
                         </td>
                         <td style={{ padding: '10px 10px', color: 'var(--leaf)', fontWeight: 600 }}>
@@ -302,6 +356,44 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
                   })}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {/* Nearby Major Producing District Hubs (BBS) */}
+          {currentCropObj?.nearby_producing_districts && currentCropObj.nearby_producing_districts.length > 0 && (
+            <div style={{
+              background: 'rgba(56, 189, 248, 0.08)',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
+              borderRadius: 10,
+              padding: '12px 14px',
+              marginTop: 14,
+            }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--water, #38bdf8)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span>📍</span>
+                <span>{lang === 'bn' ? 'নিকটবর্তী প্রধান উৎপাদনকারী জেলাসমূহ (BBS কৃষি পরিসংখ্যান)' : 'Nearby Major Producing Hubs (BBS Agri Survey)'}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {currentCropObj.nearby_producing_districts.map((d, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      padding: '4px 8px',
+                      background: 'rgba(255, 255, 255, 0.06)',
+                      border: '1px solid var(--line, rgba(255, 255, 255, 0.1))',
+                      borderRadius: 6,
+                      fontSize: 11.5,
+                      color: 'var(--text, #f1f5f9)',
+                    }}
+                  >
+                    <strong>{lang === 'bn' ? (d.district_bn || d.district) : d.district}</strong>
+                    {d.distance_km != null && (
+                      <span style={{ color: 'var(--text-3, #94a3b8)', marginLeft: 4 }}>
+                        ({d.distance_km} km)
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
@@ -365,6 +457,59 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
               />
             </div>
 
+            {/* Local Haat Price Input */}
+            <div style={{ gridColumn: 'span 2', background: 'rgba(0, 223, 129, 0.08)', border: '1px solid rgba(0, 223, 129, 0.25)', borderRadius: 10, padding: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--leaf, #00df81)' }}>
+                  🌾 {lang === 'bn' ? 'আমার স্থানীয় হাটের দর (Farmer Local Haat Price)' : 'My Local Haat Price (Custom Market Input)'}
+                </label>
+                {currentCropObj && (
+                  <span style={{ fontSize: 11, color: 'var(--text-3, #94a3b8)' }}>
+                    {lang === 'bn' ? 'সরকারি বেঞ্চমার্ক:' : 'Govt Benchmark:'} ৳{currentCropObj.farmgate_bdt_kg}/kg
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <input
+                  type="number"
+                  step="0.5"
+                  min="1"
+                  placeholder={currentCropObj ? String(currentCropObj.farmgate_bdt_kg) : '26'}
+                  value={localHaatPriceKg ?? (currentCropObj?.farmgate_bdt_kg || 26)}
+                  onChange={e => {
+                    const val = Number(e.target.value);
+                    setLocalHaatPriceKg(val);
+                    setCalcPrice(val * 1000);
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    borderRadius: 8,
+                    border: '1px solid var(--leaf, #00df81)',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    color: '#fff',
+                    fontSize: 14,
+                    fontWeight: 700,
+                    boxSizing: 'border-box'
+                  }}
+                />
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-2)' }}>BDT / kg</span>
+                {localHaatPriceKg != null && currentCropObj && (
+                  <span style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    padding: '4px 8px',
+                    borderRadius: 6,
+                    background: localHaatPriceKg >= currentCropObj.farmgate_bdt_kg ? 'rgba(0, 223, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                    color: localHaatPriceKg >= currentCropObj.farmgate_bdt_kg ? 'var(--leaf, #00df81)' : '#f87171'
+                  }}>
+                    {localHaatPriceKg >= currentCropObj.farmgate_bdt_kg ? '+' : ''}
+                    {(localHaatPriceKg - currentCropObj.farmgate_bdt_kg).toFixed(1)} ৳/kg
+                  </span>
+                )}
+              </div>
+            </div>
+
             <div>
               <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-2)', marginBottom: 4 }}>
                 {lang === 'bn' ? 'খামার প্রান্ত দর (টাকা/টন)' : 'Farmgate Price (BDT / ton)'}
@@ -374,7 +519,11 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
                 step="500"
                 min="1000"
                 value={calcPrice}
-                onChange={e => setCalcPrice(Number(e.target.value))}
+                onChange={e => {
+                  const val = Number(e.target.value);
+                  setCalcPrice(val);
+                  setLocalHaatPriceKg(val / 1000);
+                }}
                 style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
