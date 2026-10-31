@@ -7,6 +7,8 @@ import { useTranslation, toBengaliNumber, formatArea } from './i18n.js';
 import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton } from './ui/index.js';
 import { evidenceBadge } from './advisoryBadges.js';
 import nasa30DaySeries from './nasa_30day_series.json';
+import { GuidedDemoModal } from './GuidedDemoModal.jsx';
+import { TwoFieldComparisonModal } from './TwoFieldComparisonModal.jsx';
 
 export function FarmerHomeView({
   activeField,
@@ -23,6 +25,8 @@ export function FarmerHomeView({
   const [advisoryData, setAdvisoryData] = useState(null);
   const [advisoryLoading, setAdvisoryLoading] = useState(true);
   const [advisoryError, setAdvisoryError] = useState(null);
+  const [guidedDemoOpen, setGuidedDemoOpen] = useState(false);
+  const [twoFieldOpen, setTwoFieldOpen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
   const district = activeField?.district || 'rajshahi';
@@ -124,6 +128,97 @@ export function FarmerHomeView({
 
   return (
     <div className="farmer-home-container">
+      {/* P3.1 & P3.2: Hero Guided Demo & Two-Field Comparison Bar */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(56, 189, 248, 0.12) 100%)',
+        border: '1px solid rgba(16, 185, 129, 0.4)',
+        borderRadius: 16,
+        padding: '18px 24px',
+        marginBottom: 20,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 16
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <span style={{ fontSize: 20 }}>🚀</span>
+            <span style={{ fontSize: 11.5, fontWeight: 800, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              NASA Space Apps 2026 Interactive Experience
+            </span>
+          </div>
+          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#f8fafc' }}>
+            {lang === 'bn' ? 'কীভাবে নাসার উপাত্ত ফসলের ঝুঁকি কমায়? দ্রুত জানুন' : 'Adapting Farms with NASA Data: See it in Action'}
+          </h2>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94a3b8' }}>
+            {lang === 'bn'
+              ? '৭-ধাপের নির্দেশিত ডেমো অথবা দুই ভিন্ন অঞ্চলের জলবায়ু ও ফসল আবর্তনের তুলনামূলক প্রমাণ দেখুন।'
+              : 'Take the 7-step guided story or explore live 2-field regional divergence (Rajshahi vs Sunamganj).'}
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={() => setGuidedDemoOpen(true)}
+            style={{
+              background: '#10b981',
+              color: '#051208',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: 10,
+              fontWeight: 800,
+              fontSize: 13.5,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+            }}
+          >
+            <span>▶</span>
+            <span>{lang === 'bn' ? 'ডেমো দেখুন (Guided Demo)' : 'Start Guided Demo'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTwoFieldOpen(true)}
+            style={{
+              background: 'rgba(56, 189, 248, 0.12)',
+              color: '#38bdf8',
+              border: '1px solid rgba(56, 189, 248, 0.35)',
+              padding: '10px 18px',
+              borderRadius: 10,
+              fontWeight: 700,
+              fontSize: 13.5,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
+            }}
+          >
+            <span>⚖️</span>
+            <span>{lang === 'bn' ? 'দুই জমি তুলনা (2-Field)' : 'Compare 2 Fields'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Guided Demo and 2-Field Comparison Modals */}
+      <GuidedDemoModal
+        isOpen={guidedDemoOpen}
+        onClose={() => setGuidedDemoOpen(false)}
+        activeField={activeField}
+        lang={lang}
+        onNavigateTab={onNavigate}
+      />
+
+      <TwoFieldComparisonModal
+        isOpen={twoFieldOpen}
+        onClose={() => setTwoFieldOpen(false)}
+        lang={lang}
+      />
+
       {/* ============================================================== */}
       {/* ROW 1: 5 KPI TILES FROM REAL DATA (Grid 5 cols or flex)        */}
       {/* ============================================================== */}

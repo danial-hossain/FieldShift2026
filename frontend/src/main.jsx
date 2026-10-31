@@ -648,6 +648,12 @@ export function App() {
   const [user, setUser] = useState(null);
   const [userFarms, setUserFarms] = useState([]);
   const [userFields, setUserFields] = useState([]);
+  const [presentMode, setPresentMode] = useState(() => {
+    try {
+      return typeof window !== 'undefined' && window.location.search.includes('present=1');
+    } catch {}
+    return false;
+  });
   const [selectedFieldId, setSelectedFieldId] = useState(() => {
     try {
       const saved = localStorage.getItem('fs_selected_field_id');
@@ -1768,7 +1774,7 @@ export function App() {
   const currentMode = isResearchMode ? 'research' : 'farmer';
 
   return (
-    <div className="app-shell" data-mode={currentMode} data-demo-mode={demoRecordingMode ? "true" : "false"}>
+    <div className={`app-shell ${presentMode ? "presentation-mode" : ""}`} data-mode={currentMode} data-demo-mode={demoRecordingMode ? "true" : "false"} data-present={presentMode ? "true" : "false"}>
       {/* Fixed NASA VIIRS Background Layer */}
       <div className="nasa-bg-layer" aria-hidden="true">
         <div className="nasa-bg-image" />
@@ -1990,6 +1996,33 @@ export function App() {
                 NASA 🛰️
               </span>
             </div>
+
+            {/* P3.3: Presentation Mode Toggle (?present=1) */}
+            <button
+              type="button"
+              className="top-bar-icon-btn present-toggle-btn"
+              title={presentMode ? 'Exit Presentation Mode (?present=1)' : 'Enable Presentation Mode (?present=1)'}
+              onClick={() => setPresentMode(p => !p)}
+              aria-label="Toggle presentation mode"
+              style={{
+                width: 'auto',
+                padding: '0 12px',
+                height: 36,
+                fontWeight: 700,
+                fontSize: 12.5,
+                background: presentMode ? 'linear-gradient(135deg, #10b981 0%, #38bdf8 100%)' : 'var(--bg-card-subtle)',
+                color: presentMode ? '#051208' : 'var(--text-main)',
+                border: '1px solid var(--border-medium)',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer'
+              }}
+            >
+              <span>🖥️</span>
+              <span className="nasa-badge-full-text">{presentMode ? 'Exit Present' : 'Present (?present=1)'}</span>
+            </button>
 
             {/* D1: Demo Recording Mode Toggle */}
             <button

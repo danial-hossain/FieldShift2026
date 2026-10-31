@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import { SyntheticDataLabView } from './SyntheticDataLabView.jsx';
+import { JudgeChecklistView } from './JudgeChecklistView.jsx';
 import { formatNumber } from './marketUtils.js';
 import { useTranslation } from './i18n.js';
 
@@ -15,6 +16,7 @@ export function DataEvidenceView({
   lang = 'bn',
   request,
   initialSubTab = 'sources',
+  onNavigate,
 }) {
   const { t } = useTranslation(lang);
   const [subTab, setSubTab] = useState(initialSubTab); // 'sources' | 'provenance' | 'reports' | 'methodology'
@@ -22,9 +24,10 @@ export function DataEvidenceView({
   const subTabs = [
     { id: 'sources', labelBn: 'নাসা তথ্য উৎস (NASA Sources)', labelEn: '1. NASA Data Sources', icon: '🛰️' },
     { id: 'provenance', labelBn: 'ডেটা প্রোভেন্যান্স রেজিস্ট্রি (4-Tier)', labelEn: '2. Data Provenance Registry', icon: '🏛️' },
-    { id: 'reports', labelBn: 'গবেষণা ও বেঞ্চমার্ক রিপোর্ট', labelEn: '3. Research Reports', icon: '📊' },
-    { id: 'methodology', labelBn: 'বৈজ্ঞানিক পদ্ধতি ও নিয়ম', labelEn: '4. Scientific Methodology', icon: '🔬' },
-    { id: 'limitations', labelBn: 'সীমাবদ্ধতা ও পরিধি (Limitations)', labelEn: '5. Limitations & Boundaries', icon: '⚠️' },
+    { id: 'judges', labelBn: 'বিচারক নির্দেশিকা (Judge Rubric)', labelEn: '3. For Judges & Evaluators', icon: '🏆' },
+    { id: 'reports', labelBn: 'গবেষণা ও বেঞ্চমার্ক রিপোর্ট', labelEn: '4. Research Reports', icon: '📊' },
+    { id: 'methodology', labelBn: 'বৈজ্ঞানিক পদ্ধতি ও নিয়ম', labelEn: '5. Scientific Methodology', icon: '🔬' },
+    { id: 'limitations', labelBn: 'সীমাবদ্ধতা ও পরিধি (Limitations)', labelEn: '6. Limitations & Boundaries', icon: '⚠️' },
   ];
 
   const DATASET_REGISTRY = [
@@ -273,6 +276,11 @@ export function DataEvidenceView({
       )}
 
       {/* SUB-TAB 3: RESEARCH REPORTS & BENCHMARKS */}
+      {/* Sub-Tab: Judge & Evaluator Checklist (P3.4) */}
+      {subTab === 'judges' && (
+        <JudgeChecklistView onNavigate={onNavigate} lang={lang} />
+      )}
+
       {subTab === 'reports' && (
         <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
