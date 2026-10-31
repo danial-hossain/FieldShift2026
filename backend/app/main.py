@@ -1938,10 +1938,26 @@ def synthetic_data_export(payload: Payload):
 # -----------------------------------------------------------------------------
 
 @app.get("/api/market/overview")
-def market_overview(q: str | None = None):
-    """Returns verified Bangladesh crop pricing catalog, official source links, and honest demand status."""
+def market_overview(
+    q: str | None = None,
+    district: str | None = None,
+    lat: float | None = None,
+    lon: float | None = None,
+    latitude: float | None = None,
+    longitude: float | None = None,
+    area_ha: float | None = 1.0,
+):
+    """Returns verified Bangladesh crop pricing catalog, official FAOSTAT trade balance, and field profitability."""
     from src.data.market_intelligence import get_market_overview
-    return get_market_overview(crop_query=q)
+    actual_lat = lat if lat is not None else latitude
+    actual_lon = lon if lon is not None else longitude
+    return get_market_overview(
+        crop_query=q,
+        district=district,
+        latitude=actual_lat,
+        longitude=actual_lon,
+        area_ha=float(area_ha or 1.0),
+    )
 
 @app.post("/api/market/profitability")
 def market_profitability(payload: Payload):

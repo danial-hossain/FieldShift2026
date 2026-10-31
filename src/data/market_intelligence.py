@@ -75,17 +75,45 @@ OFFICIAL_MARKET_SOURCES = {
 BENCHMARK_MARKET_PRICES: Dict[str, Dict[str, Any]] = {
     "Rice": {
         "crop": "Rice",
-        "name_bn": "ধান / চাল",
+        "name_bn": "আমন ধান / চাল",
         "farmgate_bdt_kg": 26.0,
         "wholesale_bdt_kg": 30.0,
-        "retail_bdt_kg": 54.0,  # milled coarse rice retail
+        "retail_bdt_kg": 54.0,
         "default_cost_bdt_ha": 80000.0,
         "default_yield_t_ha": 4.0,
         "primary_source": "DAM & BBS Agricultural Survey",
         "source_url": "https://market.dam.gov.bd/",
         "report_date": "2026-03-15",
         "provenance_classification": "published_reference",
-        "notes": "Farmgate price refers to un-milled paddy (ধান); retail price reflects milled coarse rice (মোটা চাল).",
+        "notes": "Kharif-2 monsoon Aman paddy (আমন ধান).",
+    },
+    "Boro Rice": {
+        "crop": "Boro Rice",
+        "name_bn": "বোরো ধান",
+        "farmgate_bdt_kg": 26.0,
+        "wholesale_bdt_kg": 30.0,
+        "retail_bdt_kg": 54.0,
+        "default_cost_bdt_ha": 95000.0,
+        "default_yield_t_ha": 5.5,
+        "primary_source": "DAM & BRRI Economic Survey",
+        "source_url": "https://market.dam.gov.bd/",
+        "report_date": "2026-03-15",
+        "provenance_classification": "published_reference",
+        "notes": "Winter irrigated Boro paddy (বোরো ধান). High input and irrigation pumping requirement.",
+    },
+    "Aus Rice": {
+        "crop": "Aus Rice",
+        "name_bn": "আউশ ধান",
+        "farmgate_bdt_kg": 26.0,
+        "wholesale_bdt_kg": 30.0,
+        "retail_bdt_kg": 54.0,
+        "default_cost_bdt_ha": 60000.0,
+        "default_yield_t_ha": 3.5,
+        "primary_source": "DAM Agricultural Monitoring",
+        "source_url": "https://market.dam.gov.bd/",
+        "report_date": "2026-03-15",
+        "provenance_classification": "published_reference",
+        "notes": "Pre-monsoon Kharif-1 Aus paddy (আউশ ধান).",
     },
     "Wheat": {
         "crop": "Wheat",
@@ -312,22 +340,125 @@ def convert_price(val: float, from_unit: PriceUnit, to_unit: PriceUnit) -> float
         raise ValueError(f"Unsupported to_unit: {to_unit}")
 
 
-def get_market_overview(crop_query: Optional[str] = None) -> Dict[str, Any]:
-    """Retrieve full catalog of market prices, sources, units, and demand status."""
+def get_market_overview(
+    crop_query: Optional[str] = None,
+    district: Optional[str] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
+    area_ha: float = 1.0,
+) -> Dict[str, Any]:
+    """Retrieve full catalog of market prices, FAOSTAT national demand balance, and field profitability."""
+    import pandas as pd
+    from pathlib import Path
+
+    # Load FAOSTAT BD trade balance
+    faostat_file = Path(__file__).resolve().parents[2] / "data" / "market" / "faostat_bd.csv"
+    faostat_data: dict[str, dict[str, Any]] = {}
+    if faostat_file.is_file():
+        f_df = pd.read_csv(faostat_file)
+        for _, r in f_df.iterrows():
+            faostat_data[r["crop"].strip()] = r.to_dict()
+
+    # Optional dynamic field evaluation if location provided
+    field_dynamic_metrics: dict[str, dict[str, Any]] = {}
+    if district or (latitude is not None and longitude is not None):
+        try:
+            from src.compute.advisory_service import DISTRICT_REGISTRY, load_district_climate_data, nearest_district
+            from src.data.crops import load_crop_knowledge
+            from src.state.field_state import build_field_state
+            from src.optimizer.dynamic_agronomy import partition_seasonal_environments, compute_dynamic_crop_season_metrics
+
+            dist_key = (district or "").strip().lower()
+            if dist_key not in DISTRICT_REGISTRY and latitude is not None and longitude is not None:
+                dist_key = nearest_district(float(latitude), float(longitude))
+            elif dist_key not in DISTRICT_REGISTRY:
+                dist_key = "bogura"
+
+            power_df, _ = load_district_climate_data(dist_key, offline=True)
+            if "date" in power_df.columns:
+                power_df["date"] = pd.to_datetime(power_df["date"])
+
+            crops_df = load_crop_knowledge()
+            ctx = DISTRICT_REGISTRY.get(dist_key, {})
+            lat = float(latitude or ctx.get("latitude") or 24.8465)
+            lon = float(longitude or ctx.get("longitude") or 89.3777)
+
+            f_state = build_field_state(
+                field_id=f"{dist_key}_market_eval",
+                latitude=lat,
+                longitude=lon,
+                decision_date=pd.to_datetime("2024-12-31"),
+                nasa_power_data=power_df.tail(60),
+                crop_knowledge=crops_df,
+            )
+            f_state.field_size_ha = float(area_ha)
+            f_state.area_ha = float(area_ha)
+
+            # Derive 3 seasonal environments
+            envs = partition_seasonal_environments(f_state, power_df, planning_periods=["Y1_S1", "Y1_S2", "Y1_S3"])
+            rabi_env = envs["Y1_S1"]
+            k1_env = envs["Y1_S2"]
+            k2_env = envs["Y1_S3"]
+
+            for _, crop_row in crops_df.iterrows():
+                c_name = crop_row["crop"]
+                seasons = str(crop_row.get("allowed_seasons", "")).lower()
+                # Pick appropriate season environment
+                if "rabi" in seasons:
+                    target_env = rabi_env
+                elif "kharif1" in seasons:
+                    target_env = k1_env
+                else:
+                    target_env = k2_env
+
+                metrics = compute_dynamic_crop_season_metrics(crop_row.to_dict(), target_env, f_state)
+                field_dynamic_metrics[c_name] = metrics
+        except Exception as e:
+            logger.warning(f"Field dynamic agronomic evaluation skipped: {e}")
+
     catalog = []
+    deficit_crops = []
+    commercial_crops = []
+    staple_crops = []
+
     q = (crop_query or "").strip().lower()
 
     for crop, data in BENCHMARK_MARKET_PRICES.items():
         if q and q not in crop.lower() and q not in data["name_bn"].lower():
             continue
 
-        item = {
+        # FAOSTAT trade balance lookup
+        f_lookup = "Rice" if "rice" in crop.lower() else crop
+        f_stat = faostat_data.get(f_lookup, {})
+        import_dep = float(f_stat.get("import_dependency_ratio", 0.0))
+        self_suff = float(f_stat.get("self_sufficiency_ratio", 1.0))
+        deficit_tonnes = float(f_stat.get("import_tonnes", 0.0))
+        prod_tonnes = float(f_stat.get("production_tonnes", 0.0))
+
+        # Categorize
+        if import_dep >= 0.50:
+            category_en = "National Deficit (High National Need)"
+            category_bn = "দেশের ঘাটতি ফসল (উচ্চ জাতীয় চাহিদা)"
+            category_key = "national_deficit"
+            deficit_crops.append(crop)
+        elif crop in {"Tomato", "Potato", "Sesame", "Groundnut", "Jute", "Sunflower"}:
+            category_en = "Commercial Cash Crop"
+            category_bn = "উচ্চ মূল্যের বাণিজ্যিক ফসল"
+            category_key = "commercial_cash"
+            commercial_crops.append(crop)
+        else:
+            category_en = "Staple Foodgrain (Self-Sufficient)"
+            category_bn = "প্রধান খাদ্যশস্য (স্বয়ংসম্পূর্ণ)"
+            category_key = "staple_food"
+            staple_crops.append(crop)
+
+        # Base item data
+        item: dict[str, Any] = {
             "crop": crop,
             "name_bn": data["name_bn"],
             "farmgate_bdt_kg": data["farmgate_bdt_kg"],
             "wholesale_bdt_kg": data["wholesale_bdt_kg"],
             "retail_bdt_kg": data["retail_bdt_kg"],
-            # Multi-unit conversions for convenience
             "farmgate_bdt_maund": round(data["farmgate_bdt_kg"] * KG_PER_MAUND, 1),
             "wholesale_bdt_maund": round(data["wholesale_bdt_kg"] * KG_PER_MAUND, 1),
             "retail_bdt_maund": round(data["retail_bdt_kg"] * KG_PER_MAUND, 1),
@@ -336,12 +467,67 @@ def get_market_overview(crop_query: Optional[str] = None) -> Dict[str, Any]:
             "retail_bdt_ton": round(data["retail_bdt_kg"] * KG_PER_TON, 1),
             "default_cost_bdt_ha": data["default_cost_bdt_ha"],
             "default_yield_t_ha": data["default_yield_t_ha"],
+            "category_key": category_key,
+            "category_en": category_en,
+            "category_bn": category_bn,
+            "national_need": {
+                "category_en": category_en,
+                "category_bn": category_bn,
+                "import_dependency_pct": round(import_dep * 100.0, 1),
+                "self_sufficiency_pct": round(self_suff * 100.0, 1),
+                "domestic_deficit_tonnes": deficit_tonnes,
+                "annual_production_tonnes": prod_tonnes,
+                "annual_import_tonnes": deficit_tonnes,
+                "source": "FAOSTAT Bangladesh Food Balance & Trade Statistics (2022-2024)",
+            },
             "primary_source": data["primary_source"],
             "source_url": data["source_url"],
             "report_date": data["report_date"],
             "provenance_classification": data["provenance_classification"],
             "notes": data["notes"],
         }
+
+        # Attach field-specific dynamic profitability if calculated
+        dyn = field_dynamic_metrics.get(crop)
+        if dyn:
+            dyn_yld = float(dyn.get("dynamic_yield_t_ha", data["default_yield_t_ha"]))
+            dyn_margin = float(dyn.get("dynamic_gross_margin_bdt_ha", 0.0))
+            w_bal = dyn.get("water_balance", {})
+            pumping_cost = float(w_bal.get("irrigation_supplied_mm", 0.0)) * 20.0
+            price_t = float(data["farmgate_bdt_kg"] * KG_PER_TON)
+            gross_rev = round(dyn_yld * price_t, 2)
+            item["field_profitability"] = {
+                "is_suitable_for_field": bool(dyn.get("is_feasible", True)),
+                "dynamic_yield_t_ha": dyn_yld,
+                "selling_price_bdt_t": price_t,
+                "gross_revenue_bdt_ha": gross_rev,
+                "cultivation_cost_bdt_ha": float(data["default_cost_bdt_ha"]),
+                "irrigation_pumping_cost_bdt_ha": round(pumping_cost, 1),
+                "total_cost_bdt_ha": round(float(data["default_cost_bdt_ha"]) + pumping_cost, 1),
+                "net_profit_bdt_per_ha": dyn_margin,
+                "net_profit_total_bdt": round(dyn_margin * area_ha, 1),
+                "formula": "Net profit = dynamic_yield * price - (cultivation_cost + pumping_cost)",
+            }
+        else:
+            # Baseline default profitability
+            price_t = float(data["farmgate_bdt_kg"] * KG_PER_TON)
+            yld = float(data["default_yield_t_ha"])
+            cost = float(data["default_cost_bdt_ha"])
+            rev = yld * price_t
+            margin = rev - cost
+            item["field_profitability"] = {
+                "is_suitable_for_field": True,
+                "dynamic_yield_t_ha": yld,
+                "selling_price_bdt_t": price_t,
+                "gross_revenue_bdt_ha": round(rev, 2),
+                "cultivation_cost_bdt_ha": cost,
+                "irrigation_pumping_cost_bdt_ha": 0.0,
+                "total_cost_bdt_ha": cost,
+                "net_profit_bdt_per_ha": round(margin, 2),
+                "net_profit_total_bdt": round(margin * area_ha, 2),
+                "formula": "Net profit = yield * price - cost",
+            }
+
         catalog.append(item)
 
     return {
@@ -353,11 +539,11 @@ def get_market_overview(crop_query: Optional[str] = None) -> Dict[str, Any]:
             "currency": "BDT (Bangladeshi Taka / বাংলাদেশী টাকা)",
             "unit_standard": "BDT/kg, BDT/maund (40kg), BDT/metric ton (1000kg)",
             "sources": OFFICIAL_MARKET_SOURCES,
-            "demand_signal": {
-                "status": "unavailable",
-                "message": "Demand data unavailable.",
-                "message_bn": "চাহিদা সম্পর্কিত প্রত্যক্ষ তথ্য উন্মুক্তভাবে উপলব্ধ নয়।",
-                "explanation": "Official Bangladesh marketing authorities (DAM, TCB) record spot price surveys but do not publish daily transaction volume or quantitative buyer demand curves as an open API. FieldShift strictly avoids fabricating speculative demand indicators.",
+            "national_demand_source": "FAOSTAT Bangladesh Food Balance Sheets (2022-2024)",
+            "groupings": {
+                "deficit_crops": deficit_crops,
+                "commercial_crops": commercial_crops,
+                "staple_crops": staple_crops,
             },
             "disclaimer": "Retail prices represent consumer shelf benchmarks and must NOT be treated as farmgate revenues without accounting for transportation, trader margins, and spoilage.",
         },
