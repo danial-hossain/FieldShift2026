@@ -116,7 +116,7 @@ export default function AiAssistantView({
         precipitation_mm: nasa?.telemetry?.precipitation_daily_mm || 3.8,
         wind_speed_ms: nasa?.telemetry?.wind_speed_ms || 2.1,
         source: nasa?.data_status === 'observed'
-          ? 'NASA POWER Point API (Live Observations)'
+          ? 'NASA POWER Daily API (Reanalysis / Climatology)'
           : (activeField?.is_demo ? 'NASA POWER Historical Bogura Benchmark' : 'NASA POWER Historical Reanalysis Benchmark')
       },
       plan: {

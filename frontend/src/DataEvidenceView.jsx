@@ -288,7 +288,7 @@ export function DataEvidenceView({
               },
               {
                 title: 'Rajshahi Aman Rainfall Onset Distribution Shift (2001–2012 vs 2013–2025)',
-                status: 'VERIFIED (+3.5 to +10.5 Days)',
+                status: 'Empirical (+3.5 to +10.5 Days)',
                 date: '2026-10-30',
                 desc: 'NASA POWER Daily Point observation analysis using 3-day 25mm onset rule and 21-day dry-spell lookahead. Mann-Whitney U test p=0.93 indicates high interannual variance.',
               },
@@ -296,7 +296,7 @@ export function DataEvidenceView({
                 title: 'PuLP MILP Multi-Objective Solver Stability & Feasibility Benchmark',
                 status: 'OPTIMAL (48/48 Cases)',
                 date: '2026-10-30',
-                desc: 'Tested across 4 objective profiles (Balanced, Profit-Focused, Water-Efficiency, Soil-Health). Verified legume BNF intervals and botanical family alternation.',
+                desc: 'Tested across 4 objective profiles (Balanced, Profit-Focused, Water-Efficiency, Soil-Health). Enforces legume BNF intervals and botanical family alternation.',
               },
             ].map((rep, idx) => (
               <div key={idx} style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 10, padding: 16 }}>
@@ -445,7 +445,7 @@ export function DataEvidenceView({
               <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
                 {lang === 'bn'
                   ? 'সুনামগঞ্জের মতো নিচু হাওর অঞ্চলে এপ্রিলের শেষ বা মে মাসে পাহাড়ি ঢলে আকস্মিক বন্যা হতে পারে। আমাদের মডেল আমন মৌসুমে হাওরের জমিকে অনাবাদী রাখে, তবে ফসল কাটার সময় স্থানীয় বাঁধের নিরাপত্তা ও নিষ্কাশন অত্যন্ত গুরুত্বপূর্ণ।'
-                  : 'Low-lying haor basins (e.g. Sunamganj) face flash flood risks from upstream catchments. While our engine enforces Kharif fallow constraints, Boro harvest windows remain dependent on local submersible embankment conditions.'}
+                  : 'Low-lying haor basins (e.g. Sunamganj) face flash flood risks from upstream catchments. While our optimization model enforces Kharif fallow constraints, Boro harvest windows remain dependent on local submersible embankment conditions.'}
               </p>
             </div>
 
@@ -460,7 +460,7 @@ export function DataEvidenceView({
               <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
                 {lang === 'bn'
                   ? 'যেখানে নাসার পরিমাপিত উপাত্ত বা ব্যবহারকারীর ইনপুট নেই (যেমন একক প্লটের লাইভ এনডিভিআই বা সেন্সর আর্দ্রতা), FieldShift সেখানে কৃত্রিম সংখ্যা বসায় না; স্পষ্টভাবে "তথ্য নেই" দেখায়।'
-                  : 'Where verified satellite telemetry or farmer field inputs are unavailable (e.g. single-plot live NDVI or continuous telemetry), FieldShift renders an honest "No data / তথ্য নেই" state rather than fabricated placeholders.'}
+                  : 'Where empirical satellite telemetry or farmer field inputs are unavailable (e.g. single-plot live NDVI or continuous telemetry), FieldShift renders an honest "No data / তথ্য নেই" state rather than fabricated placeholders.'}
               </p>
             </div>
           </div>

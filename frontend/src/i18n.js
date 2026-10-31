@@ -9,7 +9,7 @@ export const TRANSLATIONS = {
     switch_lang: 'English-এ দেখুন',
     active_field_label: 'নির্বাচিত জমি:',
     select_field_placeholder: 'জমি বেছে নিন',
-    weather_live_badge: '🛰️ নাসা লাইভ আবহাওয়া',
+    weather_live_badge: '🛰️ নাসা আবহাওয়া পর্যবেক্ষণ',
     weather_cache_badge: '💾 সংরক্ষিত আবহাওয়া',
     
     // Main Navigation
@@ -160,7 +160,7 @@ export const TRANSLATIONS = {
     switch_lang: 'বাংলায় দেখুন',
     active_field_label: 'Active Field:',
     select_field_placeholder: 'Choose parcel',
-    weather_live_badge: '🛰️ NASA Live Weather',
+    weather_live_badge: '🛰️ NASA Weather Observation',
     weather_cache_badge: '💾 Cached Weather',
     
     // Main Navigation

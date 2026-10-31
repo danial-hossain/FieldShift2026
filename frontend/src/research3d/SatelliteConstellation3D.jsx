@@ -51,7 +51,7 @@ export function SatelliteConstellation3D({
       radius: 2.5,
       inclination: 1.71, // ~98 deg
       speed: 0.018,
-      status: 'PREREQUISITE READY (STANDBY)',
+      status: 'ARCHIVED BENCHMARK (STANDBY)',
       revisit: '5 days (Twin constellation 2A/2B)',
       bands: 'B4 Red, B8 NIR, B11 SWIR (10m - 20m NDVI)',
     },

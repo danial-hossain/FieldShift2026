@@ -392,7 +392,7 @@ export function ResearchProvenancePanel({ fieldName, fieldId, mode, nasaStatus }
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '6px' }}>
         <div><strong>Field Source:</strong> PostgreSQL DB {fieldId ? `(#${fieldId})` : ''}</div>
         <div><strong>Environment:</strong> NASA POWER Daily Point API</div>
-        <div><strong>ML Engine:</strong> Synthetic benchmark</div>
+        <div><strong>ML Model:</strong> Synthetic benchmark</div>
         <div><strong>RL Policy:</strong> Simulation-trained policy</div>
         <div><strong>MILP Solver:</strong> PuLP / CBC Branch &amp; Bound</div>
         <div><strong>Scenarios:</strong> Synthetic hypothetical perturbation</div>
@@ -2295,7 +2295,7 @@ export function App() {
                 <div className="dashboard-analysis-status">
                   <span className="status-indicator-dot" />
                   <span className="status-text">
-                    {running ? 'Running Pipeline…' : (activeField?.last_analysis_date ? 'Last Analysis: Recent' : 'Last Analysis: Ready')}
+                    {running ? 'Running Pipeline…' : (activeField?.last_analysis_date ? 'Last Analysis: Recent' : 'Last Analysis: None')}
                   </span>
                 </div>
 
@@ -2324,7 +2324,7 @@ export function App() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                         <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)' }}>Field Readiness</span>
                         <span style={{ fontSize: 10.5, fontWeight: 700, padding: '2px 7px', borderRadius: 999, background: fieldReadiness.isReady ? '#e8f5e9' : '#fef3c7', color: fieldReadiness.isReady ? '#2e7d32' : '#b45309' }}>
-                          {fieldReadiness.isReady ? 'Field Ready' : 'Needs Attention'}
+                          {fieldReadiness.isReady ? 'Inputs Complete' : 'Needs Attention'}
                         </span>
                       </div>
                       <strong style={{ fontSize: 14.5, display: 'block', color: 'var(--text-main)', marginBottom: 3 }}>
@@ -2467,7 +2467,7 @@ export function App() {
                       <span style={{ fontSize: 16 }}>▶️</span>
                       <div>
                         <div>Analyze Field</div>
-                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Run live pipeline</span>
+                        <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 500 }}>Run analysis pipeline</span>
                       </div>
                     </button>
                     <button
@@ -3043,11 +3043,11 @@ export function App() {
                         <div className="donut-meters-stack">
                           <div className="donut-meter-row">
                             <div className="meter-meta-row">
-                              <span>Drainage</span>
-                              <strong>100%</strong>
+                              <span>Drainage (প্রাক্কলন)</span>
+                              <strong>75%</strong>
                             </div>
                             <div className="donut-meter-track">
-                              <div className="donut-meter-bar mint" style={{ width: '100%' }} />
+                              <div className="donut-meter-bar mint" style={{ width: '75%' }} />
                             </div>
                           </div>
 
@@ -3148,7 +3148,7 @@ export function App() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
                     {[
                       { id: 'comparison_lab', icon: '🧪', title: 'Comparison Lab', subtitle: 'MILP vs RL vs Rule 3-Way Audit', color: '#00df81', desc: 'Side-by-side profit, water, and soil health benchmarks with exportable CSV/JSON results.' },
-                      { id: 'recovery', icon: '⚡', title: 'Crop Failure & Recovery', subtitle: 'Shock Event Resilience Engine', color: '#ef4444', desc: 'Simulate drought or crop loss shocks and solve for adaptive capital recovery.' },
+                      { id: 'recovery', icon: '⚡', title: 'Crop Failure & Recovery', subtitle: 'Shock Event Resilience Simulator', color: '#ef4444', desc: 'Simulate drought or crop loss shocks and solve for adaptive capital recovery.' },
                       { id: 'replan', icon: '🔄', title: 'Replan for Next Season', subtitle: 'Closed-Loop Adaptive Planning', color: '#38bdf8', desc: 'Incorporate actual harvested crops and updated soil pH/OM tests to re-optimize.' },
                       { id: 'uncertainty', icon: '🌦️', title: 'Weather Uncertainty', subtitle: '5 Multi-Scenario Stress Tests', color: '#38bdf8', desc: 'Evaluate plan feasibility against thermal waves, drought, and tube-well restrictions.' },
                       { id: 'sustainability', icon: '🌱', title: 'Sustainability Tracker', subtitle: 'Soil Health & Legume Trajectory', color: '#10b981', desc: 'Track multi-season biological soil scores, Fabaceae BNF breaks, and aquifer load.' },

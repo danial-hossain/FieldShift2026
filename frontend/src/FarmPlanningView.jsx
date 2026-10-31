@@ -43,7 +43,7 @@ export function FarmPlanningView({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
               <span style={{ fontSize: 26 }}>🌾📐</span>
-              <Pill tone="leaf">PULP MILP OPTIMIZATION ENGINE</Pill>
+              <Pill tone="leaf">PuLP MILP Optimization Model</Pill>
               <Pill tone="water">
                 {activeField?.name || (lang === 'bn' ? 'বগুড়া পরীক্ষামূলক খামার' : 'Bogura Demo Field')} ({formatNumber(activeField?.area_ha || 10.0, 1)} ha)
               </Pill>

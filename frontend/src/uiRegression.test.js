@@ -367,3 +367,28 @@ test('U4: 3D plan viewer integrity (grass natural saturation #5f8f3c..#7aa84d, b
   // 4. Draw calls reporting
   assert.ok(claySrc.includes('Draw calls:'), 'Must report draw calls');
 });
+
+test('U5: Unbacked marketing and status buzzwords removed and aligned with real state', () => {
+  const parcelSrc = fs.readFileSync(path.join(__dirname, 'FieldParcelManagerView.jsx'), 'utf-8');
+  assert.ok(!parcelSrc.includes("if (!d) return 'Ready';"), 'FieldParcelManagerView must not use Ready for missing date');
+  assert.ok(!parcelSrc.includes('>Live Profile<'), 'FieldParcelManagerView must not claim Live Profile');
+  assert.ok(parcelSrc.includes('Not Evaluated'), 'FieldParcelManagerView must use Not Evaluated');
+
+  const dataEvidenceSrc = fs.readFileSync(path.join(__dirname, 'DataEvidenceView.jsx'), 'utf-8');
+  assert.ok(!dataEvidenceSrc.includes("status: 'VERIFIED (+3.5 to +10.5 Days)'"), 'DataEvidenceView must not claim unbacked VERIFIED');
+  assert.ok(dataEvidenceSrc.includes("status: 'Empirical (+3.5 to +10.5 Days)'"), 'DataEvidenceView must use Empirical');
+
+  const climateMapSrc = fs.readFileSync(path.join(__dirname, 'BangladeshClimateMap.jsx'), 'utf-8');
+  assert.ok(!climateMapSrc.includes('SCENARIO ENGINE'), 'BangladeshClimateMap must not use SCENARIO ENGINE');
+  assert.ok(climateMapSrc.includes('SCENARIO MODEL'), 'BangladeshClimateMap must use SCENARIO MODEL');
+
+  const farmPlanSrc = fs.readFileSync(path.join(__dirname, 'FarmPlanningView.jsx'), 'utf-8');
+  assert.ok(farmPlanSrc.includes('PuLP MILP Optimization Model'), 'FarmPlanningView must use PuLP MILP Optimization Model');
+
+  const i18nSrc = fs.readFileSync(path.join(__dirname, 'i18n.js'), 'utf-8');
+  assert.ok(!i18nSrc.includes('NASA Live Weather'), 'i18n must not claim Live Weather');
+  assert.ok(i18nSrc.includes('NASA Weather Observation'), 'i18n must use NASA Weather Observation');
+
+  const mainSrc = fs.readFileSync(path.join(__dirname, 'main.jsx'), 'utf-8');
+  assert.ok(!mainSrc.includes('<span>Drainage</span>\r\n                              <strong>100%</strong>') && !mainSrc.includes('<span>Drainage</span>\n                              <strong>100%</strong>'), 'main.jsx must not claim unbacked 100% Drainage');
+});

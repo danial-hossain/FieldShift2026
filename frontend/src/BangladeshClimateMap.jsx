@@ -124,7 +124,7 @@ export function BangladeshClimateMap({ activeField = null, lang = 'bn' }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
             <span style={{ fontSize: 22 }}>🗺️🎛️</span>
             <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--cyan)', background: 'rgba(56, 189, 248, 0.15)', padding: '2px 8px', borderRadius: 999, border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-              A6: NASA SPATIAL CLIMATE MAP &amp; SCENARIO ENGINE
+              A6: NASA SPATIAL CLIMATE MAP &amp; SCENARIO MODEL
             </span>
           </div>
           <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>

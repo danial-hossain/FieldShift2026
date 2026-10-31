@@ -136,7 +136,7 @@ export function NasaWeatherStation3D({ nasa = {}, env = {}, activeField = null, 
         <div className="mission-stat">
           <span className="mission-label">Data Assurance</span>
           <strong className={`mission-value ${isObserved ? 'highlight-cyan' : 'highlight-amber'}`}>
-            {isObserved ? 'Verified Empirical' : 'Synthetic / Cached Demo'}
+            {isObserved ? 'Direct Climatology' : 'Cached Archive'}
           </strong>
         </div>
       </div>

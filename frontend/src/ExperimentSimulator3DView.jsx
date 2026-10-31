@@ -193,7 +193,7 @@ export function ExperimentSimulator3DView({
       },
       comparisonResult: comparison,
       provenance: {
-        engine: 'FieldShift 3D RealFarm Three.js Engine v186',
+        visualization: 'FieldShift 3D RealFarm Three.js v186',
         agronomicModel: 'FieldShift AgroSim Deterministic v2.4 (FAO-33/FAO-56)',
         soilBalanceFormula: 'S_t = min(TAW, max(0, S_{t-1} + Rain_t + Irrig_t - ETa_t))',
         yieldResponseFormula: '(1 - Ya/Ym) = Ky * (1 - sum(ETa)/sum(ETc))',
@@ -1102,7 +1102,7 @@ export function ExperimentSimulator3DView({
             <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'rgba(238, 243, 238, 0.68)' }}>
               {lang === 'bn'
                 ? 'চরম জলবায়ু ও মাটি পরিস্থিতি (Zero Water, Deluge > TAW, Ks Threshold, N=0) যাচাই এবং ত্রিমাত্রিক লাইসিমিটার দৃশ্য।'
-                : 'Direct execution of 9 physical edge-case stress benchmarks, live invariant validation, and 3D lysimeter simulation.'}
+                : 'Direct execution of 9 physical edge-case stress benchmarks, runtime invariant validation, and 3D lysimeter simulation.'}
             </p>
           </div>
           <StressTest3D lang={lang} />

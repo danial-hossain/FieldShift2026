@@ -90,7 +90,7 @@ const SOIL_TEXTURE_DATA = {
 };
 
 const defaultFormatDate = d => {
-  if (!d) return 'Ready';
+  if (!d) return 'Not Evaluated';
   try {
     const parsed = new Date(d);
     if (isNaN(parsed.getTime())) return String(d);
@@ -612,7 +612,7 @@ export function FieldParcelManagerView({
           <div className="param-card-3d">
             <div className="card-top-row">
               <span className="card-title-icon">💧 Physical Moisture Parameters</span>
-              <span className="status-live-chip">Live Profile</span>
+              <span className="status-live-chip">Soil Profile</span>
             </div>
             <div className="param-metrics-grid">
               <div className="p-metric-box">
@@ -806,7 +806,7 @@ export function FieldParcelManagerView({
                       <div className="prop-row prop-meta-row">
                         <span className="prop-row-key">Last Analysis</span>
                         <span className="prop-row-val" style={{ color: 'var(--primary)', fontWeight: 600 }}>
-                          {fld.last_analysis_date ? formatDate(fld.last_analysis_date) : 'Ready'}
+                          {fld.last_analysis_date ? formatDate(fld.last_analysis_date) : 'Not Evaluated'}
                         </span>
                       </div>
                     </div>
