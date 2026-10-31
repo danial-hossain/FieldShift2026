@@ -329,3 +329,24 @@ test('U2: Design tokens & layout integrity (1680px max-width, 44px tap targets, 
   // 4. Mobile 390px horizontal scroll prevention
   assert.ok(stylesSrc.includes('overflow-x: hidden !important;'), 'Must prevent horizontal overflow on mobile viewports');
 });
+
+test('U3: Farm Planning hero view integrity (Existing baseline + 3 strategies, 12-month calendar strip, 5-item card, priority highlight)', () => {
+  const sixSrc = fs.readFileSync(path.join(__dirname, 'SixSeasonRecommendationView.jsx'), 'utf-8');
+  const stylesSrc = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+
+  // 1. Existing baseline column
+  assert.ok(sixSrc.includes('বিদ্যমান আবর্তন (বেসলাইন)'), 'Must render existing baseline column');
+
+  // 2. Priority highlight badge
+  assert.ok(sixSrc.includes('সবচেয়ে উপযুক্ত আপনার অগ্রাধিকারে'), 'Must render best suited priority highlight');
+
+  // 3. 12-month calendar strip directly on hero view
+  assert.ok(sixSrc.includes('১২-মাসের ক্রপিং ক্যালেন্ডার স্ট্রিপ'), 'Must render 12-month continuous calendar strip');
+
+  // 4. Deterministic 5-item card
+  assert.ok(sixSrc.includes('কৌশল প্রোফাইল ও বৈজ্ঞানিক বিশ্লেষণ (৫-দফা মূল্যায়ন)'), 'Must render 5-item card');
+
+  // 5. Mobile swipe cards rule in styles.css
+  assert.ok(stylesSrc.includes('.strategy-columns-container'), 'Must define strategy-columns-container');
+  assert.ok(stylesSrc.includes('scroll-snap-type: x mandatory !important;'), 'Must support mobile horizontal swipe cards');
+});

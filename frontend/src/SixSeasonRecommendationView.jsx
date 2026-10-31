@@ -98,7 +98,7 @@ export function SixSeasonRecommendationView({
       bareDays: baselineRotationList.filter(c => c === 'Fallow').length * 75,
     };
   }, [baselineRotationList]);
-  const [selectedStrategy, setSelectedStrategy] = useState('balanced');
+const [selectedStrategy, setSelectedStrategy] = useState('balanced');
   const [selectedPeriodKey, setSelectedPeriodKey] = useState('Y1_S1');
   const [viewMode, setViewMode] = useState('recommendations'); // 'recommendations' | 'comparison' | 'timeline'
   const [isSimulating, setIsSimulating] = useState(false);
@@ -112,6 +112,19 @@ export function SixSeasonRecommendationView({
   const [marketPreferences, setMarketPreferences] = useState(['Mustard', 'Lentil', 'Potato', 'Maize']);
   const [customWeights, setCustomWeights] = useState({ profit: 40, water: 30, soil: 20, national_need: 10 });
   const [showConstraintsPanel, setShowConstraintsPanel] = useState(true);
+
+  const bestSuitedStrategy = useMemo(() => {
+    if (customWeights.water >= 40 || waterAvailability === 'limited' || waterAvailability === 'none') {
+      return 'water_efficiency';
+    }
+    if (customWeights.soil >= 35) {
+      return 'soil_health';
+    }
+    if (customWeights.profit >= 50) {
+      return 'profit_focused';
+    }
+    return 'balanced';
+  }, [customWeights, waterAvailability]);
 
   // A5: Deterministic Binding Constraints Evaluation
   const bindingConstraints = useMemo(() => {
@@ -784,9 +797,63 @@ export function SixSeasonRecommendationView({
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
+        <div className="strategy-columns-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12, marginBottom: 18 }}>
+          {/* Column 0: Existing Rotation Baseline */}
+          <div
+            style={{
+              padding: '14px 16px',
+              borderRadius: 12,
+              textAlign: 'left',
+              border: '1px solid rgba(148, 163, 184, 0.3)',
+              background: 'rgba(15, 23, 42, 0.45)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 18 }}>🚜</span>
+                  <strong style={{ fontSize: 13, color: '#94a3b8' }}>
+                    {lang === 'bn' ? 'বিদ্যমান আবর্তন (বেসলাইন)' : 'Existing Rotation (Baseline)'}
+                  </strong>
+                </div>
+                <span style={{ fontSize: 10, background: 'rgba(148, 163, 184, 0.2)', color: '#cbd5e1', padding: '1px 6px', borderRadius: 999, fontWeight: 800 }}>
+                  {lang === 'bn' ? 'বেসলাইন' : 'BASELINE'}
+                </span>
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', margin: '4px 0 8px', lineHeight: 1.35 }}>
+                {lang === 'bn' ? 'বর্তমান কৃষক অভ্যাস। বোরো ধানভিত্তিক সেচনির্ভর চাষাবাদ ও পতিত জমি।' : 'Farmer current practice. Deep tubewell pumping and seasonal bare fallow ground.'}
+              </div>
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 8 }}>
+                {baselineRotationList.slice(0, 3).map((c, i) => (
+                  <span key={i} style={{ background: 'rgba(30, 41, 59, 0.8)', border: '1px solid #475569', padding: '1px 6px', borderRadius: 4, fontSize: 10.5, color: '#cbd5e1' }}>
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: 8, fontSize: 11 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
+                <span>{lang === 'bn' ? 'লাভ (Margin):' : 'Margin:'}</span>
+                <strong>{formatCurrency(baselineMetrics.grossMargin, lang)}/ha</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f87171', marginTop: 2 }}>
+                <span>{lang === 'bn' ? 'পানি সাশ্রয়:' : 'Water Score:'}</span>
+                <strong>{baselineMetrics.waterScore} / 6.0</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f59e0b', marginTop: 2 }}>
+                <span>{lang === 'bn' ? 'অনাবৃত দিন:' : 'Bare Days:'}</span>
+                <strong>{baselineMetrics.bareDays} {lang === 'bn' ? 'দিন/বছর' : 'days/yr'}</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Columns 1, 2, 3: Alternative Strategies */}
           {Object.values(STRATEGY_DEFINITIONS).map(strat => {
             const isSelected = selectedStrategy === strat.id;
+            const isBest = strat.id === bestSuitedStrategy;
             return (
               <button
                 key={strat.id}
@@ -795,43 +862,143 @@ export function SixSeasonRecommendationView({
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
+                  justifyContent: 'space-between',
                   alignItems: 'flex-start',
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   borderRadius: 12,
                   cursor: 'pointer',
                   textAlign: 'left',
-                  border: isSelected ? '2px solid var(--accent)' : '1px solid var(--line)',
+                  border: isSelected ? '2px solid var(--accent)' : (isBest ? '1px solid rgba(16, 185, 129, 0.6)' : '1px solid var(--line)'),
                   background: isSelected ? 'var(--glass-strong)' : 'var(--glass)',
                   boxShadow: isSelected ? '0 0 16px rgba(197, 232, 108, 0.25)' : 'none',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.15s ease',
+                  position: 'relative',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: 4 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 18 }}>{strat.icon}</span>
-                    <strong style={{ fontSize: 13, color: isSelected ? strat.color : 'var(--text)' }}>
-                      {strat[lang === 'bn' ? 'titleBn' : 'titleEn']}
-                    </strong>
-                  </div>
-                  {isSelected && (
-                    <span style={{ fontSize: 10, background: strat.color, color: 'var(--bg-deep)', padding: '1px 6px', borderRadius: 999, fontWeight: 900 }}>
-                      ACTIVE
-                    </span>
+                <div style={{ width: '100%' }}>
+                  {isBest && (
+                    <div style={{
+                      background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(0, 223, 129, 0.15))',
+                      border: '1px solid #10b981',
+                      color: '#34d399',
+                      padding: '2px 8px',
+                      borderRadius: 999,
+                      fontSize: 10,
+                      fontWeight: 800,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      marginBottom: 6
+                    }}>
+                      <span>⭐</span>
+                      <span>{lang === 'bn' ? 'সবচেয়ে উপযুক্ত আপনার অগ্রাধিকারে' : 'Best Suited to Your Priority'}</span>
+                    </div>
                   )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 18 }}>{strat.icon}</span>
+                      <strong style={{ fontSize: 13, color: isSelected ? strat.color : 'var(--text)' }}>
+                        {strat[lang === 'bn' ? 'titleBn' : 'titleEn']}
+                      </strong>
+                    </div>
+                    {isSelected && (
+                      <span style={{ fontSize: 10, background: strat.color, color: 'var(--bg-deep)', padding: '1px 6px', borderRadius: 999, fontWeight: 900 }}>
+                        ACTIVE
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', margin: '4px 0 8px', lineHeight: 1.35 }}>
+                    {strat[lang === 'bn' ? 'summaryBn' : 'summaryEn']}
+                  </div>
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', margin: '4px 0 8px', lineHeight: 1.35 }}>
-                  {strat[lang === 'bn' ? 'summaryBn' : 'summaryEn']}
-                </div>
-                <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--text-2)', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+
+                <div style={{ width: '100%', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: 8, fontSize: 10.5, fontWeight: 700, color: 'var(--text-2)', display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--leaf)' }}>{Math.round(strat.weights.profit * 100)}% {lang === 'bn' ? 'মুনাফা' : 'Profit'}</span>
-                  <span>•</span>
                   <span style={{ color: 'var(--water)' }}>{Math.round(strat.weights.water * 100)}% {lang === 'bn' ? 'পানি' : 'Water'}</span>
-                  <span>•</span>
                   <span style={{ color: 'var(--sun)' }}>{Math.round(strat.weights.soil * 100)}% {lang === 'bn' ? 'মাটি' : 'Soil'}</span>
                 </div>
               </button>
             );
           })}
+        </div>
+        
+        {/* 12-Month Horizontal Calendar Strip (Hero View) */}
+        <div style={{
+          background: 'rgba(15, 23, 42, 0.75)',
+          border: '1px solid var(--glass-border)',
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 16,
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <strong style={{ fontSize: 13, color: 'var(--water)' }}>
+              🗓️ {lang === 'bn' ? '১২-মাসের ক্রপিং ক্যালেন্ডার স্ট্রিপ (বার্ষিক চক্র)' : '12-Month Continuous Cropping Calendar Strip'}
+            </strong>
+            <PlainLanguagePopover termKey="heat_stress" lang={lang} />
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+              {lang === 'bn' ? 'রবি (নভে-এপ্রি) • খরিফ-১ (এপ্রি-জুন) • খরিফ-২ (জুলাই-অক্টো)' : 'Rabi (Nov-Apr) • Kharif-1 (Apr-Jun) • Kharif-2 (Jul-Oct)'}
+            </span>
+          </div>
+
+          {/* Months Header */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 4, textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>
+            {['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'].map(m => (
+              <div key={m} style={{ padding: '4px 2px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: 4 }}>
+                {m}
+              </div>
+            ))}
+          </div>
+
+          {/* Year 1 Cropping Strip */}
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)', marginBottom: 4 }}>
+              {lang === 'bn' ? '১ম বছর ফসল আবর্তন (Year 1):' : 'Year 1 Crop Cycle:'}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 4, height: 36 }}>
+              <div style={{
+                gridColumn: 'span 6',
+                background: 'rgba(56, 189, 248, 0.25)',
+                border: '1px solid var(--water)',
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 11,
+                fontWeight: 700,
+                color: 'var(--water)',
+              }}>
+                🌱 {sixSeasonRecommendations[0]?.cropName || 'Rabi Crop'}
+              </div>
+              <div style={{
+                gridColumn: 'span 2',
+                background: sixSeasonRecommendations[1]?.cropName === 'Fallow' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 223, 129, 0.25)',
+                border: sixSeasonRecommendations[1]?.cropName === 'Fallow' ? '1px dashed #f87171' : '1px solid var(--leaf)',
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 10.5,
+                fontWeight: 700,
+                color: sixSeasonRecommendations[1]?.cropName === 'Fallow' ? '#f87171' : 'var(--leaf)',
+              }}>
+                {sixSeasonRecommendations[1]?.cropName === 'Fallow' ? (lang === 'bn' ? 'পতিত' : 'Fallow') : sixSeasonRecommendations[1]?.cropName}
+              </div>
+              <div style={{
+                gridColumn: 'span 4',
+                background: 'rgba(251, 191, 36, 0.25)',
+                border: '1px solid var(--sun)',
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 11,
+                fontWeight: 700,
+                color: 'var(--sun)',
+              }}>
+                🌾 {sixSeasonRecommendations[2]?.cropName || 'Aman Rice'}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* A2 & A7: Deterministic 5-Item Strategy Card with Plain-Language Popovers and SAAO Notice */}
