@@ -240,10 +240,14 @@ export function ClayFarmScene({
       if (cameraPreset === 'top_down') {
         camera.position.set(0, 24, 0.01);
         camera.lookAt(0, 0, 0);
-      } else if (cameraPreset === 'furrow') {
+      } else if (cameraPreset === 'furrow' || cameraPreset === 'close_up') {
         camera.position.set(6, 3, 12);
         camera.lookAt(0, 0.8, 0);
+      } else if (cameraPreset === 'side_cut') {
+        camera.position.set(22, 1.4, 0);
+        camera.lookAt(0, 0, 0);
       } else {
+        // 'overview' | 'perspective'
         camera.position.set(18, 16, 18);
         camera.lookAt(0, 0, 0);
       }
@@ -725,11 +729,25 @@ export function ClayFarmScene({
             sceneGroup.add(sprout);
           });
         } else if (plot.crop) {
+          const cropKey = resolveCropKey(plot.crop);
+          const activeGeo = CROP_GEOS[cropKey] || CROP_GEOS.vegetables;
+          const activeMat = CROP_MATS[cropKey] || CROP_MATS.vegetables;
+
+          // Water sheet plane for paddy / rice
+          if (cropKey === 'rice') {
+            const sheetGeo = new THREE.PlaneGeometry(bedWidth - 0.1, bedDepth - 0.1);
+            const sheetMesh = new THREE.Mesh(sheetGeo, waterSheetMat);
+            sheetMesh.rotation.x = -Math.PI / 2;
+            sheetMesh.position.set(posX, 1.44, posZ);
+            sceneGroup.add(sheetMesh);
+            disposables.push(sheetGeo);
+          }
+
           // Dense instanced crop plants inside bed (deterministic pseudo-random placement)
           const rows = 8;
           const cols = 12;
           const totalInstances = rows * cols;
-          const instMesh = new THREE.InstancedMesh(plantConGeo, plantMat, totalInstances);
+          const instMesh = new THREE.InstancedMesh(activeGeo, activeMat, totalInstances);
           instMesh.castShadow = true;
           instMesh.receiveShadow = true;
 

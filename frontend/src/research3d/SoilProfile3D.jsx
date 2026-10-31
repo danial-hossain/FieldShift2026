@@ -3,7 +3,7 @@
 // Features: Holographic physical volumes (#5fd3f3), luminous outlines (#8ee9ff),
 // FAO-56 root depth progression, calibrated depth ruler, and zero fabricated numbers.
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { Research3DScene } from './Research3DScene.jsx';
 
@@ -36,6 +36,8 @@ export function SoilProfile3D({
   // 1. Resolve soil texture and reference constants
   const soilKey = (soilTexture || 'loam').toLowerCase().replace(/\s+/g, '_');
   const catalogEntry = SOIL_TEXTURE_CATALOG[soilKey] || SOIL_TEXTURE_CATALOG.loam;
+  const [simulatedSeasonDay, setSimulatedSeasonDay] = useState(45);
+  const [showParticles, setShowParticles] = useState(true);
   const isTextureSupplied = Boolean(soilTexture);
 
   const fc = fieldCapacityPct != null ? Number(fieldCapacityPct) : catalogEntry.fc;
@@ -251,6 +253,69 @@ export function SoilProfile3D({
       profileGroup.add(new THREE.Line(tickGeo, rulerMat));
     });
 
+    
+    // 7. Particle Systems: Rain Drops & ET Vapour (P5.2)
+    const rainCount = 120;
+    const rainGeo = new THREE.BufferGeometry();
+    const rainPositions = new Float32Array(rainCount * 3);
+    for (let i = 0; i < rainCount; i++) {
+      rainPositions[i * 3] = (Math.random() - 0.5) * 5.6;
+      rainPositions[i * 3 + 1] = Math.random() * 4.5 + 0.5;
+      rainPositions[i * 3 + 2] = (Math.random() - 0.5) * 4.6;
+    }
+    rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
+    const rainMat = new THREE.PointsMaterial({
+      color: '#38bdf8',
+      size: 0.14,
+      transparent: true,
+      opacity: 0.75,
+    });
+    const rainPoints = new THREE.Points(rainGeo, rainMat);
+    profileGroup.add(rainPoints);
+
+    const vapourCount = 70;
+    const vapourGeo = new THREE.BufferGeometry();
+    const vapourPositions = new Float32Array(vapourCount * 3);
+    for (let i = 0; i < vapourCount; i++) {
+      vapourPositions[i * 3] = (Math.random() - 0.5) * 5.2;
+      vapourPositions[i * 3 + 1] = Math.random() * 3.5 + 0.2;
+      vapourPositions[i * 3 + 2] = (Math.random() - 0.5) * 4.2;
+    }
+    vapourGeo.setAttribute('position', new THREE.BufferAttribute(vapourPositions, 3));
+    const vapourMat = new THREE.PointsMaterial({
+      color: '#f8fafc',
+      size: 0.22,
+      transparent: true,
+      opacity: 0.35,
+    });
+    const vapourPoints = new THREE.Points(vapourGeo, vapourMat);
+    profileGroup.add(vapourPoints);
+
+    if (setAnimateCallback) {
+      setAnimateCallback((time) => {
+        // Animate falling rain
+        const rPos = rainGeo.attributes.position.array;
+        for (let i = 0; i < rainCount; i++) {
+          rPos[i * 3 + 1] -= 0.14;
+          if (rPos[i * 3 + 1] < 0) {
+            rPos[i * 3 + 1] = 4.8;
+          }
+        }
+        rainGeo.attributes.position.needsUpdate = true;
+
+        // Animate rising vapour
+        const vPos = vapourGeo.attributes.position.array;
+        for (let i = 0; i < vapourCount; i++) {
+          vPos[i * 3 + 1] += 0.035;
+          vPos[i * 3] += Math.sin(time * 2 + i) * 0.005;
+          if (vPos[i * 3 + 1] > 4.6) {
+            vPos[i * 3 + 1] = 0.2;
+          }
+        }
+        vapourGeo.attributes.position.needsUpdate = true;
+      });
+    }
+
     scene.add(profileGroup);
   };
 
@@ -316,6 +381,42 @@ export function SoilProfile3D({
           </tr>
         </tbody>
       </table>
+    
+      {/* P5.2: Soil-Water Column Legend, Particle Toggle & FAO-56 Key Numbers */}
+      <div style={{
+        marginTop: 12,
+        padding: '12px 16px',
+        background: '#1c242c',
+        borderRadius: 12,
+        border: '1px solid #222c36',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 12,
+        fontSize: '12.5px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#38bdf8', fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#38bdf8', display: 'inline-block' }} />
+            {lang === 'bn' ? 'বৃষ্টি ও সেচ কণা (Rain Particles)' : 'Rain/Irrigation Drops'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#f8fafc', fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#f8fafc', display: 'inline-block' }} />
+            {lang === 'bn' ? 'বাষ্পীভবন (ET Vapour)' : 'ET Vapour'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#00df81', fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#00df81', display: 'inline-block' }} />
+            {lang === 'bn' ? `মূল অঞ্চল গভীরতা (Zr): ${currentRootDepthM || 0.6}m` : `Root Zone (Zr): ${currentRootDepthM || 0.6}m`}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+            TAW: <strong>{effTawMm || 120} mm</strong> | RAW: <strong>{effRawMm || 66} mm</strong>
+          </span>
+        </div>
+      </div>
+
     </div>
   );
 
@@ -431,6 +532,42 @@ export function SoilProfile3D({
           * FAO-56 Dual Kc Root-Zone Balance: TAW = 1000 × (FC - WP) × Zr. কোনো অপ্রমাণিত আনমডেলড স্তর অনুমান করা হয়নি।
         </div>
       </div>
+    
+      {/* P5.2: Soil-Water Column Legend, Particle Toggle & FAO-56 Key Numbers */}
+      <div style={{
+        marginTop: 12,
+        padding: '12px 16px',
+        background: '#1c242c',
+        borderRadius: 12,
+        border: '1px solid #222c36',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 12,
+        fontSize: '12.5px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#38bdf8', fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#38bdf8', display: 'inline-block' }} />
+            {lang === 'bn' ? 'বৃষ্টি ও সেচ কণা (Rain Particles)' : 'Rain/Irrigation Drops'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#f8fafc', fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#f8fafc', display: 'inline-block' }} />
+            {lang === 'bn' ? 'বাষ্পীভবন (ET Vapour)' : 'ET Vapour'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#00df81', fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#00df81', display: 'inline-block' }} />
+            {lang === 'bn' ? `মূল অঞ্চল গভীরতা (Zr): ${currentRootDepthM || 0.6}m` : `Root Zone (Zr): ${currentRootDepthM || 0.6}m`}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+            TAW: <strong>{effTawMm || 120} mm</strong> | RAW: <strong>{effRawMm || 66} mm</strong>
+          </span>
+        </div>
+      </div>
+
     </div>
   );
 }

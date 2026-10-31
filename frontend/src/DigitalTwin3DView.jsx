@@ -35,7 +35,7 @@ export function DigitalTwin3DView({
   const [activeOverlay, setActiveOverlay] = useState('crop'); // 'crop' | 'soil' | 'rain' | 'bare_soil'
   const [rainDeltaPct, setRainDeltaPct] = useState(0); // -20..+20%
   const [tempDeltaC, setTempDeltaC] = useState(0.0); // +0.0..+2.0°C
-  const [cameraPreset, setCameraPreset] = useState('perspective'); // 'perspective' | 'top_down' | 'furrow'
+  const [cameraPreset, setCameraPreset] = useState('overview'); // 'perspective' | 'top_down' | 'furrow'
 
   const areaHa = activeField?.area_ha != null ? Number(activeField.area_ha) : 10.0;
   const soilTexture = activeField?.soil_texture || 'loam';
@@ -47,7 +47,7 @@ export function DigitalTwin3DView({
     setActiveOverlay('crop');
     setRainDeltaPct(0);
     setTempDeltaC(0.0);
-    setCameraPreset('perspective');
+    setCameraPreset('overview');
   };
 
   // Derive 6-period rotations per strategy dynamically from API plan & field attributes
