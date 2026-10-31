@@ -123,56 +123,42 @@ export function ResearchWorkspaceView({
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState({});
+  const [collapsedGroups, setCollapsedGroups] = useState({ archive: true });
 
   const { t } = useTranslation(lang);
 
-  // Group Definitions based on scientific architecture
+  // Group Definitions: 5 Core Computational Labs + Collapsed Archive (Experimental)
   const GROUPS = useMemo(() => [
     {
-      id: 'planning',
-      title: lang === 'bn' ? 'ক. পরিকল্পনা ও অপ্টিমাইজেশন' : 'A. Planning & Optimization',
-      icon: '🌾',
+      id: 'core_computational',
+      title: lang === 'bn' ? 'ক. সক্রিয় বৈজ্ঞানিক কম্পিউটেশনাল ল্যাব' : 'A. Active Computational Science Labs',
+      icon: '🔬',
       items: [
         { id: 'onset_science', label: lang === 'bn' ? 'অনসেট বিজ্ঞান (৩৯টি ইউনিক সেল)' : 'Onset Science (39 Unique Cells)', icon: '🔬', badge: 'NASA DUAL' },
         { id: 'six_seasons_milp', label: lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনা ও রোটেশন (MILP)' : '6-Season Crop Recommendation (MILP)', icon: '🌾', badge: 'MILP' },
-        { id: 'comparison_lab', label: lang === 'bn' ? 'তুলনামূলক ল্যাব (MILP বনাম RL বনাম Rule)' : 'Comparison Lab (MILP vs RL vs Rule)', icon: '🧪', badge: '3-WAY' },
-        { id: 'replan', label: lang === 'bn' ? 'পরবর্তী মৌসুমের অভিযোজিত পুনঃপরিকল্পনা' : 'Adaptive Next-Season Replanning', icon: '🔄', badge: 'ADAPTIVE' }
+        { id: 'uncertainty', label: lang === 'bn' ? 'আবহাওয়া সংবেদনশীলতা ও স্থিতিস্থাপকতা' : 'Weather Robustness & Uncertainty', icon: '🌦️', badge: 'STRESS' },
+        { id: 'soil_water_3d', label: lang === 'bn' ? 'মাটি ও পানির স্তর ব্যালেন্স (FAO-56)' : 'Soil & Water Hydrology (FAO-56)', icon: '💧', badge: 'FAO-56' },
+        { id: 'provenance', label: lang === 'bn' ? 'তথ্য উৎস ও নির্ভরযোগ্যতা রেজিস্ট্রি' : 'Data Provenance & Reliability Registry', icon: '🏛️', badge: '4-TIER' }
       ]
     },
     {
-      id: 'experiments_3d',
-      title: lang === 'bn' ? 'খ. ত্রিমাত্রিক বিজ্ঞান ল্যাব' : 'B. 3D Experiments',
-      icon: '🔬',
+      id: 'archive',
+      title: lang === 'bn' ? 'খ. আর্কাইভ (পরীক্ষামূলক)' : 'B. Archive (Experimental)',
+      icon: '📦',
       items: [
-        { id: 'experiment_simulator_3d', label: lang === 'bn' ? '৩ডি খামার সিমুলেটর ওয়ার্কবেঞ্চ' : 'Farm Experiment Simulator', icon: '🔬', badge: '3D' },
-        { id: 'soil_water_3d', label: lang === 'bn' ? 'মাটি স্তর ও পানি ব্যালেন্স' : 'Soil Profile & Water Balance', icon: '💧', badge: 'FAO-56' },
+        { id: 'comparison_lab', label: lang === 'bn' ? 'তুলনামূলক ল্যাব (MILP বনাম RL বনাম Rule)' : 'Comparison Lab (MILP vs RL vs Rule)', icon: '🧪', badge: '3-WAY' },
+        { id: 'replan', label: lang === 'bn' ? 'পরবর্তী মৌসুমের অভিযোজিত পুনঃপরিকল্পনা' : 'Adaptive Next-Season Replanning', icon: '🔄', badge: 'ADAPTIVE' },
+        { id: 'experiment_simulator_3d', label: lang === 'bn' ? '৩ডি খামার সিমুলেটর ওয়ার্কবেঞ্চ' : 'Farm Experiment Simulator 3D', icon: '🔬', badge: '3D' },
         { id: 'crop_growth_3d', label: lang === 'bn' ? 'ফসলের বৃদ্ধি ও ফেনোলজি' : 'Crop Growth & Phenology', icon: '🌱', badge: 'FAO-33' },
         { id: 'climate_stress_3d', label: lang === 'bn' ? 'জলবায়ু ও তাপমাত্রা চাপ' : 'Climate Stress Scenarios', icon: '☀️', badge: 'NASA' },
         { id: 'nutrient_3d', label: lang === 'bn' ? 'পুষ্টি ও রাইজোস্ফিয়ার BNF' : 'Nutrient & Rhizosphere BNF', icon: '🧪', badge: 'BARI' },
         { id: 'scenario_ab_3d', label: lang === 'bn' ? 'দৃশ্যকল্প এ/বি দ্বৈত তুলনা' : 'Scenario A/B Comparison', icon: '⚖️', badge: 'DUAL' },
-        { id: 'stress_tests_3d', label: lang === 'bn' ? '৯টি বৈজ্ঞানিক স্ট্রেস টেস্ট বেঞ্চ' : 'Scientific Stress Test Bench', icon: '⚡', badge: '9 TESTS' }
-      ]
-    },
-    {
-      id: 'sensitivity_robustness',
-      title: lang === 'bn' ? 'গ. সংবেদনশীলতা ও স্থিতিস্থাপকতা' : 'C. Sensitivity & Robustness',
-      icon: '📐',
-      items: [
+        { id: 'stress_tests_3d', label: lang === 'bn' ? '৯টি বৈজ্ঞানিক স্ট্রেস টেস্ট বেঞ্চ' : 'Scientific Stress Test Bench', icon: '⚡', badge: '9 TESTS' },
         { id: 'multi_field_experiment', label: lang === 'bn' ? 'মাল্টি-ফিল্ড এক্সপেরিমেন্ট ও সংবেদনশীলতা ল্যাব' : 'Multi-Field Experiment & Sensitivity Lab', icon: '🧪', badge: '6-FIELDS' },
-        { id: 'sensitivity', label: lang === 'bn' ? 'সংবেদনশীলতা বিশ্লেষণ (Sweeps)' : 'Sensitivity Analysis', icon: '📐', badge: 'SWEEPS' },
-        { id: 'uncertainty', label: lang === 'bn' ? 'আবহাওয়ার অনিশ্চয়তা বিশ্লেষণ' : 'Weather Uncertainty', icon: '🌦️', badge: 'STRESS' },
+        { id: 'sensitivity', label: lang === 'bn' ? 'সংবেদনশীলতা বিশ্লেষণ (Sweeps)' : 'Sensitivity Analysis (Sweeps)', icon: '📐', badge: 'SWEEPS' },
         { id: 'recovery', label: lang === 'bn' ? 'ফসল বিপর্যয় ও পুনরুদ্ধার পরিকল্পনা' : 'Crop Failure & Recovery', icon: '🛡️', badge: 'MILP' },
-        { id: 'rl_policy', label: lang === 'bn' ? 'রিইনফোর্সমেন্ট লার্নিং স্যান্ডবক্স' : 'RL Simulation Sandbox', icon: '🎮', badge: 'Q-LEARN' }
-      ]
-    },
-    {
-      id: 'data_validation',
-      title: lang === 'bn' ? 'ঘ. তথ্য ও মূল্যায়ন' : 'D. Data & Validation',
-      icon: '📊',
-      items: [
+        { id: 'rl_policy', label: lang === 'bn' ? 'রিইনফোর্সমেন্ট লার্নিং স্যান্ডবক্স' : 'RL Simulation Sandbox', icon: '🎮', badge: 'Q-LEARN' },
         { id: 'synthetic_lab', label: lang === 'bn' ? 'কৃত্রিম ডেটা জেনারেটর ল্যাব' : 'Synthetic Data Lab', icon: '🧬', badge: 'SEED 42' },
-        { id: 'provenance', label: lang === 'bn' ? 'তথ্য উৎস ও নির্ভরযোগ্যতা টায়ার' : 'Provenance & Reliability', icon: '🏛️', badge: '4-TIER' },
         { id: 'outcomes', label: lang === 'bn' ? 'বাস্তব বনাম আনুমানিক ফলাফল' : 'Actual vs Estimated Outcomes', icon: '📋', badge: 'VALIDATION' },
         { id: 'crop_catalog', label: lang === 'bn' ? 'বাংলাদেশ শস্য তথ্যকোষ' : 'Bangladesh Crop Database', icon: '📚', badge: 'BARI' },
         { id: 'satellite', label: lang === 'bn' ? 'স্যাটেলাইট সেন্সর প্রস্তুতি' : 'Satellite Sensor Readiness', icon: '📡', badge: 'NASA/ESA' },

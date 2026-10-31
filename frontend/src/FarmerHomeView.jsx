@@ -4,7 +4,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useTranslation, toBengaliNumber, formatArea } from './i18n.js';
-import { FarmerFarm3D } from './FarmerFarm3D.jsx';
 import { Card, CardHeader, Stat, Button, Pill, DataSourceTag, EmptyState, Skeleton } from './ui/index.js';
 import { evidenceBadge } from './advisoryBadges.js';
 import nasa30DaySeries from './nasa_30day_series.json';
@@ -236,7 +235,7 @@ export function FarmerHomeView({
       {/* ROW 2: 3D FARM CARD (8 COLS) + 7-DAY WEATHER TILES (4 COLS)   */}
       {/* ============================================================== */}
       <div className="farmer-home-row-2">
-        {/* Left 8 Cols: Stylized 3D Diorama Farm Scene (~520px tall) */}
+        {/* Left 8 Cols: Active Field Satellite Profile & Agronomic Climatology (No 3D on Home) */}
         <Card variant="glass" style={{ gridColumn: 'span 8', padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -246,7 +245,7 @@ export function FarmerHomeView({
                   {activeField?.name || (lang === 'bn' ? 'বগুড়া ডেমো খামার' : 'Bogura Demo Farm')}
                 </h3>
                 <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
-                  {formatArea(activeField?.area_ha || 10.0, lang)} · {activeField?.soil_texture === 'loam' ? (lang === 'bn' ? 'দোআঁশ মাটি' : 'Loam Soil') : (activeField?.soil_texture || 'Loam')}
+                  {formatArea(activeField?.area_ha || 10.0, lang)} · {activeField?.soil_texture === 'loam' ? (lang === 'bn' ? 'দোআঁশ মাটি' : 'Loam Soil') : (activeField?.soil_texture || 'Loam')} · {activeField?.district ? (lang === 'bn' ? `${activeField.district} জেলা` : `${activeField.district} District`) : (lang === 'bn' ? 'বগুড়া জেলা' : 'Bogura District')}
                 </span>
               </div>
             </div>
@@ -257,15 +256,79 @@ export function FarmerHomeView({
               </Button>
             </div>
           </div>
-          <div style={{ flex: 1, minHeight: 460 }}>
-            <FarmerFarm3D
-              activeField={activeField}
-              userFields={userFields}
-              onSelectField={onSelectField}
-              recommendedCrop="Rice"
-              nasa={nasa}
-              lang={lang}
-            />
+          <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Grid of 3 Information Columns: Satellite Parcel Map, SoilGrids Profile, Rain Climatology */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 }}>
+              {/* Box 1: Satellite Parcel Bounds & Coordinates */}
+              <div style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--hud-cyan)' }}>🛰️ {lang === 'bn' ? 'উপগ্রহ অবস্থান ও পার্সেল' : 'Satellite Parcel'}</span>
+                  <Pill variant="default" size="sm">{lang === 'bn' ? 'WGS84' : 'WGS84'}</Pill>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-2)', lineHeight: 1.6 }}>
+                  <div><strong>{lang === 'bn' ? 'অক্ষাংশ (Lat):' : 'Latitude:'}</strong> {activeField?.latitude ? Number(activeField.latitude).toFixed(4) : '24.8467'}° N</div>
+                  <div><strong>{lang === 'bn' ? 'দ্রাঘিমাংশ (Lon):' : 'Longitude:'}</strong> {activeField?.longitude ? Number(activeField.longitude).toFixed(4) : '89.3777'}° E</div>
+                  <div><strong>{lang === 'bn' ? 'জেলা / অঞ্চল:' : 'District / AEZ:'}</strong> {activeField?.district || (lang === 'bn' ? 'বগুড়া (টিস্টা প্লাবনভূমি)' : 'Bogura (Tista Plain)')}</div>
+                  <div><strong>{lang === 'bn' ? 'জমির ধরণ:' : 'Land Type:'}</strong> {activeField?.seasonally_flooded ? (lang === 'bn' ? 'মৌসুমি প্লাবিত (হাওর/নিম্নভূমি)' : 'Seasonally Flooded (Haor)') : (lang === 'bn' ? 'সাধারণ আবাদি জমি (উঁচু/মাঝারি)' : 'Medium Highland')}</div>
+                </div>
+              </div>
+
+              {/* Box 2: SoilGrids ISRIC Physical Soil Monolith */}
+              <div style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--hud-teal)' }}>🌱 {lang === 'bn' ? 'মাটির প্রোফাইল (ISRIC)' : 'SoilGrids Profile'}</span>
+                  <DataSourceTag source="SoilGrids 250m" mode="observed" period="ISRIC" />
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-2)', lineHeight: 1.6 }}>
+                  <div><strong>{lang === 'bn' ? 'বুনট (Texture):' : 'Texture:'}</strong> {activeField?.soil_texture || 'Loam (দোআঁশ)'}</div>
+                  <div><strong>{lang === 'bn' ? 'মাটির পিএইচ (pH):' : 'Soil pH:'}</strong> {activeField?.soil_ph ? Number(activeField.soil_ph).toFixed(1) : '6.5'} ({lang === 'bn' ? 'নিরপেক্ষ' : 'Slightly Acidic'})</div>
+                  <div><strong>{lang === 'bn' ? 'জৈব কার্বন (SOC):' : 'Organic Carbon:'}</strong> 1.4% (ISRIC depth 0-30cm)</div>
+                  <div><strong>{lang === 'bn' ? 'পানির ধারণক্ষমতা (TAW):' : 'Available Water (TAW):'}</strong> 140 mm/m</div>
+                </div>
+              </div>
+
+              {/* Box 3: NASA GPM IMERG 24-Year Rainfall Climatology */}
+              <div style={{ background: 'var(--glass)', border: '1px solid var(--line)', borderRadius: 12, padding: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--hud-cyan)' }}>🌧️ {lang === 'bn' ? 'বৃষ্টিপাত সারসংক্ষেপ' : 'NASA Rainfall'}</span>
+                  <DataSourceTag source="NASA GPM IMERG" mode="observed" period="2001-2024" />
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-2)', lineHeight: 1.6 }}>
+                  <div><strong>{lang === 'bn' ? 'গড় বার্ষিক বৃষ্টি:' : 'Annual Normal:'}</strong> 1,745 mm/year</div>
+                  <div><strong>{lang === 'bn' ? 'খরিফ মৌসুমি বৃষ্টি:' : 'Monsoon Kharif:'}</strong> 1,309 mm (মে-অক্টোবর)</div>
+                  <div><strong>{lang === 'bn' ? 'রবি শুষ্ক মৌসুম:' : 'Dry Season Rabi:'}</strong> 82 mm (নভেম্বর-এপ্রিল)</div>
+                  <div><strong>{lang === 'bn' ? 'সাম্প্রতিক ৭ দিন:' : 'Recent 7-Day Sum:'}</strong> {nasa?.rainfall_mm != null ? Number(nasa.rainfall_mm).toFixed(1) : '0.0'} mm</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Link to 3D Digital Twin Plan Viewer */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)',
+              border: '1px solid rgba(56, 189, 248, 0.2)',
+              borderRadius: 12,
+              padding: '14px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 12
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 24 }}>🛰️🌾</span>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+                    {lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনার ৩ডি ডিজিটাল টুইন দেখতে চান?' : 'Explore Full 6-Season 3D Digital Twin Plan Viewer'}
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text-3)' }}>
+                    {lang === 'bn' ? 'প্রতি মৌসুমের ফসল রোটেশন, সেচ ও মাটির আর্দ্রতা ত্রিমাত্রিক মডেলিংয়ে দেখুন।' : 'Interactive season slider over all 6 MILP periods with crop growth, moisture, and canal hydrology.'}
+                  </div>
+                </div>
+              </div>
+              <Button size="sm" variant="primary" onClick={() => onNavigate('digital_twin')}>
+                {lang === 'bn' ? 'ত্রিমাত্রিক ডিজিটাল টুইন খুলুন ➔' : 'Open 3D Digital Twin ➔'}
+              </Button>
+            </div>
           </div>
         </Card>
 

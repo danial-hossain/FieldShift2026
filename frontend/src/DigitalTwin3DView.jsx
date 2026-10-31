@@ -31,12 +31,24 @@ export function DigitalTwin3DView({
   const areaHa = activeField?.area_ha != null ? Number(activeField.area_ha) : 10.0;
   const soilTexture = activeField?.soil_texture || 'loam';
 
+  const [selectedSeasonIdx, setSelectedSeasonIdx] = useState(0);
+
+  const seasonsList = [
+    { id: 0, code: 'S1', nameBn: '১. রবি ২০২৬-২৭', nameEn: 'S1: Rabi 2026-27 (Nov-Apr)', isKharif: false, crop: 'wheat', cropBn: 'গম (Wheat)', waterMm: 350, moisture: 62 },
+    { id: 1, code: 'S2', nameBn: '২. খরিফ-২ ২০২৭', nameEn: 'S2: Kharif-2 2027 (Jul-Oct)', isKharif: true, crop: 'rice', cropBn: 'আমন ধান (Aman Rice)', waterMm: 0, moisture: 82, onsetMarker: '১৫-২৫ জুন (অনাবৃষ্টির ঝুঁকি ১৬.৭%)' },
+    { id: 2, code: 'S3', nameBn: '৩. রবি ২০২৭-২৮', nameEn: 'S3: Rabi 2027-28 (Nov-Apr)', isKharif: false, crop: 'mustard', cropBn: 'সরিষা (Mustard)', waterMm: 120, moisture: 58 },
+    { id: 3, code: 'S4', nameBn: '৪. খরিফ-২ ২০২৮', nameEn: 'S4: Kharif-2 2028 (Jul-Oct)', isKharif: true, crop: 'rice', cropBn: 'আমন ধান (Aman Rice)', waterMm: 0, moisture: 80, onsetMarker: '১৮-২৮ জুন (অনাবৃষ্টির ঝুঁকি ১৬.৭%)' },
+    { id: 4, code: 'S5', nameBn: '৫. রবি ২০২৮-২৯', nameEn: 'S5: Rabi 2028-29 (Nov-Apr)', isKharif: false, crop: 'lentil', cropBn: 'মসুর ডাল (Lentil)', waterMm: 95, moisture: 60 },
+    { id: 5, code: 'S6', nameBn: '৬. খরিফ-২ ২০২৯', nameEn: 'S6: Kharif-2 2029 (Jul-Oct)', isKharif: true, crop: 'rice', cropBn: 'আমন ধান (Aman Rice)', waterMm: 0, moisture: 84, onsetMarker: '১৬-২৬ জুন (অনাবৃষ্টির ঝুঁকি ১৬.৭%)' },
+  ];
+
+  const currentSeason = seasonsList[selectedSeasonIdx] || seasonsList[0];
+
   const subTabs = [
-    { id: 'farm', labelBn: 'খামার লাইভ দৃশ্য (Live Farm)', labelEn: '1. Live Farm View', icon: '🌾' },
+    { id: 'farm', labelBn: 'খামার প্ল্যান ভিউয়ার (Plan Viewer 3D)', labelEn: '1. Plan Viewer 3D', icon: '🌾' },
     { id: 'growth', labelBn: 'ফসলের বৃদ্ধি ও ফেনোলজি (Crop Growth)', labelEn: '2. Crop Growth Simulation', icon: '🌱' },
-    { id: 'hydrology', labelBn: 'মাটি ও পানি প্রবাহ (Soil & Water)', labelEn: '3. Soil & Water Hydrology', icon: '💧' },
-    { id: 'climate', labelBn: 'জলবায়ু চাপ দৃশ্যকল্প (Climate Stress)', labelEn: '4. Climate Stress Visualization', icon: '☀️' },
-    { id: 'compare', labelBn: 'দৃশ্যকল্প এ/বি তুলনা (Scenario A/B)', labelEn: '5. Scenario Comparison', icon: '⚖️' },
+    { id: 'climate', labelBn: 'জলবায়ু চাপ দৃশ্যকল্প (Climate Stress)', labelEn: '3. Climate Stress Visualization', icon: '☀️' },
+    { id: 'compare', labelBn: 'দৃশ্যকল্প এ/বি তুলনা (Scenario A/B)', labelEn: '4. Scenario Comparison', icon: '⚖️' },
   ];
 
   return (
@@ -143,16 +155,18 @@ export function DigitalTwin3DView({
         </div>
       </div>
 
-      {/* SUB-TAB 1: LIVE FARM 3D CANVAS */}
+      {/* SUB-TAB 1: PLAN VIEWER 3D WITH 6-SEASON SLIDER */}
       {subTab === 'farm' && (
         <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
             <div>
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
-                {lang === 'bn' ? 'সরাসরি খামার দৃশ্য (Interactive Farm Field Canvas)' : 'Interactive 3D Farm Field Canvas'}
+                {lang === 'bn' ? '৬-মৌসুম ফসল পরিকল্পনা ভিউয়ার (MILP Plan Viewer 3D)' : '6-Season MILP Plan Viewer 3D'}
               </h3>
               <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--text-2)' }}>
-                Rotate: Left Click + Drag | Pan: Right Click + Drag | Zoom: Mouse Wheel
+                {lang === 'bn'
+                  ? 'নিচের স্লাইডার টেনে প্রতিটি মৌসুমের পরিকল্পিত ফসল, সেচ চাহিদা ও বর্ষা অনসেট মার্কার ত্রিমাত্রিক বেডে দেখুন।'
+                  : 'Drag the season slider below to visualize planned crops, water needs, and monsoon onset risk markers across all 6 periods.'}
               </p>
             </div>
 
@@ -189,16 +203,100 @@ export function DigitalTwin3DView({
             </div>
           </div>
 
+          {/* 6-Period Season Slider Bar & Selector HUD */}
+          <div style={{
+            background: 'var(--glass)',
+            border: '1px solid var(--line)',
+            borderRadius: 12,
+            padding: '14px 16px',
+            marginBottom: 16,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--hud-cyan)' }}>
+                  ⏳ {lang === 'bn' ? 'মৌসুম নির্বাচন (Season Timeline):' : 'Season Period Timeline:'}
+                </span>
+                <span style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  padding: '3px 10px',
+                  borderRadius: 999,
+                  background: 'rgba(0, 223, 129, 0.15)',
+                  color: 'var(--hud-teal)',
+                  border: '1px solid rgba(0, 223, 129, 0.3)'
+                }}>
+                  {lang === 'bn' ? currentSeason.nameBn : currentSeason.nameEn}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12, color: 'var(--text-2)' }}>
+                <span>🌾 <strong>{lang === 'bn' ? 'পরিকল্পিত ফসল:' : 'Crop:'}</strong> {lang === 'bn' ? currentSeason.cropBn : currentSeason.crop.toUpperCase()}</span>
+                <span>💧 <strong>{lang === 'bn' ? 'সেচ চাহিদা:' : 'Irrigation:'}</strong> {currentSeason.waterMm > 0 ? `${currentSeason.waterMm} mm` : (lang === 'bn' ? 'বৃষ্টি-নির্ভর (০ মিমি)' : 'Rainfed (0 mm)')}</span>
+                {currentSeason.onsetMarker && (
+                  <span style={{ color: 'var(--hud-amber, #f59e0b)', fontWeight: 600 }}>
+                    🌧️ {lang === 'bn' ? 'অনসেট মার্কার:' : 'Onset:'} {currentSeason.onsetMarker}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Slider Input */}
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="1"
+              value={selectedSeasonIdx}
+              onChange={e => setSelectedSeasonIdx(Number(e.target.value))}
+              style={{
+                width: '100%',
+                accentColor: 'var(--hud-teal)',
+                cursor: 'pointer'
+              }}
+            />
+
+            {/* Step Button Indicators */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
+              {seasonsList.map(s => {
+                const isCur = s.id === selectedSeasonIdx;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setSelectedSeasonIdx(s.id)}
+                    style={{
+                      padding: '6px 4px',
+                      borderRadius: 8,
+                      border: isCur ? '1px solid var(--hud-teal)' : '1px solid var(--line)',
+                      background: isCur ? 'rgba(0, 223, 129, 0.2)' : 'var(--glass)',
+                      color: isCur ? 'var(--hud-teal)' : 'var(--text-3)',
+                      fontSize: 11,
+                      fontWeight: isCur ? 700 : 500,
+                      cursor: 'pointer',
+                      textAlign: 'center'
+                    }}
+                  >
+                    <div><strong>{s.code}</strong></div>
+                    <div style={{ fontSize: 10, opacity: 0.85 }}>{s.crop}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div style={{ height: 480, width: '100%', borderRadius: 10, overflow: 'hidden', background: 'var(--bg-deep)', position: 'relative' }}>
             <RealFarmCanvas3D
               fieldProfile={{
                 name: activeField?.name || 'Bogura Demo Farm',
-                crop: 'rice',
+                crop: currentSeason.crop,
                 soil_texture: soilTexture,
                 soil_ph: activeField?.soil_ph || 6.5,
                 area_ha: areaHa,
-                moisture_pct: 68,
-                water_level_cm: 4.5,
+                moisture_pct: currentSeason.moisture,
+                water_level_cm: currentSeason.isKharif ? 5.0 : 0.0,
               }}
               viewMode={viewMode}
               activeOverlay={activeOverlay}
@@ -231,41 +329,7 @@ export function DigitalTwin3DView({
         </div>
       )}
 
-      {/* SUB-TAB 3: HYDROLOGY 3D */}
-      {subTab === 'hydrology' && (
-        <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
-            {lang === 'bn' ? 'মাটি ও পানির স্তর সিমুলেশন' : 'Soil Horizon & Water Balance Simulator'}
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16 }}>
-            <div>
-              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--hud-cyan)' }}>Lysimeter Inflow / Outflow</h4>
-              <WaterBalance3D
-                rainfallMm={22.0}
-                irrigationMm={30.0}
-                etaMm={4.2}
-                deepPercolationMm={5.0}
-                initialStorageMm={80.0}
-                currentStorageMm={108.5}
-                tawMm={140}
-                lang={lang}
-              />
-            </div>
-            <div>
-              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--hud-teal)' }}>Root Zone Stratification</h4>
-              <SoilProfile3D
-                crop="rice"
-                rootDepthCm={75}
-                volumetricWaterContentPct={30.2}
-                soilTexture={soilTexture}
-                lang={lang}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SUB-TAB 4: CLIMATE STRESS 3D */}
+      {/* SUB-TAB 3: CLIMATE STRESS 3D */}
       {subTab === 'climate' && (
         <div className="dash-card ui-card-hud" style={{ background: 'var(--glass-strong)', border: '1px solid var(--line)', borderRadius: 14, padding: 20 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>
