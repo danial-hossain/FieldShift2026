@@ -73,54 +73,54 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `WATER`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 5.9819
-- **Rotation**: Y1_S1: **Fallow** → Y1_S2: **Mungbean** → Y1_S3: **Fallow** → Y2_S1: **Fallow** → Y2_S2: **Groundnut** → Y2_S3: **Fallow**
-- **Profit Component**: 138,045 BDT
-- **Water Index Component**: 5.9819
+- **Objective Value**: 4.8953
+- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Mungbean** → Y1_S3: **Rice** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Rice**
+- **Profit Component**: 266,013 BDT
+- **Water Index Component**: 4.8953
 - **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Fallow** | 1.50 | Water |
+| Y1_S1 | **Mustard** | 1.50 | Water |
 | Y1_S2 | **Mungbean** | 1.50 | Water |
-| Y1_S3 | **Fallow** | 1.50 | Water |
-| Y2_S1 | **Fallow** | 1.50 | Water |
-| Y2_S2 | **Groundnut** | 1.50 | Water |
-| Y2_S3 | **Fallow** | 1.50 | Water |
+| Y1_S3 | **Rice** | 1.50 | Water |
+| Y2_S1 | **Chickpea** | 1.50 | Water |
+| Y2_S2 | **Sesame** | 1.50 | Water |
+| Y2_S3 | **Rice** | 1.50 | Water |
 
 ### Priority: `SOIL`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 3.3332
-- **Rotation**: Y1_S1: **Sunflower** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Soybean** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
-- **Profit Component**: 186,788 BDT
-- **Water Index Component**: 4.9881
-- **Soil Health Component**: 3.3332
+- **Objective Value**: 2.8888
+- **Rotation**: Y1_S1: **Wheat** → Y1_S2: **Mungbean** → Y1_S3: **Rice** → Y2_S1: **Mustard** → Y2_S2: **Soybean** → Y2_S3: **Rice**
+- **Profit Component**: 233,877 BDT
+- **Water Index Component**: 4.6325
+- **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Sunflower** | 1.50 | Soil |
-| Y1_S2 | **Soybean** | 1.50 | Soil |
-| Y1_S3 | **Fallow** | 1.50 | Soil |
-| Y2_S1 | **Soybean** | 1.50 | Soil |
-| Y2_S2 | **Sesame** | 1.50 | Soil |
-| Y2_S3 | **Fallow** | 1.50 | Soil |
+| Y1_S1 | **Wheat** | 1.50 | Soil |
+| Y1_S2 | **Mungbean** | 1.50 | Soil |
+| Y1_S3 | **Rice** | 1.50 | Soil |
+| Y2_S1 | **Mustard** | 1.50 | Soil |
+| Y2_S2 | **Soybean** | 1.50 | Soil |
+| Y2_S3 | **Rice** | 1.50 | Soil |
 
 ### Priority: `BALANCED`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 3.4477
-- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
-- **Profit Component**: 237,520 BDT
-- **Water Index Component**: 5.3141
-- **Soil Health Component**: 3.3332
+- **Objective Value**: 3.2238
+- **Rotation**: Y1_S1: **Sunflower** → Y1_S2: **Soybean** → Y1_S3: **Rice** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Rice**
+- **Profit Component**: 287,198 BDT
+- **Water Index Component**: 4.7532
+- **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Mustard** | 1.50 | Balanced |
+| Y1_S1 | **Sunflower** | 1.50 | Balanced |
 | Y1_S2 | **Soybean** | 1.50 | Balanced |
-| Y1_S3 | **Fallow** | 1.50 | Balanced |
+| Y1_S3 | **Rice** | 1.50 | Balanced |
 | Y2_S1 | **Chickpea** | 1.50 | Balanced |
 | Y2_S2 | **Sesame** | 1.50 | Balanced |
-| Y2_S3 | **Fallow** | 1.50 | Balanced |
+| Y2_S3 | **Rice** | 1.50 | Balanced |
 
 ---
 
@@ -133,8 +133,8 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 - **Net Irrigation Requirement**: 203.4 mm (2,034 m³)
 - **Irrigation Triggers**: 14 events at recommended interval of ~7 days
 - **Managed Pumping Cost (2.50 BDT/m³)**: 5,085 BDT
-- **Conventional Flood Comparison**: Flood Demand 3,397 m³ (8,492 BDT)
-- **Water Conservation**: **1,363 m³ saved (illustrative; assumed field efficiency 45% vs 75%, FAO reference values)** saving **3,407 BDT**
+- **Conventional Flood Comparison**: Flood Demand 3,390 m³ (8,475 BDT) based on assumed field efficiency 45% vs 75% (FAO reference values)
+- **Illustrative Water Savings**: **1,356 m³** (pumping cost reduction: **3,390 BDT**; source: FAO Irrigation and Drainage Paper 24/56)
 
 ---
 

@@ -36,9 +36,9 @@
 - **Censored Fraction**: 28.0%
 - **Suggested Sowing Window**: ১৫ জুন – ৩০ জুন
 - **Suggested Transplanting Window**: ১৫ জুলাই – ৫ আগস্ট
-- **Bangla Headline**: গত ২৪ বছরে বর্ষা শুরুর তারিখ সাধারণত ২ জুন–১০ জুন এর মধ্যে; ২০ জুনের পরে বর্ষা শুরু হওয়ার ঘটনা বিরল। তাই দুই কিস্তিতে বীজতলা ফেলুন: প্রথম কিস্তি ২০-২৫ মে, দ্বিতীয় কিস্তি ৫-১০ জুন।
-- **English Headline**: Over the last 24 years, monsoon onset typically begins between 02 June and 10 June; monsoon onset past 20 June is rare. Sow nursery seedbeds in two batches: May 20-25 and June 5-10.
-- **Bangla SMS (<160 chars)**: `দিনাজপুর আমন: বর্ষা সাধারণত ২ জুন–১০ জুন এ শুরু হয় (দেরিতে আসার ঝুঁকি কম)। দুই কিস্তিতে বীজতলা ফেলুন (২০-২৫ মে ও ৫-১০ জুন)।`
+- **Bangla Headline**: এই অঞ্চলে জুনের শুরুতেই সাধারণত বর্ষার বৃষ্টি শুরু হয়ে থাকে। ১৫ জুন থেকে ১৫ জুলাইয়ের মধ্যে খরা বা অনাবৃষ্টির (টানা ৭ দিন বা তার বেশি < ২ মিমি) ঝুঁকি ১৬.৭% (নাসা জিপিএম আইমার্জ স্যাটেলাইট পর্যবেক্ষণ)। তাই দুই কিস্তিতে বীজতলা ফেলুন: প্রথম কিস্তি ২০-২৫ মে, দ্বিতীয় কিস্তি ৫-১০ জুন।
+- **English Headline**: Rain is usually already falling by early June in this region. The probability of a dry spell (>= 7 days with < 2 mm) between 15 June and 15 July is 16.7% based on NASA GPM IMERG satellite observations. Sow nursery seedbeds in two batches: May 20-25 and June 5-10.
+- **Bangla SMS (<160 chars)**: `দিনাজপুর আমন: জুনের শুরুতেই বৃষ্টি শুরু হয়। ১৫ জুন-১৫ জুলাই খরার ঝুঁকি ১৬.৭%। দুই কিস্তিতে বীজতলা ফেলুন (২০-২৫ মে, ৫-১০ জুন)।`
 
 ### Aus Rice Season Advisory:
 - **Status**: `ok`
@@ -73,54 +73,54 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `WATER`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 6.0000
-- **Rotation**: Y1_S1: **Fallow** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Fallow** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
-- **Profit Component**: 122,200 BDT
-- **Water Index Component**: 6.0000
+- **Objective Value**: 4.7759
+- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Soybean** → Y1_S3: **Rice** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Rice**
+- **Profit Component**: 300,105 BDT
+- **Water Index Component**: 4.7759
 - **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Fallow** | 2.00 | Water |
+| Y1_S1 | **Mustard** | 2.00 | Water |
 | Y1_S2 | **Soybean** | 2.00 | Water |
-| Y1_S3 | **Fallow** | 2.00 | Water |
-| Y2_S1 | **Fallow** | 2.00 | Water |
-| Y2_S2 | **Mungbean** | 2.00 | Water |
-| Y2_S3 | **Fallow** | 2.00 | Water |
+| Y1_S3 | **Rice** | 2.00 | Water |
+| Y2_S1 | **Chickpea** | 2.00 | Water |
+| Y2_S2 | **Sesame** | 2.00 | Water |
+| Y2_S3 | **Rice** | 2.00 | Water |
 
 ### Priority: `SOIL`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 3.3332
-- **Rotation**: Y1_S1: **Sunflower** → Y1_S2: **Groundnut** → Y1_S3: **Fallow** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
-- **Profit Component**: 239,870 BDT
-- **Water Index Component**: 5.2147
-- **Soil Health Component**: 3.3332
+- **Objective Value**: 2.8888
+- **Rotation**: Y1_S1: **Wheat** → Y1_S2: **Soybean** → Y1_S3: **Rice** → Y2_S1: **Sunflower** → Y2_S2: **Mungbean** → Y2_S3: **Rice**
+- **Profit Component**: 225,542 BDT
+- **Water Index Component**: 4.4921
+- **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Sunflower** | 2.00 | Soil |
-| Y1_S2 | **Groundnut** | 2.00 | Soil |
-| Y1_S3 | **Fallow** | 2.00 | Soil |
-| Y2_S1 | **Chickpea** | 2.00 | Soil |
-| Y2_S2 | **Sesame** | 2.00 | Soil |
-| Y2_S3 | **Fallow** | 2.00 | Soil |
+| Y1_S1 | **Wheat** | 2.00 | Soil |
+| Y1_S2 | **Soybean** | 2.00 | Soil |
+| Y1_S3 | **Rice** | 2.00 | Soil |
+| Y2_S1 | **Sunflower** | 2.00 | Soil |
+| Y2_S2 | **Mungbean** | 2.00 | Soil |
+| Y2_S3 | **Rice** | 2.00 | Soil |
 
 ### Priority: `BALANCED`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 3.3887
-- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
-- **Profit Component**: 245,309 BDT
-- **Water Index Component**: 5.2975
-- **Soil Health Component**: 3.3332
+- **Objective Value**: 3.1368
+- **Rotation**: Y1_S1: **Sunflower** → Y1_S2: **Soybean** → Y1_S3: **Rice** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Rice**
+- **Profit Component**: 274,386 BDT
+- **Water Index Component**: 4.6931
+- **Soil Health Component**: 2.8888
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Mustard** | 2.00 | Balanced |
+| Y1_S1 | **Sunflower** | 2.00 | Balanced |
 | Y1_S2 | **Soybean** | 2.00 | Balanced |
-| Y1_S3 | **Fallow** | 2.00 | Balanced |
+| Y1_S3 | **Rice** | 2.00 | Balanced |
 | Y2_S1 | **Chickpea** | 2.00 | Balanced |
 | Y2_S2 | **Sesame** | 2.00 | Balanced |
-| Y2_S3 | **Fallow** | 2.00 | Balanced |
+| Y2_S3 | **Rice** | 2.00 | Balanced |
 
 ---
 
@@ -133,8 +133,8 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 - **Net Irrigation Requirement**: 309.1 mm (3,091 m³)
 - **Irrigation Triggers**: 21 events at recommended interval of ~4 days
 - **Managed Pumping Cost (2.50 BDT/m³)**: 7,728 BDT
-- **Conventional Flood Comparison**: Flood Demand 5,162 m³ (12,905 BDT)
-- **Water Conservation**: **2,071 m³ saved (illustrative; assumed field efficiency 45% vs 75%, FAO reference values)** saving **5,177 BDT**
+- **Conventional Flood Comparison**: Flood Demand 5,152 m³ (12,879 BDT) based on assumed field efficiency 45% vs 75% (FAO reference values)
+- **Illustrative Water Savings**: **2,061 m³** (pumping cost reduction: **5,151 BDT**; source: FAO Irrigation and Drainage Paper 24/56)
 
 ---
 

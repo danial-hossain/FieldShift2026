@@ -36,9 +36,9 @@
 - **Censored Fraction**: 80.0%
 - **Suggested Sowing Window**: ১৫ জুন – ৩০ জুন
 - **Suggested Transplanting Window**: ১৫ জুলাই – ৫ আগস্ট
-- **Bangla Headline**: গত ২৪ বছরে বর্ষা শুরুর তারিখ সাধারণত ১ জুন–২ জুন এর মধ্যে; ২০ জুনের পরে বর্ষা শুরু হওয়ার ঘটনা বিরল। তাই দুই কিস্তিতে বীজতলা ফেলুন: প্রথম কিস্তি ২০-২৫ মে, দ্বিতীয় কিস্তি ৫-১০ জুন।
-- **English Headline**: Over the last 24 years, monsoon onset typically begins between 01 June and 02 June; monsoon onset past 20 June is rare. Sow nursery seedbeds in two batches: May 20-25 and June 5-10.
-- **Bangla SMS (<160 chars)**: `সুনামগঞ্জ আমন: বর্ষা সাধারণত ১ জুন–২ জুন এ শুরু হয় (দেরিতে আসার ঝুঁকি কম)। দুই কিস্তিতে বীজতলা ফেলুন (২০-২৫ মে ও ৫-১০ জুন)।`
+- **Bangla Headline**: এই অঞ্চলে জুনের শুরুতেই সাধারণত বর্ষার বৃষ্টি শুরু হয়ে থাকে। ১৫ জুন থেকে ১৫ জুলাইয়ের মধ্যে খরা বা অনাবৃষ্টির (টানা ৭ দিন বা তার বেশি < ২ মিমি) ঝুঁকি ০.০% (নাসা জিপিএম আইমার্জ স্যাটেলাইট পর্যবেক্ষণ)। তাই দুই কিস্তিতে বীজতলা ফেলুন: প্রথম কিস্তি ২০-২৫ মে, দ্বিতীয় কিস্তি ৫-১০ জুন।
+- **English Headline**: Rain is usually already falling by early June in this region. The probability of a dry spell (>= 7 days with < 2 mm) between 15 June and 15 July is 0.0% based on NASA GPM IMERG satellite observations. Sow nursery seedbeds in two batches: May 20-25 and June 5-10.
+- **Bangla SMS (<160 chars)**: `সুনামগঞ্জ আমন: জুনের শুরুতেই বৃষ্টি শুরু হয়। ১৫ জুন-১৫ জুলাই খরার ঝুঁকি ০.০%। দুই কিস্তিতে বীজতলা ফেলুন (২০-২৫ মে, ৫-১০ জুন)।`
 
 ### Aus Rice Season Advisory:
 - **Status**: `ok`
@@ -56,70 +56,70 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 
 ### Priority: `PROFIT`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 2.5753
-- **Rotation**: Y1_S1: **Tomato** → Y1_S2: **Soybean** → Y1_S3: **Rice** → Y2_S1: **Lentil** → Y2_S2: **Sesame** → Y2_S3: **Rice**
-- **Profit Component**: 371,103 BDT
-- **Water Index Component**: 5.0943
-- **Soil Health Component**: 2.4444
+- **Objective Value**: -2.8866
+- **Rotation**: Y1_S1: **Boro Rice** → Y1_S2: **Fallow** → Y1_S3: **Fallow** → Y2_S1: **Boro Rice** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
+- **Profit Component**: -9,255 BDT
+- **Water Index Component**: 1.0000
+- **Soil Health Component**: 1.0000
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Tomato** | 1.00 | Profit |
-| Y1_S2 | **Soybean** | 1.00 | Profit |
-| Y1_S3 | **Rice** | 1.00 | Profit |
-| Y2_S1 | **Lentil** | 1.00 | Profit |
-| Y2_S2 | **Sesame** | 1.00 | Profit |
-| Y2_S3 | **Rice** | 1.00 | Profit |
+| Y1_S1 | **Boro Rice** | 1.00 | Profit |
+| Y1_S2 | **Fallow** | 1.00 | Profit |
+| Y1_S3 | **Fallow** | 1.00 | Profit |
+| Y2_S1 | **Boro Rice** | 1.00 | Profit |
+| Y2_S2 | **Mungbean** | 1.00 | Profit |
+| Y2_S3 | **Fallow** | 1.00 | Profit |
 
 ### Priority: `WATER`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 6.0000
-- **Rotation**: Y1_S1: **Fallow** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Fallow** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
-- **Profit Component**: 127,625 BDT
-- **Water Index Component**: 6.0000
-- **Soil Health Component**: 2.8888
+- **Objective Value**: -2.5000
+- **Rotation**: Y1_S1: **Boro Rice** → Y1_S2: **Fallow** → Y1_S3: **Fallow** → Y2_S1: **Boro Rice** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
+- **Profit Component**: -9,255 BDT
+- **Water Index Component**: 1.0000
+- **Soil Health Component**: 1.0000
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Fallow** | 1.00 | Water |
-| Y1_S2 | **Soybean** | 1.00 | Water |
+| Y1_S1 | **Boro Rice** | 1.00 | Water |
+| Y1_S2 | **Fallow** | 1.00 | Water |
 | Y1_S3 | **Fallow** | 1.00 | Water |
-| Y2_S1 | **Fallow** | 1.00 | Water |
+| Y2_S1 | **Boro Rice** | 1.00 | Water |
 | Y2_S2 | **Mungbean** | 1.00 | Water |
 | Y2_S3 | **Fallow** | 1.00 | Water |
 
 ### Priority: `SOIL`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 3.3332
-- **Rotation**: Y1_S1: **Sunflower** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Soybean** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
-- **Profit Component**: 174,252 BDT
-- **Water Index Component**: 5.0347
-- **Soil Health Component**: 3.3332
+- **Objective Value**: -2.5000
+- **Rotation**: Y1_S1: **Boro Rice** → Y1_S2: **Fallow** → Y1_S3: **Fallow** → Y2_S1: **Boro Rice** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
+- **Profit Component**: -9,255 BDT
+- **Water Index Component**: 1.0000
+- **Soil Health Component**: 1.0000
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Sunflower** | 1.00 | Soil |
-| Y1_S2 | **Soybean** | 1.00 | Soil |
+| Y1_S1 | **Boro Rice** | 1.00 | Soil |
+| Y1_S2 | **Fallow** | 1.00 | Soil |
 | Y1_S3 | **Fallow** | 1.00 | Soil |
-| Y2_S1 | **Soybean** | 1.00 | Soil |
-| Y2_S2 | **Sesame** | 1.00 | Soil |
+| Y2_S1 | **Boro Rice** | 1.00 | Soil |
+| Y2_S2 | **Mungbean** | 1.00 | Soil |
 | Y2_S3 | **Fallow** | 1.00 | Soil |
 
 ### Priority: `BALANCED`
 - **Solver Status**: `optimal` (CBC Branch-and-Bound)
-- **Objective Value**: 3.4772
-- **Rotation**: Y1_S1: **Mustard** → Y1_S2: **Soybean** → Y1_S3: **Fallow** → Y2_S1: **Chickpea** → Y2_S2: **Sesame** → Y2_S3: **Fallow**
-- **Profit Component**: 248,426 BDT
-- **Water Index Component**: 5.3578
-- **Soil Health Component**: 3.3332
+- **Objective Value**: -2.8190
+- **Rotation**: Y1_S1: **Boro Rice** → Y1_S2: **Fallow** → Y1_S3: **Fallow** → Y2_S1: **Boro Rice** → Y2_S2: **Mungbean** → Y2_S3: **Fallow**
+- **Profit Component**: -9,255 BDT
+- **Water Index Component**: 1.0000
+- **Soil Health Component**: 1.0000
 
 | Period | Scheduled Crop | Field Area (ha) | Priority Strategy |
 | :--- | :--- | :---: | :--- |
-| Y1_S1 | **Mustard** | 1.00 | Balanced |
-| Y1_S2 | **Soybean** | 1.00 | Balanced |
+| Y1_S1 | **Boro Rice** | 1.00 | Balanced |
+| Y1_S2 | **Fallow** | 1.00 | Balanced |
 | Y1_S3 | **Fallow** | 1.00 | Balanced |
-| Y2_S1 | **Chickpea** | 1.00 | Balanced |
-| Y2_S2 | **Sesame** | 1.00 | Balanced |
+| Y2_S1 | **Boro Rice** | 1.00 | Balanced |
+| Y2_S2 | **Mungbean** | 1.00 | Balanced |
 | Y2_S3 | **Fallow** | 1.00 | Balanced |
 
 ---
@@ -133,8 +133,8 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 - **Net Irrigation Requirement**: 161.8 mm (1,618 m³)
 - **Irrigation Triggers**: 10 events at recommended interval of ~7 days
 - **Managed Pumping Cost (2.50 BDT/m³)**: 4,045 BDT
-- **Conventional Flood Comparison**: Flood Demand 2,702 m³ (6,755 BDT)
-- **Water Conservation**: **1,084 m³ saved (illustrative; assumed field efficiency 45% vs 75%, FAO reference values)** saving **2,710 BDT**
+- **Conventional Flood Comparison**: Flood Demand 2,697 m³ (6,742 BDT) based on assumed field efficiency 45% vs 75% (FAO reference values)
+- **Illustrative Water Savings**: **1,079 m³** (pumping cost reduction: **2,697 BDT**; source: FAO Irrigation and Drainage Paper 24/56)
 
 ---
 
