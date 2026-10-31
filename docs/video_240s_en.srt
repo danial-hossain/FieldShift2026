@@ -1,0 +1,121 @@
+1
+00:00:00,000 --> 00:00:09,000
+Hello! We are Team Azoic from Dhaka, Bangladesh—
+Daniel Hossain, Fazle Elahi Mahi, Nusrat Jahan Tuli,
+
+2
+00:00:09,000 --> 00:00:20,000
+Roman Ahmed Tanmoy, Mustakim Musa, and Abir Ahmed Joy.
+We are competing in NASA Space Apps 2026 in the challenge: "Field Shift: Adapting Farms with NASA Data".
+
+3
+00:00:20,000 --> 00:00:29,000
+Meet Abdul, a smallholder farmer cultivating one hectare in Rajshahi.
+Like millions of farmers across Bangladesh, Abdul is locked into a rigid Boro–Fallow–Aman crop rotation.
+
+4
+00:00:29,000 --> 00:00:37,000
+For decades, he has grown water-thirsty Boro rice in the dry winter,
+left his land bare during late spring, and planted rainfed Aman in the monsoon.
+
+5
+00:00:37,000 --> 00:00:45,000
+But today, under accelerating climate shifts and falling aquifers,
+this traditional cycle is breaking down.
+
+6
+00:00:45,000 --> 00:00:54,000
+Abdul's farm faces three converging crises.
+First, NASA GRACE satellite mascon data reveals that the Barind aquifer is declining at -1.48 centimeters every year.
+
+7
+00:00:54,000 --> 00:01:04,000
+Deep tubewell pumping for winter Boro rice is exhausting groundwater and driving up energy costs.
+Second, NASA MODIS satellite NDVI imagery shows that during the pre-monsoon Kharif-1 season,
+
+8
+00:01:04,000 --> 00:01:15,000
+his fields sit bare for 75 days, leaving topsoil vulnerable to rainstorms and stripping soil organic matter.
+A single-season planting advisory cannot fix this. Abdul needs an honest, multi-season crop rotation.
+
+9
+00:01:15,000 --> 00:01:25,000
+And FieldShift approaches this with strict scientific honesty.
+While NASA POWER 0.5° reanalysis initially suggested that pre-monsoon rains had shifted 21 days earlier,
+
+10
+00:01:25,000 --> 00:01:35,000
+our cross-validation with high-resolution NASA GPM IMERG satellite precipitation proved this shift is not confirmed—
+p is 0.34, with a median shift of zero days.
+
+11
+00:01:35,000 --> 00:01:45,000
+Rather than making risky claims, FieldShift adheres to satellite-confirmed IMERG observations
+and focuses where adaptation truly works: restructuring the entire crop rotation.
+
+12
+00:01:45,000 --> 00:01:55,000
+Let's see FieldShift in action. Abdul opens Farm Planning.
+His existing Boro–Fallow–Aman rotation is evaluated as the baseline.
+
+13
+00:01:55,000 --> 00:02:02,000
+Using Mixed Integer Linear Programming solved with PuLP CBC,
+FieldShift generates three NASA-informed alternatives.
+
+14
+00:02:02,000 --> 00:02:10,000
+Abdul selects the Water-Saving Strategy, tailored for the Barind tract.
+
+15
+00:02:10,000 --> 00:02:20,000
+For every strategy, FieldShift produces a deterministic five-item card:
+why it was recommended, the scientific evidence from 25 years of NASA POWER climatology and SoilGrids,
+
+16
+00:02:20,000 --> 00:02:30,000
+the benefits—saving 140 millimeters of irrigation water and fixing 70 kg of biological nitrogen—data gaps, and local risks.
+Notice the small "এর মানে কী?" popovers: clicking them explains evapotranspiration,
+
+17
+00:02:30,000 --> 00:02:37,000
+SMAP root-zone moisture anomalies, and satellite versus ground data in plain Bengali.
+
+18
+00:02:37,000 --> 00:02:45,000
+Abdul sees exactly when his field is covered across a 12-month calendar strip, replacing bare fallow with restorative mungbean.
+And every strategy card ends with our golden rule:
+
+19
+00:02:45,000 --> 00:02:55,000
+"This is for decision support; please verify with your local Sub-Assistant Agriculture Officer (SAAO)".
+
+20
+00:02:55,000 --> 00:03:05,000
+For agronomists and researchers, FieldShift features a 3-Way Decision Comparison Lab.
+We benchmark exact MILP optimization against sequential Reinforcement Learning in a custom Gymnasium MDP environment
+
+21
+00:03:05,000 --> 00:03:15,000
+and heuristic domain rules. We disclose transparently that while MILP guarantees mathematical optimality,
+RL policies are experimental and require empirical ground calibration.
+
+22
+00:03:15,000 --> 00:03:25,000
+Most crucially for rural Bangladesh: FieldShift is 100% autonomous offline.
+When cellular networks drop in remote villages, every NASA dataset—
+
+23
+00:03:25,000 --> 00:03:35,000
+POWER climatology, GPM IMERG rainfall, SMAP anomalies, MODIS NDVI, and GRACE trends—
+remains instantly available from local pre-cached engines. Zero network lag. Zero fabricated numbers.
+
+24
+00:03:35,000 --> 00:03:45,000
+FieldShift does not replace the farmer or the extension officer;
+it arms them with a quarter-century of NASA Earth observation science to adapt crop rotations safely, sustainably, and profitably.
+
+25
+00:03:45,000 --> 00:04:00,000
+We are Team Azoic, and this is FieldShift 2026.
+Earth Observations Powering Resilient Bangladesh Agriculture. Thank you!

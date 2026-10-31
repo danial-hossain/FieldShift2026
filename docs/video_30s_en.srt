@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:05,000
+We are Team Azoic from Dhaka,
+taking on NASA's Field Shift challenge!
+
+2
+00:00:05,000 --> 00:00:12,000
+In Bangladesh's Barind tract, rigid Boro–Aman monocultures
+are draining groundwater and leaving soils bare.
+
+3
+00:00:12,000 --> 00:00:22,000
+FieldShift models the farmer's existing rotation against three NASA-informed alternatives—
+using GPM IMERG, POWER, SMAP, MODIS, and GRACE to cut water demand and build soil health.
+
+4
+00:00:22,000 --> 00:00:30,000
+One hundred percent offline, scientifically honest, and verified with local extension officers.
+FieldShift: Earth observations adapting real farms.
