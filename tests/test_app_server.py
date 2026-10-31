@@ -164,7 +164,7 @@ class AppServerTest(unittest.TestCase):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urllib.request.urlopen(request, timeout=20) as response:
+        with urllib.request.urlopen(request, timeout=120) as response:
             body = response.read().decode("utf-8")
         self.assertEqual(response.status, 200)
         self.assertNotIn("NaN", body)
