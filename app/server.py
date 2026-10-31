@@ -59,8 +59,19 @@ def _location_weather(payload: dict[str, Any]) -> dict[str, Any]:
     location_message = None
     cache_key = (round(latitude, 4), round(longitude, 4))
 
+    is_offline = os.getenv("OFFLINE") == "1"
+
     if cache_key in _GEOCODE_CACHE and _GEOCODE_CACHE[cache_key] is not None:
         location_name = _GEOCODE_CACHE[cache_key]
+    elif is_offline:
+        try:
+            from src.compute.advisory_service import nearest_district, DISTRICT_REGISTRY
+            d_key = nearest_district(latitude, longitude)
+            d_meta = DISTRICT_REGISTRY.get(d_key, {})
+            location_name = f"{d_meta.get('name_en', d_key.title())}, Bangladesh"
+            _GEOCODE_CACHE[cache_key] = location_name
+        except Exception:
+            location_message = "Offline place name resolved via nearest district."
     else:
         try:
             global _GEOCODE_LAST_REQUEST
@@ -108,15 +119,28 @@ def _location_weather(payload: dict[str, Any]) -> dict[str, Any]:
         except (OSError, ValueError, requests.RequestException):
             location_message = "Place name lookup is unavailable; coordinates are shown instead."
 
-    from src.data.nasa_power import fetch_recent_nasa_power
+    observations = None
+    if not is_offline:
+        try:
+            from src.data.nasa_power import fetch_recent_nasa_power
+            observations = fetch_recent_nasa_power(
+                latitude,
+                longitude,
+                days=14,
+                processing_lag_days=0,
+                save=False,
+            )
+        except Exception:
+            observations = None
 
-    observations = fetch_recent_nasa_power(
-        latitude,
-        longitude,
-        days=14,
-        processing_lag_days=0,
-        save=False,
-    )
+    if observations is None:
+        import pandas as pd
+        from src.compute.advisory_service import nearest_district, load_district_climate_data
+        d_key = nearest_district(latitude, longitude)
+        df, _ = load_district_climate_data(d_key, offline=True)
+        observations = df.tail(14).copy()
+        if "date" in observations.columns:
+            observations["date"] = pd.to_datetime(observations["date"])
     valid_temperature = observations.loc[observations["temperature"].notna()]
     if valid_temperature.empty:
         weather = {
