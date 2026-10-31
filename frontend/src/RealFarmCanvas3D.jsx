@@ -10,13 +10,14 @@ export function RealFarmCanvas3D({
   experimentalPlots = [],
   activeOverlay = 'crop',
   viewMode = '3d',
+  cameraPreset = 'perspective',
   hasAlert = false,
   selectedPlotIndex = 4,
   onSelectPlot,
   lang = 'bn',
 }) {
-  // Normalize allowed overlays: only 'crop', 'soil', 'rain'
-  const safeOverlay = ['crop', 'soil', 'rain'].includes(activeOverlay) ? activeOverlay : 'crop';
+  // Normalize allowed overlays: 'crop', 'soil', 'rain', 'bare_soil'
+  const safeOverlay = ['crop', 'soil', 'rain', 'bare_soil'].includes(activeOverlay) ? activeOverlay : 'crop';
 
   // Normalize plots from fieldProfile or experimentalPlots
   const plots = useMemo(() => {
@@ -53,6 +54,7 @@ export function RealFarmCanvas3D({
         plots={plots}
         activeOverlay={safeOverlay}
         viewMode={viewMode}
+        cameraPreset={cameraPreset}
         hasAlert={hasAlert}
         lang={lang}
         onSelectPlot={onSelectPlot}

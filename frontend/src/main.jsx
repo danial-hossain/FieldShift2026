@@ -3304,6 +3304,8 @@ export function App() {
         {activeNav === 'digital_twin' && (
           <DigitalTwin3DView
             activeField={activeField}
+            userFields={userFields}
+            onSelectField={handleSelectActiveField}
             plan={plan}
             summary={summary}
             nasa={nasa}

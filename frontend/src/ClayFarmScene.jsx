@@ -120,6 +120,15 @@ export function getPlotOverlayInfo(plot, overlay = 'crop', lang = 'bn') {
     return { color, label, isAvailable: true };
   }
 
+  if (overlay === 'bare_soil') {
+    const isBare = !plot.crop || String(plot.crop).toLowerCase().includes('fallow') || String(plot.crop).toLowerCase() === 'পতিত';
+    return {
+      color: isBare ? '#ef4444' : '#10b981',
+      label: isBare ? (lang === 'bn' ? 'নগ্ন মাটি (ক্ষয় ঝুঁকি)' : 'Bare Soil (Erosion Risk)') : (lang === 'bn' ? 'শস্য আচ্ছাদিত' : 'Vegetative Cover'),
+      isAvailable: true,
+    };
+  }
+
   if (overlay === 'rain') {
     if (plot.rain_mm == null || isNaN(plot.rain_mm)) {
       return {
@@ -153,6 +162,7 @@ export function ClayFarmScene({
   lang = 'bn',
   onSelectPlot,
   viewMode = '3d',
+  cameraPreset = 'perspective',
   hasAlert = false,
   caption = '',
 }) {
@@ -221,9 +231,17 @@ export function ClayFarmScene({
         1000
       );
 
-      // Standard isometric tilt (35.264 deg) & angle
-      camera.position.set(18, 16, 18);
-      camera.lookAt(0, 0, 0);
+      // Standard isometric tilt or cameraPreset
+      if (cameraPreset === 'top_down') {
+        camera.position.set(0, 24, 0.01);
+        camera.lookAt(0, 0, 0);
+      } else if (cameraPreset === 'furrow') {
+        camera.position.set(6, 3, 12);
+        camera.lookAt(0, 0.8, 0);
+      } else {
+        camera.position.set(18, 16, 18);
+        camera.lookAt(0, 0, 0);
+      }
 
       // 2. WebGL Renderer with transparency for floating look
       renderer = new THREE.WebGLRenderer({
@@ -866,7 +884,7 @@ export function ClayFarmScene({
       console.warn('ClayFarmScene WebGL initialization error:', err);
       setWebGLError(true);
     }
-  }, [viewMode, normalizedPlots, activeOverlay, lang, onSelectPlot, webGLError]);
+  }, [viewMode, normalizedPlots, activeOverlay, cameraPreset, lang, onSelectPlot, webGLError]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: 400, overflow: 'hidden' }}>
