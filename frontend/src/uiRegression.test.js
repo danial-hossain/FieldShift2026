@@ -350,3 +350,20 @@ test('U3: Farm Planning hero view integrity (Existing baseline + 3 strategies, 1
   assert.ok(stylesSrc.includes('.strategy-columns-container'), 'Must define strategy-columns-container');
   assert.ok(stylesSrc.includes('scroll-snap-type: x mandatory !important;'), 'Must support mobile horizontal swipe cards');
 });
+
+test('U4: 3D plan viewer integrity (grass natural saturation #5f8f3c..#7aa84d, bare soil fallow, GTAOPass desktop, draw calls)', () => {
+  const claySrc = fs.readFileSync(path.join(__dirname, 'ClayFarmScene.jsx'), 'utf-8');
+
+  // 1. Natural grass color
+  assert.ok(claySrc.includes('#6b9c44'), 'Must use lower saturation grass tone');
+
+  // 2. Bare soil fallow handling in bedAppearance
+  assert.ok(claySrc.includes("plot.crop === 'Fallow'"), 'bedAppearance must classify Fallow as bare soil');
+
+  // 3. GTAOPass postprocessing
+  assert.ok(claySrc.includes('GTAOPass'), 'Must import and configure GTAOPass');
+  assert.ok(claySrc.includes('isDesktop'), 'Must restrict postprocessing to desktop');
+
+  // 4. Draw calls reporting
+  assert.ok(claySrc.includes('Draw calls:'), 'Must report draw calls');
+});

@@ -9,6 +9,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import {
   createGrassTexture,
   createTilledSoilTexture,
@@ -19,7 +23,7 @@ import {
 // Color Palette — Matte Pastels & Soil Strata (UI 4 & Phase 4 compliant)
 export const CLAY_PALETTE = {
   bg: '#0f1412',
-  grass: '#8fb760',
+  grass: '#6b9c44', // Lower saturation natural grass (#5f8f3c..#7aa84d)
   crop_rice: '#7fa860',
   crop_wheat: '#d8c27a',
   crop_pulse: '#8fae6a',
@@ -51,7 +55,7 @@ export const CLAY_PALETTE = {
  * When plot or plot.crop is missing/null, returns { kind: 'soil' }.
  */
 export function bedAppearance(plot) {
-  if (!plot || !plot.crop) {
+  if (!plot || !plot.crop || plot.crop === 'Fallow' || String(plot.crop).toLowerCase().includes('fallow')) {
     return { kind: 'soil' };
   }
   return {
@@ -169,6 +173,7 @@ export function ClayFarmScene({
   const mountRef = useRef(null);
   const [selectedPlotId, setSelectedPlotId] = useState(plots[0]?.id || 'P-01');
   const [webGLError, setWebGLError] = useState(false);
+  const [drawCallsCount, setDrawCallsCount] = useState(0);
 
   // Normalize plots to 6 diorama beds (or use real parcels if passed)
   const normalizedPlots = useMemo(() => {
@@ -776,18 +781,50 @@ export function ClayFarmScene({
       let isVisible = true;
       let isTabActive = typeof document !== 'undefined' ? !document.hidden : true;
 
+      // U4: GTAOPass on desktop only (width >= 1024)
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+      let composer = null;
+      if (isDesktop) {
+        try {
+          composer = new EffectComposer(renderer);
+          const renderPass = new RenderPass(scene, camera);
+          composer.addPass(renderPass);
+
+          const gtaoPass = new GTAOPass(scene, camera, width, height);
+          gtaoPass.output = GTAOPass.OUTPUT.Default;
+          composer.addPass(gtaoPass);
+
+          const outputPass = new OutputPass();
+          composer.addPass(outputPass);
+
+          disposables.push({
+            dispose: () => {
+              try { composer.dispose(); } catch (e) {}
+            }
+          });
+        } catch (err) {
+          composer = null;
+        }
+      }
+
       const render = () => {
         if (!renderer || !scene || !camera) return;
         if (!isVisible || !isTabActive) return;
-        renderer.render(scene, camera);
+        if (composer) {
+          composer.render();
+        } else {
+          renderer.render(scene, camera);
+        }
       };
 
       controls.addEventListener('change', render);
 
-      // Initial render & draw calls reporting
+      // Initial render & draw calls reporting (U4)
       render();
       const initialCalls = renderer.info?.render?.calls ?? 0;
-      console.info(`[ClayFarmScene] initial draw calls: ${initialCalls}`);
+      const initialTris = renderer.info?.render?.triangles ?? 0;
+      setDrawCallsCount(initialCalls);
+      console.info(`[ClayFarmScene 3D] draw calls: ${initialCalls}, triangles: ${initialTris}, GTAOPass: ${isDesktop ? 'active (desktop)' : 'disabled (mobile)'}`);
 
       // Intro turn (stops after 4 seconds)
       const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -939,6 +976,12 @@ export function ClayFarmScene({
         <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
       )}
 
+      {/* Floating Glass HUD Card for Selected Plot */}
+      <div style={{ position: 'absolute', top: 14, right: 14, zIndex: 2 }}>
+        <span style={{ fontSize: 10.5, background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--text-muted, #94a3b8)', padding: '3px 8px', borderRadius: 6, fontFamily: 'monospace' }}>
+          Draw calls: {drawCallsCount} {typeof window !== 'undefined' && window.innerWidth >= 1024 ? '• GTAOPass: ON' : ''}
+        </span>
+      </div>
       {/* Floating Glass HUD Card for Selected Plot */}
       <div
         style={{
