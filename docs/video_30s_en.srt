@@ -1,19 +1,31 @@
 1
-00:00:00,000 --> 00:00:05,000
-We are Team Azoic from Dhaka,
-taking on NASA's Field Shift challenge!
+00:00:00,000 --> 00:00:04,200
+Monsoon rains are shifting, and Bangladesh's aquifers are draining fast.
 
 2
-00:00:05,000 --> 00:00:12,000
-In Bangladesh's Barind tract, rigid Boro–Aman monocultures
-are draining groundwater and leaving soils bare.
+00:00:04,200 --> 00:00:07,500
+A single-season advisory is no longer enough.
 
 3
-00:00:12,000 --> 00:00:22,000
-FieldShift models the farmer's existing rotation against three NASA-informed alternatives—
-using GPM IMERG, POWER, SMAP, MODIS, and GRACE to cut water demand and build soil health.
+00:00:07,500 --> 00:00:11,500
+FieldShift harnesses 25 years of NASA Earth observations
 
 4
-00:00:22,000 --> 00:00:30,000
-One hundred percent offline, scientifically honest, and verified with local extension officers.
-FieldShift: Earth observations adapting real farms.
+00:00:11,500 --> 00:00:15,200
+to build multi-season, resilient crop rotation plans.
+
+5
+00:00:15,200 --> 00:00:19,200
+Watch recommendations adapt: drought-resilient mustard in Rajshahi,
+
+6
+00:00:19,200 --> 00:00:23,200
+high-yield flood-safe boro rice in the haor basin.
+
+7
+00:00:23,200 --> 00:00:26,800
+Accessible to every farmer by web and SMS. 100% offline.
+
+8
+00:00:26,800 --> 00:00:30,000
+This is FieldShift 2026.

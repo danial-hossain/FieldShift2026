@@ -1,121 +1,159 @@
 1
-00:00:00,000 --> 00:00:09,000
-Hello! We are Team Azoic from Dhaka, Bangladesh—
-Daniel Hossain, Fazle Elahi Mahi, Nusrat Jahan Tuli,
+00:00:00,000 --> 00:00:05,500
+Hello! We are Team Azoic from Dhaka, Bangladesh.
 
 2
-00:00:09,000 --> 00:00:20,000
-Roman Ahmed Tanmoy, Mustakim Musa, and Abir Ahmed Joy.
-We are competing in NASA Space Apps 2026 in the challenge: "Field Shift: Adapting Farms with NASA Data".
+00:00:05,500 --> 00:00:11,500
+We are competing in NASA Space Apps 2026 for the challenge: Field Shift: Adapting Farms with NASA Data.
 
 3
-00:00:20,000 --> 00:00:29,000
-Meet Abdul, a smallholder farmer cultivating one hectare in Rajshahi.
-Like millions of farmers across Bangladesh, Abdul is locked into a rigid Boro–Fallow–Aman crop rotation.
+00:00:11,500 --> 00:00:17,000
+Meet Abdul, a smallholder farmer cultivating 1.0 hectare in Godagari, Rajshahi.
 
 4
-00:00:29,000 --> 00:00:37,000
-For decades, he has grown water-thirsty Boro rice in the dry winter,
-left his land bare during late spring, and planted rainfed Aman in the monsoon.
+00:00:17,000 --> 00:00:23,000
+For generations, Abdul has followed a rigid Boro-Fallow-Aman rotation.
 
 5
-00:00:37,000 --> 00:00:45,000
-But today, under accelerating climate shifts and falling aquifers,
-this traditional cycle is breaking down.
+00:00:23,000 --> 00:00:28,500
+He pumps groundwater for winter rice, leaves soil bare for 75 days in pre-monsoon heat,
 
 6
-00:00:45,000 --> 00:00:54,000
-Abdul's farm faces three converging crises.
-First, NASA GRACE satellite mascon data reveals that the Barind aquifer is declining at -1.48 centimeters every year.
+00:00:28,500 --> 00:00:33,000
+and relies on erratic monsoon rains for Aman.
 
 7
-00:00:54,000 --> 00:01:04,000
-Deep tubewell pumping for winter Boro rice is exhausting groundwater and driving up energy costs.
-Second, NASA MODIS satellite NDVI imagery shows that during the pre-monsoon Kharif-1 season,
+00:00:33,000 --> 00:00:38,500
+Step 2: Why single-season weather forecasts are not enough.
 
 8
-00:01:04,000 --> 00:01:15,000
-his fields sit bare for 75 days, leaving topsoil vulnerable to rainstorms and stripping soil organic matter.
-A single-season planting advisory cannot fix this. Abdul needs an honest, multi-season crop rotation.
+00:00:38,500 --> 00:00:43,000
+Climate change is shifting the monsoon onset across Bangladesh.
 
 9
-00:01:15,000 --> 00:01:25,000
-And FieldShift approaches this with strict scientific honesty.
-While NASA POWER 0.5° reanalysis initially suggested that pre-monsoon rains had shifted 21 days earlier,
+00:00:43,000 --> 00:00:49,500
+Rather than guessing, FieldShift grounds every recommendation in 25 years of NASA Earth observations:
 
 10
-00:01:25,000 --> 00:01:35,000
-our cross-validation with high-resolution NASA GPM IMERG satellite precipitation proved this shift is not confirmed—
-p is 0.34, with a median shift of zero days.
+00:00:49,500 --> 00:00:55,000
+NASA POWER climatology, high-resolution NASA GPM IMERG precipitation, and SoilGrids.
 
 11
-00:01:35,000 --> 00:01:45,000
-Rather than making risky claims, FieldShift adheres to satellite-confirmed IMERG observations
-and focuses where adaptation truly works: restructuring the entire crop rotation.
+00:00:55,000 --> 00:01:00,500
+And we maintain absolute honesty: our IMERG cross-validation shows no false onset claims.
 
 12
-00:01:45,000 --> 00:01:55,000
-Let's see FieldShift in action. Abdul opens Farm Planning.
-His existing Boro–Fallow–Aman rotation is evaluated as the baseline.
+00:01:00,500 --> 00:01:06,000
+Step 3: Ground-level physics and aquifer stress.
 
 13
-00:01:55,000 --> 00:02:02,000
-Using Mixed Integer Linear Programming solved with PuLP CBC,
-FieldShift generates three NASA-informed alternatives.
+00:01:06,000 --> 00:01:12,500
+NASA GRACE-FO gravitational satellite telemetry confirms that the Barind aquifer is declining at -1.07 cm/year.
 
 14
-00:02:02,000 --> 00:02:10,000
-Abdul selects the Water-Saving Strategy, tailored for the Barind tract.
+00:01:12,500 --> 00:01:18,500
+Deep tubewell diesel costs are soaring, and pumping more water is unsustainable.
 
 15
-00:02:10,000 --> 00:02:20,000
-For every strategy, FieldShift produces a deterministic five-item card:
-why it was recommended, the scientific evidence from 25 years of NASA POWER climatology and SoilGrids,
+00:01:18,500 --> 00:01:25,000
+Abdul cannot just change planting dates; he must adapt his entire multi-season rotation.
 
 16
-00:02:20,000 --> 00:02:30,000
-the benefits—saving 140 millimeters of irrigation water and fixing 70 kg of biological nitrogen—data gaps, and local risks.
-Notice the small "এর মানে কী?" popovers: clicking them explains evapotranspiration,
+00:01:25,000 --> 00:01:30,000
+Step 4: The multi-season optimization engine.
 
 17
-00:02:30,000 --> 00:02:37,000
-SMAP root-zone moisture anomalies, and satellite versus ground data in plain Bengali.
+00:01:30,000 --> 00:01:36,500
+FieldShift solves a multi-period mathematical model across 6 consecutive planning seasons.
 
 18
-00:02:37,000 --> 00:02:45,000
-Abdul sees exactly when his field is covered across a 12-month calendar strip, replacing bare fallow with restorative mungbean.
-And every strategy card ends with our golden rule:
+00:01:36,500 --> 00:01:43,000
+It evaluates cash budgets, water pumping limits, and crop-specific soil texture suitability matrices.
 
 19
-00:02:45,000 --> 00:02:55,000
-"This is for decision support; please verify with your local Sub-Assistant Agriculture Officer (SAAO)".
+00:01:43,000 --> 00:01:50,000
+In Rajshahi, the Water-Saving strategy replaces high-water Boro with low-water Mustard and Mungbean.
 
 20
-00:02:55,000 --> 00:03:05,000
-For agronomists and researchers, FieldShift features a 3-Way Decision Comparison Lab.
-We benchmark exact MILP optimization against sequential Reinforcement Learning in a custom Gymnasium MDP environment
+00:01:50,000 --> 00:01:55,500
+Step 5: Transparent, plain-language answers.
 
 21
-00:03:05,000 --> 00:03:15,000
-and heuristic domain rules. We disclose transparently that while MILP guarantees mathematical optimality,
-RL policies are experimental and require empirical ground calibration.
+00:01:55,500 --> 00:02:01,000
+Anyone—a farmer, an extension officer, or a judge—understands the result in 3 seconds.
 
 22
-00:03:15,000 --> 00:03:25,000
-Most crucially for rural Bangladesh: FieldShift is 100% autonomous offline.
-When cellular networks drop in remote villages, every NASA dataset—
+00:02:01,000 --> 00:02:07,000
+The answer header states: You save ~320 mm irrigation water, add 45 kg soil nitrogen,
 
 23
-00:03:25,000 --> 00:03:35,000
-POWER climatology, GPM IMERG rainfall, SMAP anomalies, MODIS NDVI, and GRACE trends—
-remains instantly available from local pre-cached engines. Zero network lag. Zero fabricated numbers.
+00:02:07,000 --> 00:02:12,500
+and gain an estimated +24,000 BDT extra profit.
 
 24
-00:03:35,000 --> 00:03:45,000
-FieldShift does not replace the farmer or the extension officer;
-it arms them with a quarter-century of NASA Earth observation science to adapt crop rotations safely, sustainably, and profitably.
+00:02:12,500 --> 00:02:18,000
+Step 6: The ultimate proof: Two-Field Regional Divergence.
 
 25
-00:03:45,000 --> 00:04:00,000
+00:02:18,000 --> 00:02:24,500
+Watch how FieldShift's recommendation flips between regions!
+
+26
+00:02:24,500 --> 00:02:30,500
+In drought-prone Rajshahi, GRACE depletion and clay terrace force low-water Mustard.
+
+27
+00:02:30,500 --> 00:02:36,500
+In Sunamganj haor basin, 3-meter monsoon floods make Kharif farming impossible;
+
+28
+00:02:36,500 --> 00:02:43,000
+receding winter beels provide 1,200 mm surface water, making single-season Boro rice highly profitable.
+
+29
+00:02:43,000 --> 00:02:49,500
+One algorithm, two completely different regional realities—pure physics, zero hardcoding.
+
+30
+00:02:49,500 --> 00:02:55,000
+In our 3D Farm Diorama, crop plans come to life.
+
+31
+00:02:55,000 --> 00:03:02,000
+Using lightweight Three.js InstancedMesh with less than 60 draw calls, crop rows reflect the exact strategy:
+
+32
+00:03:02,000 --> 00:03:09,500
+water sheets over Aman paddy, yellow flowering mustard in winter, and bare tilled furrows during fallow.
+
+33
+00:03:09,500 --> 00:03:15,000
+On the Water page, our Soil-Water Column visualizes FAO-56 root-zone depletion in real-time,
+
+34
+00:03:15,000 --> 00:03:22,000
+showing rainfall drops, evapotranspiration vapour, and AWD thresholds to save 25% to 30% fuel.
+
+35
+00:03:22,000 --> 00:03:28,500
+FieldShift reaches every farmer: through modern web dashboards, high-contrast daylight mode,
+
+36
+00:03:28,500 --> 00:03:34,500
+printable A4 cards, and plain-text SMS for basic feature phones.
+
+37
+00:03:34,500 --> 00:03:41,000
+Most importantly, it operates 100% offline with zero external dependencies.
+
+38
+00:03:41,000 --> 00:03:48,000
+FieldShift equips farmers with 25 years of NASA Earth observation science to adapt, conserve water, and prosper.
+
+39
+00:03:48,000 --> 00:03:54,000
 We are Team Azoic, and this is FieldShift 2026.
-Earth Observations Powering Resilient Bangladesh Agriculture. Thank you!
+
+40
+00:03:54,000 --> 00:04:00,000
+Thank you!

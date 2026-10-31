@@ -1,16 +1,16 @@
 ================================================================
 FIELDSHIFT OFFLINE DEMO INTEGRITY CHECK
 ================================================================
-[PASS] 1. GET /api/health -> status=200 (17.9ms)
-[PASS] 2. GET /api/crops -> count=17 crops (394.4ms)
-[PASS] 3. GET /api/advisory (Rajshahi Aman) -> P1=154.0, P2=166.0, Shift=+12.0d, p=0.2991, rain_source=NASA POWER / GPM IMERG Calibrated (1260.1ms)
-[PASS] 4. GET /api/advisory/districts -> 64 districts (3.8ms)
-[PASS] 5. POST /api/planning (Rajshahi 4 Strategies) -> profit=optimal(6), water=optimal(6), soil=optimal(6), balanced=optimal(6) (3628.1ms)
-[PASS] 6. POST /api/location/weather -> status=200 (101.5ms)
-[PASS] 7. GET /api/water/plan (Bogura) -> status=200, assumed field efficiency 45% vs 75% (FAO reference values) (28.4ms)
-[PASS] 8. GET /api/market/overview (FAOSTAT) -> status=200, crops=17 (77.4ms)
-[PASS] 9. POST /api/fields/enrich -> district=bogura, cell=power_cell_25.0_89.5, texture=clay loam (5.1ms)
-[PASS] 10. NASA Earth Observation Suites & Field Test Reports -> 4/4 reports, POWER(64), IMERG(64), SMAP, GRACE, SRTM verified (0.9ms)
+[PASS] 1. GET /api/health -> status=200 (16.8ms)
+[PASS] 2. GET /api/crops -> count=17 crops (443.4ms)
+[PASS] 3. GET /api/advisory (Rajshahi Aman) -> P1=154.0, P2=166.0, Shift=+12.0d, p=0.2991, rain_source=NASA POWER / GPM IMERG Calibrated (1307.6ms)
+[PASS] 4. GET /api/advisory/districts -> 64 districts (5.5ms)
+[PASS] 5. POST /api/planning (Rajshahi 4 Strategies) -> profit=optimal(6), water=optimal(6), soil=optimal(6), balanced=optimal(6) (3583.8ms)
+[PASS] 6. POST /api/location/weather -> status=200 (125.7ms)
+[PASS] 7. GET /api/water/plan (Bogura) -> status=200, assumed field efficiency 45% vs 75% (FAO reference values) (31.3ms)
+[PASS] 8. GET /api/market/overview (FAOSTAT) -> status=200, crops=17 (76.7ms)
+[PASS] 9. POST /api/fields/enrich -> district=bogura, cell=power_cell_25.0_89.5, texture=clay loam (5.9ms)
+[PASS] 10. NASA Earth Observation Suites & Field Test Reports -> 4/4 reports, POWER(64), IMERG(64), SMAP, GRACE, SRTM verified (1.0ms)
 ================================================================
 SUMMARY: 10/10 CHECKS PASSED
 ================================================================
