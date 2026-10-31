@@ -504,10 +504,10 @@ def compute_water_plan(
     pumping_rate_bdt_m3 = 2.50
     pumping_cost_bdt = round(net_irrig_m3 * pumping_rate_bdt_m3, 0)
 
-    # Conventional unmanaged flood irrigation comparison (efficiency ~45% vs managed ~75%)
-    # Conventional flood uses ~1.67x water
-    flood_factor = 1.67
-    flood_demand_m3 = round(net_irrig_m3 * flood_factor, 1)
+    # Conventional unmanaged flood irrigation comparison (efficiency ~45% vs managed ~75%, FAO reference values)
+    eff_conventional = 0.45
+    eff_managed = 0.75
+    flood_demand_m3 = round(net_irrig_m3 * (eff_managed / eff_conventional), 1) if net_irrig_m3 > 0 else 0.0
     flood_cost_bdt = round(flood_demand_m3 * pumping_rate_bdt_m3, 0)
     water_savings_m3 = round(flood_demand_m3 - net_irrig_m3, 1)
     cost_savings_bdt = round(flood_cost_bdt - pumping_cost_bdt, 0)
@@ -551,7 +551,8 @@ def compute_water_plan(
             "conventional_flood_cost_bdt": flood_cost_bdt,
             "water_savings_m3": water_savings_m3,
             "cost_savings_bdt": cost_savings_bdt,
-            "water_reduction_pct": round((1.0 - 1.0 / flood_factor) * 100.0, 1),
+            "comparison_note": "assumed field efficiency 45% vs 75% (FAO reference values)",
+            "comparison_source": "FAO Irrigation and Drainage Paper 24/56",
         },
         "provenance": {
             "evapotranspiration_model": "FAO-56 Penman-Monteith (1998)",

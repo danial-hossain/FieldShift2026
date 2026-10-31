@@ -166,10 +166,10 @@ def run_checks():
         dt = (time.time() - t0) * 1000
         data = res.json() if res.status_code == 200 else {}
         w_econ = data.get("economic_and_conservation", {})
-        savings_pct = w_econ.get("water_reduction_pct", 0)
-        if res.status_code == 200 and savings_pct > 0:
-            print(f"[PASS] 7. GET /api/water/plan (Bogura) -> status=200, water reduction={savings_pct:.1f}% ({dt:.1f}ms)")
-            results.append(("Water Scheduling", True, f"Reduction {savings_pct:.1f}%"))
+        note = w_econ.get("comparison_note", "")
+        if res.status_code == 200 and "assumed field efficiency" in note:
+            print(f"[PASS] 7. GET /api/water/plan (Bogura) -> status=200, {note} ({dt:.1f}ms)")
+            results.append(("Water Scheduling", True, note))
         else:
             print(f"[FAIL] 7. GET /api/water/plan -> status={res.status_code}")
             has_failure = True

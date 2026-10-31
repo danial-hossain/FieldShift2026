@@ -82,7 +82,7 @@ def test_compute_water_plan_structure():
     assert econ["managed_pumping_cost_bdt"] >= 0
     assert econ["water_savings_m3"] >= 0
     assert econ["cost_savings_bdt"] >= 0
-    assert econ["water_reduction_pct"] > 0
+    assert "assumed field efficiency 45% vs 75%" in econ["comparison_note"]
 
     # Provenance
     prov = plan["provenance"]

@@ -134,7 +134,7 @@ Tested 4 optimization priorities for 6 periods (2 years × seasonal cropping cyc
 - **Irrigation Triggers**: 18 events at recommended interval of ~5 days
 - **Managed Pumping Cost (2.50 BDT/m³)**: 6,508 BDT
 - **Conventional Flood Comparison**: Flood Demand 4,347 m³ (10,868 BDT)
-- **Water Conservation**: **1,744 m³ saved (40.1% reduction)** saving **4,360 BDT**
+- **Water Conservation**: **1,744 m³ saved (illustrative; assumed field efficiency 45% vs 75%, FAO reference values)** saving **4,360 BDT**
 
 ---
 
