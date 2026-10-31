@@ -134,18 +134,30 @@ def load_smap_data(
         & (observations["longitude"] - lon).abs().le(coordinate_tolerance)
     ]
     if matches.empty and csv_path is None:
-        real_smap_path = Path(__file__).resolve().parents[2] / "data" / "smap" / "smap_l4_monthly_4fields.csv"
-        if real_smap_path.is_file():
+        real_smap_json = Path(__file__).resolve().parents[2] / "data" / "smap" / "smap_field_moisture.json"
+        if real_smap_json.is_file():
             try:
-                real_raw = pd.read_csv(real_smap_path, keep_default_na=False)
-                real_obs = normalize_smap_observations(real_raw)
-                real_matches = real_obs.loc[
-                    real_obs["date"].between(start, end)
-                    & (real_obs["latitude"] - lat).abs().le(max(coordinate_tolerance, 0.5))
-                    & (real_obs["longitude"] - lon).abs().le(max(coordinate_tolerance, 0.5))
-                ]
-                if not real_matches.empty:
-                    return real_matches.reset_index(drop=True)[SMAP_COLUMNS]
+                import json
+                with open(real_smap_json, "r", encoding="utf-8") as jf:
+                    smap_json_data = json.load(jf)
+                rows = []
+                for fid, obs_list in smap_json_data.get("field_observations", {}).items():
+                    coord = smap_json_data.get("summary", {}).get(fid, {})
+                    f_lat = coord.get("latitude", 0.0)
+                    f_lon = coord.get("longitude", 0.0)
+                    if abs(f_lat - lat) <= max(coordinate_tolerance, 0.5) and abs(f_lon - lon) <= max(coordinate_tolerance, 0.5):
+                        for item in obs_list:
+                            if start <= item["date"] <= end:
+                                rows.append([
+                                    item["date"],
+                                    f_lat,
+                                    f_lon,
+                                    item["sm_rootzone_m3_m3"],
+                                    "NASA SMAP Level-4 SPL4SMGP",
+                                    "observed",
+                                ])
+                if rows:
+                    return pd.DataFrame(rows, columns=SMAP_COLUMNS)
             except Exception:
                 pass
 

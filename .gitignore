@@ -65,4 +65,6 @@ Thumbs.db
 data/fieldshift.db
 data/market/raw/*.zip
 data/grace/*.nc
+data/grace/raw/*.nc
 data/srtm/*.zip
+data/srtm/raw/*.zip

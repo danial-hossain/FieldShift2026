@@ -1,0 +1,33 @@
+{
+  "dataset_short_name": "MOD13Q1",
+  "source": "NASA LP DAAC / Terra MODIS via Earthdata Cloud",
+  "spatial_resolution": "250 meters",
+  "temporal_resolution": "16-day composite",
+  "granule_count_in_test_query": 2,
+  "granules": [
+    {
+      "granule_id": "MOD13Q1.A2023353.h26v06.061.2024005171256",
+      "size_mb": 231.086,
+      "temporal": {
+        "RangeDateTime": {
+          "BeginningDateTime": "2023-12-19T00:00:00.000Z",
+          "EndingDateTime": "2024-01-03T23:59:59.000Z"
+        }
+      },
+      "status": "Verified in NASA LP DAAC Earthdata Cloud"
+    },
+    {
+      "granule_id": "MOD13Q1.A2024001.h26v06.061.2024022131619",
+      "size_mb": 228.422,
+      "temporal": {
+        "RangeDateTime": {
+          "BeginningDateTime": "2024-01-01T00:00:00.000Z",
+          "EndingDateTime": "2024-01-16T23:59:59.000Z"
+        }
+      },
+      "status": "Verified in NASA LP DAAC Earthdata Cloud"
+    }
+  ],
+  "limitation_verdict": "Single granule size is 231 MB; full 24-year coverage exceeds 120 GB. Catalogued as planned remote feature per NASA submission rules.",
+  "retrieved_at": "2026-10-31T18:15:07.029696+00:00"
+}

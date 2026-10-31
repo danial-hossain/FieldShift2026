@@ -1,12 +1,15 @@
 {
   "product": "NASA GRACE / GRACE-FO Level-3 JPL RL06.3M Mascon (0.5 CRI grid)",
-  "temporal_coverage": "2002-04 to 2024-06",
-  "total_monthly_observations": 267,
+  "source": "NASA PO.DAAC / JPL Earthdata Cloud",
+  "raw_file": "GRCTellus.JPL.200204_202607.GLO.RL06.3M.MSCNv04CRI.nc",
+  "processed_at": "2026-10-31T18:13:21.080500+00:00",
+  "temporal_coverage": "2002-04 to 2026-07",
+  "total_monthly_observations": 259,
   "trends_cm_per_year": {
-    "northwest_barind": -1.48,
-    "haor_wetland": -0.18,
-    "coastal_south": -0.42,
-    "central_alluvial": -0.65
+    "bangladesh_all": -0.35,
+    "northwest_barind": -1.07,
+    "haor_wetland": 0.44,
+    "coastal_south": -0.15
   },
   "interpretation": {
     "northwest_barind": "Critical groundwater storage depletion due to deep tubewell Boro abstraction; high water-scarcity weight required.",
@@ -15,22 +18,22 @@
   },
   "fields": {
     "Bogura demo": {
-      "trend_cm_yr": -1.48,
+      "trend_cm_yr": -1.07,
       "status": "Severe Depletion",
       "water_saving_priority": "High (Weight 1.5x)"
     },
     "Dinajpur Sadar": {
-      "trend_cm_yr": -1.48,
+      "trend_cm_yr": -1.07,
       "status": "Severe Depletion",
       "water_saving_priority": "High (Weight 1.5x)"
     },
     "Sunamganj haor": {
-      "trend_cm_yr": -0.18,
+      "trend_cm_yr": 0.44,
       "status": "Stable Basin",
       "water_saving_priority": "Low (Normal)"
     },
     "Satkhira coast": {
-      "trend_cm_yr": -0.42,
+      "trend_cm_yr": -0.15,
       "status": "Vulnerable / Saline",
       "water_saving_priority": "Moderate (Sweetwater buffer)"
     }
@@ -40,2137 +43,2332 @@
       "date": "2002-04",
       "year": 2002,
       "month": 4,
-      "nw_barind_tws_cm": -25.37,
-      "haor_wetland_tws_cm": -32.55,
-      "coastal_south_tws_cm": -20.11
+      "nw_barind_tws_cm": -9.52,
+      "haor_wetland_tws_cm": -13.73,
+      "coastal_south_tws_cm": -13.03,
+      "bangladesh_mean_tws_cm": -11.88
     },
     {
       "date": "2002-05",
       "year": 2002,
       "month": 5,
-      "nw_barind_tws_cm": -20.49,
-      "haor_wetland_tws_cm": -26.06,
-      "coastal_south_tws_cm": -16.14
-    },
-    {
-      "date": "2002-06",
-      "year": 2002,
-      "month": 6,
-      "nw_barind_tws_cm": -5.62,
-      "haor_wetland_tws_cm": -6.58,
-      "coastal_south_tws_cm": -4.17
-    },
-    {
-      "date": "2002-07",
-      "year": 2002,
-      "month": 7,
-      "nw_barind_tws_cm": 14.26,
-      "haor_wetland_tws_cm": 19.41,
-      "coastal_south_tws_cm": 11.79
+      "nw_barind_tws_cm": -4.83,
+      "haor_wetland_tws_cm": -8.29,
+      "coastal_south_tws_cm": -9.3,
+      "bangladesh_mean_tws_cm": -7.26
     },
     {
       "date": "2002-08",
       "year": 2002,
       "month": 8,
-      "nw_barind_tws_cm": 29.14,
-      "haor_wetland_tws_cm": 38.9,
-      "coastal_south_tws_cm": 23.75
+      "nw_barind_tws_cm": 39.82,
+      "haor_wetland_tws_cm": 40.39,
+      "coastal_south_tws_cm": 23.36,
+      "bangladesh_mean_tws_cm": 29.16
     },
     {
       "date": "2002-09",
       "year": 2002,
       "month": 9,
-      "nw_barind_tws_cm": 34.01,
-      "haor_wetland_tws_cm": 45.38,
-      "coastal_south_tws_cm": 27.72
+      "nw_barind_tws_cm": 32.21,
+      "haor_wetland_tws_cm": 23.97,
+      "coastal_south_tws_cm": 15.59,
+      "bangladesh_mean_tws_cm": 19.42
     },
     {
       "date": "2002-10",
       "year": 2002,
       "month": 10,
-      "nw_barind_tws_cm": 23.89,
-      "haor_wetland_tws_cm": 32.37,
-      "coastal_south_tws_cm": 19.68
+      "nw_barind_tws_cm": 23.62,
+      "haor_wetland_tws_cm": 20.09,
+      "coastal_south_tws_cm": 12.44,
+      "bangladesh_mean_tws_cm": 14.43
     },
     {
       "date": "2002-11",
       "year": 2002,
       "month": 11,
-      "nw_barind_tws_cm": 3.77,
-      "haor_wetland_tws_cm": 6.35,
-      "coastal_south_tws_cm": 3.65
+      "nw_barind_tws_cm": 6.19,
+      "haor_wetland_tws_cm": 1.1,
+      "coastal_south_tws_cm": 2.66,
+      "bangladesh_mean_tws_cm": 2.38
     },
     {
       "date": "2002-12",
       "year": 2002,
       "month": 12,
-      "nw_barind_tws_cm": -6.36,
-      "haor_wetland_tws_cm": -6.67,
-      "coastal_south_tws_cm": -4.38
+      "nw_barind_tws_cm": -3.29,
+      "haor_wetland_tws_cm": -6.96,
+      "coastal_south_tws_cm": -2.74,
+      "bangladesh_mean_tws_cm": -4.34
     },
     {
       "date": "2003-01",
       "year": 2003,
       "month": 1,
-      "nw_barind_tws_cm": -13.48,
-      "haor_wetland_tws_cm": -15.78,
-      "coastal_south_tws_cm": -10.02
+      "nw_barind_tws_cm": -3.2,
+      "haor_wetland_tws_cm": -10.68,
+      "coastal_south_tws_cm": -5.21,
+      "bangladesh_mean_tws_cm": -6.77
     },
     {
       "date": "2003-02",
       "year": 2003,
       "month": 2,
-      "nw_barind_tws_cm": -19.6,
-      "haor_wetland_tws_cm": -23.6,
-      "coastal_south_tws_cm": -14.86
+      "nw_barind_tws_cm": -11.61,
+      "haor_wetland_tws_cm": -19.16,
+      "coastal_south_tws_cm": -11.54,
+      "bangladesh_mean_tws_cm": -13.75
     },
     {
       "date": "2003-03",
       "year": 2003,
       "month": 3,
-      "nw_barind_tws_cm": -23.73,
-      "haor_wetland_tws_cm": -28.81,
-      "coastal_south_tws_cm": -18.09
+      "nw_barind_tws_cm": -15.51,
+      "haor_wetland_tws_cm": -27.14,
+      "coastal_south_tws_cm": -16.86,
+      "bangladesh_mean_tws_cm": -17.94
     },
     {
       "date": "2003-04",
       "year": 2003,
       "month": 4,
-      "nw_barind_tws_cm": -26.85,
-      "haor_wetland_tws_cm": -32.73,
-      "coastal_south_tws_cm": -20.52
+      "nw_barind_tws_cm": -11.16,
+      "haor_wetland_tws_cm": -17.69,
+      "coastal_south_tws_cm": -13.64,
+      "bangladesh_mean_tws_cm": -13.42
     },
     {
       "date": "2003-05",
       "year": 2003,
       "month": 5,
-      "nw_barind_tws_cm": -21.97,
-      "haor_wetland_tws_cm": -26.24,
-      "coastal_south_tws_cm": -16.56
-    },
-    {
-      "date": "2003-06",
-      "year": 2003,
-      "month": 6,
-      "nw_barind_tws_cm": -7.1,
-      "haor_wetland_tws_cm": -6.75,
-      "coastal_south_tws_cm": -4.59
+      "nw_barind_tws_cm": -9.29,
+      "haor_wetland_tws_cm": -13.45,
+      "coastal_south_tws_cm": -9.8,
+      "bangladesh_mean_tws_cm": -9.52
     },
     {
       "date": "2003-07",
       "year": 2003,
       "month": 7,
-      "nw_barind_tws_cm": 12.78,
-      "haor_wetland_tws_cm": 19.23,
-      "coastal_south_tws_cm": 11.37
+      "nw_barind_tws_cm": 33.89,
+      "haor_wetland_tws_cm": 31.5,
+      "coastal_south_tws_cm": 17.37,
+      "bangladesh_mean_tws_cm": 23.62
     },
     {
       "date": "2003-08",
       "year": 2003,
       "month": 8,
-      "nw_barind_tws_cm": 27.66,
-      "haor_wetland_tws_cm": 38.72,
-      "coastal_south_tws_cm": 23.34
+      "nw_barind_tws_cm": 30.11,
+      "haor_wetland_tws_cm": 27.29,
+      "coastal_south_tws_cm": 17.34,
+      "bangladesh_mean_tws_cm": 21.33
     },
     {
       "date": "2003-09",
       "year": 2003,
       "month": 9,
-      "nw_barind_tws_cm": 32.53,
-      "haor_wetland_tws_cm": 45.2,
-      "coastal_south_tws_cm": 27.3
+      "nw_barind_tws_cm": 31.01,
+      "haor_wetland_tws_cm": 26.37,
+      "coastal_south_tws_cm": 19.25,
+      "bangladesh_mean_tws_cm": 21.91
     },
     {
       "date": "2003-10",
       "year": 2003,
       "month": 10,
-      "nw_barind_tws_cm": 22.41,
-      "haor_wetland_tws_cm": 32.19,
-      "coastal_south_tws_cm": 19.27
+      "nw_barind_tws_cm": 23.66,
+      "haor_wetland_tws_cm": 20.0,
+      "coastal_south_tws_cm": 15.96,
+      "bangladesh_mean_tws_cm": 17.49
     },
     {
       "date": "2003-11",
       "year": 2003,
       "month": 11,
-      "nw_barind_tws_cm": 2.29,
-      "haor_wetland_tws_cm": 6.17,
-      "coastal_south_tws_cm": 3.23
+      "nw_barind_tws_cm": 12.43,
+      "haor_wetland_tws_cm": 4.98,
+      "coastal_south_tws_cm": 8.47,
+      "bangladesh_mean_tws_cm": 7.43
     },
     {
       "date": "2003-12",
       "year": 2003,
       "month": 12,
-      "nw_barind_tws_cm": -7.84,
-      "haor_wetland_tws_cm": -6.84,
-      "coastal_south_tws_cm": -4.8
+      "nw_barind_tws_cm": -0.87,
+      "haor_wetland_tws_cm": -5.3,
+      "coastal_south_tws_cm": 0.66,
+      "bangladesh_mean_tws_cm": -1.59
     },
     {
       "date": "2004-01",
       "year": 2004,
       "month": 1,
-      "nw_barind_tws_cm": -14.96,
-      "haor_wetland_tws_cm": -15.96,
-      "coastal_south_tws_cm": -10.44
+      "nw_barind_tws_cm": -7.76,
+      "haor_wetland_tws_cm": -14.8,
+      "coastal_south_tws_cm": -5.87,
+      "bangladesh_mean_tws_cm": -8.24
     },
     {
       "date": "2004-02",
       "year": 2004,
       "month": 2,
-      "nw_barind_tws_cm": -21.08,
-      "haor_wetland_tws_cm": -23.78,
-      "coastal_south_tws_cm": -15.28
+      "nw_barind_tws_cm": -7.89,
+      "haor_wetland_tws_cm": -16.77,
+      "coastal_south_tws_cm": -9.63,
+      "bangladesh_mean_tws_cm": -11.23
     },
     {
       "date": "2004-03",
       "year": 2004,
       "month": 3,
-      "nw_barind_tws_cm": -25.21,
-      "haor_wetland_tws_cm": -28.99,
-      "coastal_south_tws_cm": -18.51
+      "nw_barind_tws_cm": -19.42,
+      "haor_wetland_tws_cm": -29.5,
+      "coastal_south_tws_cm": -17.78,
+      "bangladesh_mean_tws_cm": -19.36
     },
     {
       "date": "2004-04",
       "year": 2004,
       "month": 4,
-      "nw_barind_tws_cm": -28.33,
-      "haor_wetland_tws_cm": -32.91,
-      "coastal_south_tws_cm": -20.95
+      "nw_barind_tws_cm": -13.07,
+      "haor_wetland_tws_cm": -20.66,
+      "coastal_south_tws_cm": -13.6,
+      "bangladesh_mean_tws_cm": -12.82
     },
     {
       "date": "2004-05",
       "year": 2004,
       "month": 5,
-      "nw_barind_tws_cm": -23.45,
-      "haor_wetland_tws_cm": -26.42,
-      "coastal_south_tws_cm": -16.98
+      "nw_barind_tws_cm": -4.15,
+      "haor_wetland_tws_cm": -4.66,
+      "coastal_south_tws_cm": -2.45,
+      "bangladesh_mean_tws_cm": -2.23
     },
     {
       "date": "2004-06",
       "year": 2004,
       "month": 6,
-      "nw_barind_tws_cm": -8.58,
-      "haor_wetland_tws_cm": -6.93,
-      "coastal_south_tws_cm": -5.01
+      "nw_barind_tws_cm": 5.5,
+      "haor_wetland_tws_cm": 3.15,
+      "coastal_south_tws_cm": 2.83,
+      "bangladesh_mean_tws_cm": 5.91
     },
     {
       "date": "2004-07",
       "year": 2004,
       "month": 7,
-      "nw_barind_tws_cm": 11.3,
-      "haor_wetland_tws_cm": 19.05,
-      "coastal_south_tws_cm": 10.95
+      "nw_barind_tws_cm": 38.35,
+      "haor_wetland_tws_cm": 44.58,
+      "coastal_south_tws_cm": 23.27,
+      "bangladesh_mean_tws_cm": 31.56
     },
     {
       "date": "2004-08",
       "year": 2004,
       "month": 8,
-      "nw_barind_tws_cm": 26.18,
-      "haor_wetland_tws_cm": 38.53,
-      "coastal_south_tws_cm": 22.91
+      "nw_barind_tws_cm": 34.86,
+      "haor_wetland_tws_cm": 38.64,
+      "coastal_south_tws_cm": 23.91,
+      "bangladesh_mean_tws_cm": 28.29
     },
     {
       "date": "2004-09",
       "year": 2004,
       "month": 9,
-      "nw_barind_tws_cm": 31.05,
-      "haor_wetland_tws_cm": 45.02,
-      "coastal_south_tws_cm": 26.88
+      "nw_barind_tws_cm": 35.26,
+      "haor_wetland_tws_cm": 39.09,
+      "coastal_south_tws_cm": 25.67,
+      "bangladesh_mean_tws_cm": 28.64
     },
     {
       "date": "2004-10",
       "year": 2004,
       "month": 10,
-      "nw_barind_tws_cm": 20.93,
-      "haor_wetland_tws_cm": 32.01,
-      "coastal_south_tws_cm": 18.84
+      "nw_barind_tws_cm": 31.68,
+      "haor_wetland_tws_cm": 35.65,
+      "coastal_south_tws_cm": 23.79,
+      "bangladesh_mean_tws_cm": 25.64
     },
     {
       "date": "2004-11",
       "year": 2004,
       "month": 11,
-      "nw_barind_tws_cm": 0.81,
-      "haor_wetland_tws_cm": 5.99,
-      "coastal_south_tws_cm": 2.81
+      "nw_barind_tws_cm": 9.91,
+      "haor_wetland_tws_cm": 7.6,
+      "coastal_south_tws_cm": 6.0,
+      "bangladesh_mean_tws_cm": 6.72
     },
     {
       "date": "2004-12",
       "year": 2004,
       "month": 12,
-      "nw_barind_tws_cm": -9.32,
-      "haor_wetland_tws_cm": -7.03,
-      "coastal_south_tws_cm": -5.22
+      "nw_barind_tws_cm": -7.09,
+      "haor_wetland_tws_cm": -14.59,
+      "coastal_south_tws_cm": -6.54,
+      "bangladesh_mean_tws_cm": -7.91
     },
     {
       "date": "2005-01",
       "year": 2005,
       "month": 1,
-      "nw_barind_tws_cm": -16.44,
-      "haor_wetland_tws_cm": -16.14,
-      "coastal_south_tws_cm": -10.86
+      "nw_barind_tws_cm": -13.0,
+      "haor_wetland_tws_cm": -21.68,
+      "coastal_south_tws_cm": -13.48,
+      "bangladesh_mean_tws_cm": -14.02
     },
     {
       "date": "2005-02",
       "year": 2005,
       "month": 2,
-      "nw_barind_tws_cm": -22.56,
-      "haor_wetland_tws_cm": -23.96,
-      "coastal_south_tws_cm": -15.7
+      "nw_barind_tws_cm": -14.45,
+      "haor_wetland_tws_cm": -22.69,
+      "coastal_south_tws_cm": -13.76,
+      "bangladesh_mean_tws_cm": -14.65
     },
     {
       "date": "2005-03",
       "year": 2005,
       "month": 3,
-      "nw_barind_tws_cm": -26.69,
-      "haor_wetland_tws_cm": -29.17,
-      "coastal_south_tws_cm": -18.93
+      "nw_barind_tws_cm": -13.14,
+      "haor_wetland_tws_cm": -21.47,
+      "coastal_south_tws_cm": -13.65,
+      "bangladesh_mean_tws_cm": -14.04
     },
     {
       "date": "2005-04",
       "year": 2005,
       "month": 4,
-      "nw_barind_tws_cm": -29.81,
-      "haor_wetland_tws_cm": -33.09,
-      "coastal_south_tws_cm": -21.36
+      "nw_barind_tws_cm": -16.07,
+      "haor_wetland_tws_cm": -20.86,
+      "coastal_south_tws_cm": -14.31,
+      "bangladesh_mean_tws_cm": -14.0
     },
     {
       "date": "2005-05",
       "year": 2005,
       "month": 5,
-      "nw_barind_tws_cm": -24.93,
-      "haor_wetland_tws_cm": -26.6,
-      "coastal_south_tws_cm": -17.4
+      "nw_barind_tws_cm": -11.35,
+      "haor_wetland_tws_cm": -19.18,
+      "coastal_south_tws_cm": -12.74,
+      "bangladesh_mean_tws_cm": -10.88
     },
     {
       "date": "2005-06",
       "year": 2005,
       "month": 6,
-      "nw_barind_tws_cm": -10.06,
-      "haor_wetland_tws_cm": -7.12,
-      "coastal_south_tws_cm": -5.43
+      "nw_barind_tws_cm": -6.21,
+      "haor_wetland_tws_cm": -4.48,
+      "coastal_south_tws_cm": -6.64,
+      "bangladesh_mean_tws_cm": -3.52
     },
     {
       "date": "2005-07",
       "year": 2005,
       "month": 7,
-      "nw_barind_tws_cm": 9.82,
-      "haor_wetland_tws_cm": 18.87,
-      "coastal_south_tws_cm": 10.53
+      "nw_barind_tws_cm": 17.93,
+      "haor_wetland_tws_cm": 15.43,
+      "coastal_south_tws_cm": 9.51,
+      "bangladesh_mean_tws_cm": 12.84
     },
     {
       "date": "2005-08",
       "year": 2005,
       "month": 8,
-      "nw_barind_tws_cm": 24.7,
-      "haor_wetland_tws_cm": 38.35,
-      "coastal_south_tws_cm": 22.5
+      "nw_barind_tws_cm": 25.88,
+      "haor_wetland_tws_cm": 26.87,
+      "coastal_south_tws_cm": 16.56,
+      "bangladesh_mean_tws_cm": 19.9
     },
     {
       "date": "2005-09",
       "year": 2005,
       "month": 9,
-      "nw_barind_tws_cm": 29.57,
-      "haor_wetland_tws_cm": 44.84,
-      "coastal_south_tws_cm": 26.46
+      "nw_barind_tws_cm": 25.11,
+      "haor_wetland_tws_cm": 23.6,
+      "coastal_south_tws_cm": 17.19,
+      "bangladesh_mean_tws_cm": 18.77
     },
     {
       "date": "2005-10",
       "year": 2005,
       "month": 10,
-      "nw_barind_tws_cm": 19.45,
-      "haor_wetland_tws_cm": 31.82,
-      "coastal_south_tws_cm": 18.43
+      "nw_barind_tws_cm": 19.06,
+      "haor_wetland_tws_cm": 18.67,
+      "coastal_south_tws_cm": 13.21,
+      "bangladesh_mean_tws_cm": 14.4
     },
     {
       "date": "2005-11",
       "year": 2005,
       "month": 11,
-      "nw_barind_tws_cm": -0.67,
-      "haor_wetland_tws_cm": 5.81,
-      "coastal_south_tws_cm": 2.39
+      "nw_barind_tws_cm": 3.74,
+      "haor_wetland_tws_cm": 3.25,
+      "coastal_south_tws_cm": 4.77,
+      "bangladesh_mean_tws_cm": 4.12
     },
     {
       "date": "2005-12",
       "year": 2005,
       "month": 12,
-      "nw_barind_tws_cm": -10.8,
-      "haor_wetland_tws_cm": -7.21,
-      "coastal_south_tws_cm": -5.64
+      "nw_barind_tws_cm": -5.24,
+      "haor_wetland_tws_cm": -6.7,
+      "coastal_south_tws_cm": -2.07,
+      "bangladesh_mean_tws_cm": -3.34
     },
     {
       "date": "2006-01",
       "year": 2006,
       "month": 1,
-      "nw_barind_tws_cm": -17.92,
-      "haor_wetland_tws_cm": -16.32,
-      "coastal_south_tws_cm": -11.28
+      "nw_barind_tws_cm": -13.24,
+      "haor_wetland_tws_cm": -16.58,
+      "coastal_south_tws_cm": -8.26,
+      "bangladesh_mean_tws_cm": -11.29
     },
     {
       "date": "2006-02",
       "year": 2006,
       "month": 2,
-      "nw_barind_tws_cm": -24.04,
-      "haor_wetland_tws_cm": -24.14,
-      "coastal_south_tws_cm": -16.12
+      "nw_barind_tws_cm": -18.06,
+      "haor_wetland_tws_cm": -21.85,
+      "coastal_south_tws_cm": -12.94,
+      "bangladesh_mean_tws_cm": -15.78
     },
     {
       "date": "2006-03",
       "year": 2006,
       "month": 3,
-      "nw_barind_tws_cm": -28.17,
-      "haor_wetland_tws_cm": -29.35,
-      "coastal_south_tws_cm": -19.35
+      "nw_barind_tws_cm": -25.4,
+      "haor_wetland_tws_cm": -28.76,
+      "coastal_south_tws_cm": -18.77,
+      "bangladesh_mean_tws_cm": -21.35
     },
     {
       "date": "2006-04",
       "year": 2006,
       "month": 4,
-      "nw_barind_tws_cm": -31.29,
-      "haor_wetland_tws_cm": -33.27,
-      "coastal_south_tws_cm": -21.79
+      "nw_barind_tws_cm": -27.3,
+      "haor_wetland_tws_cm": -35.6,
+      "coastal_south_tws_cm": -22.18,
+      "bangladesh_mean_tws_cm": -23.38
     },
     {
       "date": "2006-05",
       "year": 2006,
       "month": 5,
-      "nw_barind_tws_cm": -26.41,
-      "haor_wetland_tws_cm": -26.78,
-      "coastal_south_tws_cm": -17.82
+      "nw_barind_tws_cm": -24.74,
+      "haor_wetland_tws_cm": -32.15,
+      "coastal_south_tws_cm": -19.32,
+      "bangladesh_mean_tws_cm": -20.13
     },
     {
       "date": "2006-06",
       "year": 2006,
       "month": 6,
-      "nw_barind_tws_cm": -11.54,
-      "haor_wetland_tws_cm": -7.29,
-      "coastal_south_tws_cm": -5.86
+      "nw_barind_tws_cm": 2.15,
+      "haor_wetland_tws_cm": 5.48,
+      "coastal_south_tws_cm": 1.57,
+      "bangladesh_mean_tws_cm": 3.49
     },
     {
       "date": "2006-07",
       "year": 2006,
       "month": 7,
-      "nw_barind_tws_cm": 8.34,
-      "haor_wetland_tws_cm": 18.69,
-      "coastal_south_tws_cm": 10.11
+      "nw_barind_tws_cm": 16.79,
+      "haor_wetland_tws_cm": 18.51,
+      "coastal_south_tws_cm": 12.37,
+      "bangladesh_mean_tws_cm": 14.07
     },
     {
       "date": "2006-08",
       "year": 2006,
       "month": 8,
-      "nw_barind_tws_cm": 23.22,
-      "haor_wetland_tws_cm": 38.17,
-      "coastal_south_tws_cm": 22.07
+      "nw_barind_tws_cm": 15.21,
+      "haor_wetland_tws_cm": 15.35,
+      "coastal_south_tws_cm": 11.78,
+      "bangladesh_mean_tws_cm": 12.28
     },
     {
       "date": "2006-09",
       "year": 2006,
       "month": 9,
-      "nw_barind_tws_cm": 28.09,
-      "haor_wetland_tws_cm": 44.66,
-      "coastal_south_tws_cm": 26.04
+      "nw_barind_tws_cm": 19.67,
+      "haor_wetland_tws_cm": 18.45,
+      "coastal_south_tws_cm": 11.6,
+      "bangladesh_mean_tws_cm": 13.12
     },
     {
       "date": "2006-10",
       "year": 2006,
       "month": 10,
-      "nw_barind_tws_cm": 17.97,
-      "haor_wetland_tws_cm": 31.64,
-      "coastal_south_tws_cm": 18.0
+      "nw_barind_tws_cm": 16.25,
+      "haor_wetland_tws_cm": 13.81,
+      "coastal_south_tws_cm": 10.26,
+      "bangladesh_mean_tws_cm": 10.18
     },
     {
       "date": "2006-11",
       "year": 2006,
       "month": 11,
-      "nw_barind_tws_cm": -2.15,
-      "haor_wetland_tws_cm": 5.63,
-      "coastal_south_tws_cm": 1.97
+      "nw_barind_tws_cm": 0.27,
+      "haor_wetland_tws_cm": -5.73,
+      "coastal_south_tws_cm": -2.44,
+      "bangladesh_mean_tws_cm": -3.35
     },
     {
       "date": "2006-12",
       "year": 2006,
       "month": 12,
-      "nw_barind_tws_cm": -12.28,
-      "haor_wetland_tws_cm": -7.38,
-      "coastal_south_tws_cm": -6.06
+      "nw_barind_tws_cm": -6.89,
+      "haor_wetland_tws_cm": -7.87,
+      "coastal_south_tws_cm": -5.31,
+      "bangladesh_mean_tws_cm": -7.31
     },
     {
       "date": "2007-01",
       "year": 2007,
       "month": 1,
-      "nw_barind_tws_cm": -13.8,
-      "haor_wetland_tws_cm": -6.9,
-      "coastal_south_tws_cm": -7.7
+      "nw_barind_tws_cm": -18.58,
+      "haor_wetland_tws_cm": -22.18,
+      "coastal_south_tws_cm": -14.4,
+      "bangladesh_mean_tws_cm": -16.46
     },
     {
       "date": "2007-02",
       "year": 2007,
       "month": 2,
-      "nw_barind_tws_cm": -19.92,
-      "haor_wetland_tws_cm": -14.72,
-      "coastal_south_tws_cm": -12.54
+      "nw_barind_tws_cm": -18.06,
+      "haor_wetland_tws_cm": -22.26,
+      "coastal_south_tws_cm": -14.43,
+      "bangladesh_mean_tws_cm": -16.41
     },
     {
       "date": "2007-03",
       "year": 2007,
       "month": 3,
-      "nw_barind_tws_cm": -24.05,
-      "haor_wetland_tws_cm": -19.93,
-      "coastal_south_tws_cm": -15.77
+      "nw_barind_tws_cm": -20.82,
+      "haor_wetland_tws_cm": -29.9,
+      "coastal_south_tws_cm": -20.28,
+      "bangladesh_mean_tws_cm": -21.14
     },
     {
       "date": "2007-04",
       "year": 2007,
       "month": 4,
-      "nw_barind_tws_cm": -27.17,
-      "haor_wetland_tws_cm": -23.84,
-      "coastal_south_tws_cm": -18.2
+      "nw_barind_tws_cm": -20.5,
+      "haor_wetland_tws_cm": -23.33,
+      "coastal_south_tws_cm": -14.58,
+      "bangladesh_mean_tws_cm": -16.78
     },
     {
       "date": "2007-05",
       "year": 2007,
       "month": 5,
-      "nw_barind_tws_cm": -22.29,
-      "haor_wetland_tws_cm": -17.36,
-      "coastal_south_tws_cm": -14.24
+      "nw_barind_tws_cm": -19.53,
+      "haor_wetland_tws_cm": -18.12,
+      "coastal_south_tws_cm": -9.97,
+      "bangladesh_mean_tws_cm": -11.83
     },
     {
       "date": "2007-06",
       "year": 2007,
       "month": 6,
-      "nw_barind_tws_cm": -7.42,
-      "haor_wetland_tws_cm": 2.12,
-      "coastal_south_tws_cm": -2.28
+      "nw_barind_tws_cm": -0.71,
+      "haor_wetland_tws_cm": 13.96,
+      "coastal_south_tws_cm": 2.12,
+      "bangladesh_mean_tws_cm": 4.88
     },
     {
       "date": "2007-07",
       "year": 2007,
       "month": 7,
-      "nw_barind_tws_cm": 12.46,
-      "haor_wetland_tws_cm": 28.11,
-      "coastal_south_tws_cm": 13.69
+      "nw_barind_tws_cm": 20.1,
+      "haor_wetland_tws_cm": 35.68,
+      "coastal_south_tws_cm": 17.44,
+      "bangladesh_mean_tws_cm": 20.79
     },
     {
       "date": "2007-08",
       "year": 2007,
       "month": 8,
-      "nw_barind_tws_cm": 27.34,
-      "haor_wetland_tws_cm": 47.59,
-      "coastal_south_tws_cm": 25.66
+      "nw_barind_tws_cm": 42.55,
+      "haor_wetland_tws_cm": 47.28,
+      "coastal_south_tws_cm": 28.1,
+      "bangladesh_mean_tws_cm": 32.32
     },
     {
       "date": "2007-09",
       "year": 2007,
       "month": 9,
-      "nw_barind_tws_cm": 32.21,
-      "haor_wetland_tws_cm": 54.08,
-      "coastal_south_tws_cm": 29.62
+      "nw_barind_tws_cm": 39.0,
+      "haor_wetland_tws_cm": 41.38,
+      "coastal_south_tws_cm": 26.35,
+      "bangladesh_mean_tws_cm": 29.62
     },
     {
       "date": "2007-10",
       "year": 2007,
       "month": 10,
-      "nw_barind_tws_cm": 22.09,
-      "haor_wetland_tws_cm": 41.06,
-      "coastal_south_tws_cm": 21.59
+      "nw_barind_tws_cm": 21.03,
+      "haor_wetland_tws_cm": 26.74,
+      "coastal_south_tws_cm": 16.35,
+      "bangladesh_mean_tws_cm": 17.28
     },
     {
       "date": "2007-11",
       "year": 2007,
       "month": 11,
-      "nw_barind_tws_cm": 1.97,
-      "haor_wetland_tws_cm": 15.05,
-      "coastal_south_tws_cm": 5.55
+      "nw_barind_tws_cm": 4.46,
+      "haor_wetland_tws_cm": 7.03,
+      "coastal_south_tws_cm": 8.13,
+      "bangladesh_mean_tws_cm": 6.27
     },
     {
       "date": "2007-12",
       "year": 2007,
       "month": 12,
-      "nw_barind_tws_cm": -8.16,
-      "haor_wetland_tws_cm": 2.04,
-      "coastal_south_tws_cm": -2.48
+      "nw_barind_tws_cm": -1.96,
+      "haor_wetland_tws_cm": 2.82,
+      "coastal_south_tws_cm": 1.67,
+      "bangladesh_mean_tws_cm": 0.04
     },
     {
       "date": "2008-01",
       "year": 2008,
       "month": 1,
-      "nw_barind_tws_cm": -20.88,
-      "haor_wetland_tws_cm": -16.68,
-      "coastal_south_tws_cm": -12.12
+      "nw_barind_tws_cm": -14.7,
+      "haor_wetland_tws_cm": -12.62,
+      "coastal_south_tws_cm": -7.1,
+      "bangladesh_mean_tws_cm": -10.13
     },
     {
       "date": "2008-02",
       "year": 2008,
       "month": 2,
-      "nw_barind_tws_cm": -27.0,
-      "haor_wetland_tws_cm": -24.5,
-      "coastal_south_tws_cm": -16.95
+      "nw_barind_tws_cm": -16.55,
+      "haor_wetland_tws_cm": -14.66,
+      "coastal_south_tws_cm": -9.74,
+      "bangladesh_mean_tws_cm": -12.33
     },
     {
       "date": "2008-03",
       "year": 2008,
       "month": 3,
-      "nw_barind_tws_cm": -31.13,
-      "haor_wetland_tws_cm": -29.71,
-      "coastal_south_tws_cm": -20.19
+      "nw_barind_tws_cm": -18.49,
+      "haor_wetland_tws_cm": -15.29,
+      "coastal_south_tws_cm": -9.06,
+      "bangladesh_mean_tws_cm": -12.49
     },
     {
       "date": "2008-04",
       "year": 2008,
       "month": 4,
-      "nw_barind_tws_cm": -34.25,
-      "haor_wetland_tws_cm": -33.62,
-      "coastal_south_tws_cm": -22.62
+      "nw_barind_tws_cm": -16.5,
+      "haor_wetland_tws_cm": -17.21,
+      "coastal_south_tws_cm": -9.13,
+      "bangladesh_mean_tws_cm": -11.83
     },
     {
       "date": "2008-05",
       "year": 2008,
       "month": 5,
-      "nw_barind_tws_cm": -29.37,
-      "haor_wetland_tws_cm": -27.14,
-      "coastal_south_tws_cm": -18.66
+      "nw_barind_tws_cm": -17.86,
+      "haor_wetland_tws_cm": -14.67,
+      "coastal_south_tws_cm": -9.75,
+      "bangladesh_mean_tws_cm": -11.13
     },
     {
       "date": "2008-06",
       "year": 2008,
       "month": 6,
-      "nw_barind_tws_cm": -14.5,
-      "haor_wetland_tws_cm": -7.66,
-      "coastal_south_tws_cm": -6.7
+      "nw_barind_tws_cm": -2.75,
+      "haor_wetland_tws_cm": 1.04,
+      "coastal_south_tws_cm": -1.94,
+      "bangladesh_mean_tws_cm": -0.6
     },
     {
       "date": "2008-07",
       "year": 2008,
       "month": 7,
-      "nw_barind_tws_cm": 5.38,
-      "haor_wetland_tws_cm": 18.33,
-      "coastal_south_tws_cm": 9.27
+      "nw_barind_tws_cm": 24.73,
+      "haor_wetland_tws_cm": 31.84,
+      "coastal_south_tws_cm": 17.9,
+      "bangladesh_mean_tws_cm": 20.63
     },
     {
       "date": "2008-08",
       "year": 2008,
       "month": 8,
-      "nw_barind_tws_cm": 20.26,
-      "haor_wetland_tws_cm": 37.81,
-      "coastal_south_tws_cm": 21.23
+      "nw_barind_tws_cm": 34.53,
+      "haor_wetland_tws_cm": 34.29,
+      "coastal_south_tws_cm": 22.82,
+      "bangladesh_mean_tws_cm": 25.7
     },
     {
       "date": "2008-09",
       "year": 2008,
       "month": 9,
-      "nw_barind_tws_cm": 25.13,
-      "haor_wetland_tws_cm": 44.3,
-      "coastal_south_tws_cm": 25.2
+      "nw_barind_tws_cm": 33.59,
+      "haor_wetland_tws_cm": 37.99,
+      "coastal_south_tws_cm": 23.73,
+      "bangladesh_mean_tws_cm": 26.13
     },
     {
       "date": "2008-10",
       "year": 2008,
       "month": 10,
-      "nw_barind_tws_cm": 15.01,
-      "haor_wetland_tws_cm": 31.29,
-      "coastal_south_tws_cm": 17.16
+      "nw_barind_tws_cm": 17.68,
+      "haor_wetland_tws_cm": 21.92,
+      "coastal_south_tws_cm": 15.31,
+      "bangladesh_mean_tws_cm": 15.28
     },
     {
       "date": "2008-11",
       "year": 2008,
       "month": 11,
-      "nw_barind_tws_cm": -5.11,
-      "haor_wetland_tws_cm": 5.27,
-      "coastal_south_tws_cm": 1.13
+      "nw_barind_tws_cm": -3.43,
+      "haor_wetland_tws_cm": -3.82,
+      "coastal_south_tws_cm": 0.88,
+      "bangladesh_mean_tws_cm": -0.82
     },
     {
       "date": "2008-12",
       "year": 2008,
       "month": 12,
-      "nw_barind_tws_cm": -15.24,
-      "haor_wetland_tws_cm": -7.75,
-      "coastal_south_tws_cm": -6.9
+      "nw_barind_tws_cm": -13.52,
+      "haor_wetland_tws_cm": -14.81,
+      "coastal_south_tws_cm": -6.96,
+      "bangladesh_mean_tws_cm": -9.19
     },
     {
       "date": "2009-01",
       "year": 2009,
       "month": 1,
-      "nw_barind_tws_cm": -22.36,
-      "haor_wetland_tws_cm": -16.86,
-      "coastal_south_tws_cm": -12.54
+      "nw_barind_tws_cm": -17.14,
+      "haor_wetland_tws_cm": -16.08,
+      "coastal_south_tws_cm": -9.53,
+      "bangladesh_mean_tws_cm": -12.89
     },
     {
       "date": "2009-02",
       "year": 2009,
       "month": 2,
-      "nw_barind_tws_cm": -28.48,
-      "haor_wetland_tws_cm": -24.68,
-      "coastal_south_tws_cm": -17.38
+      "nw_barind_tws_cm": -20.67,
+      "haor_wetland_tws_cm": -21.93,
+      "coastal_south_tws_cm": -13.63,
+      "bangladesh_mean_tws_cm": -17.35
     },
     {
       "date": "2009-03",
       "year": 2009,
       "month": 3,
-      "nw_barind_tws_cm": -32.61,
-      "haor_wetland_tws_cm": -29.89,
-      "coastal_south_tws_cm": -20.61
+      "nw_barind_tws_cm": -25.04,
+      "haor_wetland_tws_cm": -24.85,
+      "coastal_south_tws_cm": -16.04,
+      "bangladesh_mean_tws_cm": -18.92
     },
     {
       "date": "2009-04",
       "year": 2009,
       "month": 4,
-      "nw_barind_tws_cm": -35.73,
-      "haor_wetland_tws_cm": -33.8,
-      "coastal_south_tws_cm": -23.05
+      "nw_barind_tws_cm": -29.75,
+      "haor_wetland_tws_cm": -28.86,
+      "coastal_south_tws_cm": -18.64,
+      "bangladesh_mean_tws_cm": -21.38
     },
     {
       "date": "2009-05",
       "year": 2009,
       "month": 5,
-      "nw_barind_tws_cm": -30.85,
-      "haor_wetland_tws_cm": -27.32,
-      "coastal_south_tws_cm": -19.08
+      "nw_barind_tws_cm": -25.23,
+      "haor_wetland_tws_cm": -26.9,
+      "coastal_south_tws_cm": -16.63,
+      "bangladesh_mean_tws_cm": -18.6
     },
     {
       "date": "2009-06",
       "year": 2009,
       "month": 6,
-      "nw_barind_tws_cm": -15.98,
-      "haor_wetland_tws_cm": -7.83,
-      "coastal_south_tws_cm": -7.12
+      "nw_barind_tws_cm": -14.97,
+      "haor_wetland_tws_cm": -9.43,
+      "coastal_south_tws_cm": -6.75,
+      "bangladesh_mean_tws_cm": -7.41
     },
     {
       "date": "2009-07",
       "year": 2009,
       "month": 7,
-      "nw_barind_tws_cm": 3.9,
-      "haor_wetland_tws_cm": 18.15,
-      "coastal_south_tws_cm": 8.85
+      "nw_barind_tws_cm": 2.62,
+      "haor_wetland_tws_cm": 8.88,
+      "coastal_south_tws_cm": 1.6,
+      "bangladesh_mean_tws_cm": 4.53
     },
     {
       "date": "2009-08",
       "year": 2009,
       "month": 8,
-      "nw_barind_tws_cm": 18.78,
-      "haor_wetland_tws_cm": 37.63,
-      "coastal_south_tws_cm": 20.82
+      "nw_barind_tws_cm": 22.46,
+      "haor_wetland_tws_cm": 30.35,
+      "coastal_south_tws_cm": 15.9,
+      "bangladesh_mean_tws_cm": 18.72
     },
     {
       "date": "2009-09",
       "year": 2009,
       "month": 9,
-      "nw_barind_tws_cm": 23.65,
-      "haor_wetland_tws_cm": 44.12,
-      "coastal_south_tws_cm": 24.78
+      "nw_barind_tws_cm": 16.47,
+      "haor_wetland_tws_cm": 24.62,
+      "coastal_south_tws_cm": 15.37,
+      "bangladesh_mean_tws_cm": 15.7
     },
     {
       "date": "2009-10",
       "year": 2009,
       "month": 10,
-      "nw_barind_tws_cm": 13.53,
-      "haor_wetland_tws_cm": 31.11,
-      "coastal_south_tws_cm": 16.75
+      "nw_barind_tws_cm": 11.31,
+      "haor_wetland_tws_cm": 15.45,
+      "coastal_south_tws_cm": 10.21,
+      "bangladesh_mean_tws_cm": 9.81
     },
     {
       "date": "2009-11",
       "year": 2009,
       "month": 11,
-      "nw_barind_tws_cm": -6.59,
-      "haor_wetland_tws_cm": 5.09,
-      "coastal_south_tws_cm": 0.71
+      "nw_barind_tws_cm": -1.8,
+      "haor_wetland_tws_cm": 4.16,
+      "coastal_south_tws_cm": -0.42,
+      "bangladesh_mean_tws_cm": -1.16
     },
     {
       "date": "2009-12",
       "year": 2009,
       "month": 12,
-      "nw_barind_tws_cm": -16.72,
-      "haor_wetland_tws_cm": -7.92,
-      "coastal_south_tws_cm": -7.33
+      "nw_barind_tws_cm": -15.12,
+      "haor_wetland_tws_cm": -10.07,
+      "coastal_south_tws_cm": -7.45,
+      "bangladesh_mean_tws_cm": -9.93
     },
     {
       "date": "2010-01",
       "year": 2010,
       "month": 1,
-      "nw_barind_tws_cm": -28.04,
-      "haor_wetland_tws_cm": -24.24,
-      "coastal_south_tws_cm": -15.96
+      "nw_barind_tws_cm": -16.36,
+      "haor_wetland_tws_cm": -10.92,
+      "coastal_south_tws_cm": -9.42,
+      "bangladesh_mean_tws_cm": -12.26
     },
     {
       "date": "2010-02",
       "year": 2010,
       "month": 2,
-      "nw_barind_tws_cm": -34.16,
-      "haor_wetland_tws_cm": -32.06,
-      "coastal_south_tws_cm": -20.8
+      "nw_barind_tws_cm": -22.41,
+      "haor_wetland_tws_cm": -19.55,
+      "coastal_south_tws_cm": -14.81,
+      "bangladesh_mean_tws_cm": -18.33
     },
     {
       "date": "2010-03",
       "year": 2010,
       "month": 3,
-      "nw_barind_tws_cm": -38.29,
-      "haor_wetland_tws_cm": -37.27,
-      "coastal_south_tws_cm": -24.03
+      "nw_barind_tws_cm": -33.78,
+      "haor_wetland_tws_cm": -29.8,
+      "coastal_south_tws_cm": -22.14,
+      "bangladesh_mean_tws_cm": -25.78
     },
     {
       "date": "2010-04",
       "year": 2010,
       "month": 4,
-      "nw_barind_tws_cm": -41.41,
-      "haor_wetland_tws_cm": -41.19,
-      "coastal_south_tws_cm": -26.46
+      "nw_barind_tws_cm": -28.53,
+      "haor_wetland_tws_cm": -16.67,
+      "coastal_south_tws_cm": -17.4,
+      "bangladesh_mean_tws_cm": -18.52
     },
     {
       "date": "2010-05",
       "year": 2010,
       "month": 5,
-      "nw_barind_tws_cm": -36.53,
-      "haor_wetland_tws_cm": -34.7,
-      "coastal_south_tws_cm": -22.5
+      "nw_barind_tws_cm": -19.49,
+      "haor_wetland_tws_cm": -7.7,
+      "coastal_south_tws_cm": -11.3,
+      "bangladesh_mean_tws_cm": -10.68
     },
     {
       "date": "2010-06",
       "year": 2010,
       "month": 6,
-      "nw_barind_tws_cm": -21.66,
-      "haor_wetland_tws_cm": -15.21,
-      "coastal_south_tws_cm": -10.54
+      "nw_barind_tws_cm": -7.38,
+      "haor_wetland_tws_cm": 13.32,
+      "coastal_south_tws_cm": 0.7,
+      "bangladesh_mean_tws_cm": 2.77
     },
     {
       "date": "2010-07",
       "year": 2010,
       "month": 7,
-      "nw_barind_tws_cm": -1.78,
-      "haor_wetland_tws_cm": 10.77,
-      "coastal_south_tws_cm": 5.43
+      "nw_barind_tws_cm": 14.36,
+      "haor_wetland_tws_cm": 29.97,
+      "coastal_south_tws_cm": 11.44,
+      "bangladesh_mean_tws_cm": 15.55
     },
     {
       "date": "2010-08",
       "year": 2010,
       "month": 8,
-      "nw_barind_tws_cm": 13.1,
-      "haor_wetland_tws_cm": 30.25,
-      "coastal_south_tws_cm": 17.39
+      "nw_barind_tws_cm": 13.99,
+      "haor_wetland_tws_cm": 28.22,
+      "coastal_south_tws_cm": 10.51,
+      "bangladesh_mean_tws_cm": 15.13
     },
     {
       "date": "2010-09",
       "year": 2010,
       "month": 9,
-      "nw_barind_tws_cm": 17.97,
-      "haor_wetland_tws_cm": 36.74,
-      "coastal_south_tws_cm": 21.36
+      "nw_barind_tws_cm": 19.21,
+      "haor_wetland_tws_cm": 30.01,
+      "coastal_south_tws_cm": 13.11,
+      "bangladesh_mean_tws_cm": 18.25
     },
     {
       "date": "2010-10",
       "year": 2010,
       "month": 10,
-      "nw_barind_tws_cm": 7.85,
-      "haor_wetland_tws_cm": 23.73,
-      "coastal_south_tws_cm": 13.32
+      "nw_barind_tws_cm": 10.93,
+      "haor_wetland_tws_cm": 28.11,
+      "coastal_south_tws_cm": 14.67,
+      "bangladesh_mean_tws_cm": 15.92
     },
     {
       "date": "2010-11",
       "year": 2010,
       "month": 11,
-      "nw_barind_tws_cm": -12.27,
-      "haor_wetland_tws_cm": -2.29,
-      "coastal_south_tws_cm": -2.71
+      "nw_barind_tws_cm": -5.59,
+      "haor_wetland_tws_cm": 8.56,
+      "coastal_south_tws_cm": 1.95,
+      "bangladesh_mean_tws_cm": 2.11
     },
     {
       "date": "2010-12",
       "year": 2010,
       "month": 12,
-      "nw_barind_tws_cm": -22.4,
-      "haor_wetland_tws_cm": -15.3,
-      "coastal_south_tws_cm": -10.74
-    },
-    {
-      "date": "2011-01",
-      "year": 2011,
-      "month": 1,
-      "nw_barind_tws_cm": -25.32,
-      "haor_wetland_tws_cm": -17.22,
-      "coastal_south_tws_cm": -13.38
+      "nw_barind_tws_cm": -11.74,
+      "haor_wetland_tws_cm": -4.43,
+      "coastal_south_tws_cm": -1.97,
+      "bangladesh_mean_tws_cm": -4.67
     },
     {
       "date": "2011-02",
       "year": 2011,
       "month": 2,
-      "nw_barind_tws_cm": -31.44,
-      "haor_wetland_tws_cm": -25.04,
-      "coastal_south_tws_cm": -18.21
+      "nw_barind_tws_cm": -31.45,
+      "haor_wetland_tws_cm": -28.6,
+      "coastal_south_tws_cm": -20.09,
+      "bangladesh_mean_tws_cm": -23.01
     },
     {
       "date": "2011-03",
       "year": 2011,
       "month": 3,
-      "nw_barind_tws_cm": -35.57,
-      "haor_wetland_tws_cm": -30.25,
-      "coastal_south_tws_cm": -21.45
+      "nw_barind_tws_cm": -28.34,
+      "haor_wetland_tws_cm": -20.17,
+      "coastal_south_tws_cm": -16.98,
+      "bangladesh_mean_tws_cm": -19.33
     },
     {
       "date": "2011-04",
       "year": 2011,
       "month": 4,
-      "nw_barind_tws_cm": -38.69,
-      "haor_wetland_tws_cm": -34.16,
-      "coastal_south_tws_cm": -23.88
+      "nw_barind_tws_cm": -31.42,
+      "haor_wetland_tws_cm": -27.19,
+      "coastal_south_tws_cm": -19.12,
+      "bangladesh_mean_tws_cm": -21.21
     },
     {
       "date": "2011-05",
       "year": 2011,
       "month": 5,
-      "nw_barind_tws_cm": -33.81,
-      "haor_wetland_tws_cm": -27.68,
-      "coastal_south_tws_cm": -19.92
-    },
-    {
-      "date": "2011-06",
-      "year": 2011,
-      "month": 6,
-      "nw_barind_tws_cm": -18.94,
-      "haor_wetland_tws_cm": -8.2,
-      "coastal_south_tws_cm": -7.96
+      "nw_barind_tws_cm": -28.28,
+      "haor_wetland_tws_cm": -21.47,
+      "coastal_south_tws_cm": -15.38,
+      "bangladesh_mean_tws_cm": -16.78
     },
     {
       "date": "2011-07",
       "year": 2011,
       "month": 7,
-      "nw_barind_tws_cm": 0.94,
-      "haor_wetland_tws_cm": 17.79,
-      "coastal_south_tws_cm": 8.01
+      "nw_barind_tws_cm": 9.89,
+      "haor_wetland_tws_cm": 21.65,
+      "coastal_south_tws_cm": 10.33,
+      "bangladesh_mean_tws_cm": 13.05
     },
     {
       "date": "2011-08",
       "year": 2011,
       "month": 8,
-      "nw_barind_tws_cm": 15.82,
-      "haor_wetland_tws_cm": 37.27,
-      "coastal_south_tws_cm": 19.98
+      "nw_barind_tws_cm": 24.39,
+      "haor_wetland_tws_cm": 37.1,
+      "coastal_south_tws_cm": 18.4,
+      "bangladesh_mean_tws_cm": 22.33
     },
     {
       "date": "2011-09",
       "year": 2011,
       "month": 9,
-      "nw_barind_tws_cm": 20.69,
-      "haor_wetland_tws_cm": 43.76,
-      "coastal_south_tws_cm": 23.94
+      "nw_barind_tws_cm": 18.58,
+      "haor_wetland_tws_cm": 31.02,
+      "coastal_south_tws_cm": 17.17,
+      "bangladesh_mean_tws_cm": 17.85
     },
     {
       "date": "2011-10",
       "year": 2011,
       "month": 10,
-      "nw_barind_tws_cm": 10.57,
-      "haor_wetland_tws_cm": 30.75,
-      "coastal_south_tws_cm": 15.91
+      "nw_barind_tws_cm": 6.54,
+      "haor_wetland_tws_cm": 21.48,
+      "coastal_south_tws_cm": 12.69,
+      "bangladesh_mean_tws_cm": 11.12
     },
     {
       "date": "2011-11",
       "year": 2011,
       "month": 11,
-      "nw_barind_tws_cm": -9.55,
-      "haor_wetland_tws_cm": 4.73,
-      "coastal_south_tws_cm": -0.13
-    },
-    {
-      "date": "2011-12",
-      "year": 2011,
-      "month": 12,
-      "nw_barind_tws_cm": -19.68,
-      "haor_wetland_tws_cm": -8.29,
-      "coastal_south_tws_cm": -8.16
+      "nw_barind_tws_cm": -4.16,
+      "haor_wetland_tws_cm": 9.55,
+      "coastal_south_tws_cm": 4.46,
+      "bangladesh_mean_tws_cm": 2.84
     },
     {
       "date": "2012-01",
       "year": 2012,
       "month": 1,
-      "nw_barind_tws_cm": -26.8,
-      "haor_wetland_tws_cm": -17.4,
-      "coastal_south_tws_cm": -13.8
+      "nw_barind_tws_cm": -20.47,
+      "haor_wetland_tws_cm": -13.25,
+      "coastal_south_tws_cm": -8.36,
+      "bangladesh_mean_tws_cm": -11.65
+    },
+    {
+      "date": "2012-01",
+      "year": 2012,
+      "month": 1,
+      "nw_barind_tws_cm": -22.14,
+      "haor_wetland_tws_cm": -15.16,
+      "coastal_south_tws_cm": -9.55,
+      "bangladesh_mean_tws_cm": -13.15
     },
     {
       "date": "2012-02",
       "year": 2012,
       "month": 2,
-      "nw_barind_tws_cm": -32.92,
-      "haor_wetland_tws_cm": -25.22,
-      "coastal_south_tws_cm": -18.64
+      "nw_barind_tws_cm": -24.3,
+      "haor_wetland_tws_cm": -18.68,
+      "coastal_south_tws_cm": -11.97,
+      "bangladesh_mean_tws_cm": -16.52
     },
     {
       "date": "2012-03",
       "year": 2012,
       "month": 3,
-      "nw_barind_tws_cm": -37.05,
-      "haor_wetland_tws_cm": -30.43,
-      "coastal_south_tws_cm": -21.87
+      "nw_barind_tws_cm": -36.26,
+      "haor_wetland_tws_cm": -28.98,
+      "coastal_south_tws_cm": -19.7,
+      "bangladesh_mean_tws_cm": -24.48
     },
     {
       "date": "2012-04",
       "year": 2012,
       "month": 4,
-      "nw_barind_tws_cm": -40.17,
-      "haor_wetland_tws_cm": -34.34,
-      "coastal_south_tws_cm": -24.3
-    },
-    {
-      "date": "2012-05",
-      "year": 2012,
-      "month": 5,
-      "nw_barind_tws_cm": -35.29,
-      "haor_wetland_tws_cm": -27.86,
-      "coastal_south_tws_cm": -20.34
+      "nw_barind_tws_cm": -34.19,
+      "haor_wetland_tws_cm": -28.42,
+      "coastal_south_tws_cm": -16.71,
+      "bangladesh_mean_tws_cm": -21.63
     },
     {
       "date": "2012-06",
       "year": 2012,
       "month": 6,
-      "nw_barind_tws_cm": -20.42,
-      "haor_wetland_tws_cm": -8.38,
-      "coastal_south_tws_cm": -8.38
+      "nw_barind_tws_cm": -11.97,
+      "haor_wetland_tws_cm": 2.19,
+      "coastal_south_tws_cm": -4.16,
+      "bangladesh_mean_tws_cm": -2.29
     },
     {
       "date": "2012-07",
       "year": 2012,
       "month": 7,
-      "nw_barind_tws_cm": -0.54,
-      "haor_wetland_tws_cm": 17.61,
-      "coastal_south_tws_cm": 7.59
+      "nw_barind_tws_cm": 4.96,
+      "haor_wetland_tws_cm": 25.39,
+      "coastal_south_tws_cm": 8.33,
+      "bangladesh_mean_tws_cm": 11.52
     },
     {
       "date": "2012-08",
       "year": 2012,
       "month": 8,
-      "nw_barind_tws_cm": 14.34,
-      "haor_wetland_tws_cm": 37.09,
-      "coastal_south_tws_cm": 19.55
+      "nw_barind_tws_cm": 17.55,
+      "haor_wetland_tws_cm": 34.47,
+      "coastal_south_tws_cm": 16.8,
+      "bangladesh_mean_tws_cm": 18.58
     },
     {
       "date": "2012-09",
       "year": 2012,
       "month": 9,
-      "nw_barind_tws_cm": 19.21,
-      "haor_wetland_tws_cm": 43.58,
-      "coastal_south_tws_cm": 23.52
-    },
-    {
-      "date": "2012-10",
-      "year": 2012,
-      "month": 10,
-      "nw_barind_tws_cm": 9.09,
-      "haor_wetland_tws_cm": 30.57,
-      "coastal_south_tws_cm": 15.48
+      "nw_barind_tws_cm": 19.42,
+      "haor_wetland_tws_cm": 32.46,
+      "coastal_south_tws_cm": 17.87,
+      "bangladesh_mean_tws_cm": 19.18
     },
     {
       "date": "2012-11",
       "year": 2012,
       "month": 11,
-      "nw_barind_tws_cm": -11.03,
-      "haor_wetland_tws_cm": 4.55,
-      "coastal_south_tws_cm": -0.55
+      "nw_barind_tws_cm": -10.97,
+      "haor_wetland_tws_cm": 2.54,
+      "coastal_south_tws_cm": -0.16,
+      "bangladesh_mean_tws_cm": -2.7
     },
     {
       "date": "2012-12",
       "year": 2012,
       "month": 12,
-      "nw_barind_tws_cm": -21.16,
-      "haor_wetland_tws_cm": -8.46,
-      "coastal_south_tws_cm": -8.59
+      "nw_barind_tws_cm": -18.87,
+      "haor_wetland_tws_cm": -5.95,
+      "coastal_south_tws_cm": -6.77,
+      "bangladesh_mean_tws_cm": -10.03
     },
     {
       "date": "2013-01",
       "year": 2013,
       "month": 1,
-      "nw_barind_tws_cm": -28.28,
-      "haor_wetland_tws_cm": -17.58,
-      "coastal_south_tws_cm": -14.22
+      "nw_barind_tws_cm": -22.86,
+      "haor_wetland_tws_cm": -11.54,
+      "coastal_south_tws_cm": -9.6,
+      "bangladesh_mean_tws_cm": -13.86
     },
     {
       "date": "2013-02",
       "year": 2013,
       "month": 2,
-      "nw_barind_tws_cm": -34.4,
-      "haor_wetland_tws_cm": -25.4,
-      "coastal_south_tws_cm": -19.05
-    },
-    {
-      "date": "2013-03",
-      "year": 2013,
-      "month": 3,
-      "nw_barind_tws_cm": -38.53,
-      "haor_wetland_tws_cm": -30.61,
-      "coastal_south_tws_cm": -22.29
+      "nw_barind_tws_cm": -27.68,
+      "haor_wetland_tws_cm": -15.32,
+      "coastal_south_tws_cm": -12.01,
+      "bangladesh_mean_tws_cm": -17.38
     },
     {
       "date": "2013-04",
       "year": 2013,
       "month": 4,
-      "nw_barind_tws_cm": -41.65,
-      "haor_wetland_tws_cm": -34.52,
-      "coastal_south_tws_cm": -24.73
+      "nw_barind_tws_cm": -37.64,
+      "haor_wetland_tws_cm": -32.67,
+      "coastal_south_tws_cm": -23.25,
+      "bangladesh_mean_tws_cm": -26.83
     },
     {
       "date": "2013-05",
       "year": 2013,
       "month": 5,
-      "nw_barind_tws_cm": -36.77,
-      "haor_wetland_tws_cm": -28.04,
-      "coastal_south_tws_cm": -20.76
+      "nw_barind_tws_cm": -28.0,
+      "haor_wetland_tws_cm": -15.58,
+      "coastal_south_tws_cm": -13.52,
+      "bangladesh_mean_tws_cm": -15.24
     },
     {
       "date": "2013-06",
       "year": 2013,
       "month": 6,
-      "nw_barind_tws_cm": -21.9,
-      "haor_wetland_tws_cm": -8.55,
-      "coastal_south_tws_cm": -8.79
+      "nw_barind_tws_cm": -10.85,
+      "haor_wetland_tws_cm": 7.0,
+      "coastal_south_tws_cm": -0.46,
+      "bangladesh_mean_tws_cm": -0.29
     },
     {
       "date": "2013-07",
       "year": 2013,
       "month": 7,
-      "nw_barind_tws_cm": -2.02,
-      "haor_wetland_tws_cm": 17.43,
-      "coastal_south_tws_cm": 7.17
-    },
-    {
-      "date": "2013-08",
-      "year": 2013,
-      "month": 8,
-      "nw_barind_tws_cm": 12.86,
-      "haor_wetland_tws_cm": 36.91,
-      "coastal_south_tws_cm": 19.13
-    },
-    {
-      "date": "2013-09",
-      "year": 2013,
-      "month": 9,
-      "nw_barind_tws_cm": 17.73,
-      "haor_wetland_tws_cm": 43.4,
-      "coastal_south_tws_cm": 23.1
+      "nw_barind_tws_cm": 7.0,
+      "haor_wetland_tws_cm": 18.79,
+      "coastal_south_tws_cm": 9.1,
+      "bangladesh_mean_tws_cm": 10.12
     },
     {
       "date": "2013-10",
       "year": 2013,
       "month": 10,
-      "nw_barind_tws_cm": 7.61,
-      "haor_wetland_tws_cm": 30.39,
-      "coastal_south_tws_cm": 15.07
+      "nw_barind_tws_cm": 8.13,
+      "haor_wetland_tws_cm": 18.25,
+      "coastal_south_tws_cm": 12.15,
+      "bangladesh_mean_tws_cm": 10.46
     },
     {
       "date": "2013-11",
       "year": 2013,
       "month": 11,
-      "nw_barind_tws_cm": -12.51,
-      "haor_wetland_tws_cm": 4.37,
-      "coastal_south_tws_cm": -0.97
+      "nw_barind_tws_cm": -4.08,
+      "haor_wetland_tws_cm": 0.3,
+      "coastal_south_tws_cm": 0.04,
+      "bangladesh_mean_tws_cm": -2.05
     },
     {
       "date": "2013-12",
       "year": 2013,
       "month": 12,
-      "nw_barind_tws_cm": -22.64,
-      "haor_wetland_tws_cm": -8.64,
-      "coastal_south_tws_cm": -9.0
+      "nw_barind_tws_cm": -17.32,
+      "haor_wetland_tws_cm": -10.97,
+      "coastal_south_tws_cm": -7.0,
+      "bangladesh_mean_tws_cm": -11.06
     },
     {
       "date": "2014-01",
       "year": 2014,
       "month": 1,
-      "nw_barind_tws_cm": -33.96,
-      "haor_wetland_tws_cm": -24.96,
-      "coastal_south_tws_cm": -17.64
-    },
-    {
-      "date": "2014-02",
-      "year": 2014,
-      "month": 2,
-      "nw_barind_tws_cm": -40.08,
-      "haor_wetland_tws_cm": -32.78,
-      "coastal_south_tws_cm": -22.48
+      "nw_barind_tws_cm": -25.51,
+      "haor_wetland_tws_cm": -20.24,
+      "coastal_south_tws_cm": -11.97,
+      "bangladesh_mean_tws_cm": -17.03
     },
     {
       "date": "2014-03",
       "year": 2014,
       "month": 3,
-      "nw_barind_tws_cm": -44.21,
-      "haor_wetland_tws_cm": -37.99,
-      "coastal_south_tws_cm": -25.71
+      "nw_barind_tws_cm": -33.65,
+      "haor_wetland_tws_cm": -35.12,
+      "coastal_south_tws_cm": -24.27,
+      "bangladesh_mean_tws_cm": -28.37
     },
     {
       "date": "2014-04",
       "year": 2014,
       "month": 4,
-      "nw_barind_tws_cm": -47.33,
-      "haor_wetland_tws_cm": -41.91,
-      "coastal_south_tws_cm": -28.14
+      "nw_barind_tws_cm": -39.43,
+      "haor_wetland_tws_cm": -36.36,
+      "coastal_south_tws_cm": -25.96,
+      "bangladesh_mean_tws_cm": -30.74
     },
     {
       "date": "2014-05",
       "year": 2014,
       "month": 5,
-      "nw_barind_tws_cm": -42.45,
-      "haor_wetland_tws_cm": -35.42,
-      "coastal_south_tws_cm": -24.18
+      "nw_barind_tws_cm": -33.81,
+      "haor_wetland_tws_cm": -31.25,
+      "coastal_south_tws_cm": -19.53,
+      "bangladesh_mean_tws_cm": -23.78
     },
     {
       "date": "2014-06",
       "year": 2014,
       "month": 6,
-      "nw_barind_tws_cm": -27.58,
-      "haor_wetland_tws_cm": -15.93,
-      "coastal_south_tws_cm": -12.21
-    },
-    {
-      "date": "2014-07",
-      "year": 2014,
-      "month": 7,
-      "nw_barind_tws_cm": -7.7,
-      "haor_wetland_tws_cm": 10.05,
-      "coastal_south_tws_cm": 3.75
+      "nw_barind_tws_cm": -21.52,
+      "haor_wetland_tws_cm": -14.1,
+      "coastal_south_tws_cm": -12.88,
+      "bangladesh_mean_tws_cm": -13.31
     },
     {
       "date": "2014-08",
       "year": 2014,
       "month": 8,
-      "nw_barind_tws_cm": 7.18,
-      "haor_wetland_tws_cm": 29.54,
-      "coastal_south_tws_cm": 15.71
+      "nw_barind_tws_cm": 13.63,
+      "haor_wetland_tws_cm": 25.77,
+      "coastal_south_tws_cm": 13.22,
+      "bangladesh_mean_tws_cm": 15.01
     },
     {
       "date": "2014-09",
       "year": 2014,
       "month": 9,
-      "nw_barind_tws_cm": 12.05,
-      "haor_wetland_tws_cm": 36.02,
-      "coastal_south_tws_cm": 19.68
+      "nw_barind_tws_cm": 16.08,
+      "haor_wetland_tws_cm": 35.13,
+      "coastal_south_tws_cm": 15.15,
+      "bangladesh_mean_tws_cm": 16.7
     },
     {
       "date": "2014-10",
       "year": 2014,
       "month": 10,
-      "nw_barind_tws_cm": 1.93,
-      "haor_wetland_tws_cm": 23.0,
-      "coastal_south_tws_cm": 11.64
+      "nw_barind_tws_cm": 7.58,
+      "haor_wetland_tws_cm": 19.26,
+      "coastal_south_tws_cm": 8.66,
+      "bangladesh_mean_tws_cm": 8.62
     },
     {
       "date": "2014-11",
       "year": 2014,
       "month": 11,
-      "nw_barind_tws_cm": -18.19,
-      "haor_wetland_tws_cm": -3.01,
-      "coastal_south_tws_cm": -4.39
-    },
-    {
-      "date": "2014-12",
-      "year": 2014,
-      "month": 12,
-      "nw_barind_tws_cm": -28.32,
-      "haor_wetland_tws_cm": -16.02,
-      "coastal_south_tws_cm": -12.43
+      "nw_barind_tws_cm": -8.42,
+      "haor_wetland_tws_cm": 3.01,
+      "coastal_south_tws_cm": -0.24,
+      "bangladesh_mean_tws_cm": -2.67
     },
     {
       "date": "2015-01",
       "year": 2015,
       "month": 1,
-      "nw_barind_tws_cm": -31.24,
-      "haor_wetland_tws_cm": -17.94,
-      "coastal_south_tws_cm": -15.06
+      "nw_barind_tws_cm": -18.72,
+      "haor_wetland_tws_cm": -13.52,
+      "coastal_south_tws_cm": -8.07,
+      "bangladesh_mean_tws_cm": -12.66
     },
     {
       "date": "2015-02",
       "year": 2015,
       "month": 2,
-      "nw_barind_tws_cm": -37.36,
-      "haor_wetland_tws_cm": -25.76,
-      "coastal_south_tws_cm": -19.89
+      "nw_barind_tws_cm": -24.61,
+      "haor_wetland_tws_cm": -23.97,
+      "coastal_south_tws_cm": -17.96,
+      "bangladesh_mean_tws_cm": -21.16
     },
     {
       "date": "2015-03",
       "year": 2015,
       "month": 3,
-      "nw_barind_tws_cm": -41.49,
-      "haor_wetland_tws_cm": -30.97,
-      "coastal_south_tws_cm": -23.13
+      "nw_barind_tws_cm": -28.96,
+      "haor_wetland_tws_cm": -45.06,
+      "coastal_south_tws_cm": -24.79,
+      "bangladesh_mean_tws_cm": -30.61
     },
     {
       "date": "2015-04",
       "year": 2015,
       "month": 4,
-      "nw_barind_tws_cm": -44.61,
-      "haor_wetland_tws_cm": -34.88,
-      "coastal_south_tws_cm": -25.56
+      "nw_barind_tws_cm": -34.03,
+      "haor_wetland_tws_cm": -30.74,
+      "coastal_south_tws_cm": -21.04,
+      "bangladesh_mean_tws_cm": -24.24
     },
     {
-      "date": "2015-05",
+      "date": "2015-04",
       "year": 2015,
-      "month": 5,
-      "nw_barind_tws_cm": -39.73,
-      "haor_wetland_tws_cm": -28.4,
-      "coastal_south_tws_cm": -21.6
-    },
-    {
-      "date": "2015-06",
-      "year": 2015,
-      "month": 6,
-      "nw_barind_tws_cm": -24.86,
-      "haor_wetland_tws_cm": -8.91,
-      "coastal_south_tws_cm": -9.63
+      "month": 4,
+      "nw_barind_tws_cm": -31.69,
+      "haor_wetland_tws_cm": -33.55,
+      "coastal_south_tws_cm": -20.5,
+      "bangladesh_mean_tws_cm": -24.06
     },
     {
       "date": "2015-07",
       "year": 2015,
       "month": 7,
-      "nw_barind_tws_cm": -4.98,
-      "haor_wetland_tws_cm": 17.07,
-      "coastal_south_tws_cm": 6.33
+      "nw_barind_tws_cm": 11.89,
+      "haor_wetland_tws_cm": 29.21,
+      "coastal_south_tws_cm": 12.66,
+      "bangladesh_mean_tws_cm": 14.13
     },
     {
       "date": "2015-08",
       "year": 2015,
       "month": 8,
-      "nw_barind_tws_cm": 9.9,
-      "haor_wetland_tws_cm": 36.55,
-      "coastal_south_tws_cm": 18.3
+      "nw_barind_tws_cm": 21.19,
+      "haor_wetland_tws_cm": 38.13,
+      "coastal_south_tws_cm": 19.16,
+      "bangladesh_mean_tws_cm": 20.66
     },
     {
       "date": "2015-09",
       "year": 2015,
       "month": 9,
-      "nw_barind_tws_cm": 14.77,
-      "haor_wetland_tws_cm": 43.04,
-      "coastal_south_tws_cm": 22.26
-    },
-    {
-      "date": "2015-10",
-      "year": 2015,
-      "month": 10,
-      "nw_barind_tws_cm": 4.65,
-      "haor_wetland_tws_cm": 30.02,
-      "coastal_south_tws_cm": 14.23
-    },
-    {
-      "date": "2015-11",
-      "year": 2015,
-      "month": 11,
-      "nw_barind_tws_cm": -15.47,
-      "haor_wetland_tws_cm": 4.01,
-      "coastal_south_tws_cm": -1.81
+      "nw_barind_tws_cm": 26.61,
+      "haor_wetland_tws_cm": 42.75,
+      "coastal_south_tws_cm": 21.11,
+      "bangladesh_mean_tws_cm": 24.06
     },
     {
       "date": "2015-12",
       "year": 2015,
       "month": 12,
-      "nw_barind_tws_cm": -25.6,
-      "haor_wetland_tws_cm": -9.0,
-      "coastal_south_tws_cm": -9.84
+      "nw_barind_tws_cm": -24.96,
+      "haor_wetland_tws_cm": -2.93,
+      "coastal_south_tws_cm": -8.6,
+      "bangladesh_mean_tws_cm": -11.39
     },
     {
       "date": "2016-01",
       "year": 2016,
       "month": 1,
-      "nw_barind_tws_cm": -36.92,
-      "haor_wetland_tws_cm": -25.32,
-      "coastal_south_tws_cm": -18.48
+      "nw_barind_tws_cm": -19.2,
+      "haor_wetland_tws_cm": -25.72,
+      "coastal_south_tws_cm": -14.39,
+      "bangladesh_mean_tws_cm": -18.28
     },
     {
       "date": "2016-02",
       "year": 2016,
       "month": 2,
-      "nw_barind_tws_cm": -43.04,
-      "haor_wetland_tws_cm": -33.14,
-      "coastal_south_tws_cm": -23.32
+      "nw_barind_tws_cm": -25.71,
+      "haor_wetland_tws_cm": -22.19,
+      "coastal_south_tws_cm": -15.14,
+      "bangladesh_mean_tws_cm": -18.94
     },
     {
       "date": "2016-03",
       "year": 2016,
       "month": 3,
-      "nw_barind_tws_cm": -47.17,
-      "haor_wetland_tws_cm": -38.35,
-      "coastal_south_tws_cm": -26.55
-    },
-    {
-      "date": "2016-04",
-      "year": 2016,
-      "month": 4,
-      "nw_barind_tws_cm": -50.29,
-      "haor_wetland_tws_cm": -42.27,
-      "coastal_south_tws_cm": -28.98
+      "nw_barind_tws_cm": -41.13,
+      "haor_wetland_tws_cm": -26.78,
+      "coastal_south_tws_cm": -21.49,
+      "bangladesh_mean_tws_cm": -25.81
     },
     {
       "date": "2016-05",
       "year": 2016,
       "month": 5,
-      "nw_barind_tws_cm": -45.41,
-      "haor_wetland_tws_cm": -35.78,
-      "coastal_south_tws_cm": -25.02
+      "nw_barind_tws_cm": -28.31,
+      "haor_wetland_tws_cm": -15.17,
+      "coastal_south_tws_cm": -14.06,
+      "bangladesh_mean_tws_cm": -15.03
     },
     {
       "date": "2016-06",
       "year": 2016,
       "month": 6,
-      "nw_barind_tws_cm": -30.54,
-      "haor_wetland_tws_cm": -16.29,
-      "coastal_south_tws_cm": -13.05
+      "nw_barind_tws_cm": -17.49,
+      "haor_wetland_tws_cm": 0.97,
+      "coastal_south_tws_cm": -3.36,
+      "bangladesh_mean_tws_cm": -2.59
     },
     {
       "date": "2016-07",
       "year": 2016,
       "month": 7,
-      "nw_barind_tws_cm": -10.66,
-      "haor_wetland_tws_cm": 9.69,
-      "coastal_south_tws_cm": 2.91
+      "nw_barind_tws_cm": 9.71,
+      "haor_wetland_tws_cm": 27.22,
+      "coastal_south_tws_cm": 11.28,
+      "bangladesh_mean_tws_cm": 15.81
     },
     {
       "date": "2016-08",
       "year": 2016,
       "month": 8,
-      "nw_barind_tws_cm": 4.22,
-      "haor_wetland_tws_cm": 29.18,
-      "coastal_south_tws_cm": 14.88
-    },
-    {
-      "date": "2016-09",
-      "year": 2016,
-      "month": 9,
-      "nw_barind_tws_cm": 9.09,
-      "haor_wetland_tws_cm": 35.66,
-      "coastal_south_tws_cm": 18.84
-    },
-    {
-      "date": "2016-10",
-      "year": 2016,
-      "month": 10,
-      "nw_barind_tws_cm": -1.03,
-      "haor_wetland_tws_cm": 22.64,
-      "coastal_south_tws_cm": 10.8
+      "nw_barind_tws_cm": 11.55,
+      "haor_wetland_tws_cm": 26.01,
+      "coastal_south_tws_cm": 15.82,
+      "bangladesh_mean_tws_cm": 15.72
     },
     {
       "date": "2016-11",
       "year": 2016,
       "month": 11,
-      "nw_barind_tws_cm": -21.15,
-      "haor_wetland_tws_cm": -3.37,
-      "coastal_south_tws_cm": -5.23
+      "nw_barind_tws_cm": -11.78,
+      "haor_wetland_tws_cm": 2.79,
+      "coastal_south_tws_cm": -0.67,
+      "bangladesh_mean_tws_cm": -2.93
     },
     {
       "date": "2016-12",
       "year": 2016,
       "month": 12,
-      "nw_barind_tws_cm": -31.28,
-      "haor_wetland_tws_cm": -16.38,
-      "coastal_south_tws_cm": -13.27
+      "nw_barind_tws_cm": -26.41,
+      "haor_wetland_tws_cm": -15.58,
+      "coastal_south_tws_cm": -9.89,
+      "bangladesh_mean_tws_cm": -14.59
     },
     {
       "date": "2017-01",
       "year": 2017,
       "month": 1,
-      "nw_barind_tws_cm": -28.6,
-      "haor_wetland_tws_cm": -8.7,
-      "coastal_south_tws_cm": -11.9
-    },
-    {
-      "date": "2017-02",
-      "year": 2017,
-      "month": 2,
-      "nw_barind_tws_cm": -34.72,
-      "haor_wetland_tws_cm": -16.52,
-      "coastal_south_tws_cm": -16.73
+      "nw_barind_tws_cm": -23.16,
+      "haor_wetland_tws_cm": -12.37,
+      "coastal_south_tws_cm": -11.88,
+      "bangladesh_mean_tws_cm": -14.39
     },
     {
       "date": "2017-03",
       "year": 2017,
       "month": 3,
-      "nw_barind_tws_cm": -38.85,
-      "haor_wetland_tws_cm": -21.73,
-      "coastal_south_tws_cm": -19.97
+      "nw_barind_tws_cm": -28.7,
+      "haor_wetland_tws_cm": -16.41,
+      "coastal_south_tws_cm": -18.76,
+      "bangladesh_mean_tws_cm": -19.79
     },
     {
       "date": "2017-04",
       "year": 2017,
       "month": 4,
-      "nw_barind_tws_cm": -41.97,
-      "haor_wetland_tws_cm": -25.64,
-      "coastal_south_tws_cm": -22.41
+      "nw_barind_tws_cm": -24.82,
+      "haor_wetland_tws_cm": -11.58,
+      "coastal_south_tws_cm": -13.95,
+      "bangladesh_mean_tws_cm": -14.69
     },
     {
       "date": "2017-05",
       "year": 2017,
       "month": 5,
-      "nw_barind_tws_cm": -37.09,
-      "haor_wetland_tws_cm": -19.16,
-      "coastal_south_tws_cm": -18.44
+      "nw_barind_tws_cm": -22.83,
+      "haor_wetland_tws_cm": -8.53,
+      "coastal_south_tws_cm": -12.64,
+      "bangladesh_mean_tws_cm": -12.57
     },
     {
       "date": "2017-06",
       "year": 2017,
       "month": 6,
-      "nw_barind_tws_cm": -22.22,
-      "haor_wetland_tws_cm": 0.32,
-      "coastal_south_tws_cm": -6.47
-    },
-    {
-      "date": "2017-07",
-      "year": 2017,
-      "month": 7,
-      "nw_barind_tws_cm": -2.34,
-      "haor_wetland_tws_cm": 26.31,
-      "coastal_south_tws_cm": 9.49
-    },
-    {
-      "date": "2017-08",
-      "year": 2017,
-      "month": 8,
-      "nw_barind_tws_cm": 12.54,
-      "haor_wetland_tws_cm": 45.8,
-      "coastal_south_tws_cm": 21.45
-    },
-    {
-      "date": "2017-09",
-      "year": 2017,
-      "month": 9,
-      "nw_barind_tws_cm": 17.41,
-      "haor_wetland_tws_cm": 52.28,
-      "coastal_south_tws_cm": 25.42
-    },
-    {
-      "date": "2017-10",
-      "year": 2017,
-      "month": 10,
-      "nw_barind_tws_cm": 7.29,
-      "haor_wetland_tws_cm": 39.27,
-      "coastal_south_tws_cm": 17.39
-    },
-    {
-      "date": "2017-11",
-      "year": 2017,
-      "month": 11,
-      "nw_barind_tws_cm": -12.83,
-      "haor_wetland_tws_cm": 13.25,
-      "coastal_south_tws_cm": 1.35
-    },
-    {
-      "date": "2017-12",
-      "year": 2017,
-      "month": 12,
-      "nw_barind_tws_cm": -22.96,
-      "haor_wetland_tws_cm": 0.23,
-      "coastal_south_tws_cm": -6.68
-    },
-    {
-      "date": "2018-01",
-      "year": 2018,
-      "month": 1,
-      "nw_barind_tws_cm": -35.68,
-      "haor_wetland_tws_cm": -18.48,
-      "coastal_south_tws_cm": -16.32
-    },
-    {
-      "date": "2018-02",
-      "year": 2018,
-      "month": 2,
-      "nw_barind_tws_cm": -41.8,
-      "haor_wetland_tws_cm": -26.3,
-      "coastal_south_tws_cm": -21.16
-    },
-    {
-      "date": "2018-03",
-      "year": 2018,
-      "month": 3,
-      "nw_barind_tws_cm": -45.93,
-      "haor_wetland_tws_cm": -31.51,
-      "coastal_south_tws_cm": -24.39
-    },
-    {
-      "date": "2018-04",
-      "year": 2018,
-      "month": 4,
-      "nw_barind_tws_cm": -49.05,
-      "haor_wetland_tws_cm": -35.42,
-      "coastal_south_tws_cm": -26.82
-    },
-    {
-      "date": "2018-05",
-      "year": 2018,
-      "month": 5,
-      "nw_barind_tws_cm": -44.17,
-      "haor_wetland_tws_cm": -28.94,
-      "coastal_south_tws_cm": -22.86
+      "nw_barind_tws_cm": -15.26,
+      "haor_wetland_tws_cm": -0.34,
+      "coastal_south_tws_cm": -6.51,
+      "bangladesh_mean_tws_cm": -5.14
     },
     {
       "date": "2018-06",
       "year": 2018,
       "month": 6,
-      "nw_barind_tws_cm": -29.3,
-      "haor_wetland_tws_cm": -9.46,
-      "coastal_south_tws_cm": -10.89
+      "nw_barind_tws_cm": -15.32,
+      "haor_wetland_tws_cm": 7.84,
+      "coastal_south_tws_cm": -3.99,
+      "bangladesh_mean_tws_cm": -2.57
     },
     {
       "date": "2018-07",
       "year": 2018,
       "month": 7,
-      "nw_barind_tws_cm": -9.42,
-      "haor_wetland_tws_cm": 16.53,
-      "coastal_south_tws_cm": 5.07
-    },
-    {
-      "date": "2018-08",
-      "year": 2018,
-      "month": 8,
-      "nw_barind_tws_cm": 5.46,
-      "haor_wetland_tws_cm": 36.02,
-      "coastal_south_tws_cm": 17.04
-    },
-    {
-      "date": "2018-09",
-      "year": 2018,
-      "month": 9,
-      "nw_barind_tws_cm": 10.33,
-      "haor_wetland_tws_cm": 42.5,
-      "coastal_south_tws_cm": 21.0
-    },
-    {
-      "date": "2018-10",
-      "year": 2018,
-      "month": 10,
-      "nw_barind_tws_cm": 0.21,
-      "haor_wetland_tws_cm": 29.48,
-      "coastal_south_tws_cm": 12.96
+      "nw_barind_tws_cm": -1.62,
+      "haor_wetland_tws_cm": 24.49,
+      "coastal_south_tws_cm": 5.52,
+      "bangladesh_mean_tws_cm": 8.21
     },
     {
       "date": "2018-11",
       "year": 2018,
       "month": 11,
-      "nw_barind_tws_cm": -19.91,
-      "haor_wetland_tws_cm": 3.47,
-      "coastal_south_tws_cm": -3.07
+      "nw_barind_tws_cm": -8.44,
+      "haor_wetland_tws_cm": 6.4,
+      "coastal_south_tws_cm": 2.43,
+      "bangladesh_mean_tws_cm": -0.1
+    },
+    {
+      "date": "2018-11",
+      "year": 2018,
+      "month": 11,
+      "nw_barind_tws_cm": -15.91,
+      "haor_wetland_tws_cm": -0.47,
+      "coastal_south_tws_cm": -2.33,
+      "bangladesh_mean_tws_cm": -5.13
     },
     {
       "date": "2018-12",
       "year": 2018,
       "month": 12,
-      "nw_barind_tws_cm": -30.04,
-      "haor_wetland_tws_cm": -9.54,
-      "coastal_south_tws_cm": -11.11
+      "nw_barind_tws_cm": -24.21,
+      "haor_wetland_tws_cm": -5.85,
+      "coastal_south_tws_cm": -8.42,
+      "bangladesh_mean_tws_cm": -11.67
     },
     {
       "date": "2019-01",
       "year": 2019,
       "month": 1,
-      "nw_barind_tws_cm": -37.16,
-      "haor_wetland_tws_cm": -18.66,
-      "coastal_south_tws_cm": -16.74
+      "nw_barind_tws_cm": -29.7,
+      "haor_wetland_tws_cm": -11.13,
+      "coastal_south_tws_cm": -13.32,
+      "bangladesh_mean_tws_cm": -16.82
     },
     {
       "date": "2019-02",
       "year": 2019,
       "month": 2,
-      "nw_barind_tws_cm": -43.28,
-      "haor_wetland_tws_cm": -26.48,
-      "coastal_south_tws_cm": -21.57
+      "nw_barind_tws_cm": -31.39,
+      "haor_wetland_tws_cm": -21.15,
+      "coastal_south_tws_cm": -17.18,
+      "bangladesh_mean_tws_cm": -21.68
     },
     {
       "date": "2019-03",
       "year": 2019,
       "month": 3,
-      "nw_barind_tws_cm": -47.41,
-      "haor_wetland_tws_cm": -31.69,
-      "coastal_south_tws_cm": -24.81
+      "nw_barind_tws_cm": -33.0,
+      "haor_wetland_tws_cm": -19.95,
+      "coastal_south_tws_cm": -17.02,
+      "bangladesh_mean_tws_cm": -21.44
     },
     {
       "date": "2019-04",
       "year": 2019,
       "month": 4,
-      "nw_barind_tws_cm": -50.53,
-      "haor_wetland_tws_cm": -35.6,
-      "coastal_south_tws_cm": -27.25
+      "nw_barind_tws_cm": -33.93,
+      "haor_wetland_tws_cm": -19.78,
+      "coastal_south_tws_cm": -18.56,
+      "bangladesh_mean_tws_cm": -21.45
     },
     {
       "date": "2019-05",
       "year": 2019,
       "month": 5,
-      "nw_barind_tws_cm": -45.65,
-      "haor_wetland_tws_cm": -29.12,
-      "coastal_south_tws_cm": -23.28
+      "nw_barind_tws_cm": -27.91,
+      "haor_wetland_tws_cm": -15.49,
+      "coastal_south_tws_cm": -16.54,
+      "bangladesh_mean_tws_cm": -17.73
     },
     {
       "date": "2019-06",
       "year": 2019,
       "month": 6,
-      "nw_barind_tws_cm": -30.78,
-      "haor_wetland_tws_cm": -9.63,
-      "coastal_south_tws_cm": -11.32
+      "nw_barind_tws_cm": -18.48,
+      "haor_wetland_tws_cm": 2.49,
+      "coastal_south_tws_cm": -8.47,
+      "bangladesh_mean_tws_cm": -8.17
     },
     {
       "date": "2019-07",
       "year": 2019,
       "month": 7,
-      "nw_barind_tws_cm": -10.9,
-      "haor_wetland_tws_cm": 16.35,
-      "coastal_south_tws_cm": 4.65
+      "nw_barind_tws_cm": 5.54,
+      "haor_wetland_tws_cm": 30.28,
+      "coastal_south_tws_cm": 7.21,
+      "bangladesh_mean_tws_cm": 11.24
     },
     {
       "date": "2019-08",
       "year": 2019,
       "month": 8,
-      "nw_barind_tws_cm": 3.98,
-      "haor_wetland_tws_cm": 35.84,
-      "coastal_south_tws_cm": 16.62
+      "nw_barind_tws_cm": 10.62,
+      "haor_wetland_tws_cm": 32.86,
+      "coastal_south_tws_cm": 12.98,
+      "bangladesh_mean_tws_cm": 14.87
     },
     {
       "date": "2019-09",
       "year": 2019,
       "month": 9,
-      "nw_barind_tws_cm": 8.85,
-      "haor_wetland_tws_cm": 42.32,
-      "coastal_south_tws_cm": 20.58
+      "nw_barind_tws_cm": 11.0,
+      "haor_wetland_tws_cm": 24.56,
+      "coastal_south_tws_cm": 11.38,
+      "bangladesh_mean_tws_cm": 11.95
     },
     {
       "date": "2019-10",
       "year": 2019,
       "month": 10,
-      "nw_barind_tws_cm": -1.27,
-      "haor_wetland_tws_cm": 29.3,
-      "coastal_south_tws_cm": 12.54
+      "nw_barind_tws_cm": 7.87,
+      "haor_wetland_tws_cm": 25.9,
+      "coastal_south_tws_cm": 9.09,
+      "bangladesh_mean_tws_cm": 9.42
     },
     {
       "date": "2019-11",
       "year": 2019,
       "month": 11,
-      "nw_barind_tws_cm": -21.39,
-      "haor_wetland_tws_cm": 3.29,
-      "coastal_south_tws_cm": -3.49
+      "nw_barind_tws_cm": -5.26,
+      "haor_wetland_tws_cm": 14.17,
+      "coastal_south_tws_cm": 1.8,
+      "bangladesh_mean_tws_cm": 0.42
     },
     {
       "date": "2019-12",
       "year": 2019,
       "month": 12,
-      "nw_barind_tws_cm": -31.52,
-      "haor_wetland_tws_cm": -9.72,
-      "coastal_south_tws_cm": -11.53
+      "nw_barind_tws_cm": -13.52,
+      "haor_wetland_tws_cm": 5.31,
+      "coastal_south_tws_cm": -4.25,
+      "bangladesh_mean_tws_cm": -6.82
     },
     {
       "date": "2020-01",
       "year": 2020,
       "month": 1,
-      "nw_barind_tws_cm": -33.04,
-      "haor_wetland_tws_cm": -9.24,
-      "coastal_south_tws_cm": -13.16
+      "nw_barind_tws_cm": -22.91,
+      "haor_wetland_tws_cm": -6.65,
+      "coastal_south_tws_cm": -9.26,
+      "bangladesh_mean_tws_cm": -13.33
     },
     {
       "date": "2020-02",
       "year": 2020,
       "month": 2,
-      "nw_barind_tws_cm": -39.16,
-      "haor_wetland_tws_cm": -17.05,
-      "coastal_south_tws_cm": -17.99
+      "nw_barind_tws_cm": -24.36,
+      "haor_wetland_tws_cm": -15.34,
+      "coastal_south_tws_cm": -12.54,
+      "bangladesh_mean_tws_cm": -17.54
     },
     {
       "date": "2020-03",
       "year": 2020,
       "month": 3,
-      "nw_barind_tws_cm": -43.29,
-      "haor_wetland_tws_cm": -22.27,
-      "coastal_south_tws_cm": -21.23
+      "nw_barind_tws_cm": -32.29,
+      "haor_wetland_tws_cm": -19.41,
+      "coastal_south_tws_cm": -17.24,
+      "bangladesh_mean_tws_cm": -22.01
     },
     {
       "date": "2020-04",
       "year": 2020,
       "month": 4,
-      "nw_barind_tws_cm": -46.41,
-      "haor_wetland_tws_cm": -26.18,
-      "coastal_south_tws_cm": -23.66
+      "nw_barind_tws_cm": -35.35,
+      "haor_wetland_tws_cm": -20.44,
+      "coastal_south_tws_cm": -18.5,
+      "bangladesh_mean_tws_cm": -22.84
     },
     {
       "date": "2020-05",
       "year": 2020,
       "month": 5,
-      "nw_barind_tws_cm": -41.53,
-      "haor_wetland_tws_cm": -19.7,
-      "coastal_south_tws_cm": -19.7
+      "nw_barind_tws_cm": -24.66,
+      "haor_wetland_tws_cm": -8.42,
+      "coastal_south_tws_cm": -11.41,
+      "bangladesh_mean_tws_cm": -13.79
     },
     {
       "date": "2020-06",
       "year": 2020,
       "month": 6,
-      "nw_barind_tws_cm": -26.66,
-      "haor_wetland_tws_cm": -0.21,
-      "coastal_south_tws_cm": -7.73
+      "nw_barind_tws_cm": -6.39,
+      "haor_wetland_tws_cm": 14.14,
+      "coastal_south_tws_cm": 1.43,
+      "bangladesh_mean_tws_cm": 2.5
     },
     {
       "date": "2020-07",
       "year": 2020,
       "month": 7,
-      "nw_barind_tws_cm": -6.78,
-      "haor_wetland_tws_cm": 25.77,
-      "coastal_south_tws_cm": 8.23
+      "nw_barind_tws_cm": 27.46,
+      "haor_wetland_tws_cm": 49.09,
+      "coastal_south_tws_cm": 21.37,
+      "bangladesh_mean_tws_cm": 25.77
     },
     {
       "date": "2020-08",
       "year": 2020,
       "month": 8,
-      "nw_barind_tws_cm": 8.1,
-      "haor_wetland_tws_cm": 45.26,
-      "coastal_south_tws_cm": 20.2
+      "nw_barind_tws_cm": 22.62,
+      "haor_wetland_tws_cm": 39.89,
+      "coastal_south_tws_cm": 20.81,
+      "bangladesh_mean_tws_cm": 22.04
     },
     {
       "date": "2020-09",
       "year": 2020,
       "month": 9,
-      "nw_barind_tws_cm": 12.97,
-      "haor_wetland_tws_cm": 51.74,
-      "coastal_south_tws_cm": 24.16
+      "nw_barind_tws_cm": 19.39,
+      "haor_wetland_tws_cm": 33.04,
+      "coastal_south_tws_cm": 16.47,
+      "bangladesh_mean_tws_cm": 17.71
     },
     {
       "date": "2020-10",
       "year": 2020,
       "month": 10,
-      "nw_barind_tws_cm": 2.85,
-      "haor_wetland_tws_cm": 38.73,
-      "coastal_south_tws_cm": 16.12
+      "nw_barind_tws_cm": 17.93,
+      "haor_wetland_tws_cm": 41.83,
+      "coastal_south_tws_cm": 19.44,
+      "bangladesh_mean_tws_cm": 20.37
     },
     {
       "date": "2020-11",
       "year": 2020,
       "month": 11,
-      "nw_barind_tws_cm": -17.27,
-      "haor_wetland_tws_cm": 12.71,
-      "coastal_south_tws_cm": 0.09
+      "nw_barind_tws_cm": -0.91,
+      "haor_wetland_tws_cm": 22.45,
+      "coastal_south_tws_cm": 10.14,
+      "bangladesh_mean_tws_cm": 6.71
     },
     {
       "date": "2020-12",
       "year": 2020,
       "month": 12,
-      "nw_barind_tws_cm": -27.4,
-      "haor_wetland_tws_cm": -0.31,
-      "coastal_south_tws_cm": -7.95
+      "nw_barind_tws_cm": -13.18,
+      "haor_wetland_tws_cm": 4.38,
+      "coastal_south_tws_cm": 0.69,
+      "bangladesh_mean_tws_cm": -4.31
     },
     {
       "date": "2021-01",
       "year": 2021,
       "month": 1,
-      "nw_barind_tws_cm": -40.12,
-      "haor_wetland_tws_cm": -19.02,
-      "coastal_south_tws_cm": -17.58
+      "nw_barind_tws_cm": -23.04,
+      "haor_wetland_tws_cm": -6.14,
+      "coastal_south_tws_cm": -7.27,
+      "bangladesh_mean_tws_cm": -12.38
     },
     {
       "date": "2021-02",
       "year": 2021,
       "month": 2,
-      "nw_barind_tws_cm": -46.24,
-      "haor_wetland_tws_cm": -26.84,
-      "coastal_south_tws_cm": -22.41
+      "nw_barind_tws_cm": -29.55,
+      "haor_wetland_tws_cm": -11.5,
+      "coastal_south_tws_cm": -13.45,
+      "bangladesh_mean_tws_cm": -18.21
     },
     {
       "date": "2021-03",
       "year": 2021,
       "month": 3,
-      "nw_barind_tws_cm": -50.37,
-      "haor_wetland_tws_cm": -32.05,
-      "coastal_south_tws_cm": -25.65
+      "nw_barind_tws_cm": -33.32,
+      "haor_wetland_tws_cm": -17.2,
+      "coastal_south_tws_cm": -17.36,
+      "bangladesh_mean_tws_cm": -22.13
     },
     {
       "date": "2021-04",
       "year": 2021,
       "month": 4,
-      "nw_barind_tws_cm": -53.49,
-      "haor_wetland_tws_cm": -35.97,
-      "coastal_south_tws_cm": -28.09
+      "nw_barind_tws_cm": -40.98,
+      "haor_wetland_tws_cm": -24.93,
+      "coastal_south_tws_cm": -21.24,
+      "bangladesh_mean_tws_cm": -26.31
     },
     {
       "date": "2021-05",
       "year": 2021,
       "month": 5,
-      "nw_barind_tws_cm": -48.61,
-      "haor_wetland_tws_cm": -29.48,
-      "coastal_south_tws_cm": -24.12
+      "nw_barind_tws_cm": -31.63,
+      "haor_wetland_tws_cm": -13.52,
+      "coastal_south_tws_cm": -14.19,
+      "bangladesh_mean_tws_cm": -18.44
     },
     {
       "date": "2021-06",
       "year": 2021,
       "month": 6,
-      "nw_barind_tws_cm": -33.74,
-      "haor_wetland_tws_cm": -10.0,
-      "coastal_south_tws_cm": -12.15
+      "nw_barind_tws_cm": -11.91,
+      "haor_wetland_tws_cm": 6.49,
+      "coastal_south_tws_cm": -0.82,
+      "bangladesh_mean_tws_cm": -2.93
     },
     {
       "date": "2021-07",
       "year": 2021,
       "month": 7,
-      "nw_barind_tws_cm": -13.86,
-      "haor_wetland_tws_cm": 15.99,
-      "coastal_south_tws_cm": 3.81
+      "nw_barind_tws_cm": 8.09,
+      "haor_wetland_tws_cm": 22.81,
+      "coastal_south_tws_cm": 9.9,
+      "bangladesh_mean_tws_cm": 9.73
     },
     {
       "date": "2021-08",
       "year": 2021,
       "month": 8,
-      "nw_barind_tws_cm": 1.02,
-      "haor_wetland_tws_cm": 35.48,
-      "coastal_south_tws_cm": 15.78
+      "nw_barind_tws_cm": 19.66,
+      "haor_wetland_tws_cm": 43.33,
+      "coastal_south_tws_cm": 20.77,
+      "bangladesh_mean_tws_cm": 21.2
     },
     {
       "date": "2021-09",
       "year": 2021,
       "month": 9,
-      "nw_barind_tws_cm": 5.89,
-      "haor_wetland_tws_cm": 41.96,
-      "coastal_south_tws_cm": 19.74
+      "nw_barind_tws_cm": 18.72,
+      "haor_wetland_tws_cm": 36.59,
+      "coastal_south_tws_cm": 19.51,
+      "bangladesh_mean_tws_cm": 19.14
     },
     {
       "date": "2021-10",
       "year": 2021,
       "month": 10,
-      "nw_barind_tws_cm": -4.23,
-      "haor_wetland_tws_cm": 28.95,
-      "coastal_south_tws_cm": 11.71
+      "nw_barind_tws_cm": 8.4,
+      "haor_wetland_tws_cm": 28.8,
+      "coastal_south_tws_cm": 16.22,
+      "bangladesh_mean_tws_cm": 13.14
     },
     {
       "date": "2021-11",
       "year": 2021,
       "month": 11,
-      "nw_barind_tws_cm": -24.35,
-      "haor_wetland_tws_cm": 2.93,
-      "coastal_south_tws_cm": -4.33
+      "nw_barind_tws_cm": -4.84,
+      "haor_wetland_tws_cm": 14.86,
+      "coastal_south_tws_cm": 9.14,
+      "bangladesh_mean_tws_cm": 4.18
     },
     {
       "date": "2021-12",
       "year": 2021,
       "month": 12,
-      "nw_barind_tws_cm": -34.48,
-      "haor_wetland_tws_cm": -10.09,
-      "coastal_south_tws_cm": -12.37
+      "nw_barind_tws_cm": -17.74,
+      "haor_wetland_tws_cm": 4.63,
+      "coastal_south_tws_cm": 0.75,
+      "bangladesh_mean_tws_cm": -5.54
     },
     {
       "date": "2022-01",
       "year": 2022,
       "month": 1,
-      "nw_barind_tws_cm": -36.0,
-      "haor_wetland_tws_cm": -9.6,
-      "coastal_south_tws_cm": -14.0
+      "nw_barind_tws_cm": -24.7,
+      "haor_wetland_tws_cm": -10.36,
+      "coastal_south_tws_cm": -9.78,
+      "bangladesh_mean_tws_cm": -15.63
     },
     {
       "date": "2022-02",
       "year": 2022,
       "month": 2,
-      "nw_barind_tws_cm": -42.12,
-      "haor_wetland_tws_cm": -17.41,
-      "coastal_south_tws_cm": -18.84
+      "nw_barind_tws_cm": -21.45,
+      "haor_wetland_tws_cm": -0.38,
+      "coastal_south_tws_cm": -6.94,
+      "bangladesh_mean_tws_cm": -12.33
     },
     {
       "date": "2022-03",
       "year": 2022,
       "month": 3,
-      "nw_barind_tws_cm": -46.25,
-      "haor_wetland_tws_cm": -22.63,
-      "coastal_south_tws_cm": -22.07
+      "nw_barind_tws_cm": -30.16,
+      "haor_wetland_tws_cm": -14.28,
+      "coastal_south_tws_cm": -12.21,
+      "bangladesh_mean_tws_cm": -18.99
     },
     {
       "date": "2022-04",
       "year": 2022,
       "month": 4,
-      "nw_barind_tws_cm": -49.37,
-      "haor_wetland_tws_cm": -26.55,
-      "coastal_south_tws_cm": -24.5
+      "nw_barind_tws_cm": -24.04,
+      "haor_wetland_tws_cm": -9.48,
+      "coastal_south_tws_cm": -10.85,
+      "bangladesh_mean_tws_cm": -15.28
     },
     {
       "date": "2022-05",
       "year": 2022,
       "month": 5,
-      "nw_barind_tws_cm": -44.49,
-      "haor_wetland_tws_cm": -20.06,
-      "coastal_south_tws_cm": -20.54
+      "nw_barind_tws_cm": -17.73,
+      "haor_wetland_tws_cm": 8.5,
+      "coastal_south_tws_cm": -3.47,
+      "bangladesh_mean_tws_cm": -5.07
     },
     {
       "date": "2022-06",
       "year": 2022,
       "month": 6,
-      "nw_barind_tws_cm": -29.62,
-      "haor_wetland_tws_cm": -0.58,
-      "coastal_south_tws_cm": -8.58
+      "nw_barind_tws_cm": -9.35,
+      "haor_wetland_tws_cm": 19.93,
+      "coastal_south_tws_cm": -0.06,
+      "bangladesh_mean_tws_cm": 2.31
     },
     {
       "date": "2022-07",
       "year": 2022,
       "month": 7,
-      "nw_barind_tws_cm": -9.74,
-      "haor_wetland_tws_cm": 25.41,
-      "coastal_south_tws_cm": 7.39
+      "nw_barind_tws_cm": 2.2,
+      "haor_wetland_tws_cm": 39.0,
+      "coastal_south_tws_cm": 11.38,
+      "bangladesh_mean_tws_cm": 13.44
     },
     {
       "date": "2022-08",
       "year": 2022,
       "month": 8,
-      "nw_barind_tws_cm": 5.14,
-      "haor_wetland_tws_cm": 44.9,
-      "coastal_south_tws_cm": 19.36
+      "nw_barind_tws_cm": 2.76,
+      "haor_wetland_tws_cm": 22.26,
+      "coastal_south_tws_cm": 10.15,
+      "bangladesh_mean_tws_cm": 7.4
     },
     {
       "date": "2022-09",
       "year": 2022,
       "month": 9,
-      "nw_barind_tws_cm": 10.01,
-      "haor_wetland_tws_cm": 51.38,
-      "coastal_south_tws_cm": 23.32
+      "nw_barind_tws_cm": 12.08,
+      "haor_wetland_tws_cm": 34.04,
+      "coastal_south_tws_cm": 17.95,
+      "bangladesh_mean_tws_cm": 15.8
     },
     {
       "date": "2022-10",
       "year": 2022,
       "month": 10,
-      "nw_barind_tws_cm": -0.11,
-      "haor_wetland_tws_cm": 38.37,
-      "coastal_south_tws_cm": 15.29
+      "nw_barind_tws_cm": -9.93,
+      "haor_wetland_tws_cm": 22.07,
+      "coastal_south_tws_cm": 7.27,
+      "bangladesh_mean_tws_cm": 4.79
     },
     {
       "date": "2022-11",
       "year": 2022,
       "month": 11,
-      "nw_barind_tws_cm": -20.23,
-      "haor_wetland_tws_cm": 12.35,
-      "coastal_south_tws_cm": -0.75
+      "nw_barind_tws_cm": -9.59,
+      "haor_wetland_tws_cm": 17.92,
+      "coastal_south_tws_cm": 3.31,
+      "bangladesh_mean_tws_cm": 0.45
     },
     {
       "date": "2022-12",
       "year": 2022,
       "month": 12,
-      "nw_barind_tws_cm": -30.36,
-      "haor_wetland_tws_cm": -0.67,
-      "coastal_south_tws_cm": -8.79
+      "nw_barind_tws_cm": -28.87,
+      "haor_wetland_tws_cm": 0.94,
+      "coastal_south_tws_cm": -6.23,
+      "bangladesh_mean_tws_cm": -12.59
     },
     {
       "date": "2023-01",
       "year": 2023,
       "month": 1,
-      "nw_barind_tws_cm": -47.28,
-      "haor_wetland_tws_cm": -26.58,
-      "coastal_south_tws_cm": -21.42
+      "nw_barind_tws_cm": -31.09,
+      "haor_wetland_tws_cm": -7.76,
+      "coastal_south_tws_cm": -11.73,
+      "bangladesh_mean_tws_cm": -17.33
     },
     {
       "date": "2023-02",
       "year": 2023,
       "month": 2,
-      "nw_barind_tws_cm": -53.4,
-      "haor_wetland_tws_cm": -34.39,
-      "coastal_south_tws_cm": -26.25
+      "nw_barind_tws_cm": -31.33,
+      "haor_wetland_tws_cm": -8.45,
+      "coastal_south_tws_cm": -13.15,
+      "bangladesh_mean_tws_cm": -18.73
     },
     {
       "date": "2023-03",
       "year": 2023,
       "month": 3,
-      "nw_barind_tws_cm": -57.53,
-      "haor_wetland_tws_cm": -39.61,
-      "coastal_south_tws_cm": -29.49
+      "nw_barind_tws_cm": -38.69,
+      "haor_wetland_tws_cm": -13.06,
+      "coastal_south_tws_cm": -17.76,
+      "bangladesh_mean_tws_cm": -23.11
     },
     {
       "date": "2023-04",
       "year": 2023,
       "month": 4,
-      "nw_barind_tws_cm": -60.65,
-      "haor_wetland_tws_cm": -43.53,
-      "coastal_south_tws_cm": -31.92
+      "nw_barind_tws_cm": -39.31,
+      "haor_wetland_tws_cm": -21.84,
+      "coastal_south_tws_cm": -23.35,
+      "bangladesh_mean_tws_cm": -27.03
     },
     {
       "date": "2023-05",
       "year": 2023,
       "month": 5,
-      "nw_barind_tws_cm": -55.77,
-      "haor_wetland_tws_cm": -37.04,
-      "coastal_south_tws_cm": -27.96
+      "nw_barind_tws_cm": -39.91,
+      "haor_wetland_tws_cm": -17.67,
+      "coastal_south_tws_cm": -20.79,
+      "bangladesh_mean_tws_cm": -24.29
     },
     {
       "date": "2023-06",
       "year": 2023,
       "month": 6,
-      "nw_barind_tws_cm": -40.9,
-      "haor_wetland_tws_cm": -17.55,
-      "coastal_south_tws_cm": -16.0
+      "nw_barind_tws_cm": -32.93,
+      "haor_wetland_tws_cm": -2.37,
+      "coastal_south_tws_cm": -13.47,
+      "bangladesh_mean_tws_cm": -15.14
     },
     {
       "date": "2023-07",
       "year": 2023,
       "month": 7,
-      "nw_barind_tws_cm": -21.02,
-      "haor_wetland_tws_cm": 8.43,
-      "coastal_south_tws_cm": -0.03
+      "nw_barind_tws_cm": -10.3,
+      "haor_wetland_tws_cm": 19.12,
+      "coastal_south_tws_cm": -0.09,
+      "bangladesh_mean_tws_cm": 0.72
     },
     {
       "date": "2023-08",
       "year": 2023,
       "month": 8,
-      "nw_barind_tws_cm": -6.14,
-      "haor_wetland_tws_cm": 27.92,
-      "coastal_south_tws_cm": 11.94
+      "nw_barind_tws_cm": 5.99,
+      "haor_wetland_tws_cm": 35.53,
+      "coastal_south_tws_cm": 12.24,
+      "bangladesh_mean_tws_cm": 13.09
     },
     {
       "date": "2023-09",
       "year": 2023,
       "month": 9,
-      "nw_barind_tws_cm": -1.27,
-      "haor_wetland_tws_cm": 34.4,
-      "coastal_south_tws_cm": 15.9
+      "nw_barind_tws_cm": -1.12,
+      "haor_wetland_tws_cm": 28.32,
+      "coastal_south_tws_cm": 9.17,
+      "bangladesh_mean_tws_cm": 7.81
     },
     {
       "date": "2023-10",
       "year": 2023,
       "month": 10,
-      "nw_barind_tws_cm": -11.39,
-      "haor_wetland_tws_cm": 21.39,
-      "coastal_south_tws_cm": 7.87
+      "nw_barind_tws_cm": -4.84,
+      "haor_wetland_tws_cm": 27.46,
+      "coastal_south_tws_cm": 5.52,
+      "bangladesh_mean_tws_cm": 4.14
     },
     {
       "date": "2023-11",
       "year": 2023,
       "month": 11,
-      "nw_barind_tws_cm": -31.51,
-      "haor_wetland_tws_cm": -4.63,
-      "coastal_south_tws_cm": -8.17
+      "nw_barind_tws_cm": -18.89,
+      "haor_wetland_tws_cm": 13.98,
+      "coastal_south_tws_cm": -3.03,
+      "bangladesh_mean_tws_cm": -6.08
     },
     {
       "date": "2023-12",
       "year": 2023,
       "month": 12,
-      "nw_barind_tws_cm": -41.64,
-      "haor_wetland_tws_cm": -17.64,
-      "coastal_south_tws_cm": -16.2
+      "nw_barind_tws_cm": -27.17,
+      "haor_wetland_tws_cm": 1.34,
+      "coastal_south_tws_cm": -8.35,
+      "bangladesh_mean_tws_cm": -13.65
     },
     {
       "date": "2024-01",
       "year": 2024,
       "month": 1,
-      "nw_barind_tws_cm": -44.56,
-      "haor_wetland_tws_cm": -19.56,
-      "coastal_south_tws_cm": -18.84
+      "nw_barind_tws_cm": -35.52,
+      "haor_wetland_tws_cm": -10.42,
+      "coastal_south_tws_cm": -13.98,
+      "bangladesh_mean_tws_cm": -20.7
     },
     {
       "date": "2024-02",
       "year": 2024,
       "month": 2,
-      "nw_barind_tws_cm": -50.68,
-      "haor_wetland_tws_cm": -27.38,
-      "coastal_south_tws_cm": -23.67
+      "nw_barind_tws_cm": -32.84,
+      "haor_wetland_tws_cm": -5.8,
+      "coastal_south_tws_cm": -11.83,
+      "bangladesh_mean_tws_cm": -18.28
     },
     {
       "date": "2024-03",
       "year": 2024,
       "month": 3,
-      "nw_barind_tws_cm": -54.81,
-      "haor_wetland_tws_cm": -32.59,
-      "coastal_south_tws_cm": -26.91
+      "nw_barind_tws_cm": -38.9,
+      "haor_wetland_tws_cm": -16.96,
+      "coastal_south_tws_cm": -18.88,
+      "bangladesh_mean_tws_cm": -25.04
     },
     {
       "date": "2024-04",
       "year": 2024,
       "month": 4,
-      "nw_barind_tws_cm": -57.93,
-      "haor_wetland_tws_cm": -36.51,
-      "coastal_south_tws_cm": -29.34
+      "nw_barind_tws_cm": -45.86,
+      "haor_wetland_tws_cm": -25.74,
+      "coastal_south_tws_cm": -23.95,
+      "bangladesh_mean_tws_cm": -29.52
     },
     {
       "date": "2024-05",
       "year": 2024,
       "month": 5,
-      "nw_barind_tws_cm": -53.05,
-      "haor_wetland_tws_cm": -30.02,
-      "coastal_south_tws_cm": -25.38
+      "nw_barind_tws_cm": -43.48,
+      "haor_wetland_tws_cm": -14.55,
+      "coastal_south_tws_cm": -17.56,
+      "bangladesh_mean_tws_cm": -22.86
     },
     {
       "date": "2024-06",
       "year": 2024,
       "month": 6,
-      "nw_barind_tws_cm": -38.18,
-      "haor_wetland_tws_cm": -10.54,
-      "coastal_south_tws_cm": -13.42
+      "nw_barind_tws_cm": -22.58,
+      "haor_wetland_tws_cm": 14.3,
+      "coastal_south_tws_cm": -2.3,
+      "bangladesh_mean_tws_cm": -4.28
+    },
+    {
+      "date": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "nw_barind_tws_cm": -0.6,
+      "haor_wetland_tws_cm": 33.54,
+      "coastal_south_tws_cm": 9.43,
+      "bangladesh_mean_tws_cm": 10.95
+    },
+    {
+      "date": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "nw_barind_tws_cm": 7.66,
+      "haor_wetland_tws_cm": 34.17,
+      "coastal_south_tws_cm": 14.04,
+      "bangladesh_mean_tws_cm": 12.96
+    },
+    {
+      "date": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "nw_barind_tws_cm": -0.28,
+      "haor_wetland_tws_cm": 32.59,
+      "coastal_south_tws_cm": 12.6,
+      "bangladesh_mean_tws_cm": 9.71
+    },
+    {
+      "date": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "nw_barind_tws_cm": 0.47,
+      "haor_wetland_tws_cm": 32.77,
+      "coastal_south_tws_cm": 13.37,
+      "bangladesh_mean_tws_cm": 10.26
+    },
+    {
+      "date": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "nw_barind_tws_cm": -15.34,
+      "haor_wetland_tws_cm": 16.19,
+      "coastal_south_tws_cm": 4.0,
+      "bangladesh_mean_tws_cm": -0.95
+    },
+    {
+      "date": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "nw_barind_tws_cm": -27.55,
+      "haor_wetland_tws_cm": 1.82,
+      "coastal_south_tws_cm": -3.58,
+      "bangladesh_mean_tws_cm": -10.64
+    },
+    {
+      "date": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "nw_barind_tws_cm": -33.15,
+      "haor_wetland_tws_cm": -8.59,
+      "coastal_south_tws_cm": -9.73,
+      "bangladesh_mean_tws_cm": -17.42
+    },
+    {
+      "date": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "nw_barind_tws_cm": -40.06,
+      "haor_wetland_tws_cm": -10.81,
+      "coastal_south_tws_cm": -16.34,
+      "bangladesh_mean_tws_cm": -22.86
+    },
+    {
+      "date": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "nw_barind_tws_cm": -44.54,
+      "haor_wetland_tws_cm": -18.99,
+      "coastal_south_tws_cm": -21.21,
+      "bangladesh_mean_tws_cm": -27.49
+    },
+    {
+      "date": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "nw_barind_tws_cm": -41.17,
+      "haor_wetland_tws_cm": -12.65,
+      "coastal_south_tws_cm": -16.4,
+      "bangladesh_mean_tws_cm": -22.7
+    },
+    {
+      "date": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "nw_barind_tws_cm": -35.61,
+      "haor_wetland_tws_cm": -4.08,
+      "coastal_south_tws_cm": -11.21,
+      "bangladesh_mean_tws_cm": -15.94
+    },
+    {
+      "date": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "nw_barind_tws_cm": -10.99,
+      "haor_wetland_tws_cm": 25.38,
+      "coastal_south_tws_cm": 6.57,
+      "bangladesh_mean_tws_cm": 4.35
+    },
+    {
+      "date": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "nw_barind_tws_cm": -6.54,
+      "haor_wetland_tws_cm": 32.0,
+      "coastal_south_tws_cm": 13.1,
+      "bangladesh_mean_tws_cm": 9.04
+    },
+    {
+      "date": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "nw_barind_tws_cm": 6.93,
+      "haor_wetland_tws_cm": 44.08,
+      "coastal_south_tws_cm": 20.59,
+      "bangladesh_mean_tws_cm": 17.62
+    },
+    {
+      "date": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "nw_barind_tws_cm": 11.64,
+      "haor_wetland_tws_cm": 45.59,
+      "coastal_south_tws_cm": 22.33,
+      "bangladesh_mean_tws_cm": 19.61
+    },
+    {
+      "date": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "nw_barind_tws_cm": 7.14,
+      "haor_wetland_tws_cm": 37.0,
+      "coastal_south_tws_cm": 17.58,
+      "bangladesh_mean_tws_cm": 14.16
+    },
+    {
+      "date": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "nw_barind_tws_cm": -11.26,
+      "haor_wetland_tws_cm": 16.06,
+      "coastal_south_tws_cm": 4.9,
+      "bangladesh_mean_tws_cm": -0.07
+    },
+    {
+      "date": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "nw_barind_tws_cm": -21.39,
+      "haor_wetland_tws_cm": 5.71,
+      "coastal_south_tws_cm": -3.55,
+      "bangladesh_mean_tws_cm": -9.54
+    },
+    {
+      "date": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "nw_barind_tws_cm": -28.07,
+      "haor_wetland_tws_cm": 4.15,
+      "coastal_south_tws_cm": -7.86,
+      "bangladesh_mean_tws_cm": -13.64
+    },
+    {
+      "date": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "nw_barind_tws_cm": -35.81,
+      "haor_wetland_tws_cm": -6.0,
+      "coastal_south_tws_cm": -13.78,
+      "bangladesh_mean_tws_cm": -20.84
+    },
+    {
+      "date": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "nw_barind_tws_cm": -33.77,
+      "haor_wetland_tws_cm": -7.69,
+      "coastal_south_tws_cm": -14.1,
+      "bangladesh_mean_tws_cm": -19.93
+    },
+    {
+      "date": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "nw_barind_tws_cm": -31.74,
+      "haor_wetland_tws_cm": -4.6,
+      "coastal_south_tws_cm": -14.46,
+      "bangladesh_mean_tws_cm": -17.98
+    },
+    {
+      "date": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "nw_barind_tws_cm": -22.84,
+      "haor_wetland_tws_cm": 5.97,
+      "coastal_south_tws_cm": -8.41,
+      "bangladesh_mean_tws_cm": -10.57
+    },
+    {
+      "date": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "nw_barind_tws_cm": -12.34,
+      "haor_wetland_tws_cm": 21.3,
+      "coastal_south_tws_cm": -0.43,
+      "bangladesh_mean_tws_cm": -0.39
+    },
+    {
+      "date": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "nw_barind_tws_cm": 0.38,
+      "haor_wetland_tws_cm": 35.99,
+      "coastal_south_tws_cm": 10.61,
+      "bangladesh_mean_tws_cm": 10.52
     }
   ]
 }

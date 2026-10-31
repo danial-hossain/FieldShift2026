@@ -1,0 +1,166 @@
+{
+  "product": "NASA SMAP Level-4 Global 9 km Surface and Root-Zone Soil Moisture (SPL4SMGP)",
+  "source": "NASA NSIDC DAAC / Earthdata Cloud via OPeNDAP",
+  "processed_at": "2026-10-31T18:15:30.187335+00:00",
+  "total_granules_subsetted": 6,
+  "field_observations": {
+    "dinajpur": [
+      {
+        "date": "2023-01-15",
+        "season": "Winter Rabi",
+        "sm_rootzone_m3_m3": 0.1906
+      },
+      {
+        "date": "2023-04-15",
+        "season": "Pre-monsoon Kharif-1 Dry",
+        "sm_rootzone_m3_m3": 0.1562
+      },
+      {
+        "date": "2023-07-15",
+        "season": "Monsoon Kharif-2 Wet",
+        "sm_rootzone_m3_m3": 0.3263
+      },
+      {
+        "date": "2023-10-15",
+        "season": "Post-monsoon Transition",
+        "sm_rootzone_m3_m3": 0.3747
+      },
+      {
+        "date": "2024-01-15",
+        "season": "Winter Rabi 2024",
+        "sm_rootzone_m3_m3": 0.2089
+      },
+      {
+        "date": "2024-04-15",
+        "season": "Pre-monsoon Dry 2024",
+        "sm_rootzone_m3_m3": 0.1618
+      }
+    ],
+    "bogura": [
+      {
+        "date": "2023-01-15",
+        "season": "Winter Rabi",
+        "sm_rootzone_m3_m3": 0.1935
+      },
+      {
+        "date": "2023-04-15",
+        "season": "Pre-monsoon Kharif-1 Dry",
+        "sm_rootzone_m3_m3": 0.1569
+      },
+      {
+        "date": "2023-07-15",
+        "season": "Monsoon Kharif-2 Wet",
+        "sm_rootzone_m3_m3": 0.2658
+      },
+      {
+        "date": "2023-10-15",
+        "season": "Post-monsoon Transition",
+        "sm_rootzone_m3_m3": 0.3451
+      },
+      {
+        "date": "2024-01-15",
+        "season": "Winter Rabi 2024",
+        "sm_rootzone_m3_m3": 0.2029
+      },
+      {
+        "date": "2024-04-15",
+        "season": "Pre-monsoon Dry 2024",
+        "sm_rootzone_m3_m3": 0.1457
+      }
+    ],
+    "satkhira": [
+      {
+        "date": "2023-01-15",
+        "season": "Winter Rabi",
+        "sm_rootzone_m3_m3": 0.3043
+      },
+      {
+        "date": "2023-04-15",
+        "season": "Pre-monsoon Kharif-1 Dry",
+        "sm_rootzone_m3_m3": 0.2475
+      },
+      {
+        "date": "2023-07-15",
+        "season": "Monsoon Kharif-2 Wet",
+        "sm_rootzone_m3_m3": 0.4198
+      },
+      {
+        "date": "2023-10-15",
+        "season": "Post-monsoon Transition",
+        "sm_rootzone_m3_m3": 0.4789
+      },
+      {
+        "date": "2024-01-15",
+        "season": "Winter Rabi 2024",
+        "sm_rootzone_m3_m3": 0.3271
+      },
+      {
+        "date": "2024-04-15",
+        "season": "Pre-monsoon Dry 2024",
+        "sm_rootzone_m3_m3": 0.2516
+      }
+    ],
+    "sunamganj": [
+      {
+        "date": "2023-01-15",
+        "season": "Winter Rabi",
+        "sm_rootzone_m3_m3": 0.2703
+      },
+      {
+        "date": "2023-04-15",
+        "season": "Pre-monsoon Kharif-1 Dry",
+        "sm_rootzone_m3_m3": 0.1962
+      },
+      {
+        "date": "2023-07-15",
+        "season": "Monsoon Kharif-2 Wet",
+        "sm_rootzone_m3_m3": 0.4057
+      },
+      {
+        "date": "2023-10-15",
+        "season": "Post-monsoon Transition",
+        "sm_rootzone_m3_m3": 0.378
+      },
+      {
+        "date": "2024-01-15",
+        "season": "Winter Rabi 2024",
+        "sm_rootzone_m3_m3": 0.2705
+      },
+      {
+        "date": "2024-04-15",
+        "season": "Pre-monsoon Dry 2024",
+        "sm_rootzone_m3_m3": 0.1933
+      }
+    ]
+  },
+  "summary": {
+    "dinajpur": {
+      "field_name": "Dinajpur Sadar",
+      "latitude": 25.6279,
+      "longitude": 88.6332,
+      "pre_monsoon_mean_m3_m3": 0.159,
+      "monsoon_mean_m3_m3": 0.3263
+    },
+    "bogura": {
+      "field_name": "Bogura demo",
+      "latitude": 24.85,
+      "longitude": 89.37,
+      "pre_monsoon_mean_m3_m3": 0.1513,
+      "monsoon_mean_m3_m3": 0.2658
+    },
+    "satkhira": {
+      "field_name": "Satkhira coast",
+      "latitude": 22.7185,
+      "longitude": 89.0705,
+      "pre_monsoon_mean_m3_m3": 0.2495,
+      "monsoon_mean_m3_m3": 0.4198
+    },
+    "sunamganj": {
+      "field_name": "Sunamganj haor",
+      "latitude": 25.0658,
+      "longitude": 91.395,
+      "pre_monsoon_mean_m3_m3": 0.1948,
+      "monsoon_mean_m3_m3": 0.4057
+    }
+  }
+}

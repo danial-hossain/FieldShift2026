@@ -244,18 +244,19 @@ def run_checks():
         required_reports = ["bogura_demo.md", "dinajpur_sadar.md", "satkhira_coast.md", "sunamganj_haor.md"]
         missing_reports = [r for r in required_reports if not (docs_ft / r).is_file()]
         
-        # Check A4 datasets presence
-        smap_ok = (data_dir / "smap" / "smap_l4_monthly_4fields.csv").is_file() or (data_dir / "smap" / "smap_l4_anomalies.json").is_file()
-        grace_ok = (data_dir / "grace" / "grace_bangladesh_trends.json").is_file()
+        # Check verified NASA datasets and raw manifests
+        smap_ok = (data_dir / "smap" / "smap_field_moisture.json").is_file() and (data_dir / "smap" / "raw" / "manifest.json").is_file()
+        grace_ok = (data_dir / "grace" / "grace_bangladesh_trends.json").is_file() and (data_dir / "grace" / "raw" / "manifest.json").is_file()
+        srtm_ok = (data_dir / "srtm" / "field_elevations.json").is_file() and (data_dir / "srtm" / "raw" / "manifest.json").is_file()
         imerg_ok = (data_dir / "imerg" / "bd_imerg_daily.npz").is_file() or len(list((data_dir / "imerg").glob("imerg_*.csv"))) >= 6
         power_ok = len(list((data_dir / "nasa_power" / "advisory_cache").glob("*.csv"))) >= 50
         
         dt = (time.time() - t0) * 1000
-        if not missing_reports and smap_ok and grace_ok and imerg_ok and power_ok:
-            log(f"[PASS] 10. NASA Earth Observation Suites & Field Test Reports -> 4/4 reports, POWER(64), IMERG(64), SMAP, GRACE verified ({dt:.1f}ms)")
-            results.append(("NASA Datasets & Reports", True, "4/4 reports, NASA suites verified"))
+        if not missing_reports and smap_ok and grace_ok and srtm_ok and imerg_ok and power_ok:
+            log(f"[PASS] 10. NASA Earth Observation Suites & Field Test Reports -> 4/4 reports, POWER(64), IMERG(64), SMAP, GRACE, SRTM verified ({dt:.1f}ms)")
+            results.append(("NASA Datasets & Reports", True, "4/4 reports, verified NASA suites"))
         else:
-            log(f"[FAIL] 10. NASA Datasets & Reports -> missing_reports: {missing_reports}, SMAP:{smap_ok}, GRACE:{grace_ok}, IMERG:{imerg_ok}, POWER:{power_ok}")
+            log(f"[FAIL] 10. NASA Datasets & Reports -> missing_reports: {missing_reports}, SMAP:{smap_ok}, GRACE:{grace_ok}, SRTM:{srtm_ok}, IMERG:{imerg_ok}, POWER:{power_ok}")
             has_failure = True
             results.append(("NASA Datasets & Reports", False, f"missing {missing_reports}"))
     except Exception as e:

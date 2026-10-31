@@ -40,10 +40,10 @@ FieldShift relies exclusively on real, validated satellite observations and phys
 | :--- | :--- | :--- | :--- |
 | **NASA GPM IMERG** | `GPM_3IMERGDF` v07 (Final Daily) | 0.1° × 0.1° (~10 km); 2001–2024 (24 yrs) | Satellite-calibrated daily precipitation; rainfall reliability, dry-spell risk, and monsoon onset cross-validation. |
 | **NASA POWER** | Daily Point Meteorology (v2.0) | 0.5° × 0.5° (~50 km); 2001–2025 (25 yrs) | Surface solar radiation (`ALLSKY_SFC_SW_DWN`), daily air temperature (`T2M`, `T2M_MAX`, `T2M_MIN`), humidity (`RH2M`), wind speed (`WS2M`), Growing Degree Days (GDD), and reference evapotranspiration ($ET_0$). |
-| **NASA SMAP** | L4 Global Surface & Root Zone Soil Moisture (`SPL4SMGP`) | 9 km grid; 2015–2024 monthly climatology & anomalies | 0–100 cm root-zone soil moisture anomalies indicating pre-monsoon and post-monsoon crop water stress. |
-| **NASA MODIS** | Terra MODIS Vegetation Indices (`MOD13Q1.061`) | 250 m, 16-day composite; 2001–2024 | NDVI canopy greenness trajectory and bare-ground fallow cycle identification (bare soil threshold NDVI < 0.20). |
-| **NASA GRACE / GRACE-FO** | Level-3 JPL RL06.3M Mascon Water Storage | 0.5° equivalent grid; 2002–2024 (267 monthly records) | Terrestrial groundwater storage anomalies showing a long-term Barind tract aquifer decline of **-1.48 cm/year**, used as scarcity weighting in the water-saving rotation. |
-| **NASA SRTM** | SRTMGL1 1 Arc-Second Global Elevation | 30 m spatial resolution | Field slope percentage and elevation for waterlogging/drainage vulnerability and soil erosion risk. |
+| **NASA SMAP** | L4 Global Surface & Root Zone Soil Moisture (`SPL4SMGP`) | 9 km grid; OPeNDAP representative seasonal subsets (2023–2024) | 0–100 cm root-zone soil moisture anomalies indicating pre-monsoon dry season deficits in Barind (0.15 m³/m³) vs coastal saturation; multi-decadal grid archive catalogued under Known Limitations as planned. |
+| **NASA MODIS** | Terra MODIS Vegetation Indices (`MOD13Q1.061`) | 250 m, 16-day composite; LP DAAC Cloud granule verification | Evaluated via NASA Earthdata Cloud (231 MB/granule); full multi-decadal 130 GB archive catalogued under Known Limitations as planned remote feature. |
+| **NASA GRACE / GRACE-FO** | Level-3 JPL RL06.3M Mascon Water Storage (`TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4`) | 0.5° CRI grid; 2002–2024 (259 monthly NetCDF records) | Terrestrial groundwater storage anomalies recomputed directly from JPL NetCDF showing Barind tract aquifer decline of **-1.07 cm/year** and haor wetland recharge of **+0.44 cm/year**, setting MILP water-scarcity optimization weights. |
+| **NASA SRTM** | SRTMGL1 1 Arc-Second Global Elevation | 30 m spatial resolution; raw HGT tiles from NASA LP DAAC | Field elevation and 3x3 Sobel topographic slope percentage for waterlogging/drainage vulnerability and soil erosion risk. |
 
 ### Supplementary Open Datasets
 - **ISRIC SoilGrids 250m:** Soil texture class, clay/sand fractions, bulk density, and available water capacity (AWC).
@@ -75,7 +75,7 @@ Judges, researchers, and farmers should note the following boundaries of the mod
 ## 100% Offline Autonomy
 
 FieldShift is engineered from the ground up for 100% offline autonomy in remote rural villages:
-- All 64-district NASA POWER agro-climatologies, GPM IMERG onset metrics, SMAP root-zone moisture anomalies, MODIS NDVI curves, and GRACE trends are pre-cached in deterministic local stores.
+- All 64-district NASA POWER agro-climatologies, GPM IMERG onset metrics, SMAP root-zone moisture telemetry, GRACE-FO NetCDF trends, and SRTM elevation tiles are pre-cached in deterministic local stores with cryptographic manifests.
 - Start offline with:
   ```powershell
   # Terminal 1: Backend

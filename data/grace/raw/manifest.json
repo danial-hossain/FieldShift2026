@@ -1,0 +1,9 @@
+{
+  "granule_id": "GRCTellus.JPL.200204_202607.GLO.RL06.3M.MSCNv04CRI.nc",
+  "local_file": "data\\grace\\raw\\GRCTellus.JPL.200204_202607.GLO.RL06.3M.MSCNv04CRI.nc",
+  "size_bytes": 45989746,
+  "sha256": "32b4ee91215a2e1c1bb6196f661ec55972b81e4da4a934b5a5c9ebe17f285a88",
+  "created_at": "2026-10-31T18:13:20.500979+00:00",
+  "dataset_short_name": "TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4",
+  "source": "NASA PO.DAAC Earthdata Cloud"
+}

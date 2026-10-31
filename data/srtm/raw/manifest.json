@@ -1,0 +1,38 @@
+[
+  {
+    "field_id": "dinajpur",
+    "tile": "N25E088",
+    "filename": "N25E088.SRTMGL1.hgt.zip",
+    "size_bytes": 5609985,
+    "sha256": "a7ce816a5d3dfa6b7b94f6be704eaf00ece6bdb0e9eb6fa66d1d4219002c2a1c",
+    "source": "NASA LP DAAC / USGS via Earthdata Cloud",
+    "retrieved_at": "2026-10-31T18:14:04.816980+00:00"
+  },
+  {
+    "field_id": "bogura",
+    "tile": "N24E089",
+    "filename": "N24E089.SRTMGL1.hgt.zip",
+    "size_bytes": 5614241,
+    "sha256": "00c627613ef87665474c584b51ccdcb7b131005ef6045ac3be1a33940a2da3f5",
+    "source": "NASA LP DAAC / USGS via Earthdata Cloud",
+    "retrieved_at": "2026-10-31T18:14:04.823367+00:00"
+  },
+  {
+    "field_id": "satkhira",
+    "tile": "N22E089",
+    "filename": "N22E089.SRTMGL1.hgt.zip",
+    "size_bytes": 4739601,
+    "sha256": "8c4eadf4b4ce96dc3e8244e6c308899651f56223d6b513eb53b61e8674127123",
+    "source": "NASA LP DAAC / USGS via Earthdata Cloud",
+    "retrieved_at": "2026-10-31T18:14:04.834638+00:00"
+  },
+  {
+    "field_id": "sunamganj",
+    "tile": "N25E091",
+    "filename": "N25E091.SRTMGL1.hgt.zip",
+    "size_bytes": 12979612,
+    "sha256": "c329895ed04a9c33496dff3ef48b0061582ddad1a1792d4d3abe22f33d0b778a",
+    "source": "NASA LP DAAC / USGS via Earthdata Cloud",
+    "retrieved_at": "2026-10-31T18:14:04.855705+00:00"
+  }
+]

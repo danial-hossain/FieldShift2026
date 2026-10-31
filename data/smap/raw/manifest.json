@@ -1,0 +1,62 @@
+[
+  {
+    "granule_id": "SMAP_L4_SM_gph_20230114T223000_Vv8010_001.h5",
+    "date": "2023-01-15",
+    "season": "Winter Rabi",
+    "filename": "SMAP_L4_SM_gph_20230114T223000_Vv8010_001.h5_bd_subset.csv",
+    "size_bytes": 12411,
+    "sha256": "d16a08afca76362d9caad33da01a8e5e10d3c428d07f8cb1645e8db81d46e04a",
+    "url": "https://opendap.earthdata.nasa.gov/collections/C3480440870-NSIDC_CPRD/granules/SMAP_L4_SM_gph_20230114T223000_Vv8010_001.h5.csv?/Geophysical_Data/sm_rootzone[448:2:530][2870:2:2925]",
+    "retrieved_at": "2026-10-31T18:14:37.210120+00:00"
+  },
+  {
+    "granule_id": "SMAP_L4_SM_gph_20230414T223000_Vv8010_001.h5",
+    "date": "2023-04-15",
+    "season": "Pre-monsoon Kharif-1 Dry",
+    "filename": "SMAP_L4_SM_gph_20230414T223000_Vv8010_001.h5_bd_subset.csv",
+    "size_bytes": 12408,
+    "sha256": "abfb1ced0600e105715e91c9284a94e36926f22fa85c3265bb10e52e1ead8802",
+    "url": "https://opendap.earthdata.nasa.gov/collections/C3480440870-NSIDC_CPRD/granules/SMAP_L4_SM_gph_20230414T223000_Vv8010_001.h5.csv?/Geophysical_Data/sm_rootzone[448:2:530][2870:2:2925]",
+    "retrieved_at": "2026-10-31T18:14:46.825332+00:00"
+  },
+  {
+    "granule_id": "SMAP_L4_SM_gph_20230714T223000_Vv8010_001.h5",
+    "date": "2023-07-15",
+    "season": "Monsoon Kharif-2 Wet",
+    "filename": "SMAP_L4_SM_gph_20230714T223000_Vv8010_001.h5_bd_subset.csv",
+    "size_bytes": 12398,
+    "sha256": "3310021527d36523554d3a5352f974fde72e1b6c999b5276a3fd1635589df040",
+    "url": "https://opendap.earthdata.nasa.gov/collections/C3480440870-NSIDC_CPRD/granules/SMAP_L4_SM_gph_20230714T223000_Vv8010_001.h5.csv?/Geophysical_Data/sm_rootzone[448:2:530][2870:2:2925]",
+    "retrieved_at": "2026-10-31T18:14:56.529381+00:00"
+  },
+  {
+    "granule_id": "SMAP_L4_SM_gph_20231014T223000_Vv8012_001.h5_u9loH5HD",
+    "date": "2023-10-15",
+    "season": "Post-monsoon Transition",
+    "filename": "SMAP_L4_SM_gph_20231014T223000_Vv8012_001.h5_u9loH5HD_bd_subset.csv",
+    "size_bytes": 12419,
+    "sha256": "64a47928c0680de3dedd7ebf56b05706d2832b50309c7fc0afb812d14bf73825",
+    "url": "https://opendap.earthdata.nasa.gov/collections/C3480440870-NSIDC_CPRD/granules/SMAP_L4_SM_gph_20231014T223000_Vv8012_001.h5_u9loH5HD.csv?/Geophysical_Data/sm_rootzone[448:2:530][2870:2:2925]",
+    "retrieved_at": "2026-10-31T18:15:06.096450+00:00"
+  },
+  {
+    "granule_id": "SMAP_L4_SM_gph_20240114T223000_Vv8012_001.h5_u9loH5HD",
+    "date": "2024-01-15",
+    "season": "Winter Rabi 2024",
+    "filename": "SMAP_L4_SM_gph_20240114T223000_Vv8012_001.h5_u9loH5HD_bd_subset.csv",
+    "size_bytes": 12412,
+    "sha256": "d0d0025615580a9397c7b2ac96a2a2868faddaf863ccda11c770a061f0b3b9ff",
+    "url": "https://opendap.earthdata.nasa.gov/collections/C3480440870-NSIDC_CPRD/granules/SMAP_L4_SM_gph_20240114T223000_Vv8012_001.h5_u9loH5HD.csv?/Geophysical_Data/sm_rootzone[448:2:530][2870:2:2925]",
+    "retrieved_at": "2026-10-31T18:15:14.537649+00:00"
+  },
+  {
+    "granule_id": "SMAP_L4_SM_gph_20240414T223000_Vv8012_001.h5_u9loH5HD",
+    "date": "2024-04-15",
+    "season": "Pre-monsoon Dry 2024",
+    "filename": "SMAP_L4_SM_gph_20240414T223000_Vv8012_001.h5_u9loH5HD_bd_subset.csv",
+    "size_bytes": 12435,
+    "sha256": "21b00425a07372d06c01bdb718515284d1d6a7bae869fb11ac23f8ab564fc7a7",
+    "url": "https://opendap.earthdata.nasa.gov/collections/C3480440870-NSIDC_CPRD/granules/SMAP_L4_SM_gph_20240414T223000_Vv8012_001.h5_u9loH5HD.csv?/Geophysical_Data/sm_rootzone[448:2:530][2870:2:2925]",
+    "retrieved_at": "2026-10-31T18:15:24.234594+00:00"
+  }
+]

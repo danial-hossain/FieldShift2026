@@ -5,10 +5,11 @@
     "longitude": 88.6332,
     "srtm_tile": "N25E088",
     "elevation_m": 39,
-    "slope_percent": 3.7,
+    "slope_percent": 3.58,
     "flood_exposure_hint": "Low-lying alluvial floodplain",
     "topographic_erosion_risk": "Moderate",
-    "dataset": "NASA SRTMGL1 (30 m resolution)"
+    "dataset": "NASA SRTMGL1 (30 m resolution)",
+    "derived_at": "2026-10-31T18:14:04.922187+00:00"
   },
   "bogura": {
     "field_name": "Bogura demo",
@@ -16,10 +17,11 @@
     "longitude": 89.37,
     "srtm_tile": "N24E089",
     "elevation_m": 24,
-    "slope_percent": 1.67,
+    "slope_percent": 0.81,
     "flood_exposure_hint": "Low-lying alluvial floodplain",
     "topographic_erosion_risk": "Low",
-    "dataset": "NASA SRTMGL1 (30 m resolution)"
+    "dataset": "NASA SRTMGL1 (30 m resolution)",
+    "derived_at": "2026-10-31T18:14:04.989633+00:00"
   },
   "satkhira": {
     "field_name": "Satkhira coast",
@@ -27,10 +29,11 @@
     "longitude": 89.0705,
     "srtm_tile": "N22E089",
     "elevation_m": 7,
-    "slope_percent": 6.17,
+    "slope_percent": 5.95,
     "flood_exposure_hint": "High coastal flood/surge exposure",
-    "topographic_erosion_risk": "Moderate",
-    "dataset": "NASA SRTMGL1 (30 m resolution)"
+    "topographic_erosion_risk": "High",
+    "dataset": "NASA SRTMGL1 (30 m resolution)",
+    "derived_at": "2026-10-31T18:14:05.054701+00:00"
   },
   "sunamganj": {
     "field_name": "Sunamganj haor",
@@ -38,9 +41,10 @@
     "longitude": 91.395,
     "srtm_tile": "N25E091",
     "elevation_m": 15,
-    "slope_percent": 2.48,
+    "slope_percent": 3.01,
     "flood_exposure_hint": "High monsoon basin submergence risk (haor)",
-    "topographic_erosion_risk": "Low",
-    "dataset": "NASA SRTMGL1 (30 m resolution)"
+    "topographic_erosion_risk": "Moderate",
+    "dataset": "NASA SRTMGL1 (30 m resolution)",
+    "derived_at": "2026-10-31T18:14:05.173281+00:00"
   }
 }
