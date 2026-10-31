@@ -310,3 +310,22 @@ test('U1: Typography scale integrity - no inline data values with fontSize >= 32
   assert.ok(stylesSrc.includes('font-size: 16px !important;'), 'styles.css must enforce 16px for card title');
   assert.ok(stylesSrc.includes('line-height: 1.6 !important;'), 'styles.css must enforce 1.6 line-height for Bangla');
 });
+
+test('U2: Design tokens & layout integrity (1680px max-width, 44px tap targets, 390px mobile guard, semantic colors)', () => {
+  const stylesSrc = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+
+  // 1. Semantic color palette
+  assert.ok(stylesSrc.includes('--u2-lime-primary: #10b981;'), 'Must define lime primary token');
+  assert.ok(stylesSrc.includes('--u2-cyan-accent: #38bdf8;'), 'Must define cyan research token');
+  assert.ok(stylesSrc.includes('--u2-amber-caution: #f59e0b;'), 'Must define amber caution token');
+  assert.ok(stylesSrc.includes('--u2-red-alert: #ef4444;'), 'Must define red alert token');
+
+  // 2. 1680px max width container rule
+  assert.ok(stylesSrc.includes('max-width: 1680px !important;'), 'Must enforce max 1680px on page containers');
+
+  // 3. 44px minimum tap targets
+  assert.ok(stylesSrc.includes('min-height: 44px;'), 'Must enforce 44px minimum tap target height');
+
+  // 4. Mobile 390px horizontal scroll prevention
+  assert.ok(stylesSrc.includes('overflow-x: hidden !important;'), 'Must prevent horizontal overflow on mobile viewports');
+});

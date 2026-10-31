@@ -14919,3 +14919,72 @@ h2, h3, .card-title, .panel-title {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ==============================================================================
+   U2: One colour per meaning, 1680px full-width layout, 24px gaps, 390px mobile, 44px tap targets
+   ============================================================================== */
+:root {
+  --u2-lime-primary: #10b981;
+  --u2-cyan-accent: #38bdf8;
+  --u2-amber-caution: #f59e0b;
+  --u2-red-alert: #ef4444;
+}
+
+/* Universal Page Container: max 1680px, 24px gaps */
+.app-shell .main-content > div,
+.farmer-home-container,
+.six-season-recommendation-workspace,
+.farm-planning-container,
+.water-irrigation-container,
+.nasa-weather-container,
+.research-workspace-container,
+.digital-twin-container,
+.market-intelligence-container,
+.data-evidence-container,
+.account-cockpit-container,
+.dash-container,
+.workspace-container {
+  max-width: 1680px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* 44px Minimum Tap Targets for Accessibility */
+button,
+.btn,
+.glass-btn,
+.nav-tab,
+.tab-button,
+.filter-pill,
+select,
+.interactive-tap-target {
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+/* 390px Mobile Viewport: strictly prevent horizontal scroll */
+@media (max-width: 640px) {
+  html, body, #root, .app-shell, .main-content {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  .farmer-home-container,
+  .six-season-recommendation-workspace,
+  .dash-container,
+  .workspace-container,
+  .page-container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    gap: 16px !important;
+  }
+
+  /* Ensure cards wrap gracefully */
+  .dash-card, .ui-card-glass, .ui-card-hud, .glass-panel {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
