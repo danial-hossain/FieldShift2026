@@ -152,10 +152,11 @@ export function FieldParcelManagerView({
   const soilInfo = SOIL_TEXTURE_DATA[texture] || SOIL_TEXTURE_DATA.unknown;
 
   // Filtered fields based on search
+  const qLower = (searchQuery || '').toLowerCase();
   const filteredFields = userFields.filter(f =>
-    f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (f.soil_texture && f.soil_texture.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (f.id && String(f.id).includes(searchQuery))
+    (typeof f?.name === 'string' && f.name.toLowerCase().includes(qLower)) ||
+    (typeof f?.soil_texture === 'string' && f.soil_texture.toLowerCase().includes(qLower)) ||
+    (f?.id != null && String(f.id).includes(searchQuery || ''))
   );
 
   const handleStartPinning = () => {

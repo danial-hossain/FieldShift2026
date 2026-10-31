@@ -182,9 +182,9 @@ export function ResearchWorkspaceView({
     return GROUPS.map(g => ({
       ...g,
       items: g.items.filter(i =>
-        i.label.toLowerCase().includes(q) ||
-        i.id.toLowerCase().includes(q) ||
-        (i.badge && i.badge.toLowerCase().includes(q))
+        (typeof i?.label === 'string' && i.label.toLowerCase().includes(q)) ||
+        (typeof i?.id === 'string' && i.id.toLowerCase().includes(q)) ||
+        (typeof i?.badge === 'string' && i.badge.toLowerCase().includes(q))
       )
     })).filter(g => g.items.length > 0);
   }, [GROUPS, searchQuery]);

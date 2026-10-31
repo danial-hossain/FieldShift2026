@@ -99,8 +99,8 @@ export function MarketIntelligenceView({ activeField, onNavigateTab, lang = 'bn'
     const q = searchQuery.trim().toLowerCase();
     if (!q) return marketData.crops;
     return marketData.crops.filter(c =>
-      c.crop.toLowerCase().includes(q) ||
-      (c.name_bn && c.name_bn.toLowerCase().includes(q))
+      (typeof c?.crop === 'string' && c.crop.toLowerCase().includes(q)) ||
+      (typeof c?.name_bn === 'string' && c.name_bn.toLowerCase().includes(q))
     );
   }, [marketData, searchQuery]);
 

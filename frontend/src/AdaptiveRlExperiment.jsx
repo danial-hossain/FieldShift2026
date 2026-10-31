@@ -1217,7 +1217,7 @@ export function AdaptiveRlExperiment({
                       </span>
                     </td>
                     <td>
-                      <span className={`badge-status ${record?.status === 'completed' ? 'completed' : record?.status === 'awaiting_intervention' ? 'warning' : currentStatus.includes('Ready') ? 'active' : currentStatus.includes('Error') ? 'error' : currentStatus.includes('stopped') ? 'stopped' : 'pending'}`}>
+                      <span className={`badge-status ${record?.status === 'completed' ? 'completed' : record?.status === 'awaiting_intervention' ? 'warning' : (typeof currentStatus === 'string' && currentStatus.includes('Ready')) ? 'active' : (typeof currentStatus === 'string' && currentStatus.includes('Error')) ? 'error' : (typeof currentStatus === 'string' && currentStatus.includes('stopped')) ? 'stopped' : 'pending'}`}>
                         {record?.status === 'completed' ? 'Completed' : record?.status === 'awaiting_intervention' ? 'Awaiting Post-Season Intervention' : currentStatus}
                       </span>
                     </td>

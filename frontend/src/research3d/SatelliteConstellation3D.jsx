@@ -557,8 +557,8 @@ export function SatelliteConstellation3D({
                 fontSize: '10px',
                 padding: '2px 6px',
                 borderRadius: '4px',
-                background: activeSensorObj.status.includes('OPERATIONAL') ? 'rgba(0, 223, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-                color: activeSensorObj.status.includes('OPERATIONAL') ? '#00df81' : '#f59e0b',
+                background: (typeof activeSensorObj?.status === 'string' && activeSensorObj.status.includes('OPERATIONAL')) ? 'rgba(0, 223, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)',
+                color: (typeof activeSensorObj?.status === 'string' && activeSensorObj.status.includes('OPERATIONAL')) ? '#00df81' : '#f59e0b',
                 fontWeight: 700,
               }}>
                 {activeSensorObj.status}

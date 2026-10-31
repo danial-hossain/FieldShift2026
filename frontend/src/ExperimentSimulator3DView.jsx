@@ -766,8 +766,8 @@ export function ExperimentSimulator3DView({
                 )}
                 {center3DViewMode === 'climate_stress' && (
                   <ClimateStress3D
-                    weatherScenario={currentSim.inputs.weatherScenario}
-                    tempDeltaC={currentSim.inputs.weatherScenario.includes('warming') ? 1.5 : currentSim.inputs.weatherScenario.includes('heatwave') ? 3.0 : 0.0}
+                    weatherScenario={currentSim?.inputs?.weatherScenario || 'normal'}
+                    tempDeltaC={(currentSim?.inputs?.weatherScenario || '').includes('warming') ? 1.5 : (currentSim?.inputs?.weatherScenario || '').includes('heatwave') ? 3.0 : 0.0}
                     et0Mm={activePlot.dayEtc}
                     stressDays={currentSim.stressIndicators.stressDaysCount}
                     crop={currentSim.inputs.cropNameEn}

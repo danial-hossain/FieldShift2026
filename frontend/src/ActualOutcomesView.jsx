@@ -140,7 +140,7 @@ export function ActualOutcomesView({
         crop_planted: form.crop_planted,
         period: form.season_name,
         season_name: form.season_name,
-        season: form.season_name.toLowerCase().includes('wet') || form.season_name.toLowerCase().includes('aman') ? 'wet' : 'dry',
+        season: (form?.season_name || '').toLowerCase().includes('wet') || (form?.season_name || '').toLowerCase().includes('aman') ? 'wet' : 'dry',
         year: parseInt(form.harvest_date?.split('-')?.[0] || '2025', 10),
         actual_yield_kg_ha: actYield,
         actual_yield_t_ha: actYield / 1000.0,

@@ -58,14 +58,16 @@ export function ClimateStress3D({
   lang = 'bn'
 }) {
   const currentTempC = Number((baseTempC + tempDeltaC).toFixed(1));
-  const isDrought = weatherScenario.includes('drought') || tempDeltaC >= 2.0;
+  const scenarioStr = typeof weatherScenario === 'string' ? weatherScenario : '';
+  const isDrought = scenarioStr.includes('drought') || tempDeltaC >= 2.0;
 
   // Dome color based on temperature perturbation
   const domeColor = useMemo(() => {
-    if (weatherScenario.includes('heatwave') || tempDeltaC >= 3.0) return '#ef4444';
-    if (weatherScenario.includes('warming') || tempDeltaC >= 1.5) return '#f97316';
-    if (weatherScenario.includes('drought')) return '#eab308';
-    if (weatherScenario.includes('monsoon')) return '#0284c7';
+    const s = typeof weatherScenario === 'string' ? weatherScenario : '';
+    if (s.includes('heatwave') || tempDeltaC >= 3.0) return '#ef4444';
+    if (s.includes('warming') || tempDeltaC >= 1.5) return '#f97316';
+    if (s.includes('drought')) return '#eab308';
+    if (s.includes('monsoon')) return '#0284c7';
     return '#38bdf8';
   }, [weatherScenario, tempDeltaC]);
 

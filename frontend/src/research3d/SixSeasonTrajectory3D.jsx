@@ -57,7 +57,7 @@ export function SixSeasonTrajectory3D({
       const cropHeight = Math.max(0.4, (rec.yieldTonHa || 3.0) * 0.16);
       const cropColor = rec.isLegume
         ? '#4ade80' // Legume bright green
-        : rec.cropFamily.includes('Poaceae')
+        : (typeof rec?.cropFamily === 'string' && rec.cropFamily.includes('Poaceae'))
           ? '#eab308' // Cereal golden
           : '#38bdf8'; // Other cash crop
 

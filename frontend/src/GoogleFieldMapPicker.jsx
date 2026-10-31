@@ -331,7 +331,7 @@ export function GoogleFieldMapPicker({
           if (onLocationNameChange) onLocationNameChange(results[0].formatted_address);
         } else {
           // Fallback search match with presets
-          const match = PRESETS.find(p => p.name.toLowerCase().includes(query.toLowerCase()));
+          const match = PRESETS.find(p => typeof p?.name === 'string' && p.name.toLowerCase().includes((query || '').toLowerCase()));
           if (match) {
             handleApplyPreset(match);
           } else {
@@ -340,7 +340,7 @@ export function GoogleFieldMapPicker({
         }
       });
     } else {
-      const match = PRESETS.find(p => p.name.toLowerCase().includes(query.toLowerCase()));
+      const match = PRESETS.find(p => typeof p?.name === 'string' && p.name.toLowerCase().includes((query || '').toLowerCase()));
       if (match) {
         handleApplyPreset(match);
       } else {
