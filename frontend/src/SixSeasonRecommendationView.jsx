@@ -785,6 +785,94 @@ export function SixSeasonRecommendationView({
         </div>
       </div>
 
+      {/* A3: Soil Health & Ecological Indicators Suite */}
+      <div style={{
+        background: 'rgba(15, 23, 42, 0.7)',
+        border: '1px solid var(--glass-border)',
+        borderRadius: 14,
+        padding: '16px 20px',
+        marginBottom: 20,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 20 }}>🌱</span>
+            <strong style={{ fontSize: 14, color: 'var(--leaf)' }}>
+              {lang === 'bn' ? 'মাটির স্বাস্থ্য, পুষ্টি ও ক্ষয়রোধ সূচক (Soil Health & Ecological Indicators)' : 'Soil Health & Ecological Sustainability Indicators'}
+            </strong>
+          </div>
+          <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+            {lang === 'bn' ? '৬-মৌসুম আবর্তনভিত্তিক বার্ষিক হিসাব' : 'Annualized across 6-season rotation'}
+          </span>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
+          {/* 1. Bare Field Exposure Days */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              🛡️ {lang === 'bn' ? 'নগ্ন মাটি অনাবৃত দিন' : 'Bare-Field Days'}
+            </span>
+            <div style={{ fontSize: 20, fontWeight: 800, color: soilHealthIndicators.annualBareDays <= 45 ? 'var(--leaf)' : '#f59e0b', marginTop: 4 }}>
+              {soilHealthIndicators.annualBareDays} {lang === 'bn' ? 'দিন/বছর' : 'days/yr'}
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 2 }}>
+              {lang === 'bn' ? 'বিদ্যমান বেসলাইনে ৭৫ দিনের তুলনায় সাশ্রয়' : 'vs 75 days in monoculture fallow'}
+            </div>
+          </div>
+
+          {/* 2. Biological Nitrogen Fixed */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              🌿 {lang === 'bn' ? 'জৈব নাইট্রোজেন সংবন্ধন' : 'Biological N Fixed'}
+            </span>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--leaf)', marginTop: 4 }}>
+              +{soilHealthIndicators.bnfKg} <span style={{ fontSize: 12 }}>kg N/ha</span>
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 2 }}>
+              {lang === 'bn' ? `ইউরিয়া সাশ্রয়: ~৳${soilHealthIndicators.ureaSavedBdt}` : `Urea cost saved: ~৳${soilHealthIndicators.ureaSavedBdt}`}
+            </div>
+          </div>
+
+          {/* 3. Residue SOM Contribution */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              🍂 {lang === 'bn' ? 'জৈব কার্বন বৃদ্ধি (SOM)' : 'Residue & OM Gain'}
+            </span>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--sun)', marginTop: 4 }}>
+              +{soilHealthIndicators.somContributionPct}% <span style={{ fontSize: 12 }}>SOC</span>
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 2 }}>
+              {lang === 'bn' ? 'মূল ও সবুজ পাতার অবশিষ্টাংশ' : 'From root mass & legume residue'}
+            </div>
+          </div>
+
+          {/* 4. Pest-Break Cycle */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              🔬 {lang === 'bn' ? 'কীটপতঙ্গ/রোগ চক্র দমন' : 'Pest-Break Rating'}
+            </span>
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--water)', marginTop: 6 }}>
+              {soilHealthIndicators.pestBreakRating}
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 2 }}>
+              {soilHealthIndicators.familyCount} {lang === 'bn' ? 'টি স্বতন্ত্র উদ্ভিদ পরিবার' : 'distinct botanical families'}
+            </div>
+          </div>
+
+          {/* 5. Erosion Cover Index */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 10, border: '1px solid var(--glass-border)' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              🌧️ {lang === 'bn' ? 'মৃত্তিকা আচ্ছাদন সূচক' : 'Erosion Cover Index'}
+            </span>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--leaf)', marginTop: 4 }}>
+              {soilHealthIndicators.erosionCoverPct}%
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 2 }}>
+              {lang === 'bn' ? 'বর্ষাকালে মাটির ক্ষয় রোধ' : 'Living canopy during rainstorms'}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 4. Navigation View Toggle (Recommendations vs Strategy Comparison Matrix vs Timeline) */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -1132,12 +1220,147 @@ export function SixSeasonRecommendationView({
         </div>
       )}
 
-      {/* 7. VIEW C: 3-YEAR VISUAL TIMELINE TRAJECTORY */}
+      {/* 7. VIEW C: 12-MONTH CALENDAR STRIP & ROTATION TIMELINE (A3) */}
       {viewMode === 'timeline' && (
         <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--glass-border)', padding: 22, marginBottom: 24, boxShadow: 'var(--glass-shadow)' }}>
           <h3 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 900, color: 'var(--text)' }}>
-            📈 {lang === 'bn' ? '৩-বছরের ৬-মৌসুম আবর্তন ট্রাজেক্টরি সময়রেখা' : '3-Year (6-Season) Multi-Period Optimal Rotation Schedule'}
+            📈 {lang === 'bn' ? '১২-মাসের সমন্বিত ফসল ক্যালেন্ডার ও ৬-মৌসুম আবর্তন সময়রেখা' : '12-Month Integrated Crop Calendar Strip & 6-Season Schedule'}
           </h3>
+
+          {/* 12-Month Horizontal Calendar Strip */}
+          <div style={{
+            background: 'rgba(15, 23, 42, 0.75)',
+            border: '1px solid var(--glass-border)',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 20,
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <strong style={{ fontSize: 13, color: 'var(--water)' }}>
+                🗓️ {lang === 'bn' ? '১২-মাসের ক্রপিং ক্যালেন্ডার স্ট্রিপ (বার্ষিক চক্র)' : '12-Month Continuous Cropping Calendar Strip'}
+              </strong>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'রবি (নভে-এপ্রি) • খরিফ-১ (এপ্রি-জুন) • খরিফ-২ (জুলাই-অক্টো)' : 'Rabi (Nov-Apr) • Kharif-1 (Apr-Jun) • Kharif-2 (Jul-Oct)'}
+              </span>
+            </div>
+
+            {/* Months Header */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 4, textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>
+              {['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'].map((m, mi) => (
+                <div key={m} style={{ padding: '4px 2px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: 4 }}>
+                  {m}
+                </div>
+              ))}
+            </div>
+
+            {/* Year 1 Cropping Strip */}
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? '১ম বছর ফসল আবর্তন (Year 1):' : 'Year 1 Crop Cycle:'}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 4, height: 36 }}>
+                {/* Rabi (Nov-Apr: 6 months) */}
+                <div style={{
+                  gridColumn: 'span 6',
+                  background: 'rgba(56, 189, 248, 0.25)',
+                  border: '1px solid var(--water)',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: 'var(--water)',
+                }}>
+                  🌱 {sixSeasonRecommendations[0]?.cropName || 'Rabi Crop'}
+                </div>
+                {/* Kharif-1 (Apr-Jun: 2 months) */}
+                <div style={{
+                  gridColumn: 'span 2',
+                  background: sixSeasonRecommendations[1]?.cropName === 'Fallow' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 223, 129, 0.25)',
+                  border: sixSeasonRecommendations[1]?.cropName === 'Fallow' ? '1px dashed #f87171' : '1px solid var(--leaf)',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  color: sixSeasonRecommendations[1]?.cropName === 'Fallow' ? '#f87171' : 'var(--leaf)',
+                }}>
+                  {sixSeasonRecommendations[1]?.cropName === 'Fallow' ? (lang === 'bn' ? 'পতিত' : 'Fallow') : sixSeasonRecommendations[1]?.cropName}
+                </div>
+                {/* Kharif-2 (Jul-Oct: 4 months) */}
+                <div style={{
+                  gridColumn: 'span 4',
+                  background: 'rgba(251, 191, 36, 0.25)',
+                  border: '1px solid var(--sun)',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: 'var(--sun)',
+                }}>
+                  🌾 {sixSeasonRecommendations[2]?.cropName || 'Aman Rice'}
+                </div>
+              </div>
+            </div>
+
+            {/* Year 2 Cropping Strip */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)', marginBottom: 4 }}>
+                {lang === 'bn' ? '২য় বছর ফসল আবর্তন (Year 2):' : 'Year 2 Crop Cycle:'}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 4, height: 36 }}>
+                {/* Rabi (Nov-Apr: 6 months) */}
+                <div style={{
+                  gridColumn: 'span 6',
+                  background: 'rgba(56, 189, 248, 0.25)',
+                  border: '1px solid var(--water)',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: 'var(--water)',
+                }}>
+                  🌱 {sixSeasonRecommendations[3]?.cropName || 'Rabi Crop'}
+                </div>
+                {/* Kharif-1 (Apr-Jun: 2 months) */}
+                <div style={{
+                  gridColumn: 'span 2',
+                  background: sixSeasonRecommendations[4]?.cropName === 'Fallow' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 223, 129, 0.25)',
+                  border: sixSeasonRecommendations[4]?.cropName === 'Fallow' ? '1px dashed #f87171' : '1px solid var(--leaf)',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  color: sixSeasonRecommendations[4]?.cropName === 'Fallow' ? '#f87171' : 'var(--leaf)',
+                }}>
+                  {sixSeasonRecommendations[4]?.cropName === 'Fallow' ? (lang === 'bn' ? 'পতিত' : 'Fallow') : sixSeasonRecommendations[4]?.cropName}
+                </div>
+                {/* Kharif-2 (Jul-Oct: 4 months) */}
+                <div style={{
+                  gridColumn: 'span 4',
+                  background: 'rgba(251, 191, 36, 0.25)',
+                  border: '1px solid var(--sun)',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: 'var(--sun)',
+                }}>
+                  🌾 {sixSeasonRecommendations[5]?.cropName || 'Aman Rice'}
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
             {[
